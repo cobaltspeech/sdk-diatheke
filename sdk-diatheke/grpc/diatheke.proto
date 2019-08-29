@@ -1,0 +1,310 @@
+// Copyright (2019) Cobalt Speech and Language Inc.
+
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+package cobaltspeech.diatheke;
+
+option go_package = "diathekepb";
+
+// Service that implements the Cobalt Diatheke Dialog Management API.
+service Diatheke {
+  // Queries the Version of the Server.
+  rpc Version(Empty) returns (VersionResponse) {}
+
+  // Models will return a list of available versions.  This value should be used
+  // to the NewSession calls.
+  rpc Models(Empty) returns (ModelsResponse) {}
+
+  // Requests a new session with the given config, returns a new ID.
+  // This new ID should be used with all future calls.
+  rpc NewSession(NewSessionRequest) returns (NewSessionResponse) {}
+
+  // Terminates an existing session.
+  // It is an error if the SessionEndRequest has an invalid SessionID.
+  rpc EndSession(SessionEndRequest) returns (Empty) {}
+
+  // Performs bidirectional streaming speech recognition.  As transcripts are
+  // generated, the result is both sent to the caller and passed on to the
+  // dialog management system. The dialog management path happens asyncronously,
+  // and will update the application manager through the CommandCallback and
+  // SayCallback calls.
+  //
+  // TODO, since this is a streaming api, and we endpoint once it closes, it is
+  // hard to support an HTTP interface.  The sim server would need to keep this
+  // call alive between calls to their PushAudio API, and maybe have their own
+  // EndPoint API that is responsible for shutting down the old one. Also, they
+  // would need to keep a call for each session.
+  //   Would it make sense to have a streaming call remain open, one for each
+  // session in a map.  If there is an existing connection, then push the next
+  // audio clip on the existing one.  If there is not an exist connection, then
+  // we create a new connection which we then store and use.  When their users
+  // call the EndpointAudio API, they can close the existing connection, and
+  // remove it from the map.
+  //   Is that better or worse than adding an EndpointAudio gRPC call?
+  //   Since it seems doable without the EndpointAudio gRPC call, I think the
+  // last question to ask is how do we handle responses.  Returning a stream of
+  // TranscriptionResults means they have to start/stop the callback listener,
+  // but that doesn't seem to be a problem.  The storage on their side is the
+  // same either way.
+  //   Jacobs thoughts:  I think it should be ok to exclude the EndpointAudio
+  // gRPC, endpoint when the PushAudio
+  //
+  // TODO, can a single session have mroe than one audio stream?  While it seems
+  // like it could be valid, I think it's fine to lock it down to one stream per
+  // session.
+  rpc PushAudio(stream AudioTranscriptionRequest)
+      returns (stream TranscriptionResult) {}
+
+  // PushText will sidestep the ASR portion and simply push a "Transcript"
+  // directly to the dialog management.  The dialog management path will happen
+  // asyncronously via the CommandCallback and  SayCallback calls, same
+  // as with PushAudio.
+  //
+  // For frontends that display a transcript of the conversation, transcribed
+  // text will be streamed back from the PushAudio call. Text sent via the
+  // PushText will not be returned, so you may add it to the history right away.
+  rpc PushText(PushTextRequest) returns (Empty) {}
+
+  // CommandAndNotify is a bi-directional stream that handles the interactions
+  // of commands and notifications between the client and server.  By using the
+  // bi-directional streaming, either side can initiate a new chain of
+  // interactions.
+  //
+  // Commands:
+  // When the dialog management finds enough context to indicate a command
+  // should be executed, it sends a Command object back to the application
+  // manager to execute.
+  //
+  // Please note: When a new command that is accompanied by a TTS step is
+  // triggered, that TTS will be sent on the SayCallback rpc.
+  //
+  // Notificiations:
+  // Notifications are sent by the application manager to update the dialog
+  // state. Depending on the application, there can be some delay between the
+  // initation of a command execution and the completion of that step.  Some
+  // other applications may have multiple updates for the same command.  Both of
+  // these benefit from making this an asynchronous pattern.
+  rpc CommandAndNotify(stream CommandStatusUpdate)
+      returns (stream CommandToExecute) {}
+
+  // Say may be used to request TTS synthesis on given text, independent of any
+  // dialog state changes.
+  // Results will come back via the SayCallback stream.
+  rpc Say(TTSRequest) returns (Empty) {}
+
+  // SayCallback is triggered whenever there is a new TTS audio clip that should
+  // be played for the user.  This can come from the dialog management pushing a
+  // Say action.
+  // TTSResponses from the client making a Say(TTSRequest) call  will be
+  // returned from that call, not through this callback.
+  //
+  // Please note:  When a new TTS that is accompanied by a Command is triggered,
+  // that Command will be sent on the CommandCallback rpc.
+  rpc SayCallback(SayCallbackRequest) returns (stream TTSResponse) {}
+
+  // NOTES:
+
+  // If we find that we can't fit a full TTS waveform into a single element, we
+  // could switch over to doing a separate call for each TTS entry, and each one
+  // of those calls could stream segments of a single waveform in chunks.
+  //   rpc SayCallback(Empty) returns (stream TTSNotification)
+  //   {} rpc DownloadAudio(TTSNotificationURL) returns (stream AudioBytes) {}
+
+  /*
+  Question on who knows what about the world?
+  Comands can be:
+   * QueryCommands such as: What's the temperature?  Notification(72*).
+   * ExecutionCommands such as: open the front door.
+
+  Diatheke shouldn't be responsible for remembering the world.  Data of the
+  world, needed for the dialog, should be returned in a notification, and added
+  as a step in the Diatheke models written by the clients.
+  */
+
+  /*
+  Latency with opening an closing connections
+  How do we deal with the session?
+  */
+}
+
+// The message sent by the server for the `Version` method.
+message VersionResponse {
+  // Server that manages all of the the other components.
+  string server = 1;
+}
+
+// The message sent by the server in response to a Models request.
+// Returns an array of model names.
+message ModelsResponse {
+  // Array of models available for use.
+  repeated string models = 1;
+}
+
+// Request for the NewSession call.
+// TODO Concider combining the language and model into one string, such as
+// `en_US_variant`.
+message NewSessionRequest {
+  // For applications that have more than one model to use for ASR/NLU.
+  // ASR grammer can vary between models, as well as sets of commands.
+  // Some applications will only have one model.
+  string model = 1;
+}
+
+// Result of the NewSession call.
+message NewSessionResponse {
+  // Session ID that should be included with future calls.
+  // Allows for reconnecting if the gRPC connection is dropped.
+  // If an error occured, then this field will be an empty string ("").
+  string session_id = 1;
+}
+
+// Request for the EndSession call.
+message SessionEndRequest {
+  // Session ID returned from the NewSession call.
+  string session_id = 1;
+}
+
+// To use ASR, audio is streamed to the server.  Multiple
+// StreamingRecognizeRequest messages are sent. The first message must contain a
+// session_id message only.  All subsequent messages must contain audio data
+// only.  All AudioTranscriptionRequest messages must contain non-empty audio.
+// If audio content is empty, the server may interpret it as end of stream and
+// stop accepting any further messages.
+message AudioTranscriptionRequest {
+  oneof request {
+    // Session ID returned from the NewSession call.
+    string session_id = 1;
+    // Audio data that should be transcribed.
+    bytes data = 2;
+  }
+}
+
+// TranscriptionResult will either be the transcribed text, or an error message.
+// TranscriptionResult is sent whenenver the Cubic engine endpoints an audio
+// segment.
+message TranscriptionResult {
+  // Session ID returned from the NewSession call.
+  string session_id = 1;
+  // Text is the Cubic engine's formatted transcript of pushed audio.
+  // Transcribed text, with formatting applied.
+  // This field will be the 1-best alternative.
+  string text = 2;
+  // The confidence score is a floating point number 0.0-1.0, on how confident the 
+  // ASR engine is in that transcription.
+  double confidence_score = 3;
+}
+
+// Request for adding User Input directly from text.
+message PushTextRequest {
+  // Session ID returned from the NewSession call.
+  string session_id = 1;
+  // User input, like a transcription from ASR.
+  string text = 2;
+}
+
+// CommandToExecute indicates Diatheke found an actionable state in the dialog,
+// and requests the application manager to perform the command.
+message CommandToExecute {
+  // session_id should be the same as the status id returned from
+  // NewSessionResponse.
+  string session_id = 1;
+
+  // ID of the command that should be run.  i.e. "COM01" for Command #01.
+  string command_id = 2;
+
+  // parameters is a generic map of parameter name to parameter value.  These
+  // parameters are defined in the Diatheke Models.
+  map<string, string> parameters = 3;
+
+  // The state_data field contains information about the state in which this
+  // notification should be handled.
+  // Since there can be multiple states being tracked in a single session,
+  // this value must be sent with the CommandStatusUpdate that follow from
+  // the commands execution.
+  string state_data = 4;
+}
+
+message CommandStatusUpdate {
+  oneof update {
+    // session_id should be the same as the status id returned from
+    // NewSessionResponse.
+    string session_id = 1;
+
+    Data data = 2;
+  };
+
+  message Data {
+    // ID of the command that should be run.  i.e. "COM01" for Command #01.
+    string command_id = 1;
+
+    // CommandStatus are the resulting states of a command.
+    enum CommandStatus {
+      // SUCCESS indicates that the command was successfully completed, and the
+      // dialog state may now move on to the next state.
+      SUCCESS = 0;
+      // FAILURE indicates that the command was not successfully completed, and
+      // the dialog state should be updated accordingly.
+      FAILURE = 1;
+    }
+    CommandStatus command_status = 2;
+
+    // The state_data field contains information about the state in which this
+    // notification should be handled.
+    // TODO: Why do we have this in the HTTP interface?  Can we hide it in the
+    // gRPC interface?
+    string state_data = 3;
+
+    // parameters is a generic map of parameter name to parameter value.  These
+    // parameters are defined in the Diatheke Models.  An example could be the
+    // "TV Channel" is "Channel 2".
+    map<string, string> parameters = 4;
+
+    // error_message_text will be populated when there is a error occures while
+    // executing a command.  This string will be sent through TTS and posted to
+    // the SayCallback as an audio file.
+    string error_message_text = 5;
+  };
+}
+
+// TTSResponse contains the sythesised audio waveform for a TTS request.
+message TTSResponse {
+  string session_id = 1;
+
+  // Text to synthesize.
+  // When responding to a Say(TTSRequest) call, it is the same string that was
+  // in TTSRequest.text. When it comes from a Notify(CommandStatusUpdate) call,
+  // it is the same string that was in the
+  // CommandStatusUpdate.error_message_text.
+  string text = 2;
+
+  // data contains the audio waveform as an array of bytes.
+  bytes data = 3;
+}
+
+// Request to stynthesize audio for a given string.
+message TTSRequest {
+  // Session ID returned from the NewSession call.
+  string session_id = 1;
+
+  // Text to synthesize.
+  string text = 2;
+}
+
+message SayCallbackRequest {
+  // Session ID returned from the NewSession call.
+  string session_id = 1;
+}
+
+message Empty {}
