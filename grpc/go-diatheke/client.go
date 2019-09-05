@@ -22,10 +22,9 @@ import (
 	"crypto/x509"
 	"fmt"
 	"io"
-	"log"
 	"sync"
 
-	"github.com/cobaltspeech/diatheke/sdk-diatheke/grpc/go-diatheke/diathekepb"
+	"github.com/cobaltspeech/sdk-diatheke/grpc/go-diatheke/diathekepb"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 )
@@ -150,13 +149,25 @@ func (c *Client) Version(ctx context.Context, opts ...grpc.CallOption) (*diathek
 }
 
 // NewSession creates a new session and returns the session id.
-func (c *Client) NewSession(ctx context.Context, request *diathekepb.NewSessionRequest, opts ...grpc.CallOption) (*diathekepb.NewSessionResponse, error) {
-	return c.diathekePBClient.NewSession(ctx, request, opts...)
+func (c *Client) NewSession(ctx context.Context, model string, opts ...grpc.CallOption) (string, error) {
+	request := diathekepb.NewSessionRequest{
+		Model: model,
+	}
+
+	response, err := c.diathekePBClient.NewSession(ctx, &request, opts...)
+	if err != nil {
+		return "", err
+	}
+
+	return response.SessionId, nil
 }
 
 // EndSession ends an existing session.
-func (c *Client) EndSession(ctx context.Context, request *diathekepb.SessionEndRequest, opts ...grpc.CallOption) (*diathekepb.Empty, error) {
-	return c.diathekePBClient.EndSession(ctx, request, opts...)
+func (c *Client) EndSession(ctx context.Context, sessionID string, opts ...grpc.CallOption) (*diathekepb.Empty, error) {
+	request := diathekepb.SessionEndRequest{
+		SessionId: sessionID,
+	}
+	return c.diathekePBClient.EndSession(ctx, &request, opts...)
 }
 
 const defaultStreamingBufsize uint32 = 8192
@@ -304,14 +315,6 @@ func (c *Client) PushText(ctx context.Context, request *diathekepb.PushTextReque
 // provided handlerFunc.  Your application manager should execute the commands,
 // and call Notify(CommandStatusUpdate) to provide feedback and update the dialog
 // state.
-//
-// If any error occurs while reading the audio or sending it to the server, this
-// method will immediately exit, returning that error.
-//
-// This function does not return, unless there is an error. If the context was
-// canceled, we return an error saying this function was canceled, as opposed
-// to the server finished up without error.  Ending the session should cause the
-// server to close the stream and allow this function to return.
 func (c *Client) CommandAndNotify(ctx context.Context, opts ...grpc.CallOption) (diathekepb.Diatheke_CommandAndNotifyClient, error) {
 	return c.diathekePBClient.CommandAndNotify(ctx, opts...)
 }
@@ -325,56 +328,9 @@ func (c *Client) CommandAndNotify(ctx context.Context, opts ...grpc.CallOption) 
 type TTSResponseHandler func(*diathekepb.TTSResponse)
 
 // SayCallback uses the server streaming API for recieving TTSResponses as the TTS
-// engine finishes up TTS synthesis.  As results are received from the diatheke
-// server, they will be sent to the provided handlerFunc.
-//
-// If any error occurs while reading the audio or sending it to the server, this
-// method will immediately exit, returning that error.
-//
-// This function does not return, unless there is an error. If the context was
-// canceled, we return an error saying this function was canceled, as opposed
-// to the server finished up without error.  Ending the session should cause the
-// server to close the stream and allow this function to return.
-func (c *Client) SayCallback(ctx context.Context, sessionID string, handlerFunc TTSResponseHandler, opts ...grpc.CallOption) error {
-	stream, err := c.diathekePBClient.SayCallback(ctx, &diathekepb.SayCallbackRequest{SessionId: sessionID}, opts...)
-	if err != nil {
-		return fmt.Errorf("unable to start command callback: %v", err)
-	}
-
-	fail := make(chan error, 1)
-	inputChan := make(chan *diathekepb.TTSResponse, 1)
-	// Read the results from the server, place it into a channel for consumption
-	// in the same switch statement as the context check.
-	go func() {
-		for {
-			m, err := stream.Recv()
-			if err == io.EOF {
-				close(fail)
-				close(inputChan)
-				return
-			}
-			if err != nil {
-				fail <- err
-				close(fail)
-				close(inputChan)
-				return
-			}
-			inputChan <- m
-		}
-	}()
-
-	// Read stream of results
-	for {
-		select {
-		case in := <-inputChan:
-			log.Printf("**Listening for say callback -- action\n")
-			handlerFunc(in)
-		case err := <-fail:
-			return fmt.Errorf("Error getting TTS Response: %v", err)
-		case <-ctx.Done():
-			return fmt.Errorf("command callback was canceled by the user")
-		}
-	}
+// engine finishes up TTS synthesis.
+func (c *Client) SayCallback(ctx context.Context, sessionID string, opts ...grpc.CallOption) (diathekepb.Diatheke_SayCallbackClient, error) {
+	return c.diathekePBClient.SayCallback(ctx, &diathekepb.SayCallbackRequest{SessionId: sessionID}, opts...)
 }
 
 // Say sends text for the TTS engine to synthesize.
