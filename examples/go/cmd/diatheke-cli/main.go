@@ -185,10 +185,9 @@ func Run(client *diatheke.Client, config Config) error {
 			}
 
 			go func() {
-				audioErr := client.PushAudio(cancelContext, sessionID, audio,
-					func(result *diathekepb.TranscriptionResult) {
-						fmt.Printf("\n(transcript) %s\n", result)
-					})
+				audioErr := client.PushAudio(
+					cancelContext, sessionID, audio, transcriptHandler)
+
 				if audioErr != nil {
 					fmt.Printf("\nerror pushing audio: %v\n", audioErr)
 				}
@@ -232,8 +231,8 @@ func commandAndNotifyHandler(ctx context.Context,
 			return
 		}
 
-		fmt.Printf("\nrecieved command %v\n", command.CommandId)
-		fmt.Printf("parameters: %v\n", command.Parameters)
+		// fmt.Printf("\nrecieved command %v\n", command.CommandId)
+		// fmt.Printf("parameters: %v\n", command.Parameters)
 
 		// TODO: Something awesome to execute the command
 
@@ -282,11 +281,18 @@ func responseHandler(ctx context.Context,
 			}
 		}
 
-		fmt.Printf("\nResponse: %s\n\n", response.Text)
+		fmt.Printf("\n    Diatheke: %s\n\n", response.Text)
 		print()
 
 		if audio != nil {
 			audio.Play(response.Data)
 		}
 	}
+}
+
+func transcriptHandler(result *diathekepb.TranscriptionResult) {
+	// Let's do a little cleanup on the transcription
+	lower := strings.ToLower(result.Text)
+
+	fmt.Printf("\nMe: %s\n", lower)
 }
