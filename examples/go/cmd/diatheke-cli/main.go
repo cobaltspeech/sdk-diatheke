@@ -102,12 +102,18 @@ func Run(client *diatheke.Client, config Config) error {
 
 	go commandAndNotifyHandler(cancelContext, stream)
 
+	// Setup audio I/O
+	var audio *AudioIO
+	if audioEnabled {
+		audio = NewAudioIO(config)
+	}
+
 	// Setup the TTS/text reponse callack
 	responseStream, err := client.SayCallback(cancelContext, sessionID)
 	if err != nil {
 		return fmt.Errorf("failed to setup response handler: %v", err)
 	}
-	go responseHandler(cancelContext, responseStream, config)
+	go responseHandler(cancelContext, responseStream, audio)
 
 	// Setup a handler for text requests
 	textHandler := func(raw string) {
@@ -157,10 +163,6 @@ func Run(client *diatheke.Client, config Config) error {
 	}
 
 	if audioEnabled {
-		record := Recorder{
-			ExeName: config.Recording.Application,
-			ExeArgs: config.Recording.ArgList(),
-		}
 		isRecording := false
 
 		audioToggle := func(buf *prompt.Buffer) {
@@ -169,21 +171,21 @@ func Run(client *diatheke.Client, config Config) error {
 				isRecording = false
 
 				// Stop recording.
-				record.Stop()
+				audio.StopRecordingApp()
 				fmt.Printf("\nRecording stopped.\n")
 				return
 			}
 
 			// Start recording
 			isRecording = true
-			output, audioErr := record.Start()
-			if audioErr != nil {
-				fmt.Printf("\nerror starting recorder: %v\n", audioErr)
+			startErr := audio.StartRecordingApp(cancelContext)
+			if startErr != nil {
+				fmt.Printf("\nerror starting recorder: %v\n", startErr)
 				return
 			}
 
 			go func() {
-				audioErr = client.PushAudio(cancelContext, sessionID, output,
+				audioErr := client.PushAudio(cancelContext, sessionID, audio,
 					func(result *diathekepb.TranscriptionResult) {
 						fmt.Printf("\n(transcript) %s\n", result)
 					})
@@ -256,7 +258,7 @@ func commandAndNotifyHandler(ctx context.Context,
 
 func responseHandler(ctx context.Context,
 	stream diathekepb.Diatheke_SayCallbackClient,
-	config Config) {
+	audio *AudioIO) {
 
 	for {
 		if ctx.Err() != nil {
@@ -283,8 +285,8 @@ func responseHandler(ctx context.Context,
 		fmt.Printf("\nResponse: %s\n\n", response.Text)
 		print()
 
-		if config.UseAudio {
-			Playback(response.Data, config.Playback)
+		if audio != nil {
+			audio.Play(response.Data)
 		}
 	}
 }
