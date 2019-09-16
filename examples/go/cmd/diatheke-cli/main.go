@@ -50,7 +50,7 @@ func main() {
 }
 
 // Run the CLI main loop. Mostly doing this in a separate
-// function outside of main() so that I can better use defer
+// function outside of main() so it can better use defer
 // and go routines without having to worry about os.Exit
 // problems.
 func Run(client *diatheke.Client, config Config) error {
@@ -59,9 +59,9 @@ func Run(client *diatheke.Client, config Config) error {
 	// Print the banner
 	fmt.Printf("\nDiatheke CLI - Copyright (2019) Cobalt Speech and Language, Inc.\n\n")
 	fmt.Printf("Diatheke is Cobalt's dialog management engine.\n")
-	fmt.Printf("Enter commands at the prompt. To exit, use Ctl+D.\n")
+	fmt.Printf("Enter commands at the prompt. To exit, use Ctrl+D.\n")
 	if audioEnabled {
-		fmt.Printf("Audio is enabled. Use Ctl+A to start/stop recording audio.\n")
+		fmt.Printf("Audio is enabled. Use Ctrl+A to start/stop recording audio.\n")
 	}
 	fmt.Printf("Type 'help' to see the CLI help.\n")
 	fmt.Printf("\n\n")
@@ -193,7 +193,7 @@ func Run(client *diatheke.Client, config Config) error {
 				}
 			}()
 
-			fmt.Printf("\nRecording. Press Ctl+A to stop.\n")
+			fmt.Printf("\nRecording. Press Ctrl+A to stop.\n")
 		}
 
 		options = append(options, prompt.OptionAddKeyBind(
