@@ -48,7 +48,12 @@ service Diatheke {
   // the server should specify the sessionID, with binary audio data pushed
   // for every subsequent message. As the audio is recognized, Diatheke
   // will respond with appropriate events on the session's event stream.
-  // This should only be called once per session.
+  //
+  // While it is allowed to call this multiple times during a single session,
+  // clients should never have multiple audio input streams running concurrently
+  // for the same session (the audio may mix and result in unpredictable
+  // behavior). Previous audio streams should always be closed before starting
+  // a new one.
   rpc StreamAudioInput(stream AudioInput) returns (Empty) {}
 
   // Create an audio reply stream for a session. The returned stream 
@@ -57,7 +62,7 @@ service Diatheke {
   // stream will first receive the text to synthesize (defined by the model),
   // followed by one or more messages containing the synthesized audio bytes. 
   // The "say" entry will end with a message indicating that TTS for that 
-  // entry is complete. This should only be called once per session.
+  // entry is complete.
   // NOTE: The text in the first message of an audio reply is the same that
   //       will be received in the session's event stream.
   rpc StreamAudioReplies(SessionID) returns (stream AudioReply) {}
@@ -127,9 +132,12 @@ message DiathekeEvent {
     // ASR and/or Diatheke.
     RecognizeEvent recognize = 2;
 
-    // The reply from Diatheke. For example, this could be a question to
-    // solicit more information from the user, a status report, or any
-    // other reply defined by the Diatheke model.
+    // The textual reply from Diatheke in the conversation (not to be 
+    // confused with the server concepts of request and response). For 
+    // example, this could be a question to solicit more information 
+    // from the user, a status report, or any other reply defined by 
+    // the Diatheke model. The text of this message is also provided in
+    // the AudioReply stream (if one is open).
     ReplyEvent reply = 3;
   }
 }
@@ -292,7 +300,7 @@ message ASRResponse {
   double confidence_score = 2;
 }
 
-// Request to text-to-speech unrelated to any session.
+// Request to synthesize speech unrelated to any session.
 message TTSRequest {
   // The model to use for TTS (defined in the server config file).
   string model = 1;
