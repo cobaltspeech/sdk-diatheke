@@ -38,10 +38,13 @@ service Diatheke {
   // Requests a new event stream for the given session.
   rpc SessionEventStream(SessionID) returns (stream DiathekeEvent) {}
 
-  // Notify Diatheke when a command has completed. The initial command
-  // request will come as part of a DiathekeEvent. This method should
-  // always be called after receiving a command event and the command has
-  // completed.
+  // Notify Diatheke when a command has completed so that it may update
+  // the dialog state. The initial command request will come as part of
+  // a DiathekeEvent. While not strictly required (depeding on the model
+  // and command), it is best practice to always call this method when a
+  // command is complete. Cases where it is required include when the 
+  // command has output parameters, or when the command is followed by 
+  // another action in the Diatheke model.
   rpc CommandFinished(CommandStatus) returns (Empty) {}
 
   // Begin an audio input stream for a session. The first message to
@@ -122,10 +125,13 @@ message DiathekeEvent {
   oneof result {
     // Indicates Diatheke found an actionable state in the dialog,
     // and requests the client to perform the given command.
-    // NOTE: Users should ALWAYS call CommandFinished after receiving
-    //       this event to let Diatheke know when the command is complete,
-    //       even if it isn't called immediately (e.g., for long-running
-    //       commands).
+    //
+    // While not strictly required (depeding on the model and command),
+    // it is best practice to always call CommandFinished after receiving
+    // this event so that Diatheke can update the dialog state when the
+    // command is complete. Cases where it is required include when the
+    // command has output parameters, or when it is followed by another
+    // action in the Diatheke model.
     CommandEvent command = 1;
 
     // An event indicating whether pushed text and audio was recognized by
@@ -157,10 +163,10 @@ message CommandEvent {
   // the CommandStatus update.
   map<string, string> output_parameters = 3;
 
-  // Internal data that should be sent with the CommandStatus update.
-  // TODO: Is there some way we can instead keep this on the server side
-  //       so users don't have to worry about it?
-  string internal_data = 4;
+  // ID to keep track of the dialog state when the command is requested.
+  // This field is required in the CommandStatus message so that Diatheke
+  // can correctly update the dialog state when CommandFinished is called.
+  string command_state_id = 4;
 }
 
 // A RecognizeEvent occurs if a session's audio input has a transcription
@@ -172,13 +178,17 @@ message RecognizeEvent
   // The pushed text or transcription of audio sent to Diatheke.
   string text = 1;
 
-  // True if the Diatheke model recognized the text as a valid intent.
-  bool is_intent = 2;
+  // True if the submitted text or audio transcription was recognized by the
+  // Diatheke model as a valid intent or entity.
+  bool valid_input = 2;
 }
 
 // A ReplyEvent occurs when Diatheke has a reply in the conversation (not
 // to be confused with the server concepts of request and response). These
-// correspond to "say" entries in the Diatheke model.
+// correspond to "say" entries in the Diatheke model. For example, it might
+// be a prompt for additional information from the user, a status update,
+// or a confirmation. ReplyEvents are not generated in response to 
+// StreamTTS calls.
 message ReplyEvent
 {
   // Text of the reply event (defined by the Diatheke model).
@@ -217,10 +227,10 @@ message CommandStatus {
   // executing the command.
   string error_message_text = 5;
 
-  // Internal data from the RunCommand object.
-  // TODO: Why do we have this in the HTTP interface?  Can we hide it in the
-  // gRPC interface?
-  string internal_data = 6;
+  // State ID from the original CommandEvent. This field is required for
+  // Diatheke to correctly update the dialog state when CommandFinished 
+  // is called.
+  string command_state_id = 6;
 }
 
 // Provides input audio data for StreamAudioInput. The first message
@@ -231,7 +241,7 @@ message AudioInput {
     // Session ID returned from the NewSession call.
     string session_id = 1;
 
-    // Audio data to process. The format of the data should match what
+    // Audio data to process. The encoding of the data should match what
     // was specified in the Diatheke server configuration.
     // NOTE: If the audio data is empty, the server may interpret it as
     //       the end of the stream and stop accepting further messages.
@@ -249,12 +259,15 @@ message AudioReply {
 
   oneof output_message {
     // The reply text as defined in the Diatheke model. This is the first
-    // message that will be received for an AudioReply.
+    // message that will be received for an AudioReply. It contains the
+    // same text as the corresponding ReplyEvent in the session's event
+    // stream.
     string text = 2;
 
     // The audio data from TTS. There can be any number of these messages
     // for an AudioReply after the first text message and before the final
-    // end message.
+    // end message. The encoding of the data will match what was specified
+    // in the server configuration.
     bytes data = 3;
 
     // Indicates that TTS has finished streaming audio for the reply. This
@@ -269,7 +282,7 @@ message PushTextRequest {
   string session_id = 1;
 
   // User input. This could be a transcription from manually run ASR,
-  // text entered in a prompt, etc.
+  // text selected from a dropdown list, entered in a prompt, etc.
   string text = 2;
 }
 
@@ -280,7 +293,7 @@ message ASRRequest {
     // before any audio data is sent.
     string model = 1;
 
-    // Audio data to process. The format of the data should match what
+    // Audio data to process. The encoding of the data should match what
     // was specified in the Diatheke server configuration.
     // NOTE: If the audio data is empty, the server may interpret it as
     //       the end of the stream and stop accepting further messages.
@@ -300,7 +313,7 @@ message ASRResponse {
   double confidence_score = 2;
 }
 
-// Request to synthesize speech unrelated to any session.
+// Request to synthesize speech unrelated to a session.
 message TTSRequest {
   // The model to use for TTS (defined in the server config file).
   string model = 1;
@@ -309,9 +322,10 @@ message TTSRequest {
   string text = 2;
 }
 
-// Response for text-to-speech unrelated to any session.
+// Response for text-to-speech unrelated to a session.
 message TTSResponse {
-  // The synthesized audio data.
+  // The synthesized audio data. The data encoding will match what was
+  // specified in the server configuration.
   bytes data = 1;
 }
 
