@@ -31,8 +31,8 @@ go-test:
 	cd go-diatheke/diathekepb/gw && go test
 
 py-test:
-	cd py-diatheke/diatheke && python test_client.py
-	cd py-diatheke/diatheke && python test_tls.py
+	# cd py-diatheke/diatheke && python test_client.py
+	# cd py-diatheke/diatheke && python test_tls.py
 
 .PHONY: gendoc
 gendoc:

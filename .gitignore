@@ -1,4 +1,4 @@
 /deps/
-grpc/cpp-diahtke/grpc/
+grpc/cpp-diatheke/grpc/
 .DS_Store
 grpc/py-diatheke/diatheke/__pycache__/
