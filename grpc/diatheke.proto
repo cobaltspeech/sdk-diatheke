@@ -154,19 +154,15 @@ message CommandEvent {
   // ID of the command that should be run.  i.e. "COM01" for Command #01.
   string command_id = 1;
 
-  // A generic map of input parameters (name, value). The parameters are 
-  // defined in the Diatheke model.
-  map<string, string> input_parameters = 2;
-
-  // A generic map of output parameters (name, value), defined in the 
-  // Diatheke model. These parameters should be populated and sent with
-  // the CommandStatus update.
-  map<string, string> output_parameters = 3;
+  // A generic map of parameters (name, value). The parameters are 
+  // defined in the Diatheke model. Depending on the command, these
+  // parameters should be sent back with the CommandStatus update.
+  map<string, string> parameters = 2;
 
   // ID to keep track of the dialog state when the command is requested.
   // This field is required in the CommandStatus message so that Diatheke
   // can correctly update the dialog state when CommandFinished is called.
-  string command_state_id = 4;
+  string command_state_id = 3;
 }
 
 // A RecognizeEvent occurs if a session's audio input has a transcription
