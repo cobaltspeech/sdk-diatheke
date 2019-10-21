@@ -1,0 +1,15 @@
+---
+Language:        Cpp
+BasedOnStyle:  LLVM
+BreakBeforeBraces: Allman
+AccessModifierOffset: -4
+IndentPPDirectives: AfterHash
+IndentWidth: 4
+IncludeBlocks:   Regroup
+IncludeCategories:
+  - Regex:           '^<'
+    Priority:        2
+  - Regex:           '.*'
+    Priority:        1
+TabWidth: 4
+UseTab: Never
