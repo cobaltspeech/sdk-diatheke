@@ -184,8 +184,7 @@ void Client::commandFinished(const std::string &sessionID,
 
     // Add the output parameters
     CommandStatus::ParamMap::const_iterator iter;
-    for (iter = result.outputParams().begin();
-         iter != result.outputParams().end(); iter++)
+    for (iter = result.params().begin(); iter != result.params().end(); iter++)
     {
         (*request.mutable_output_parameters())[iter->first] = iter->second;
     }
