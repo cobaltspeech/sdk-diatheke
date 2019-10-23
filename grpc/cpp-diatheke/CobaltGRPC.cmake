@@ -5,7 +5,8 @@
 # to help us run protoc and generate c++ file from the .proto files.
 
 
-# This allows cross-compiling to work - a native version of protoc is required.
+# This allows cross-compiling to work - a native version of protoc is required
+# (i.e., a version of protoc that will run on the system doing the compiling).
 set(GRPC_NATIVE_DIR "" CACHE PATH "Path to native gRPC installation for cross compiling.")
 
 # Check if we have already added gRPC to the project. If not, we will

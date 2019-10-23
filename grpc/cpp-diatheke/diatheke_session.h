@@ -59,18 +59,30 @@ public:
 
     /*
      * Create a stream to use to push audio input to Diatheke specifically
-     * for this session.
+     * for this session. Transcriptions for the audio are not returned on this
+     * stream, but are sent as RecognizeEvents in the session's event stream.
+     * Transcriptions are automatically passed to Diatheke for processing.
+     *
+     * Only one audio input stream per session should be running at a time to
+     * avoid confusing the speech recognition with multiple audio sources.
      */
     std::unique_ptr<AudioInputStream> streamAudioInput();
 
     /*
-     * Create a stream to receive output audio from Diatheke specifically
+     * Create a stream to receive TTS output audio from Diatheke specifically
      * for this session. The stream will use include start and end messages
      * to indicate when a section of audio for a group of text begins and ends.
      */
     std::unique_ptr<AudioReplyStream> streamAudioReplies();
 
-    // Push text to Diatheke as part of a conversation in this session.
+    /*
+     * Push text to Diatheke as part of a conversation for the given session.
+     *
+     * This function may be used alone or in addition to an audio input
+     * stream to drive the conversation with Diatheke. On the server side,
+     * the audio input stream essentially calls this function automaticaly as
+     * transcriptions are available.
+     */
     void pushText(const std::string &text);
 
 private:
