@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include "ansi_escape_codes.h"
 #include "demo_config.h"
 #include "diatheke_client.h"
 #include "recorder.h"
@@ -34,7 +35,8 @@ void recordAudio(std::shared_ptr<Diatheke::ASRStream> stream,
     // Push audio to the stream until we are done recording
     while (isRecording)
     {
-        std::string data = rec.readAudio(8192);
+        // Read audio data from the recorder
+        std::string data = rec.readAudio();
         stream->pushAudio(data.c_str(), data.size());
     }
 
@@ -53,9 +55,10 @@ void handleResults(std::shared_ptr<Diatheke::ASRStream> stream)
     cobaltspeech::diatheke::ASRResponse result;
     while (stream->waitForResult(&result))
     {
-        std::cout << "ASR Response:\n"
-                  << "  Transcription: " << result.text() << "\n"
-                  << "  Confidence Score: " << result.confidence_score() << "\n"
+        std::cout << "ASR Response:" << std::endl;
+        std::cout << "  Transcription: " << result.text() << std::endl;
+        std::cout << "  Confidence Score: " << result.confidence_score()
+                  << std::endl
                   << std::endl;
     }
 }
@@ -89,8 +92,8 @@ int main(int argc, char *argv[])
     // Display the diatheke version
     std::string version = client.diathekeVersion();
     std::cout << "Diatheke version: " << version << std::endl;
-    std::cout << "Connected to " << config.diathekeServerAddress() << "\n"
-              << std::endl;
+    std::cout << "Connected to " << config.diathekeServerAddress() << std::endl;
+    std::cout << std::endl;
 
     // Prompt the user for the Cubic model
     std::cout << "Please enter the Cubic model ID: " << std::flush;
@@ -99,9 +102,8 @@ int main(int argc, char *argv[])
     std::cout << std::endl;
 
     // Use stdin to toggle recording
-    std::cout << "Use Enter to start/stop recording.\n"
-              << "Use Ctrl+D to exit.\n"
-              << std::endl;
+    std::cout << "Use Enter to start/stop recording." << std::endl;
+    std::cout << "Use Ctrl+D to exit." << std::endl << std::endl;
 
     std::atomic_bool isRecording(false);
     std::unique_ptr<std::thread> recordThread;
@@ -111,9 +113,8 @@ int main(int argc, char *argv[])
     {
         if (isRecording == false)
         {
-            std::cout << "\x1B[37m"
-                      << "(Waiting to record)"
-                      << "\x1B[0m" << std::endl;
+            std::cout << ANSIWhiteText << "(Press Enter to record)"
+                      << ANSIResetText << std::endl;
         }
 
         // Wait for the user to press Enter
@@ -160,7 +161,7 @@ int main(int argc, char *argv[])
     }
 
     // Cleanup
-    std::cout << "\nExiting..." << std::endl;
+    std::cout << std::endl << "Exiting..." << std::endl;
     if (recordThread)
     {
         isRecording = false;

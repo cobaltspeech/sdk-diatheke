@@ -23,21 +23,30 @@
 class Recorder
 {
 public:
-    Recorder(const std::string &record_cmd);
+    /*
+     * Create a new recorder instance that will launch the given external
+     * application (record_cmd). maxBuffSize defines the maximum amount of
+     * audio data (in bytes) that will be retrieved with each call to
+     * readAudio(). The default is 8kB.
+     */
+    Recorder(const std::string &record_cmd, size_t maxBuffSize = 8192);
     ~Recorder();
 
     // Start recording audio.
     void start();
 
-    // Read audio data from the recorder up to the maxBufferSize
-    // (in bytes). The binary data is returned as a string.
-    std::string readAudio(size_t maxBufferSize);
+    /*
+     * Read audio data from the recorder app. The binary data is returned
+     * as a string (think of it as an array of chars, or bytes).
+     */
+    std::string readAudio();
 
     // Stop recording audio, and return the recorded data.
     void stop();
 
 private:
     std::string mCmd;
+    size_t mBufferSize;
     FILE *mStdout;
 };
 

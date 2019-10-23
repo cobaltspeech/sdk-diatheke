@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include "ansi_escape_codes.h"
 #include "demo_config.h"
 #include "diatheke_client.h"
 #include "player.h"
@@ -47,8 +48,8 @@ int main(int argc, char *argv[])
     // Display the diatheke version
     std::string version = client.diathekeVersion();
     std::cout << "Diatheke version: " << version << std::endl;
-    std::cout << "Connected to " << config.diathekeServerAddress() << "\n"
-              << std::endl;
+    std::cout << "Connected to " << config.diathekeServerAddress();
+    std::cout << std::endl << std::endl;
 
     // Prompt the user for the Cubic model
     std::cout << "Please enter the Luna voice model ID: " << std::flush;
@@ -57,14 +58,13 @@ int main(int argc, char *argv[])
     std::cout << std::endl;
 
     // Start the main loop
-    std::cout << "Enter text to synthesize at the prompt.\n";
-    std::cout << "Use Ctrl+D to exit.\n" << std::endl;
+    std::cout << "Enter text to synthesize at the prompt." << std::endl;
+    std::cout << "Use Ctrl+D to exit." << std::endl << std::endl;
     while (true)
     {
         // Display the prompt (color using ANSI escape codes)
-        std::cout << "\x1B[94m"
-                  << "Diatheke TTS> "
-                  << "\x1B[0m" << std::flush;
+        std::cout << ANSIBrightBlueText << "Diatheke TTS> " << ANSIResetText
+                  << std::flush;
 
         // Wait for user input
         std::string userInput;
@@ -101,10 +101,10 @@ int main(int argc, char *argv[])
         // Cleanup the stream and player.
         stream->close();
         player.stop();
-        std::cout << "Synthesis complete.\n" << std::endl;
+        std::cout << "Synthesis complete." << std::endl << std::endl;
     }
 
-    std::cout << "\nExiting..." << std::endl;
+    std::cout << std::endl << "Exiting..." << std::endl;
 
     return 0;
 }

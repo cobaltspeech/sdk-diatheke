@@ -14,12 +14,63 @@
  * limitations under the License.
  */
 
+#include "ansi_escape_codes.h"
 #include "demo_config.h"
 #include "diatheke_client.h"
 #include "diatheke_session.h"
 
 #include <iostream>
 #include <thread>
+
+// Handles Recognize events from Diatheke as they come
+void handleRecognizeEvent(const cobaltspeech::diatheke::RecognizeEvent &event)
+{
+    // Let the user know when the input was not recognized. Here we
+    // don't care so much about the text that was recognized because
+    // it will be the same as what the user typed on the command line.
+    if (event.valid_input())
+    {
+        // Color the text green to highlight that it was recognized.
+        std::cout << std::endl;
+        std::cout << ANSIGreenText << "Valid input" << ANSIResetText;
+        std::cout << std::endl;
+    }
+    else
+    {
+        // Color the text red to highlight that it was not recognized.
+        std::cout << std::endl;
+        std::cout << ANSIRedText << "Unrecognized input" << ANSIResetText;
+        std::cout << std::endl;
+    }
+}
+
+// Handles Reply events from Diatheke as they come
+void handleReplyEvent(const cobaltspeech::diatheke::ReplyEvent &event)
+{
+    // Print the reply from Diatheke
+    std::cout << "Reply: " << event.text() << std::endl;
+}
+
+// Handles Command events from Diatheke as they come
+void handleCommandEvent(const cobaltspeech::diatheke::CommandEvent &event,
+                        Diatheke::EventStream *eventStream)
+{
+    // Application specific code goes here
+
+    // Setup the return status
+    Diatheke::CommandStatus returnStatus(event);
+
+    // Set the status code to indicate whether the command failed
+    returnStatus.setStatusCode(Diatheke::CommandStatus::SUCCESS);
+
+    // Update return parameters as necessary. For example:
+    // returnStatus.setStringParam("some key", "some value");
+
+    // Notify Diatheke that the command is finished. This is important
+    // to do so that dialog flow may continue after the command is
+    // finished.
+    eventStream->commandFinished(returnStatus);
+}
 
 // Handle the events as they come from Diatheke.
 void handleEvents(Diatheke::Session *session)
@@ -38,37 +89,20 @@ void handleEvents(Diatheke::Session *session)
         // Check for the event type
         if (event.has_recognize())
         {
-            // Let the user know when the input was not recognized. Here we
-            // don't care so much about the text that was recognized because
-            // it will be the same as what the user typed on the command line.
-            if (event.recognize().valid_input())
-            {
-                // Color the text green to highlight that it was recognized.
-                std::cout << "\n\x1B[32m"
-                          << "Valid input"
-                          << "\x1B[0m" << std::endl;
-            }
-            else
-            {
-                // Color the text red to highlight that it was not recognized.
-                std::cout << "\n\x1B[31m"
-                          << "Unrecognized input"
-                          << "\x1B[0m" << std::endl;
-            }
+            handleRecognizeEvent(event.recognize());
         }
         else if (event.has_reply())
         {
-            // Print the reply from Diatheke
-            std::cout << "Reply: " << event.reply().text() << std::endl;
+            handleReplyEvent(event.reply());
         }
         else if (event.has_command())
         {
-            // Notify Diatheke that the command is finished. This is important
-            // to do so that dialog flow may continue after the command is
-            // finished.
-            Diatheke::CommandStatus returnStatus(event.command());
-            returnStatus.setStatusCode(Diatheke::CommandStatus::SUCCESS);
-            eventStream->commandFinished(returnStatus);
+            handleCommandEvent(event.command(), eventStream.get());
+        }
+        else
+        {
+            std::cerr << "Received unknown event type from Diatheke"
+                      << std::endl;
         }
     }
 
@@ -105,15 +139,15 @@ int main(int argc, char *argv[])
     // Display the diatheke version
     std::string version = client.diathekeVersion();
     std::cout << "Diatheke version: " << version << std::endl;
-    std::cout << "Connected to " << config.diathekeServerAddress() << "\n"
-              << std::endl;
+    std::cout << "Connected to " << config.diathekeServerAddress();
+    std::cout << std::endl << std::endl;
 
     // Display the available models
     std::cout << "Available model IDs: " << std::endl;
     std::vector<std::string> models = client.listModels();
     for (const std::string &m : models)
     {
-        std::cout << "  " << m << "\n";
+        std::cout << "  " << m << std::endl;
     }
     std::cout << std::endl;
 
@@ -121,18 +155,17 @@ int main(int argc, char *argv[])
     std::string sessionID = client.newSession(config.diathekeModelID());
     Diatheke::Session session(sessionID, &client);
 
-    // Start the event stream on a separate thread.
+    // Start a separate thread to handle events coming from the server
     std::thread eventThread(&handleEvents, &session);
 
     // Use stdin to get input text to send to Diatheke.
-    std::cout << "Enter text at the prompt. Press Enter to send to Diatheke.\n";
-    std::cout << "Use Ctrl+D to exit.\n" << std::endl;
+    std::cout << "Enter text to send to Diatheke at the prompt." << std::endl;
+    std::cout << "Use Ctrl+D to exit." << std::endl << std::endl;
     while (true)
     {
         // Display the prompt (color using ANSI escape codes)
-        std::cout << "\x1B[94m"
-                  << "Diatheke> "
-                  << "\x1B[0m" << std::flush;
+        std::cout << ANSIBrightBlueText << "Diatheke> " << ANSIResetText
+                  << std::flush;
 
         // Wait for user input
         std::string userInput;
@@ -151,7 +184,7 @@ int main(int argc, char *argv[])
     }
 
     // Cleanup
-    std::cout << "\nExiting..." << std::endl;
+    std::cout << std::endl << "Exiting..." << std::endl;
 
     // Close the session before joining the event thread so that the
     // event stream will end first.
