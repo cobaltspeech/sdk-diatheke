@@ -75,8 +75,12 @@ public:
 
     /*
      * Begin an audio input stream for the given session. As the audio is
-     * recognized, Diatheke will respond with appropriate events on the
-     * session's event stream. Only one stream per session should be created.
+     * recognized, Diatheke will respond with RecognizeEvents that include
+     * the transcription on the session's event stream. Transcriptions are not
+     * returned on this stream, but are automatically processed by Diatheke.
+     *
+     * Only one audio input stream per session should be running at a time to
+     * avoid confusing the speech recognition with multiple audio sources.
      */
     std::unique_ptr<AudioInputStream>
     streamAudioInput(const std::string &sessionID);
@@ -90,7 +94,14 @@ public:
     std::unique_ptr<AudioReplyStream>
     streamAudioReplies(const std::string &sessionID);
 
-    // Push text to Diatheke as part of a conversation for the given session.
+    /*
+     * Push text to Diatheke as part of a conversation for the given session.
+     *
+     * This function may be used alone or in addition to an audio input
+     * stream to drive the conversation with Diatheke. On the server side,
+     * the audio input stream essentially calls this function automaticaly as
+     * transcriptions are available.
+     */
     void pushText(const std::string &sessionID, const std::string &text);
 
     /*
