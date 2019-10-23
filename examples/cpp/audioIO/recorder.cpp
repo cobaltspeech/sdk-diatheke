@@ -18,8 +18,8 @@
 
 #include <unistd.h>
 
-Recorder::Recorder(const std::string &record_cmd)
-    : mCmd(record_cmd), mStdout(nullptr)
+Recorder::Recorder(const std::string &record_cmd, size_t maxBuffSize)
+    : mCmd(record_cmd), mBufferSize(maxBuffSize), mStdout(nullptr)
 {
 }
 
@@ -27,6 +27,7 @@ Recorder::~Recorder() {}
 
 void Recorder::start()
 {
+    // Ignore if the recorder is already running
     if (mStdout)
         return;
 
@@ -34,14 +35,17 @@ void Recorder::start()
     mStdout = popen(mCmd.c_str(), "r");
 }
 
-std::string Recorder::readAudio(size_t maxBufferSize)
+std::string Recorder::readAudio()
 {
-    if (!mStdout)
-        return "";
+    // Throw an error if the recorder is not running.
+    if (mStdout == nullptr)
+    {
+        throw std::runtime_error("can't read audio - recorder not started.");
+    }
 
-    char *buffer = new char[maxBufferSize];
+    char *buffer = new char[mBufferSize];
 
-    size_t charsRead = fread(buffer, 1, maxBufferSize, mStdout);
+    size_t charsRead = fread(buffer, 1, mBufferSize, mStdout);
 
     std::string result(buffer, charsRead);
     delete[] buffer;
@@ -50,6 +54,12 @@ std::string Recorder::readAudio(size_t maxBufferSize)
 
 void Recorder::stop()
 {
+    // Ignore if the recorder is already stopped
+    if (mStdout == nullptr)
+    {
+        return;
+    }
+
     // Close the stdout stream, which should also close the application.
     pclose(mStdout);
     mStdout = nullptr;

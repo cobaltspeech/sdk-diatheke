@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include "ansi_escape_codes.h"
 #include "demo_config.h"
 #include "diatheke_client.h"
 #include "diatheke_session.h"
@@ -43,7 +44,7 @@ void recordAudio(Diatheke::Session *session, std::string recordCmd,
     // Push audio to the stream until we are done recording.
     while (isRecording)
     {
-        std::string data = rec.readAudio(8192);
+        std::string data = rec.readAudio();
         audioInput->pushAudio(data.c_str(), data.size());
     }
 
@@ -53,10 +54,10 @@ void recordAudio(Diatheke::Session *session, std::string recordCmd,
 }
 
 /*
- * Handles audio replies from Diatheke, forwarding the audio data to the
+ * Handles TTS replies from Diatheke, forwarding the audio data to the
  * external playback app.
  */
-void handleAudioReplies(Diatheke::Session *session, std::string playCmd)
+void handleTTSReplies(Diatheke::Session *session, std::string playCmd)
 {
     // Setup the playback application
     Player player(playCmd);
@@ -110,6 +111,67 @@ void handleAudioReplies(Diatheke::Session *session, std::string playCmd)
     audioReplies->close();
 }
 
+// Handles Recognize events from Diatheke as they come
+void handleRecognizeEvent(const cobaltspeech::diatheke::RecognizeEvent &event)
+{
+    if (event.valid_input())
+    {
+        // Color the text green if Diatheke recognized it.
+        std::cout << ANSIGreenText;
+    }
+    else
+    {
+        // Color the text red to if Diatheke didn't recognize it.
+        std::cout << ANSIRedText;
+    }
+
+    // Print out the text and reset the color
+    std::cout << "Me: " << event.text() << ANSIResetText << std::endl;
+}
+
+// Handles Reply events from Diatheke as they come
+void handleReplyEvent(const cobaltspeech::diatheke::ReplyEvent &event)
+{
+    // Color the text blue to highlight that it is a reply.
+    std::cout << ANSIBrightBlueText << "  Diatheke: " << event.text()
+              << ANSIResetText;
+    std::cout << std::endl << std::endl;
+}
+
+// Handles Command events from Diatheke as they come
+void handleCommandEvent(const cobaltspeech::diatheke::CommandEvent &event,
+                        Diatheke::EventStream *eventStream)
+{
+    // Application specific code goes here.
+
+    if (false)
+    {
+        /*
+         * This section demonstrates how to get parameters from the
+         * command event. To avoid cluttering the output, it is
+         * currently hidden. To view it, change the if statement to
+         * true.
+         */
+        std::cout << "    Command ID: " << event.command_id() << std::endl;
+        std::cout << "    Parameters:" << std::endl;
+        for (const auto &pair : event.parameters())
+        {
+            std::cout << "      " << pair.first << " " << pair.second
+                      << std::endl;
+        }
+
+        std::cout << std::endl;
+    }
+
+    Diatheke::CommandStatus returnStatus(event);
+
+    // Set the status code to indicate whether the command failed
+    returnStatus.setStatusCode(Diatheke::CommandStatus::SUCCESS);
+
+    // Notify Diatheke that the command is finished.
+    eventStream->commandFinished(returnStatus);
+}
+
 // Handle the events as they come from Diatheke.
 void handleEvents(Diatheke::Session *session)
 {
@@ -127,54 +189,20 @@ void handleEvents(Diatheke::Session *session)
         // Check for the event type
         if (event.has_recognize())
         {
-            if (event.recognize().valid_input())
-            {
-                // Color the text green if it is valid
-                std::cout << "\x1B[32m";
-            }
-            else
-            {
-                // Color the text red if it is not recognized as valid
-                std::cout << "\x1B[31m";
-            }
-
-            // Print out the text and reset the color
-            std::cout << "Me: " << event.recognize().text() << "\x1B[0m"
-                      << std::endl;
+            handleRecognizeEvent(event.recognize());
         }
         else if (event.has_reply())
         {
-            std::cout << "  \x1B[94mDiatheke: " << event.reply().text()
-                      << "\x1B[0m"
-                      << "\n"
-                      << std::endl;
+            handleReplyEvent(event.reply());
+        }
+        else if (event.has_command())
+        {
+            handleCommandEvent(event.command(), eventStream.get());
         }
         else
         {
-            // TODO: something awesome here with the command
-            if (false)
-            {
-                /*
-                 * This section demonstrates how to get parameters from the
-                 * command event. To avoid cluttering the output, it is
-                 * currently hidden. To view it, change the if statement to
-                 * true.
-                 */
-                std::cout << "    Command ID: " << event.command().command_id()
-                          << std::endl;
-                std::cout << "    Parameters:\n";
-                for (const auto &pair : event.command().parameters())
-                {
-                    std::cout << "      " << pair.first << " " << pair.second
-                              << std::endl;
-                }
-                std::cout << std::flush;
-            }
-
-            // Notify Diatheke that the command is finished.
-            Diatheke::CommandStatus returnStatus(event.command());
-            returnStatus.setStatusCode(Diatheke::CommandStatus::SUCCESS);
-            eventStream->commandFinished(returnStatus);
+            std::cerr << "Received unknown event type from Diatheke"
+                      << std::endl;
         }
     }
 
@@ -225,15 +253,15 @@ int main(int argc, char *argv[])
     // Display the diatheke version
     std::string version = client.diathekeVersion();
     std::cout << "Diatheke version: " << version << std::endl;
-    std::cout << "Connected to " << config.diathekeServerAddress() << "\n"
-              << std::endl;
+    std::cout << "Connected to " << config.diathekeServerAddress();
+    std::cout << std::endl << std::endl;
 
     // Display the available models
     std::cout << "Available model IDs: " << std::endl;
     std::vector<std::string> models = client.listModels();
     for (const std::string &m : models)
     {
-        std::cout << "  " << m << "\n";
+        std::cout << "  " << m << std::endl;
     }
     std::cout << std::endl;
 
@@ -241,31 +269,29 @@ int main(int argc, char *argv[])
     std::string sessionID = client.newSession(config.diathekeModelID());
     Diatheke::Session session(sessionID, &client);
 
-    // Start the event stream on a separate thread.
+    // Start a separate thread to handle events coming from the server.
     std::thread eventThread(&handleEvents, &session);
 
-    // Start audio reply streaming on another thread.
-    std::thread replyThread(&handleAudioReplies, &session,
-                            config.playbackCmd());
+    // Start a separate thread to handle TTS replies coming from the server.
+    std::thread replyThread(&handleTTSReplies, &session, config.playbackCmd());
 
     // Use stdin to toggle recording
-    std::cout << "Use Enter to start/stop recording.\n"
-              << "Use Ctrl+D to exit.\n"
-              << std::endl;
+    std::cout << "Use Enter to start/stop recording. " << std::endl;
+    std::cout << "Use Ctrl+D to exit." << std::endl << std::endl;
     std::atomic_bool isRecording(false);
     std::thread *recordThread(nullptr);
     while (true)
     {
-        std::cout << "\x1B[37m";
+        std::cout << ANSIWhiteText;
         if (isRecording)
         {
             std::cout << "(Recording)";
         }
         else
         {
-            std::cout << "(Waiting to record)";
+            std::cout << "(Press Enter to record)";
         }
-        std::cout << "\x1B[0m" << std::endl;
+        std::cout << ANSIResetText << std::endl;
 
         // Wait for the user to press Enter
         std::string userInput;
@@ -295,7 +321,7 @@ int main(int argc, char *argv[])
     }
 
     // Cleanup
-    std::cout << "\nExiting..." << std::endl;
+    std::cout << std::endl << "Exiting..." << std::endl;
     if (recordThread)
     {
         isRecording = false;
