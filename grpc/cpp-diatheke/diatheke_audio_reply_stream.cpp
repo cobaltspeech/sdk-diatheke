@@ -46,15 +46,4 @@ void AudioReplyStream::close()
     }
 }
 
-AudioReplyStream::AudioReplyStream(const AudioReplyStream &other)
-{
-    // Do nothing. Copy construction is disabled.
-}
-
-AudioReplyStream &AudioReplyStream::operator=(const AudioReplyStream &other)
-{
-    // Do nothing. Assignments are disabled.
-    return *this;
-}
-
 } // namespace Diatheke

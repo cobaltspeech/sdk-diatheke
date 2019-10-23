@@ -68,10 +68,6 @@ private:
     std::shared_ptr<AudioReplyReader> mStream;
     std::shared_ptr<grpc::ClientContext> mContext;
     std::string mSessionID;
-
-    // Disable copy construction and assignments.
-    AudioReplyStream(const AudioReplyStream &other);
-    AudioReplyStream &operator=(const AudioReplyStream &other);
 };
 
 } // namespace Diatheke

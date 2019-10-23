@@ -62,15 +62,4 @@ void AudioInputStream::finished()
     }
 }
 
-AudioInputStream::AudioInputStream(const AudioInputStream &other)
-{
-    // Do nothing. Copy construction is disabled.
-}
-
-AudioInputStream &AudioInputStream::operator=(const AudioInputStream &other)
-{
-    // Do nothing. Assignments are disabled.
-    return *this;
-}
-
 } // namespace Diatheke

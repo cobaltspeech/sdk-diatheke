@@ -79,10 +79,6 @@ private:
     std::shared_ptr<grpc::ClientContext> mContext;
     std::string mSessionID;
     Client *mClient;
-
-    // Disable copy construction and assignments
-    EventStream(const EventStream &other);
-    EventStream &operator=(const EventStream &other);
 };
 
 } // namespace Diatheke

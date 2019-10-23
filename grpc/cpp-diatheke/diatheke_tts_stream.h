@@ -55,10 +55,6 @@ public:
 private:
     std::shared_ptr<Reader> mStream;
     std::shared_ptr<grpc::ClientContext> mContext;
-
-    // Disable copy construction and assignments
-    TTSStream(const TTSStream &other);
-    TTSStream &operator=(const TTSStream &other);
 };
 
 } // namespace Diatheke

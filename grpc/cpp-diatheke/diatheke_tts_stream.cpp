@@ -42,15 +42,4 @@ void TTSStream::close()
     }
 }
 
-TTSStream::TTSStream(const TTSStream &other)
-{
-    // Do nothing. Copy construction is disabled.
-}
-
-TTSStream &TTSStream::operator=(const TTSStream &other)
-{
-    // Do nothing. Assignments are disabled.
-    return *this;
-}
-
 } // namespace Diatheke

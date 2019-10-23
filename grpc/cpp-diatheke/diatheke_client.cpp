@@ -49,9 +49,7 @@ Client::Client(const std::string &url, bool insecure) : mTimeout(30000)
     }
 
     // Create the channel and stub
-    std::unique_ptr<DiathekeGRPC::Stub> tmp =
-        DiathekeGRPC::NewStub(grpc::CreateChannel(url, creds));
-    mStub.swap(tmp);
+    mStub = DiathekeGRPC::NewStub(grpc::CreateChannel(url, creds));
 }
 
 Client::~Client() {}
@@ -331,17 +329,6 @@ std::unique_ptr<TTSStream> Client::streamTTS(const std::string &model,
 void Client::setRequestTimeout(unsigned int milliseconds)
 {
     mTimeout = milliseconds;
-}
-
-Client::Client(const Client &other)
-{
-    // Do nothing. Copy construction is disabled.
-}
-
-Client &Client::operator=(const Client &other)
-{
-    // Do nothing. Assignments are disabled.
-    return *this;
 }
 
 void Client::setContextDeadline(grpc::ClientContext &ctx)

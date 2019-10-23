@@ -61,10 +61,6 @@ private:
     std::shared_ptr<AudioWriter> mStream;
     std::shared_ptr<grpc::ClientContext> mContext;
     std::string mSessionID;
-
-    // Disable copy construction and assignments
-    AudioInputStream(const AudioInputStream &other);
-    AudioInputStream &operator=(const AudioInputStream &other);
 };
 
 } // namespace Diatheke
