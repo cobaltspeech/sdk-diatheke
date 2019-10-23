@@ -67,15 +67,4 @@ void ASRStream::close()
     }
 }
 
-ASRStream::ASRStream(const ASRStream &other)
-{
-    // Do nothing. Copy construction is disabled.
-}
-
-ASRStream &ASRStream::operator=(const ASRStream &other)
-{
-    // Do nothing. Assignments are disabled.
-    return *this;
-}
-
 } // namespace Diatheke

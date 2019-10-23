@@ -115,12 +115,8 @@ public:
 
 private:
     using DiathekeGRPC = cobaltspeech::diatheke::Diatheke;
-    std::unique_ptr<DiathekeGRPC::Stub> mStub;
+    std::shared_ptr<DiathekeGRPC::Stub> mStub;
     unsigned int mTimeout;
-
-    // Disable copy construction and assignments.
-    Client(const Client &other);
-    Client &operator=(const Client &other);
 
     // Convenience functions
     void setContextDeadline(grpc::ClientContext &ctx);

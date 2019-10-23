@@ -69,10 +69,6 @@ public:
 private:
     std::shared_ptr<ReaderWriter> mStream;
     std::shared_ptr<grpc::ClientContext> mContext;
-
-    // Disable copy construction and assignments
-    ASRStream(const ASRStream &other);
-    ASRStream &operator=(const ASRStream &other);
 };
 
 } // namespace Diatheke
