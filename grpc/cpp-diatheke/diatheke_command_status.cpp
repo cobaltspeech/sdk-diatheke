@@ -24,7 +24,6 @@ CommandStatus::CommandStatus(
     : mCommandID(command.command_id()), mStateID(command.command_state_id()),
       mCode(StatusCode::FAILURE), mErrorMessage(""),
       mParams(command.parameters().begin(), command.parameters().end())
-
 {
 }
 
@@ -36,10 +35,7 @@ std::string CommandStatus::stateID() const { return mStateID; }
 
 CommandStatus::StatusCode CommandStatus::statusCode() const { return mCode; }
 
-const CommandStatus::ParamMap &CommandStatus::outputParams() const
-{
-    return mParams;
-}
+const CommandStatus::ParamMap &CommandStatus::params() const { return mParams; }
 
 std::string CommandStatus::errorMessage() const { return mErrorMessage; }
 
@@ -50,10 +46,7 @@ void CommandStatus::setError(const std::string &errorMessage)
     mErrorMessage = errorMessage;
 }
 
-void CommandStatus::setOutputParameters(const ParamMap &params)
-{
-    mParams = params;
-}
+void CommandStatus::setParameters(const ParamMap &params) { mParams = params; }
 
 void CommandStatus::setIntParam(const std::string &key, int val)
 {

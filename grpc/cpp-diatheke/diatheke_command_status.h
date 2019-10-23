@@ -54,8 +54,8 @@ public:
      */
     StatusCode statusCode() const;
 
-    // Return the command's output parameters
-    const ParamMap &outputParams() const;
+    // Return the command's parameters
+    const ParamMap &params() const;
 
     // Return the error message.
     std::string errorMessage() const;
@@ -66,8 +66,8 @@ public:
     // Set the error message for the command.
     void setError(const std::string &errorMessage);
 
-    // Replace the output parameters with the given set of parameters.
-    void setOutputParameters(const ParamMap &params);
+    // Replace the parameters with the given set of parameters.
+    void setParameters(const ParamMap &params);
 
     /*
      * Set the value of the specified output parameter to val. This
