@@ -1,3 +1,6 @@
+# Set to true to print additional information when running demos
+Verbose = false
+
 # Specify the Diatheke server connection 
 [Server]
     # Specify the server address as "<url>:<port>"

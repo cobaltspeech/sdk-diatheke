@@ -39,6 +39,9 @@ public:
     DemoConfig();
     ~DemoConfig();
 
+    // Returns true if extra information should be printed at runtime.
+    bool printVerbose() const;
+
     /*
      * Returns true if an insecure connection should be made with Diatheke
      * server.
@@ -58,6 +61,7 @@ public:
     const std::string &playbackCmd() const;
 
 private:
+    bool mVerbose;
     bool mInsecure;
     std::string mServer;
     std::string mModelID;

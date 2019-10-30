@@ -62,6 +62,9 @@ DemoConfig DemoConfig::parseFile(const std::string &filename)
     // Parse the toml file
     std::shared_ptr<cpptoml::table> toml = cpptoml::parse_file(filename);
 
+    // Get the verbose flag
+    config.mVerbose = toml->get_qualified_as<bool>("Verbose").value_or(false);
+
     // Check for the insecure connection (defaults to false)
     config.mInsecure =
         toml->get_qualified_as<bool>("Server.Insecure").value_or(false);
@@ -102,6 +105,8 @@ DemoConfig DemoConfig::parseFile(const std::string &filename)
 DemoConfig::DemoConfig() {}
 
 DemoConfig::~DemoConfig() {}
+
+bool DemoConfig::printVerbose() const { return mVerbose; }
 
 bool DemoConfig::diathekeServerInsecure() const { return mInsecure; }
 

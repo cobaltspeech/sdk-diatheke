@@ -26,6 +26,8 @@
 #include <string>
 #include <thread>
 
+static std::atomic_bool printVerbose(false);
+
 // Records audio from the external recording app and sends it to Diatheke.
 void recordAudio(Diatheke::Session *session, std::string recordCmd,
                  std::atomic_bool &isRecording)
@@ -144,13 +146,12 @@ void handleCommandEvent(const cobaltspeech::diatheke::CommandEvent &event,
 {
     // Application specific code goes here.
 
-    if (false)
+    if (printVerbose)
     {
         /*
          * This section demonstrates how to get parameters from the
-         * command event. To avoid cluttering the output, it is
-         * currently hidden. To view it, change the if statement to
-         * true.
+         * command event. Set the Verbose field to true in the config
+         * file to enable printing.
          */
         std::cout << "    Command ID: " << event.command_id() << std::endl;
         std::cout << "    Parameters:" << std::endl;
@@ -168,7 +169,12 @@ void handleCommandEvent(const cobaltspeech::diatheke::CommandEvent &event,
     // Set the status code to indicate whether the command failed
     returnStatus.setStatusCode(Diatheke::CommandStatus::SUCCESS);
 
-    // Notify Diatheke that the command is finished.
+    // Update return parameters as necessary. For example:
+    // returnStatus.setStringParam("some key", "some value");
+
+    // Notify Diatheke that the command is finished. This is important
+    // to do so that dialog flow may continue after the command is
+    // finished.
     eventStream->commandFinished(returnStatus);
 }
 
@@ -245,6 +251,9 @@ int main(int argc, char *argv[])
         std::cerr << "error parsing config file: " << err.what() << std::endl;
         return 1;
     }
+
+    // Set the verbose flag
+    printVerbose = config.printVerbose();
 
     // Create the client
     Diatheke::Client client(config.diathekeServerAddress(),
