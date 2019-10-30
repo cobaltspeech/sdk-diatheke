@@ -30,11 +30,6 @@ ASRStream::~ASRStream() {}
 
 void ASRStream::pushAudio(const char *audio, size_t sizeInBytes)
 {
-    if (sizeInBytes == 0)
-    {
-        return;
-    }
-
     // Setup the request and write to the input stream
     cobaltspeech::diatheke::ASRRequest request;
     request.set_audio(audio, sizeInBytes);
