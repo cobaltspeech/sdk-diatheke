@@ -35,11 +35,6 @@ std::string AudioInputStream::sessionID() { return mSessionID; }
 
 void AudioInputStream::pushAudio(const char *audio, size_t sizeInBytes)
 {
-    if (sizeInBytes == 0)
-    {
-        return;
-    }
-
     // Setup the request and write to the input stream.
     cobaltspeech::diatheke::AudioInput request;
     request.set_data(audio, sizeInBytes);

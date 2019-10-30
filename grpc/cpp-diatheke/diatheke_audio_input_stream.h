@@ -48,6 +48,9 @@ public:
     /*
      * Push the given audio data to the Diatheke server. The audio format
      * should match what is specified in the Diatheke server configuration.
+     * If there is no audio data (i.e., sizeInBytes equals zero), the server
+     * will treat this as EOF and end the stream. Subsequent calls to
+     * pushAudio will fail.
      */
     void pushAudio(const char *audio, size_t sizeInBytes);
 
