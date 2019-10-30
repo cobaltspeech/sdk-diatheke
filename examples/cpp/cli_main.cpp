@@ -22,6 +22,8 @@
 #include <iostream>
 #include <thread>
 
+static std::atomic_bool printVerbose(false);
+
 // Handles Recognize events from Diatheke as they come
 void handleRecognizeEvent(const cobaltspeech::diatheke::RecognizeEvent &event)
 {
@@ -56,6 +58,24 @@ void handleCommandEvent(const cobaltspeech::diatheke::CommandEvent &event,
                         Diatheke::EventStream *eventStream)
 {
     // Application specific code goes here
+
+    if (printVerbose)
+    {
+        /*
+         * This section demonstrates how to get parameters from the
+         * command event. Set the Verbose field to true in the config
+         * file to enable printing.
+         */
+        std::cout << "    Command ID: " << event.command_id() << std::endl;
+        std::cout << "    Parameters:" << std::endl;
+        for (const auto &pair : event.parameters())
+        {
+            std::cout << "      " << pair.first << " " << pair.second
+                      << std::endl;
+        }
+
+        std::cout << std::endl;
+    }
 
     // Setup the return status
     Diatheke::CommandStatus returnStatus(event);
@@ -131,6 +151,9 @@ int main(int argc, char *argv[])
         std::cerr << "error parsing config file: " << err.what() << std::endl;
         return 1;
     }
+
+    // Set the verbose flag
+    printVerbose = config.printVerbose();
 
     // Create the client
     Diatheke::Client client(config.diathekeServerAddress(),
