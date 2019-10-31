@@ -1208,7 +1208,7 @@ type DiathekeClient interface {
 	// the server should specify the sessionID, with binary audio data pushed
 	// for every subsequent message. As the audio is recognized, Diatheke
 	// will respond with appropriate events on the session's event stream.
-	// <br>
+	// <p>
 	// While it is allowed to call this multiple times during a single session,
 	// clients should never have multiple audio input streams running concurrently
 	// for the same session (the audio may mix and result in unpredictable
@@ -1493,7 +1493,7 @@ type DiathekeServer interface {
 	// the server should specify the sessionID, with binary audio data pushed
 	// for every subsequent message. As the audio is recognized, Diatheke
 	// will respond with appropriate events on the session's event stream.
-	// <br>
+	// <p>
 	// While it is allowed to call this multiple times during a single session,
 	// clients should never have multiple audio input streams running concurrently
 	// for the same session (the audio may mix and result in unpredictable
