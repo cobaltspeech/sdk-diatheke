@@ -1,8 +1,8 @@
 # Copyright (2019) Cobalt Speech and Language Inc.
 
-.PHONY: all go py go-test py-test docs
+.PHONY: all go py go-test py-test gendoc
 
-all: go py docs
+all: go py gendoc
 
 ifeq ($(PROTOINC),)
 $(error "env variable PROTOINC must be defined to the location of googleapis proto files")
@@ -34,11 +34,10 @@ py-test:
 	# cd py-diatheke/diatheke && python test_client.py
 	# cd py-diatheke/diatheke && python test_tls.py
 
-.PHONY: gendoc
 gendoc:
 	protoc \
 		-I . \
 		-I ${PROTOINC} \
 		--doc_out=./ \
-		--doc_opt=doc.md.tmpl,autogen-doc-cubic-proto.md \
+		--doc_opt=doc.md.tmpl,autogen-doc-diatheke-proto.md \
 		diatheke.proto
