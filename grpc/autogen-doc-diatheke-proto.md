@@ -23,9 +23,7 @@ Service that implements the Cobalt Diatheke Dialog Management API.
 | EndSession | SessionID | Empty | Terminates an existing session and closes any open event streams. It is an error if the SessionEndRequest has an invalid SessionID. |
 | SessionEventStream | SessionID | DiathekeEvent | Requests a new event stream for the given session. |
 | CommandFinished | CommandStatus | Empty | Notify Diatheke when a command has completed so that it may update the dialog state. The initial command request will come as part of a DiathekeEvent. While not strictly required (depeding on the model and command), it is best practice to always call this method when a command is complete. Cases where it is required include when the command has output parameters, or when the command is followed by another action in the Diatheke model. |
-| StreamAudioInput | AudioInput | Empty | Begin an audio input stream for a session. The first message to the server should specify the sessionID, with binary audio data pushed for every subsequent message. As the audio is recognized, Diatheke will respond with appropriate events on the session's event stream.
-
-While it is allowed to call this multiple times during a single session, clients should never have multiple audio input streams running concurrently for the same session (the audio may mix and result in unpredictable behavior). Previous audio streams should always be closed before starting a new one. |
+| StreamAudioInput | AudioInput | Empty | Begin an audio input stream for a session. The first message to the server should specify the sessionID, with binary audio data pushed for every subsequent message. As the audio is recognized, Diatheke will respond with appropriate events on the session's event stream. <br> While it is allowed to call this multiple times during a single session, clients should never have multiple audio input streams running concurrently for the same session (the audio may mix and result in unpredictable behavior). Previous audio streams should always be closed before starting a new one. |
 | StreamAudioReplies | SessionID | AudioReply | Create an audio reply stream for a session. The returned stream will receive replies ("say" entries in the Diatheke model) from the server as they occur in the conversation. For each "say" entry, the stream will first receive the text to synthesize (defined by the model), followed by one or more messages containing the synthesized audio bytes. The "say" entry will end with a message indicating that TTS for that entry is complete. NOTE: The text in the first message of an audio reply is the same that will be received in the session's event stream. |
 | PushText | PushTextRequest | Empty | Push text to Diatheke as part of the conversation for a session. Diatheke will respond with an appropriate event on the session's event stream based on whether the given text was recognized as a valid intent or not. |
 | StreamASR | ASRRequest | ASRResponse | Manually run streaming ASR unrelated to any session by pushing audio data to the server on the audio stream. As transcriptions become available, the server will return them on the ASRResponse stream. The transcriptions may then be used for, e.g., the PushText method. This function is provided as a convenience. |
@@ -212,13 +210,12 @@ Returns an array of model names.
 
 ### Message: NewSessionRequest
 Request for the NewSession call.
-TODO: Consider combining the language and model into one string, such as
-`en_US_variant`.
+
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| model | string |  | <p>For applications that have more than one model to use for ASR/NLU. ASR grammer can vary between models, as well as sets of commands. Some applications will only have one model.</p> |
+| model | string |  | <p>For applications that have more than one model to use for ASR/NLU. ASR grammar can vary between models, as well as sets of commands. Some applications will only have one model.</p> |
 
 
 

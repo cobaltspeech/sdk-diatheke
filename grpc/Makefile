@@ -41,3 +41,6 @@ gendoc:
 		--doc_out=./ \
 		--doc_opt=doc.md.tmpl,autogen-doc-diatheke-proto.md \
 		diatheke.proto
+
+	# Remove any TODO items from the generated doc
+	sed -i 's/TODO.*//g' autogen-doc-diatheke-proto.md

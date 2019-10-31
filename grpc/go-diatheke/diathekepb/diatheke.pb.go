@@ -136,11 +136,10 @@ func (m *ModelsResponse) GetModels() []string {
 }
 
 // Request for the NewSession call.
-// TODO: Consider combining the language and model into one string, such as
-// `en_US_variant`.
+// TODO: Consider combining the language and model into one string, such as `en_US_variant`.
 type NewSessionRequest struct {
 	// For applications that have more than one model to use for ASR/NLU.
-	// ASR grammer can vary between models, as well as sets of commands.
+	// ASR grammar can vary between models, as well as sets of commands.
 	// Some applications will only have one model.
 	Model                string   `protobuf:"bytes,1,opt,name=model,proto3" json:"model,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -1209,7 +1208,7 @@ type DiathekeClient interface {
 	// the server should specify the sessionID, with binary audio data pushed
 	// for every subsequent message. As the audio is recognized, Diatheke
 	// will respond with appropriate events on the session's event stream.
-	//
+	// <br>
 	// While it is allowed to call this multiple times during a single session,
 	// clients should never have multiple audio input streams running concurrently
 	// for the same session (the audio may mix and result in unpredictable
@@ -1494,7 +1493,7 @@ type DiathekeServer interface {
 	// the server should specify the sessionID, with binary audio data pushed
 	// for every subsequent message. As the audio is recognized, Diatheke
 	// will respond with appropriate events on the session's event stream.
-	//
+	// <br>
 	// While it is allowed to call this multiple times during a single session,
 	// clients should never have multiple audio input streams running concurrently
 	// for the same session (the audio may mix and result in unpredictable
