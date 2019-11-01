@@ -18,46 +18,61 @@ Service that implements the Cobalt Diatheke Dialog Management API.
 | Method Name | Request Type | Response Type | Description |
 | ----------- | ------------ | ------------- | ------------|
 | Version | Empty | VersionResponse | Queries the Version of the Server. |
-| Models | Empty | ModelsResponse | Models will return a list of available versions. This value should be used to the NewSession calls. |
-| NewSession | NewSessionRequest | NewSessionResponse | Requests a new session with the given config, returns a new ID. This new ID should be used with all future calls. |
-| EndSession | SessionEndRequest | Empty | Terminates an existing session. It is an error if the SessionEndRequest has an invalid SessionID. |
-| PushAudio | AudioTranscriptionRequest | TranscriptionResult | Performs bidirectional streaming speech recognition. As transcripts are generated, the result is both sent to the caller and passed on to the dialog management system. The dialog management path happens asyncronously, and will update the application manager through the CommandCallback and SayCallback calls.
-
-TODO, since this is a streaming api, and we endpoint once it closes, it is hard to support an HTTP interface. The sim server would need to keep this call alive between calls to their PushAudio API, and maybe have their own EndPoint API that is responsible for shutting down the old one. Also, they would need to keep a call for each session. Would it make sense to have a streaming call remain open, one for each session in a map. If there is an existing connection, then push the next audio clip on the existing one. If there is not an exist connection, then we create a new connection which we then store and use. When their users call the EndpointAudio API, they can close the existing connection, and remove it from the map. Is that better or worse than adding an EndpointAudio gRPC call? Since it seems doable without the EndpointAudio gRPC call, I think the last question to ask is how do we handle responses. Returning a stream of TranscriptionResults means they have to start/stop the callback listener, but that doesn't seem to be a problem. The storage on their side is the same either way. Jacobs thoughts: I think it should be ok to exclude the EndpointAudio gRPC, endpoint when the PushAudio
-
-TODO, can a single session have mroe than one audio stream? While it seems like it could be valid, I think it's fine to lock it down to one stream per session. |
-| PushText | PushTextRequest | Empty | PushText will sidestep the ASR portion and simply push a "Transcript" directly to the dialog management. The dialog management path will happen asyncronously via the CommandCallback and SayCallback calls, same as with PushAudio.
-
-For frontends that display a transcript of the conversation, transcribed text will be streamed back from the PushAudio call. Text sent via the PushText will not be returned, so you may add it to the history right away. |
-| CommandAndNotify | CommandStatusUpdate | CommandToExecute | CommandAndNotify is a bi-directional stream that handles the interactions of commands and notifications between the client and server. By using the bi-directional streaming, either side can initiate a new chain of interactions.
-
-Commands: When the dialog management finds enough context to indicate a command should be executed, it sends a Command object back to the application manager to execute.
-
-Please note: When a new command that is accompanied by a TTS step is triggered, that TTS will be sent on the SayCallback rpc.
-
-Notificiations: Notifications are sent by the application manager to update the dialog state. Depending on the application, there can be some delay between the initation of a command execution and the completion of that step. Some other applications may have multiple updates for the same command. Both of these benefit from making this an asynchronous pattern. |
-| Say | TTSRequest | Empty | Say may be used to request TTS synthesis on given text, independent of any dialog state changes. Results will come back via the SayCallback stream. |
-| SayCallback | SayCallbackRequest | TTSResponse | SayCallback is triggered whenever there is a new TTS audio clip that should be played for the user. This can come from the dialog management pushing a Say action. TTSResponses from the client making a Say(TTSRequest) call will be returned from that call, not through this callback.
-
-Please note: When a new TTS that is accompanied by a Command is triggered, that Command will be sent on the CommandCallback rpc. |
+| Models | Empty | ModelsResponse | Models will return a list of available versions. Model values from this list may be used in NewSession calls. |
+| NewSession | NewSessionRequest | SessionID | Requests a new session with the given config and returns the session ID, which is required for other rpc methods. |
+| EndSession | SessionID | Empty | Terminates an existing session and closes any open event streams. It is an error if the SessionEndRequest has an invalid SessionID. |
+| SessionEventStream | SessionID | DiathekeEvent | Requests a new event stream for the given session. |
+| CommandFinished | CommandStatus | Empty | Notify Diatheke when a command has completed so that it may update the dialog state. The initial command request will come as part of a DiathekeEvent. While not strictly required (depeding on the model and command), it is best practice to always call this method when a command is complete. Cases where it is required include when the command has output parameters, or when the command is followed by another action in the Diatheke model. |
+| StreamAudioInput | AudioInput | Empty | Begin an audio input stream for a session. The first message to the server should specify the sessionID, with binary audio data pushed for every subsequent message. As the audio is recognized, Diatheke will respond with appropriate events on the session's event stream. <p> While it is allowed to call this multiple times during a single session, clients should never have multiple audio input streams running concurrently for the same session (the audio may mix and result in unpredictable behavior). Previous audio streams should always be closed before starting a new one. |
+| StreamAudioReplies | SessionID | AudioReply | Create an audio reply stream for a session. The returned stream will receive replies ("say" entries in the Diatheke model) from the server as they occur in the conversation. For each "say" entry, the stream will first receive the text to synthesize (defined by the model), followed by one or more messages containing the synthesized audio bytes. The "say" entry will end with a message indicating that TTS for that entry is complete. NOTE: The text in the first message of an audio reply is the same that will be received in the session's event stream. |
+| PushText | PushTextRequest | Empty | Push text to Diatheke as part of the conversation for a session. Diatheke will respond with an appropriate event on the session's event stream based on whether the given text was recognized as a valid intent or not. |
+| StreamASR | ASRRequest | ASRResponse | Manually run streaming ASR unrelated to any session by pushing audio data to the server on the audio stream. As transcriptions become available, the server will return them on the ASRResponse stream. The transcriptions may then be used for, e.g., the PushText method. This function is provided as a convenience. |
+| StreamTTS | TTSRequest | TTSResponse | Manually run streaming TTS. The Audio stream will receive binary audio data as it is synthesized and will close automatically when synthesis is complete. This function is provided as a convenience. |
 
  <!-- end services -->
 
 
 
-### Message: AudioTranscriptionRequest
-To use ASR, audio is streamed to the server.  Multiple
-StreamingRecognizeRequest messages are sent. The first message must contain a
-session_id message only.  All subsequent messages must contain audio data
-only.  All AudioTranscriptionRequest messages must contain non-empty audio.
-If audio content is empty, the server may interpret it as end of stream and
-stop accepting any further messages.
+### Message: ASRRequest
+Request for streaming ASR unrelated to a session.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| model | string |  | <p>The model to use for ASR. This message should always be sent before any audio data is sent.</p> |
+| audio | bytes |  | <p>Audio data to process. The encoding of the data should match what was specified in the Diatheke server configuration. NOTE: If the audio data is empty, the server may interpret it as the end of the stream and stop accepting further messages.</p> |
+
+
+
+
+
+
+
+### Message: ASRResponse
+ASRResponse contains speech recognition results.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| text | string |  | <p>Text is the Cubic engine's formatted transcript of pushed audio. This field will be the 1-best alternative.</p> |
+| confidence_score | double |  | <p>The confidence score is a floating point number between 0.0 - 1.0. A score of 1.0 indicates that the ASR engine is 100% confident in the transcription.</p> |
+
+
+
+
+
+
+
+### Message: AudioInput
+Provides input audio data for StreamAudioInput. The first message
+sent must contain the session ID only. All subsequent messages
+must contain audio data only.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | session_id | string |  | <p>Session ID returned from the NewSession call.</p> |
-| data | bytes |  | <p>Audio data that should be transcribed.</p> |
+| data | bytes |  | <p>Audio data to process. The encoding of the data should match what was specified in the Diatheke server configuration. NOTE: If the audio data is empty, the server may interpret it as the end of the stream and stop accepting further messages.</p> |
 
 
 
@@ -65,14 +80,18 @@ stop accepting any further messages.
 
 
 
-### Message: CommandStatusUpdate
-
+### Message: AudioReply
+An AudioReply is the verbal and textual reply that Diatheke returns as
+part of a conversation (not to be confused with the server concepts of
+request and response).
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| session_id | string |  | <p>session_id should be the same as the status id returned from NewSessionResponse.</p> |
-| data | CommandStatusUpdate.Data |  | <p></p> |
+| label | string |  | <p>The label defined in the Diatheke model. Identifies which "say" entry in the model this message corresponds to.</p> |
+| text | string |  | <p>The reply text as defined in the Diatheke model. This is the first message that will be received for an AudioReply. It contains the same text as the corresponding ReplyEvent in the session's event stream.</p> |
+| data | bytes |  | <p>The audio data from TTS. There can be any number of these messages for an AudioReply after the first text message and before the final end message. The encoding of the data will match what was specified in the server configuration.</p> |
+| end | Empty |  | <p>Indicates that TTS has finished streaming audio for the reply. This is the last message that will be received for an AudioReply.</p> |
 
 
 
@@ -80,17 +99,16 @@ stop accepting any further messages.
 
 
 
-### Message: CommandStatusUpdate.Data
-
+### Message: CommandEvent
+A CommandEvent occurs when Diatheke wants the client to execute the
+given command.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | command_id | string |  | <p>ID of the command that should be run. i.e. "COM01" for Command #01.</p> |
-| command_status | CommandStatusUpdate.Data.CommandStatus |  | <p></p> |
-| state_data | string |  | <p>The state_data field contains information about the state in which this notification should be handled. TODO: Why do we have this in the HTTP interface? Can we hide it in the gRPC interface?</p> |
-| parameters | CommandStatusUpdate.Data.ParametersEntry | repeated | <p>parameters is a generic map of parameter name to parameter value. These parameters are defined in the Diatheke Models. An example could be the "TV Channel" is "Channel 2".</p> |
-| error_message_text | string |  | <p>error_message_text will be populated when there is a error occures while executing a command. This string will be sent through TTS and posted to the SayCallback as an audio file.</p> |
+| parameters | CommandEvent.ParametersEntry | repeated | <p>A generic map of parameters (name, value). The parameters are defined in the Diatheke model. Depending on the command, these parameters should be sent back with the CommandStatus update.</p> |
+| command_state_id | string |  | <p>ID to keep track of the dialog state when the command is requested. This field is required in the CommandStatus message so that Diatheke can correctly update the dialog state when CommandFinished is called.</p> |
 
 
 
@@ -98,7 +116,7 @@ stop accepting any further messages.
 
 
 
-### Message: CommandStatusUpdate.Data.ParametersEntry
+### Message: CommandEvent.ParametersEntry
 
 
 
@@ -113,17 +131,18 @@ stop accepting any further messages.
 
 
 
-### Message: CommandToExecute
-CommandToExecute indicates Diatheke found an actionable state in the dialog,
-and requests the application manager to perform the command.
+### Message: CommandStatus
+The final status of an executed command.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | session_id | string |  | <p>session_id should be the same as the status id returned from NewSessionResponse.</p> |
-| command_id | string |  | <p>ID of the command that should be run. i.e. "COM01" for Command #01.</p> |
-| parameters | CommandToExecute.ParametersEntry | repeated | <p>parameters is a generic map of parameter name to parameter value. These parameters are defined in the Diatheke Models.</p> |
-| state_data | string |  | <p>The state_data field contains information about the state in which this notification should be handled. Since there can be multiple states being tracked in a single session, this value must be sent with the CommandStatusUpdate that follow from the commands execution.</p> |
+| command_id | string |  | <p>ID of the command as given in the RunCommand object.</p> |
+| return_status | CommandStatus.StatusCode |  | <p></p> |
+| output_parameters | CommandStatus.OutputParametersEntry | repeated | <p>The populated output parameters from the RunCommand object. For example, the map might contain the entry "temperature", which was populated with a value of "30" after the command finished.</p> |
+| error_message_text | string |  | <p>Set this field with an error message if an a error occured while executing the command.</p> |
+| command_state_id | string |  | <p>State ID from the original CommandEvent. This field is required for Diatheke to correctly update the dialog state when CommandFinished is called.</p> |
 
 
 
@@ -131,7 +150,7 @@ and requests the application manager to perform the command.
 
 
 
-### Message: CommandToExecute.ParametersEntry
+### Message: CommandStatus.OutputParametersEntry
 
 
 
@@ -139,6 +158,23 @@ and requests the application manager to perform the command.
 | ----- | ---- | ----- | ----------- |
 | key | string |  | <p></p> |
 | value | string |  | <p></p> |
+
+
+
+
+
+
+
+### Message: DiathekeEvent
+An event from Diatheke in response to either recognized audio or
+submitted text.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| command | CommandEvent |  | <p>Indicates Diatheke found an actionable state in the dialog, and requests the client to perform the given command.</p><p>While not strictly required (depeding on the model and command), it is best practice to always call CommandFinished after receiving this event so that Diatheke can update the dialog state when the command is complete. Cases where it is required include when the command has output parameters, or when it is followed by another action in the Diatheke model.</p> |
+| recognize | RecognizeEvent |  | <p>An event indicating whether pushed text and audio was recognized by ASR and/or Diatheke.</p> |
+| reply | ReplyEvent |  | <p>The textual reply from Diatheke in the conversation (not to be confused with the server concepts of request and response). For example, this could be a question to solicit more information from the user, a status report, or any other reply defined by the Diatheke model. The text of this message is also provided in the AudioReply stream (if one is open).</p> |
 
 
 
@@ -174,27 +210,12 @@ Returns an array of model names.
 
 ### Message: NewSessionRequest
 Request for the NewSession call.
-TODO Concider combining the language and model into one string, such as
-`en_US_variant`.
+
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| model | string |  | <p>For applications that have more than one model to use for ASR/NLU. ASR grammer can vary between models, as well as sets of commands. Some applications will only have one model.</p> |
-
-
-
-
-
-
-
-### Message: NewSessionResponse
-Result of the NewSession call.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| session_id | string |  | <p>Session ID that should be included with future calls. Allows for reconnecting if the gRPC connection is dropped. If an error occured, then this field will be an empty string ("").</p> |
+| model | string |  | <p>For applications that have more than one model to use for ASR/NLU. ASR grammar can vary between models, as well as sets of commands. Some applications will only have one model.</p> |
 
 
 
@@ -203,13 +224,13 @@ Result of the NewSession call.
 
 
 ### Message: PushTextRequest
-Request for adding User Input directly from text.
+Request to push text to Diatheke as part of a conversation.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | session_id | string |  | <p>Session ID returned from the NewSession call.</p> |
-| text | string |  | <p>User input, like a transcription from ASR.</p> |
+| text | string |  | <p>User input. This could be a transcription from manually run ASR, text selected from a dropdown list, entered in a prompt, etc.</p> |
 
 
 
@@ -217,13 +238,17 @@ Request for adding User Input directly from text.
 
 
 
-### Message: SayCallbackRequest
-
+### Message: RecognizeEvent
+A RecognizeEvent occurs if a session's audio input has a transcription
+available, or if the PushText method was called. In both cases, the
+event will indicate whether the text was recognized as a valid intent
+by the Diatheke model.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| session_id | string |  | <p>Session ID returned from the NewSession call.</p> |
+| text | string |  | <p>The pushed text or transcription of audio sent to Diatheke.</p> |
+| valid_input | bool |  | <p>True if the submitted text or audio transcription was recognized by the Diatheke model as a valid intent or entity.</p> |
 
 
 
@@ -231,8 +256,28 @@ Request for adding User Input directly from text.
 
 
 
-### Message: SessionEndRequest
-Request for the EndSession call.
+### Message: ReplyEvent
+A ReplyEvent occurs when Diatheke has a reply in the conversation (not
+to be confused with the server concepts of request and response). These
+correspond to "say" entries in the Diatheke model. For example, it might
+be a prompt for additional information from the user, a status update,
+or a confirmation. ReplyEvents are not generated in response to 
+StreamTTS calls.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| text | string |  | <p>Text of the reply event (defined by the Diatheke model).</p> |
+| label | string |  | <p>Label of the reply event (defined by the Diatheke model).</p> |
+
+
+
+
+
+
+
+### Message: SessionID
+Simple message that only contains the session ID.
 
 
 | Field | Type | Label | Description |
@@ -246,13 +291,13 @@ Request for the EndSession call.
 
 
 ### Message: TTSRequest
-Request to stynthesize audio for a given string.
+Request to synthesize speech unrelated to a session.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| session_id | string |  | <p>Session ID returned from the NewSession call.</p> |
-| text | string |  | <p>Text to synthesize.</p> |
+| model | string |  | <p>The model to use for TTS (defined in the server config file).</p> |
+| text | string |  | <p>Text to synthesize</p> |
 
 
 
@@ -261,32 +306,12 @@ Request to stynthesize audio for a given string.
 
 
 ### Message: TTSResponse
-TTSResponse contains the sythesised audio waveform for a TTS request.
+Response for text-to-speech unrelated to a session.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| session_id | string |  | <p></p> |
-| text | string |  | <p>Text to synthesize. When responding to a Say(TTSRequest) call, it is the same string that was in TTSRequest.text. When it comes from a Notify(CommandStatusUpdate) call, it is the same string that was in the CommandStatusUpdate.error_message_text.</p> |
-| data | bytes |  | <p>data contains the audio waveform as an array of bytes.</p> |
-
-
-
-
-
-
-
-### Message: TranscriptionResult
-TranscriptionResult will either be the transcribed text, or an error message.
-TranscriptionResult is sent whenenver the Cubic engine endpoints an audio
-segment.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| session_id | string |  | <p>Session ID returned from the NewSession call.</p> |
-| text | string |  | <p>Text is the Cubic engine's formatted transcript of pushed audio. Transcribed text, with formatting applied. This field will be the 1-best alternative.</p> |
-| confidence_score | double |  | <p>The confidence score is a floating point number 0.0-1.0, on how confident the ASR engine is in that transcription.</p> |
+| data | bytes |  | <p>The synthesized audio data. The data encoding will match what was specified in the server configuration.</p> |
 
 
 
@@ -310,7 +335,7 @@ The message sent by the server for the `Version` method.
 
 
 
-### Enum: CommandStatusUpdate.Data.CommandStatus
+### Enum: CommandStatus.StatusCode
 CommandStatus are the resulting states of a command.
 
 | Name | Number | Description |
