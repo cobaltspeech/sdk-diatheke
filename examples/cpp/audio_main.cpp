@@ -117,7 +117,7 @@ void handleTTSReplies(Diatheke::Session *session, std::string playCmd)
 void handleRecognizeEvent(const cobaltspeech::diatheke::RecognizeEvent &event)
 {
     // Color the text green if Diatheke recognized it, and red otherwise.
-    std::cout << event.valid_input() ? ANSIGreenText : ANSIRedText;
+    std::cout << (event.valid_input() ? ANSIGreenText : ANSIRedText);
 
     // Print out the text and reset the color
     std::cout << "Me: " << event.text() << ANSIResetText << std::endl;
