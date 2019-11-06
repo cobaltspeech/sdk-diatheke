@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Package diatheke provides for interacting with an instance of diatheke server using
-// gRPC.
+// Package diatheke provides an interface to interact with Diatheke
+// server using gRPC.
 package diatheke
 
 import (
@@ -32,7 +32,8 @@ import (
 // All methods except Close may be called concurrently.
 type Client struct {
 	// The protobuf-defined client. Most users will not need to call this
-	// directly
+	// directly, but is exposed as a convenience for advanced users who
+	// wish to use gRPC functionality beyond what this interface provides.
 	PBClient diathekepb.DiathekeClient
 
 	// Internal data
@@ -134,7 +135,7 @@ func (c *Client) SetCallOptions(opts ...grpc.CallOption) {
 	c.callOpts = newOpts
 }
 
-// DiathekeVersion queries the server for its version
+// DiathekeVersion queries the Diatheke server for its version.
 func (c *Client) DiathekeVersion(ctx context.Context) (string, error) {
 	response, err := c.PBClient.Version(ctx, &diathekepb.Empty{}, c.callOpts...)
 	if err != nil {
@@ -144,7 +145,8 @@ func (c *Client) DiathekeVersion(ctx context.Context) (string, error) {
 	return response.Server, nil
 }
 
-// ListModels queries the server for the list of currently loaded models.
+// ListModels queries the server for the list of currently loaded
+// Diatheke models.
 func (c *Client) ListModels(ctx context.Context) ([]string, error) {
 	response, err := c.PBClient.Models(ctx, &diathekepb.Empty{}, c.callOpts...)
 	if err != nil {
@@ -187,7 +189,8 @@ func (c *Client) SessionEventStream(ctx context.Context, sessionID string) (diat
 }
 
 // CommandFinished notifies the server that a command has completed. This
-// should be called after receiving a command event in the event stream.
+// should be called after receiving a command event in the session's
+// event stream, as required by the Diatheke model.
 func (c *Client) CommandFinished(ctx context.Context, commandStatus *diathekepb.CommandStatus) error {
 	_, err := c.PBClient.CommandFinished(ctx, commandStatus, c.callOpts...)
 	return err
@@ -245,7 +248,7 @@ func (c *Client) PushText(ctx context.Context, sessionID, text string) error {
 
 // StreamASR runs streaming speech recognition unrelated to a session, using
 // the specified ASR model.
-func (c *Client) StreamASR(ctx context.Context, model string) (diathekepb.Diatheke_StreamASRClient, error) {
+func (c *Client) StreamASR(ctx context.Context, model string) (*ASRStream, error) {
 	// Create the stream.
 	stream, err := c.PBClient.StreamASR(ctx, c.callOpts...)
 	if err != nil {
@@ -263,11 +266,19 @@ func (c *Client) StreamASR(ctx context.Context, model string) (diathekepb.Diathe
 		return nil, err
 	}
 
-	return stream, nil
+	wrapper := &ASRStream{
+		PBStream: stream,
+	}
+
+	return wrapper, nil
 }
 
 // StreamTTS runs streaming text-to-speech unrelated to a session. It
 // synthesizes speech for the given text, using the specified TTS model.
+// To create a stream that can be cancelled by the client, use the
+// context.WithCancel() function and pass the resulting context to this
+// function. The stream will be cancelled when the corresponding cancel()
+// function is called.
 func (c *Client) StreamTTS(ctx context.Context, model, text string) (diathekepb.Diatheke_StreamTTSClient, error) {
 	// Setup the TTS request
 	req := diathekepb.TTSRequest{
