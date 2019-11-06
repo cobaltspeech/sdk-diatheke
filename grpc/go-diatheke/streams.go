@@ -19,6 +19,9 @@ import (
 )
 
 // AudioInputStream allows audio to be pushed to the server for a session.
+// The audio pushed to this stream will contribute to the session's
+// current dialog. Transcriptions are returned as Recognize events on
+// the session's event stream.
 type AudioInputStream struct {
 	PBStream diathekepb.Diatheke_StreamAudioInputClient
 }
@@ -50,6 +53,10 @@ func (ais *AudioInputStream) Finish() error {
 
 // ASRStream is a bi-directional stream that allows audio data to be pushed
 // to the server, while transcription results are streamed back to the client.
+// Audio pushed to an ASRStream does not contribute to any currently
+// running sessions and their dialogs. It is mainly useful for cases where
+// the client only wants a transcription without any other interactions with
+// Diatheke.
 type ASRStream struct {
 	PBStream diathekepb.Diatheke_StreamASRClient
 }
