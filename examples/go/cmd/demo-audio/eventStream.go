@@ -69,9 +69,9 @@ func (manager *sessionManager) handleEvents() {
 func handleRecognizeEvent(event *diathekepb.RecognizeEvent) {
 	// Color the text green if Diatheke recognized it, and red otherwise
 	if event.ValidInput {
-		textui.PrintGreen("Me: %s\n", event.Text)
+		textui.PrintGreen("User: %s\n", event.Text)
 	} else {
-		textui.PrintRed("Me: %s\n", event.Text)
+		textui.PrintRed("User: %s\n", event.Text)
 	}
 }
 

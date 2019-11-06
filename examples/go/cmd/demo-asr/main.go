@@ -125,10 +125,10 @@ type asrManager struct {
 // correct prompts depending on what the given toggle state is.
 func (manager *asrManager) GetPrompt(toggleState bool) string {
 	if toggleState {
-		return "(Recording)"
+		return "(Recording. Press Enter to stop.)"
 	}
 
-	return "(Press Enter to record, Ctrl+D to exit)"
+	return "(Press Enter to record, Ctrl+D to exit.)"
 }
 
 // ToggleOn implements the ToggleExecutor interface. This function

@@ -23,8 +23,8 @@ import (
 	"github.com/cobaltspeech/sdk-diatheke/grpc/go-diatheke/diathekepb"
 )
 
-// HandleTTSReplies demonstrates how to use the audio reply stream (TTS)
-// for a session.
+// HandleTTSReplies demonstrates how to use the audio reply stream for
+// a session. (TTS = Text To Speech)
 func (manager *sessionManager) handleTTSReplies() {
 	// Create the stream
 	stream, err := manager.Session.StreamAudioReplies(context.Background())
