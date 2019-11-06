@@ -20,8 +20,9 @@ import (
 	"github.com/cobaltspeech/sdk-diatheke/grpc/go-diatheke/diathekepb"
 )
 
-// Session represents a Diatheke session. It is provided as a convenience
-// for working with methods that require a session ID.
+// Session represents a Diatheke session. It is a wrapper around
+// diatheke.Client, provided as a convenience for working with
+// methods that require a session ID.
 type Session struct {
 	ID     string
 	Parent *Client

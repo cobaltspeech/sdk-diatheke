@@ -36,11 +36,14 @@ type Client struct {
 	// wish to use gRPC functionality beyond what this interface provides.
 	PBClient diathekepb.DiathekeClient
 
+	// The list of gRPC call options that are used when the client
+	// makes server requests.
+	CallOpts []grpc.CallOption
+
 	// Internal data
 	conn     *grpc.ClientConn
 	insecure bool
 	tlscfg   tls.Config
-	callOpts []grpc.CallOption
 }
 
 // NewClient creates a new Client that connects to a Diatheke Server listening on
@@ -132,12 +135,21 @@ func (c *Client) SetCallOptions(opts ...grpc.CallOption) {
 		newOpts = append(newOpts, o)
 	}
 
-	c.callOpts = newOpts
+	c.CallOpts = newOpts
+}
+
+// AppendCallOptions adds the given gRPC call options to the current
+// list of options to use when making server requests. It does not
+// check to see if the options are unique in the final list.
+func (c *Client) AppendCallOptions(opts ...grpc.CallOption) {
+	for _, o := range opts {
+		c.CallOpts = append(c.CallOpts, o)
+	}
 }
 
 // DiathekeVersion queries the Diatheke server for its version.
 func (c *Client) DiathekeVersion(ctx context.Context) (string, error) {
-	response, err := c.PBClient.Version(ctx, &diathekepb.Empty{}, c.callOpts...)
+	response, err := c.PBClient.Version(ctx, &diathekepb.Empty{}, c.CallOpts...)
 	if err != nil {
 		return "", err
 	}
@@ -148,7 +160,7 @@ func (c *Client) DiathekeVersion(ctx context.Context) (string, error) {
 // ListModels queries the server for the list of currently loaded
 // Diatheke models.
 func (c *Client) ListModels(ctx context.Context) ([]string, error) {
-	response, err := c.PBClient.Models(ctx, &diathekepb.Empty{}, c.callOpts...)
+	response, err := c.PBClient.Models(ctx, &diathekepb.Empty{}, c.CallOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -162,7 +174,7 @@ func (c *Client) NewSession(ctx context.Context, model string) (string, error) {
 		Model: model,
 	}
 
-	response, err := c.PBClient.NewSession(ctx, &request, c.callOpts...)
+	response, err := c.PBClient.NewSession(ctx, &request, c.CallOpts...)
 	if err != nil {
 		return "", err
 	}
@@ -175,7 +187,7 @@ func (c *Client) EndSession(ctx context.Context, sessionID string) error {
 	request := diathekepb.SessionID{
 		SessionId: sessionID,
 	}
-	_, err := c.PBClient.EndSession(ctx, &request, c.callOpts...)
+	_, err := c.PBClient.EndSession(ctx, &request, c.CallOpts...)
 	return err
 }
 
@@ -185,14 +197,14 @@ func (c *Client) SessionEventStream(ctx context.Context, sessionID string) (diat
 		SessionId: sessionID,
 	}
 
-	return c.PBClient.SessionEventStream(ctx, &request, c.callOpts...)
+	return c.PBClient.SessionEventStream(ctx, &request, c.CallOpts...)
 }
 
 // CommandFinished notifies the server that a command has completed. This
 // should be called after receiving a command event in the session's
 // event stream, as required by the Diatheke model.
 func (c *Client) CommandFinished(ctx context.Context, commandStatus *diathekepb.CommandStatus) error {
-	_, err := c.PBClient.CommandFinished(ctx, commandStatus, c.callOpts...)
+	_, err := c.PBClient.CommandFinished(ctx, commandStatus, c.CallOpts...)
 	return err
 }
 
@@ -201,7 +213,7 @@ func (c *Client) CommandFinished(ctx context.Context, commandStatus *diathekepb.
 // session should be running concurrently.
 func (c *Client) StreamAudioInput(ctx context.Context, sessionID string) (*AudioInputStream, error) {
 	// First create the stream
-	stream, err := c.PBClient.StreamAudioInput(ctx, c.callOpts...)
+	stream, err := c.PBClient.StreamAudioInput(ctx, c.CallOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -230,7 +242,7 @@ func (c *Client) StreamAudioReplies(ctx context.Context, sessionID string) (diat
 	req := diathekepb.SessionID{
 		SessionId: sessionID,
 	}
-	return c.PBClient.StreamAudioReplies(ctx, &req, c.callOpts...)
+	return c.PBClient.StreamAudioReplies(ctx, &req, c.CallOpts...)
 }
 
 // PushText sends the given text to Diatheke as part of a conversation for
@@ -242,7 +254,7 @@ func (c *Client) PushText(ctx context.Context, sessionID, text string) error {
 		Text:      text,
 	}
 
-	_, err := c.PBClient.PushText(ctx, &req, c.callOpts...)
+	_, err := c.PBClient.PushText(ctx, &req, c.CallOpts...)
 	return err
 }
 
@@ -250,7 +262,7 @@ func (c *Client) PushText(ctx context.Context, sessionID, text string) error {
 // the specified ASR model.
 func (c *Client) StreamASR(ctx context.Context, model string) (*ASRStream, error) {
 	// Create the stream.
-	stream, err := c.PBClient.StreamASR(ctx, c.callOpts...)
+	stream, err := c.PBClient.StreamASR(ctx, c.CallOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -276,9 +288,9 @@ func (c *Client) StreamASR(ctx context.Context, model string) (*ASRStream, error
 // StreamTTS runs streaming text-to-speech unrelated to a session. It
 // synthesizes speech for the given text, using the specified TTS model.
 // To create a stream that can be cancelled by the client, use the
-// context.WithCancel() function and pass the resulting context to this
-// function. The stream will be cancelled when the corresponding cancel()
-// function is called.
+// context.WithCancel() function to create a new context and
+// context.CancelFunc. Pass the new context to this function, and the
+// stream will end when the corresponding CancelFunc is called.
 func (c *Client) StreamTTS(ctx context.Context, model, text string) (diathekepb.Diatheke_StreamTTSClient, error) {
 	// Setup the TTS request
 	req := diathekepb.TTSRequest{
@@ -287,5 +299,5 @@ func (c *Client) StreamTTS(ctx context.Context, model, text string) (diathekepb.
 	}
 
 	// Create the stream
-	return c.PBClient.StreamTTS(ctx, &req, c.callOpts...)
+	return c.PBClient.StreamTTS(ctx, &req, c.CallOpts...)
 }
