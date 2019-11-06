@@ -31,7 +31,7 @@ make -j 4 demo_audio
 
 ## Run
 
-Each demo illlustrates a different aspect of the Diatheke SDK. While the
+Each demo illustrates a different aspect of the Diatheke SDK. While the
 demos separate these functions for the sake of simplicity, there is nothing
 restricting a developer from mixing all of them in the same application.
 
@@ -66,7 +66,7 @@ the [configuration file](#config-file).
 ./demo_audio -config <path/to/config.toml>
 ```
 
-This application demonstrates how to setup an audio-based conversation with
+This application demonstrates how to set up an audio-based conversation with
 Diatheke. This demo requires that both recording and playback applications
 be specified in the [config file](#config-file). Audio recording is toggled
 by pressing the Enter key. When recording, a user may speak an appropriate

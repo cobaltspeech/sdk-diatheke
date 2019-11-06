@@ -120,7 +120,7 @@ void handleRecognizeEvent(const cobaltspeech::diatheke::RecognizeEvent &event)
     std::cout << (event.valid_input() ? ANSIGreenText : ANSIRedText);
 
     // Print out the text and reset the color
-    std::cout << "Me: " << event.text() << ANSIResetText << std::endl;
+    std::cout << "User: " << event.text() << ANSIResetText << std::endl;
 }
 
 // Handles Reply events from Diatheke as they come
