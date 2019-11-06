@@ -15,8 +15,6 @@
 package diatheke
 
 import (
-	"fmt"
-
 	"github.com/cobaltspeech/sdk-diatheke/grpc/go-diatheke/diathekepb"
 )
 
@@ -44,7 +42,7 @@ func (ais *AudioInputStream) Write(p []byte) (n int, err error) {
 	return len(p), nil
 }
 
-// Finish notifies Diatheke that no more audio is coming
+// Finish notifies Diatheke that no more audio is coming from the client.
 func (ais *AudioInputStream) Finish() error {
 	_, err := ais.PBStream.CloseAndRecv()
 	return err
@@ -52,17 +50,34 @@ func (ais *AudioInputStream) Finish() error {
 
 // ASRStream is a bi-directional stream that allows audio data to be pushed
 // to the server, while transcription results are streamed back to the client.
-// The audio and transcripts are unrelated to any running sessions.
 type ASRStream struct {
 	PBStream diathekepb.Diatheke_StreamASRClient
 }
 
-// Write the given audio data to the stream
+// Write the given audio data to the stream.
 func (asr *ASRStream) Write(p []byte) (n int, err error) {
-	return 0, fmt.Errorf("not implemented")
+	// Setup the request
+	req := diathekepb.ASRRequest{
+		AsrData: &diathekepb.ASRRequest_Audio{
+			Audio: p,
+		},
+	}
+
+	// Send it on the stream
+	err = asr.PBStream.Send(&req)
+	if err != nil {
+		return 0, err
+	}
+
+	return len(p), nil
 }
 
 // Receive waits for a transcript from the server.
-func (asr *ASRStream) Receive() error {
-	return fmt.Errorf("not implemented")
+func (asr *ASRStream) Receive() (*diathekepb.ASRResponse, error) {
+	return asr.PBStream.Recv()
+}
+
+// AudioFinished notifies Diatheke that no more audio is coming from the client.
+func (asr *ASRStream) AudioFinished() error {
+	return asr.PBStream.CloseSend()
 }

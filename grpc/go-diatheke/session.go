@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Package diatheke provides for interacting with an instance of diatheke server using
-// gRPC.
 package diatheke
 
 import (
@@ -22,8 +20,8 @@ import (
 	"github.com/cobaltspeech/sdk-diatheke/grpc/go-diatheke/diathekepb"
 )
 
-// Session represents a Diatheke session. It is provided as a convenience for
-// working with methods that require a session ID.
+// Session represents a Diatheke session. It is provided as a convenience
+// for working with methods that require a session ID.
 type Session struct {
 	ID     string
 	Parent *Client
@@ -34,33 +32,35 @@ func (sess *Session) EndSession(ctx context.Context) error {
 	return sess.Parent.EndSession(ctx, sess.ID)
 }
 
-// EventStream returns a new event stream for this session
+// EventStream returns a new event stream for this session.
 func (sess *Session) EventStream(ctx context.Context) (diathekepb.Diatheke_SessionEventStreamClient, error) {
 	return sess.Parent.SessionEventStream(ctx, sess.ID)
 }
 
-// CommandFinished notifies Diatheke that a command has completed. The initial
-// command request will come as part of a DiathekeEvent in a session's event
-// stream. This method should always be called after receiving a command event
-// when the command is completed, even if it is later (e.g., long running
-// commands).
+// CommandFinished notifies the server that a command has completed. This
+// should be called after receiving a command event in the session's
+// event stream, as required by the Diatheke model.
 func (sess *Session) CommandFinished(ctx context.Context, status *diathekepb.CommandStatus) error {
 	return sess.Parent.CommandFinished(ctx, status)
 }
 
-// StreamAudioInput creates a stream to use to push audio input to Diatheke,
-// specifically for this session.
+// StreamAudioInput returns a stream object that may be used to push audio
+// data to the Diatheke server for this session. Only one stream per
+// session should be running concurrently.
 func (sess *Session) StreamAudioInput(ctx context.Context) (*AudioInputStream, error) {
 	return sess.Parent.StreamAudioInput(ctx, sess.ID)
 }
 
-// StreamAudioReplies creates a stream to receive audio output from Diatheke,
-// specifically for this session.
+// StreamAudioReplies returns a stream object that receives output audio from
+// Diatheke specifically for this session. The stream will include start
+// and end messages to indicate when a section of audio for a group of text
+// begins and ends.
 func (sess *Session) StreamAudioReplies(ctx context.Context) (diathekepb.Diatheke_StreamAudioRepliesClient, error) {
 	return sess.Parent.StreamAudioReplies(ctx, sess.ID)
 }
 
-// PushText to Diatheke as part of a conversation for this session.
+// PushText sends the given text to Diatheke as part of a conversation for
+// this session.
 func (sess *Session) PushText(ctx context.Context, text string) error {
 	return sess.Parent.PushText(ctx, sess.ID, text)
 }
