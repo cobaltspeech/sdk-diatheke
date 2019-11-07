@@ -1,7 +1,14 @@
 ---
-title: "Diatheke Protobuf API Docs"
-weight: 100
+title: "Diatheke API Reference"
+weight: 1000
 ---
+
+The Diatheke API is defined using [gRPC and protocol buffers](https://grpc.io/docs/guides/).
+This section of the documentation is auto-generated from the 
+[protobuf file](https://github.com/cobaltspeech/sdk-diatheke/blob/master/grpc/diatheke.proto).
+It describes the data types and functions defined in the spec. The "messages" below
+correspond to the data structures to be used, and the "service" contains the
+methods that can be called.
 
 
 
