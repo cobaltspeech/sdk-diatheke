@@ -10,6 +10,7 @@ endif
 
 GO_OUTDIR=go-diatheke/diathekepb
 PY_OUTDIR=py-diatheke/diatheke
+DOCS_OUTDIR=../docs-src/content/protobuf
 
 go: ${GO_OUTDIR}/diatheke.pb.go
 py: $(PY_OUTDIR)/diatheke_pb2.py ${PY_OUTDIR}/diatheke_pb2_grpc.py py-test
@@ -38,9 +39,9 @@ gendoc:
 	protoc \
 		-I . \
 		-I ${PROTOINC} \
-		--doc_out=./ \
-		--doc_opt=doc.md.tmpl,autogen-doc-diatheke-proto.md \
+		--doc_out=${DOCS_OUTDIR} \
+		--doc_opt=doc.md.tmpl,${DOCS_OUTDIR}/_index.md \
 		diatheke.proto
 
 	# Remove any TODO items from the generated doc
-	sed -i 's/TODO.*//g' autogen-doc-diatheke-proto.md
+	sed -i 's/TODO.*//g' ${DOCS_OUTDIR}/_index.md
