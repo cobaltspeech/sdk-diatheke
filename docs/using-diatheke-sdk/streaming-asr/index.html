@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Diatheke SDK -- Cobalt</title>
+    
+      <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Streaming ASR :: Diatheke SDK -- Cobalt</title>
+<link rel="shortcut icon" href="/sdk-diatheke/images/favicon.ico" type="image/x-icon" />
+<link href="/sdk-diatheke/css/nucleus.css" rel="stylesheet">
+<link href="/sdk-diatheke/css/font-awesome.min.css" rel="stylesheet">
+<link href="/sdk-diatheke/css/hybrid.css" rel="stylesheet">
+<link href="/sdk-diatheke/css/featherlight.min.css" rel="stylesheet">
+<link href="/sdk-diatheke/css/auto-complete.css" rel="stylesheet">
+<link href="/sdk-diatheke/theme-original/style.css" rel="stylesheet">
+
+  <link href="/sdk-diatheke/theme-original/variant-blue.css" rel="stylesheet">
+
+<link rel="stylesheet" href="/sdk-diatheke/css/bootstrap.min.css">
+<script src="/sdk-diatheke/js/jquery-2.x.min.js"></script>
+<style type="text/css">
+  :root #header + #content > #left > #rlblock_left {
+    display:none !important;
+  }
+</style>
+<link href="/sdk-diatheke/css/tabs.css" rel="stylesheet" type="text/css">
+<script src="/sdk-diatheke/js/tabs.js"></script>
+
+
+    
+  </head>
+  <body data-url="/sdk-diatheke/using-diatheke-sdk/streaming-asr/">
+    
+      <div id="headermain"></div>
+<nav id="sidebar" class="showVisitedLinks">
+
+
+
+<div class="highlightable">
+  <div id="header-wrapper">
+    <div id="header">
+      
+	
+  
+    <p><img src="/sdk-diatheke/images/logo-white.png" alt="Cobalt's SDK Documentation" /></p>
+
+<p>Diatheke SDK &ndash; Cobalt</p>
+
+  
+
+
+    </div>
+        <div class="searchbox">
+		    <label for="search-by"><i class="fa fa-search"></i></label>
+		    <input data-search-input id="search-by" type="text" placeholder="Search...">
+		    <span data-search-clear=""><i class="fa fa-close"></i></span>
+		</div>
+		<script type="text/javascript" src="/sdk-diatheke/js/lunr.min.js"></script>
+		<script type="text/javascript" src="/sdk-diatheke/js/auto-complete.js"></script>
+		<script type="text/javascript">
+        
+            var baseurl = "https:\/\/cobaltspeech.github.io\/sdk-diatheke";
+        
+		</script>
+		<script type="text/javascript" src="/sdk-diatheke/js/search.js"></script>
+  </div>
+
+      <ul class="topics">
+            <li data-nav-id="/sdk-diatheke/" class="dd-item">
+            <a href="/sdk-diatheke/"><i class="fa fa-fw fa-home"></i></a>
+            </li>
+    <li data-nav-id="/sdk-diatheke/getting-started/" class="dd-item
+        ">
+      <div>
+      <a href="/sdk-diatheke/getting-started/">Getting Started</a><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+    </li>
+    <li data-nav-id="/sdk-diatheke/using-diatheke-sdk/" class="dd-item parent haschildren
+        ">
+      <div>
+      <a href="/sdk-diatheke/using-diatheke-sdk/">Using Diatheke SDK</a>
+            <i class="fa fa-angle-down fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+      <li data-nav-id="/sdk-diatheke/using-diatheke-sdk/include/" class="dd-item">
+        <div>
+          <a href="/sdk-diatheke/using-diatheke-sdk/include/">
+            Including the SDK
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/sdk-diatheke/using-diatheke-sdk/errors/" class="dd-item">
+        <div>
+          <a href="/sdk-diatheke/using-diatheke-sdk/errors/">
+            Error Handling
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/sdk-diatheke/using-diatheke-sdk/connecting/" class="dd-item">
+        <div>
+          <a href="/sdk-diatheke/using-diatheke-sdk/connecting/">
+            Connecting to the Server
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+    <li data-nav-id="/sdk-diatheke/using-diatheke-sdk/session/" class="dd-item haschildren
+        ">
+      <div>
+      <a href="/sdk-diatheke/using-diatheke-sdk/session/">Sessions</a><i class="fa fa-angle-right fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+      <li data-nav-id="/sdk-diatheke/using-diatheke-sdk/session/create-session/" class="dd-item">
+        <div>
+          <a href="/sdk-diatheke/using-diatheke-sdk/session/create-session/">
+            Creating a Session
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/sdk-diatheke/using-diatheke-sdk/session/event-stream/" class="dd-item">
+        <div>
+          <a href="/sdk-diatheke/using-diatheke-sdk/session/event-stream/">
+            Event Stream
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/sdk-diatheke/using-diatheke-sdk/session/push-text/" class="dd-item">
+        <div>
+          <a href="/sdk-diatheke/using-diatheke-sdk/session/push-text/">
+            Push Text
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/sdk-diatheke/using-diatheke-sdk/session/audio-input/" class="dd-item">
+        <div>
+          <a href="/sdk-diatheke/using-diatheke-sdk/session/audio-input/">
+            Audio Input
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/sdk-diatheke/using-diatheke-sdk/session/audio-output/" class="dd-item">
+        <div>
+          <a href="/sdk-diatheke/using-diatheke-sdk/session/audio-output/">
+            Audio Output
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+        </ul>
+    </li>
+      <li data-nav-id="/sdk-diatheke/using-diatheke-sdk/streaming-asr/" class="dd-item active">
+        <div>
+          <a href="/sdk-diatheke/using-diatheke-sdk/streaming-asr/">
+            Streaming ASR
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/sdk-diatheke/using-diatheke-sdk/streaming-tts/" class="dd-item">
+        <div>
+          <a href="/sdk-diatheke/using-diatheke-sdk/streaming-tts/">
+            Streaming TTS
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+        </ul>
+    </li>
+    <li data-nav-id="/sdk-diatheke/protobuf/" class="dd-item
+        ">
+      <div>
+      <a href="/sdk-diatheke/protobuf/">Diatheke API Reference</a><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+    </li>
+    <li data-nav-id="/sdk-diatheke/glossary/" class="dd-item
+        ">
+      <div>
+      <a href="/sdk-diatheke/glossary/">Glossary</a><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+    </li>
+
+
+
+        <section id="shortcuts">
+                <li class="" role=""><h3>More</h3><a href="https://github.com/cobaltspeech/sdk-diatheke" target="_blank" rel="noopener"><i class='fa fa-github'></i> <label>Github repo</label></a></li>
+                <li class="" role=""><a href="https://www.cobaltspeech.com/contact" target="_blank" rel="noopener"><i class='fa fa-bookmark'></i> <label>Contact us</label></a></li>
+        </section>
+            <a id="clear-history" class="" href="#" data-clear-history-toggle=""><i class="fa  fa-history"></i> Clear History</a>
+
+    <hr />
+    <li></li>
+    
+    </ul>
+
+ <section id="footer">
+    </section>
+  </div>
+</nav>
+
+
+
+<section id="body">
+<div id="overlay"></div>
+<div class="padding highlightable">
+
+  <div id="top-bar">
+    <div id="breadcrumbs" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+        <span id="sidebar-toggle-span">
+          <a href="#" id="sidebar-toggle" data-sidebar-toggle="">
+            <i class="fa fa-bars"></i>
+          </a>
+        </span>
+        <span id="toc-menu"><i class="fa fa-list-alt"></i></span>
+        <span class="links">
+        
+
+
+
+
+
+
+
+ <a href='/sdk-diatheke/'>Diatheke SDK Documentation</a> > <a href='/sdk-diatheke/using-diatheke-sdk/'>Using Diatheke SDK</a> > Streaming ASR
+
+ 
+
+ 
+
+   
+        </span>
+    </div>
+    
+    
+    <div class="progress">
+        <div class="wrapper">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#creating-an-asr-stream">Creating an ASR Stream</a></li>
+<li><a href="#pushing-audio">Pushing Audio</a></li>
+<li><a href="#receiving-transcriptions">Receiving Transcriptions</a></li>
+</ul></li>
+</ul>
+</nav>
+        </div>
+    </div>
+    
+
+  </div>
+
+
+<div id="body-inner">
+  
+    <h1>Streaming ASR</h1>
+  
+
+
+
+    
+    
+    
+    
+
+<p>Not to be confused with a session&rsquo;s <a href="../session/audio-input">audio input stream</a>,
+a plain <a href="../../glossary#asr">ASR</a> stream is used to process audio and
+receive a transcript from Diatheke. Sending audio on an ASR stream does
+not affect the state of any running <a href="../session">sessions</a>, or cause
+the dialog to transition between states. It essentially forwards the
+ASR request to the underlying Cubic engine.</p>
+
+<p>This functionality is particularly useful for ASR tasks that fall
+outside of the normal dialog flow. For example, an application that
+wants to allow a user to record a note while in the middle of a task
+could use this stream to get a transcript that can be saved.</p>
+
+<h2 id="creating-an-asr-stream">Creating an ASR Stream</h2>
+
+<p>The ASR stream requires a Cubic model (defined in the Cubic server config
+file) to be specified at creation.The returned stream will be a
+bi-direction stream that allows the client code to push audio to the
+server, while concurrently receiving transcripts from the server as they
+become available.</p>
+
+<p>There is no limit on the number of ASR streams that may be opened at a
+time, but as most the most common use case involves using a single
+input source (e.g., microphone), it usually won&rsquo;t make sense to have more
+than one ASR stream running at a time.</p>
+
+<div class='code-tabs'>
+  <ul class="nav-tabs"></ul>
+  <div class="tab-content">
+
+<div class="tab-pane" title="Go">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#999;font-style:italic">// Specify the Cubic model to use (not a Diatheke model)
+</span><span style="color:#999;font-style:italic"></span>cubicModel := <span style="color:#ed9d13">&#34;1&#34;</span>
+
+<span style="color:#999;font-style:italic">// Create the bi-directional ASR stream
+</span><span style="color:#999;font-style:italic"></span>stream, err := client.<span style="color:#447fcf">StreamASR</span>(context.<span style="color:#447fcf">Background</span>(), cubicModel)</code></pre></div>
+</div>
+
+<div class="tab-pane" title="C&#43;&#43;">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#999;font-style:italic">// Specify the Cubic model to use (not a Diatheke model)
+</span><span style="color:#999;font-style:italic"></span>std::string cubicModel := <span style="color:#ed9d13">&#34;1&#34;</span>
+
+<span style="color:#999;font-style:italic">// Create the bi-directional ASR stream
+</span><span style="color:#999;font-style:italic"></span>std::unique_ptr&lt;Diatheke::ASRStream&gt; stream = client.streamASR(cubicModel);
+</code></pre></div>
+</div>
+
+<p></div>
+</div></p>
+
+<h2 id="pushing-audio">Pushing Audio</h2>
+
+<p>It is the client code&rsquo;s responsibility to handle getting audio data, whether
+it is from a microphone, file, or some other source. Audio data should be
+formatted and encoded based on the specific <a href="../../../glossary#asr">ASR</a>
+model being used for the stream. The audio data is then pushed to the
+server as demonstrated below.</p>
+
+<p>After all audio data has been pushed to the server, client code should be
+sure to call the AudioFinished() method to notify Diatheke that no more audio will
+be coming.</p>
+
+<div class='code-tabs'>
+  <ul class="nav-tabs"></ul>
+  <div class="tab-content">
+
+<div class="tab-pane" title="Go">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#999;font-style:italic">// The audio data should be formatted as an array of bytes.
+</span><span style="color:#999;font-style:italic"></span>buffer := <span style="color:#24909d">make</span>([]<span style="color:#6ab825;font-weight:bold">byte</span>, <span style="color:#3677a9">8192</span>)
+
+<span style="color:#999;font-style:italic">// Get the audio data from a source. This could be a microphone, file, or
+</span><span style="color:#999;font-style:italic">// any other source. Here we assume the audio data was retrieved previously
+</span><span style="color:#999;font-style:italic">// and stored in our buffer.
+</span><span style="color:#999;font-style:italic"></span>
+<span style="color:#999;font-style:italic">// Push the audio data to the stream. This function may be called multiple
+</span><span style="color:#999;font-style:italic">// times. It is safe to call concurrently with the stream&#39;s Receive()
+</span><span style="color:#999;font-style:italic">// method.
+</span><span style="color:#999;font-style:italic"></span><span style="color:#6ab825;font-weight:bold">if</span> _, err := stream.<span style="color:#447fcf">Write</span>(buffer); err != <span style="color:#6ab825;font-weight:bold">nil</span> {
+    fmt.<span style="color:#447fcf">Printf</span>(<span style="color:#ed9d13">&#34;Error: %v\n&#34;</span>, err)
+}
+
+<span style="color:#999;font-style:italic">// Be sure to notify Diatheke that no more audio will be coming when we
+</span><span style="color:#999;font-style:italic">// are done writing data.
+</span><span style="color:#999;font-style:italic"></span>stream.<span style="color:#447fcf">AudioFinished</span>()</code></pre></div>
+</div>
+
+<div class="tab-pane" title="C&#43;&#43;">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#999;font-style:italic">// Store audio data as a string. Think of the string as an array of chars
+</span><span style="color:#999;font-style:italic">// or bytes (a char is one byte of data).
+</span><span style="color:#999;font-style:italic"></span>std::string buffer;
+
+<span style="color:#999;font-style:italic">// Get the audio data from a source. This could be a microphone, file, or
+</span><span style="color:#999;font-style:italic">// any other source. Here we assume the audio data was retrieved previously
+</span><span style="color:#999;font-style:italic">// and stored in our buffer.
+</span><span style="color:#999;font-style:italic"></span>
+<span style="color:#999;font-style:italic">// Push the audio data to the stream. This function may be called multiple
+</span><span style="color:#999;font-style:italic">// times. It is safe to call concurrently with the stream&#39;s waitForResult()
+</span><span style="color:#999;font-style:italic">// method.
+</span><span style="color:#999;font-style:italic"></span>stream-&gt;pushAudio(buffer.c_str(), buffer.size());
+
+<span style="color:#999;font-style:italic">// Be sure to notify Diatheke that no more audio will be coming when we
+</span><span style="color:#999;font-style:italic">// are done writing data.
+</span><span style="color:#999;font-style:italic"></span>stream-&gt;finishAudio();
+</code></pre></div>
+</div>
+
+<p></div>
+</div></p>
+
+<h2 id="receiving-transcriptions">Receiving Transcriptions</h2>
+
+<p>Transcripts are received over the same ASR stream used to push audio, as
+demonstrated below. It is safe to call both PushAudio() and Receive()
+concurrently (i.e., on different threads), however it is not safe to
+call the same method concurrently. For example, it is an error to call
+Receive() for the same stream simultaneously from two threads.</p>
+
+<p>The transcript returned will include the transcript&rsquo;s text and a
+confidence score, which is a measure of how confident the ASR engine
+is that the transcript matches the supplied audio. The confidence score
+will be between 0.0 and 1.0, with 1.0 meaning that the ASR engine is very
+confident that the transcript matches what was spoken.</p>
+
+<p>The receiving end of the ASR stream will close after the sending side of
+the stream is closed (e.g., by calling AudioFinished()).</p>
+
+<div class='code-tabs'>
+  <ul class="nav-tabs"></ul>
+  <div class="tab-content">
+
+<div class="tab-pane" title="Go">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#6ab825;font-weight:bold">for</span> {
+    <span style="color:#999;font-style:italic">// Wait for a transcription from the server. It is safe to call this
+</span><span style="color:#999;font-style:italic"></span>    <span style="color:#999;font-style:italic">// method concurrently with the stream&#39;s Write() method.
+</span><span style="color:#999;font-style:italic"></span>    transcript, err := stream.<span style="color:#447fcf">Receive</span>()
+
+    <span style="color:#999;font-style:italic">// This indicates the stream has finished, which will happen
+</span><span style="color:#999;font-style:italic"></span>    <span style="color:#999;font-style:italic">// after the stream&#39;s AudioFinished() method is called or the
+</span><span style="color:#999;font-style:italic"></span>    <span style="color:#999;font-style:italic">// context used to create the stream closes.
+</span><span style="color:#999;font-style:italic"></span>    <span style="color:#6ab825;font-weight:bold">if</span> err == io.EOF {
+        <span style="color:#6ab825;font-weight:bold">break</span>
+    }
+    <span style="color:#6ab825;font-weight:bold">if</span> err != <span style="color:#6ab825;font-weight:bold">nil</span> {
+        fmt.<span style="color:#447fcf">Printf</span>(<span style="color:#ed9d13">&#34;Error: %v\n&#34;</span>, err)
+        <span style="color:#6ab825;font-weight:bold">return</span>
+    }
+
+    <span style="color:#999;font-style:italic">// Display the transcript
+</span><span style="color:#999;font-style:italic"></span>    fmt.<span style="color:#447fcf">Printf</span>(<span style="color:#ed9d13">&#34;ASR Response:\n&#34;</span>)
+    fmt.<span style="color:#447fcf">Printf</span>(<span style="color:#ed9d13">&#34;  Transcription: %s\n&#34;</span>, transcript.Text)
+    fmt.<span style="color:#447fcf">Printf</span>(<span style="color:#ed9d13">&#34;  Confidence Score: %v\n\n&#34;</span>, transcript.ConfidenceScore)
+}</code></pre></div>
+</div>
+
+<div class="tab-pane" title="C&#43;&#43;">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#999;font-style:italic">// Wait for a transcription from the server. It is safe to call this
+</span><span style="color:#999;font-style:italic">// method concurrently with the stream&#39;s pushAudio() method. The
+</span><span style="color:#999;font-style:italic">// waitForResult() method will return false after the stream&#39;s
+</span><span style="color:#999;font-style:italic">// finishAudio() method has been called.
+</span><span style="color:#999;font-style:italic"></span>cobaltspeech::diatheke::ASRResponse result;
+<span style="color:#6ab825;font-weight:bold">while</span> (stream-&gt;waitForResult(&amp;result))
+{
+    <span style="color:#999;font-style:italic">// Display the transcript
+</span><span style="color:#999;font-style:italic"></span>    std::cout &lt;&lt; <span style="color:#ed9d13">&#34;ASR Response:&#34;</span> &lt;&lt; std::endl;
+    std::cout &lt;&lt; <span style="color:#ed9d13">&#34;  Transcription: &#34;</span> &lt;&lt; result.text() &lt;&lt; std::endl;
+    std::cout &lt;&lt; <span style="color:#ed9d13">&#34;  Confidence Score: &#34;</span> &lt;&lt; result.confidence_score()
+              &lt;&lt; std::endl
+              &lt;&lt; std::endl;
+}
+</code></pre></div>
+</div>
+
+<p></div>
+</div></p>
+
+
+    
+    
+          <footer class=" footline" >
+	
+</footer>
+  </div>
+</div>
+
+<div id="navigation">
+<a class="nav nav-prev" href="/sdk-diatheke/using-diatheke-sdk/session/audio-output/" title="Audio Output"> <i class="fa fa-chevron-left"></i><label>Audio Output</label></a>
+    <a class="nav nav-next" href="/sdk-diatheke/using-diatheke-sdk/streaming-tts/" title="Streaming TTS" style="margin-right: 0px;"><label>Streaming TTS</label><i class="fa fa-chevron-right"></i></a></div>
+
+</section>
+<div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
+  <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
+</div>    
+
+<script src="/sdk-diatheke/js/clipboard.min.js"></script>
+<script src="/sdk-diatheke/js/featherlight.min.js"></script>
+<script src="/sdk-diatheke/js/html5shiv-printshiv.min.js"></script>
+
+<script src="/sdk-diatheke/js/modernizr.custom.71422.js"></script>
+<script src="/sdk-diatheke/js/docdock.js"></script>
+<script src="/sdk-diatheke/theme-original/script.js"></script>
+
+
+    
+
+    
+    
+
+    
+  </body>
+</html>

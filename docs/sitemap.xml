@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>https://cobaltspeech.github.io/sdk-diatheke/getting-started/</loc>
+  </url>
+  
+  <url>
+    <loc>https://cobaltspeech.github.io/sdk-diatheke/using-diatheke-sdk/</loc>
+  </url>
+  
+  <url>
+    <loc>https://cobaltspeech.github.io/sdk-diatheke/using-diatheke-sdk/include/</loc>
+  </url>
+  
+  <url>
+    <loc>https://cobaltspeech.github.io/sdk-diatheke/using-diatheke-sdk/errors/</loc>
+  </url>
+  
+  <url>
+    <loc>https://cobaltspeech.github.io/sdk-diatheke/using-diatheke-sdk/connecting/</loc>
+  </url>
+  
+  <url>
+    <loc>https://cobaltspeech.github.io/sdk-diatheke/using-diatheke-sdk/session/</loc>
+  </url>
+  
+  <url>
+    <loc>https://cobaltspeech.github.io/sdk-diatheke/using-diatheke-sdk/streaming-asr/</loc>
+  </url>
+  
+  <url>
+    <loc>https://cobaltspeech.github.io/sdk-diatheke/using-diatheke-sdk/streaming-tts/</loc>
+  </url>
+  
+  <url>
+    <loc>https://cobaltspeech.github.io/sdk-diatheke/using-diatheke-sdk/session/create-session/</loc>
+  </url>
+  
+  <url>
+    <loc>https://cobaltspeech.github.io/sdk-diatheke/using-diatheke-sdk/session/event-stream/</loc>
+  </url>
+  
+  <url>
+    <loc>https://cobaltspeech.github.io/sdk-diatheke/using-diatheke-sdk/session/push-text/</loc>
+  </url>
+  
+  <url>
+    <loc>https://cobaltspeech.github.io/sdk-diatheke/using-diatheke-sdk/session/audio-input/</loc>
+  </url>
+  
+  <url>
+    <loc>https://cobaltspeech.github.io/sdk-diatheke/using-diatheke-sdk/session/audio-output/</loc>
+  </url>
+  
+  <url>
+    <loc>https://cobaltspeech.github.io/sdk-diatheke/protobuf/</loc>
+  </url>
+  
+  <url>
+    <loc>https://cobaltspeech.github.io/sdk-diatheke/glossary/</loc>
+  </url>
+  
+  <url>
+    <loc>https://cobaltspeech.github.io/sdk-diatheke/_header/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://cobaltspeech.github.io/sdk-diatheke/categories/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://cobaltspeech.github.io/sdk-diatheke/</loc>
+  </url>
+  
+  <url>
+    <loc>https://cobaltspeech.github.io/sdk-diatheke/tags/</loc>
+    <priority>0</priority>
+  </url>
+  
+</urlset>

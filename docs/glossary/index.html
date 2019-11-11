@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Diatheke SDK -- Cobalt</title>
+    
+      <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Glossary :: Diatheke SDK -- Cobalt</title>
+<link rel="shortcut icon" href="/sdk-diatheke/images/favicon.ico" type="image/x-icon" />
+<link href="/sdk-diatheke/css/nucleus.css" rel="stylesheet">
+<link href="/sdk-diatheke/css/font-awesome.min.css" rel="stylesheet">
+<link href="/sdk-diatheke/css/hybrid.css" rel="stylesheet">
+<link href="/sdk-diatheke/css/featherlight.min.css" rel="stylesheet">
+<link href="/sdk-diatheke/css/auto-complete.css" rel="stylesheet">
+<link href="/sdk-diatheke/theme-original/style.css" rel="stylesheet">
+
+  <link href="/sdk-diatheke/theme-original/variant-blue.css" rel="stylesheet">
+
+<link rel="stylesheet" href="/sdk-diatheke/css/bootstrap.min.css">
+<script src="/sdk-diatheke/js/jquery-2.x.min.js"></script>
+<style type="text/css">
+  :root #header + #content > #left > #rlblock_left {
+    display:none !important;
+  }
+</style>
+<link href="/sdk-diatheke/css/tabs.css" rel="stylesheet" type="text/css">
+<script src="/sdk-diatheke/js/tabs.js"></script>
+
+
+    
+  </head>
+  <body data-url="/sdk-diatheke/glossary/">
+    
+      <div id="headermain"></div>
+<nav id="sidebar" class="showVisitedLinks">
+
+
+
+<div class="highlightable">
+  <div id="header-wrapper">
+    <div id="header">
+      
+	
+  
+    <p><img src="/sdk-diatheke/images/logo-white.png" alt="Cobalt's SDK Documentation" /></p>
+
+<p>Diatheke SDK &ndash; Cobalt</p>
+
+  
+
+
+    </div>
+        <div class="searchbox">
+		    <label for="search-by"><i class="fa fa-search"></i></label>
+		    <input data-search-input id="search-by" type="text" placeholder="Search...">
+		    <span data-search-clear=""><i class="fa fa-close"></i></span>
+		</div>
+		<script type="text/javascript" src="/sdk-diatheke/js/lunr.min.js"></script>
+		<script type="text/javascript" src="/sdk-diatheke/js/auto-complete.js"></script>
+		<script type="text/javascript">
+        
+            var baseurl = "https:\/\/cobaltspeech.github.io\/sdk-diatheke";
+        
+		</script>
+		<script type="text/javascript" src="/sdk-diatheke/js/search.js"></script>
+  </div>
+
+      <ul class="topics">
+            <li data-nav-id="/sdk-diatheke/" class="dd-item">
+            <a href="/sdk-diatheke/"><i class="fa fa-fw fa-home"></i></a>
+            </li>
+    <li data-nav-id="/sdk-diatheke/getting-started/" class="dd-item
+        ">
+      <div>
+      <a href="/sdk-diatheke/getting-started/">Getting Started</a><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+    </li>
+    <li data-nav-id="/sdk-diatheke/using-diatheke-sdk/" class="dd-item haschildren
+        ">
+      <div>
+      <a href="/sdk-diatheke/using-diatheke-sdk/">Using Diatheke SDK</a><i class="fa fa-angle-right fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+      <li data-nav-id="/sdk-diatheke/using-diatheke-sdk/include/" class="dd-item">
+        <div>
+          <a href="/sdk-diatheke/using-diatheke-sdk/include/">
+            Including the SDK
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/sdk-diatheke/using-diatheke-sdk/errors/" class="dd-item">
+        <div>
+          <a href="/sdk-diatheke/using-diatheke-sdk/errors/">
+            Error Handling
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/sdk-diatheke/using-diatheke-sdk/connecting/" class="dd-item">
+        <div>
+          <a href="/sdk-diatheke/using-diatheke-sdk/connecting/">
+            Connecting to the Server
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+    <li data-nav-id="/sdk-diatheke/using-diatheke-sdk/session/" class="dd-item haschildren
+        ">
+      <div>
+      <a href="/sdk-diatheke/using-diatheke-sdk/session/">Sessions</a><i class="fa fa-angle-right fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+      <li data-nav-id="/sdk-diatheke/using-diatheke-sdk/session/create-session/" class="dd-item">
+        <div>
+          <a href="/sdk-diatheke/using-diatheke-sdk/session/create-session/">
+            Creating a Session
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/sdk-diatheke/using-diatheke-sdk/session/event-stream/" class="dd-item">
+        <div>
+          <a href="/sdk-diatheke/using-diatheke-sdk/session/event-stream/">
+            Event Stream
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/sdk-diatheke/using-diatheke-sdk/session/push-text/" class="dd-item">
+        <div>
+          <a href="/sdk-diatheke/using-diatheke-sdk/session/push-text/">
+            Push Text
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/sdk-diatheke/using-diatheke-sdk/session/audio-input/" class="dd-item">
+        <div>
+          <a href="/sdk-diatheke/using-diatheke-sdk/session/audio-input/">
+            Audio Input
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/sdk-diatheke/using-diatheke-sdk/session/audio-output/" class="dd-item">
+        <div>
+          <a href="/sdk-diatheke/using-diatheke-sdk/session/audio-output/">
+            Audio Output
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+        </ul>
+    </li>
+      <li data-nav-id="/sdk-diatheke/using-diatheke-sdk/streaming-asr/" class="dd-item">
+        <div>
+          <a href="/sdk-diatheke/using-diatheke-sdk/streaming-asr/">
+            Streaming ASR
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/sdk-diatheke/using-diatheke-sdk/streaming-tts/" class="dd-item">
+        <div>
+          <a href="/sdk-diatheke/using-diatheke-sdk/streaming-tts/">
+            Streaming TTS
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+        </ul>
+    </li>
+    <li data-nav-id="/sdk-diatheke/protobuf/" class="dd-item
+        ">
+      <div>
+      <a href="/sdk-diatheke/protobuf/">Diatheke API Reference</a><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+    </li>
+    <li data-nav-id="/sdk-diatheke/glossary/" class="dd-item parent active
+        ">
+      <div>
+      <a href="/sdk-diatheke/glossary/">Glossary</a><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+    </li>
+
+
+
+        <section id="shortcuts">
+                <li class="" role=""><h3>More</h3><a href="https://github.com/cobaltspeech/sdk-diatheke" target="_blank" rel="noopener"><i class='fa fa-github'></i> <label>Github repo</label></a></li>
+                <li class="" role=""><a href="https://www.cobaltspeech.com/contact" target="_blank" rel="noopener"><i class='fa fa-bookmark'></i> <label>Contact us</label></a></li>
+        </section>
+            <a id="clear-history" class="" href="#" data-clear-history-toggle=""><i class="fa  fa-history"></i> Clear History</a>
+
+    <hr />
+    <li></li>
+    
+    </ul>
+
+ <section id="footer">
+    </section>
+  </div>
+</nav>
+
+
+
+<section id="body">
+<div id="overlay"></div>
+<div class="padding highlightable">
+
+  <div id="top-bar">
+    <div id="breadcrumbs" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+        <span id="sidebar-toggle-span">
+          <a href="#" id="sidebar-toggle" data-sidebar-toggle="">
+            <i class="fa fa-bars"></i>
+          </a>
+        </span>
+        <span id="toc-menu"><i class="fa fa-list-alt"></i></span>
+        <span class="links">
+        
+
+
+
+
+ <a href='/sdk-diatheke/'>Diatheke SDK Documentation</a> > Glossary
+
+ 
+
+   
+        </span>
+    </div>
+    
+    
+    <div class="progress">
+        <div class="wrapper">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#action">Action</a></li>
+<li><a href="#asr">ASR</a></li>
+<li><a href="#command">Command</a></li>
+<li><a href="#entity">Entity</a></li>
+<li><a href="#intent">Intent</a></li>
+<li><a href="#nlu">NLU</a></li>
+<li><a href="#session">Session</a></li>
+<li><a href="#slot">Slot</a></li>
+<li><a href="#tts">TTS</a></li>
+<li><a href="#utterance">Utterance</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+        </div>
+    </div>
+    
+
+  </div>
+
+
+<div id="body-inner">
+  
+    <h1>Glossary</h1>
+  
+
+
+
+    
+    
+    
+
+
+
+<h3 id="action">Action</h3>
+
+<p>When a user says something, it is converted to <a href="#intent">intents</a> and
+<a href="#entity">entities</a>. Then, the system can take any <em>action</em> in response.
+Actions can include <a href="#tts">text-to-speech</a> output, or running a particular
+<a href="#command">command</a>.</p>
+
+<p>For example, if someone asks to pay money off their credit card, then
+the system should interact with the banking backend to pay the card, while
+also playing a TTS response to confirm to the user what is happening.</p>
+
+<h3 id="asr">ASR</h3>
+
+<p>The first step in any dialogue system is
+<a href="https://en.wikipedia.org/wiki/Speech_recognition">Automatic Speech Recognition</a>
+(ASR), which converts the audio of someone&rsquo;s <a href="#utterance">utterance</a> into
+text. ASR usually outputs in &lsquo;spoken form&rsquo;, i.e. numbers and other expressions
+are in words, not digits (&ldquo;three hundred and twenty one&rdquo; and not &ldquo;321&rdquo;),
+but automatic formatting can optionally be applied.</p>
+
+<p>Diatheke uses Cobalt&rsquo;s ASR engine, Cubic, to process audio and supply
+transcripts.</p>
+
+<h3 id="command">Command</h3>
+
+<p>A command is a specific type of <a href="#action">action</a> that executes some set
+of tasks in response to a recognized <a href="#intent">intent</a>. For example, if
+the <a href="#utterance">utterance</a> &ldquo;Play some music&rdquo; was recognized as an intent,
+the command might handle the actual playback of an audio file.</p>
+
+<h3 id="entity">Entity</h3>
+
+<p>An entity (a.k.a. a slot) appears in an <a href="#utterance">utterance</a>.
+It represents a value in an <a href="#intent">intent</a> that can change between
+utterances or even be omitted entirely in some cases.</p>
+
+<div class="panel panel-default">
+    <div class="panel-heading">Examples</div>
+    <div class="panel-body">
+"What's the weather forecast for 
+<mark style="background-color: SlateBlue; color: white">Paris</mark>?" </br>
+
+"Book me <mark style="background-color: DodgerBlue; color: white">three</mark>
+<mark style="background-color: Orange;">plane</mark> tickets from
+<mark style="background-color: SlateBlue; color: white">London</mark> to
+<mark style="background-color: Violet;">New York</mark>, please" </br>
+
+"Play the song <mark style="background-color: SeaGreen; color: white">New York</mark>" </br>
+
+"Pay <mark style="background-color: DodgerBlue; color: white">three</mark>
+pounds off my credit card" </br>
+</div>
+    
+
+<p></div></p>
+
+<p>The first two examples have entities that are Cities - the first has a single
+City, while the second might have a SourceCity and DestinationCity.</p>
+
+<p>The second and fourth examples have entities that are numbers, though they are
+interpreted differently in the two utterances. One is a quantity, and the other
+is an amount of money.</p>
+
+<p>The same words can mean different entities in different contexts. E.g. &lsquo;New York&rsquo;
+could be either a City or a SongName, depending on the context.</p>
+
+<h3 id="intent">Intent</h3>
+
+<p>Intent is the name for a group of <a href="#utterance">utterances</a> which mean the
+same sort of thing and result in a particular <a href="#action">action</a> being taken.</p>
+
+<div class="panel panel-default">
+    <div class="panel-heading">Example - GetWeatherForecastIntent</div>
+    <div class="panel-body">
+"What's the weather forecast for Paris?" </br>
+"What's the weather like in London?" </br>
+"What's the weather today?" </br>
+</div>
+    
+
+<p></div></p>
+
+<div class="panel panel-default">
+    <div class="panel-heading">Example - BookTicketIntent</div>
+    <div class="panel-body">
+"Book me three plane tickets from London to New York, please" </br>
+"Book me two train tickets from Newcastle to Edinburgh" </br>
+"Book me five bus tickets to Grand Junction" </br>
+</div>
+    
+
+<p></div></p>
+
+<h3 id="nlu">NLU</h3>
+
+<p><a href="https://en.wikipedia.org/wiki/Natural-language_understanding">Natural Language Understanding</a>
+(NLU) is a field within artificial intelligence that deals with machine
+reading comprehesion. It attempts to discern the meaning of (sometimes
+incomplete) sentences to execute an <a href="#intent">intent</a> with its associated
+<a href="#entity">entites</a>.</p>
+
+<h3 id="session">Session</h3>
+
+<p>A session represents all the components (<a href="#asr">ASR</a>, <a href="#tts">TTS</a>,
+<a href="#nlu">NLU</a>, etc.) necessary to carry on a conversation with Diatheke.
+A single session keeps track of a dialog&rsquo;s current state, with all
+possible states being defined by a Diatheke model.</p>
+
+<h3 id="slot">Slot</h3>
+
+<p>See <a href="#entity">Entity</a></p>
+
+<h3 id="tts">TTS</h3>
+
+<p><a href="https://en.wikipedia.org/wiki/Speech_synthesis">Text To Speech</a> (TTS) synthesizes
+audio that replicates human speech from written text.</p>
+
+<p>Diatheke uses Cobalt&rsquo;s TTS engine, Luna, to process audio and supply
+transcripts.</p>
+
+<h3 id="utterance">Utterance</h3>
+
+<p>An <em>utterance</em> is something that someone says - it isn&rsquo;t necessarily
+a full sentence as people don&rsquo;t always speak grammatically.</p>
+
+<div class="panel panel-default">
+    <div class="panel-heading">Examples</div>
+    <div class="panel-body">
+"What's the weather forecast?" </br>
+"Book me a train ticket, please" </br>
+"Play some music" </br>
+"Pay my credit card balance in full" </br>
+"Cancel" </br>
+</div>
+    
+
+<p></div></p>
+
+
+
+    
+    
+          <footer class=" footline" >
+	
+</footer>
+  </div>
+</div>
+
+<div id="navigation">
+<a class="nav nav-prev" href="/sdk-diatheke/protobuf/" title="Diatheke API Reference"> <i class="fa fa-chevron-left"></i><label>Diatheke API Reference</label></a>
+    <a class="nav nav-next" href="/sdk-diatheke/getting-started/" title="Getting Started" style="margin-right: 0px;"><label>Getting Started</label><i class="fa fa-chevron-right"></i></a></div>
+
+</section>
+<div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
+  <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
+</div>    
+
+<script src="/sdk-diatheke/js/clipboard.min.js"></script>
+<script src="/sdk-diatheke/js/featherlight.min.js"></script>
+<script src="/sdk-diatheke/js/html5shiv-printshiv.min.js"></script>
+
+<script src="/sdk-diatheke/js/modernizr.custom.71422.js"></script>
+<script src="/sdk-diatheke/js/docdock.js"></script>
+<script src="/sdk-diatheke/theme-original/script.js"></script>
+
+
+    
+
+    
+    
+
+    
+  </body>
+</html>

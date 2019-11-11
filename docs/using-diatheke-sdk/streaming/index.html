@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Diatheke SDK -- Cobalt</title>
+    
+      <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Streaming Recognition :: Diatheke SDK -- Cobalt</title>
+<link rel="shortcut icon" href="/sdk-diatheke/images/favicon.ico" type="image/x-icon" />
+<link href="/sdk-diatheke/css/nucleus.css" rel="stylesheet">
+<link href="/sdk-diatheke/css/font-awesome.min.css" rel="stylesheet">
+<link href="/sdk-diatheke/css/hybrid.css" rel="stylesheet">
+<link href="/sdk-diatheke/css/featherlight.min.css" rel="stylesheet">
+<link href="/sdk-diatheke/css/auto-complete.css" rel="stylesheet">
+<link href="/sdk-diatheke/theme-original/style.css" rel="stylesheet">
+
+  <link href="/sdk-diatheke/theme-original/variant-blue.css" rel="stylesheet">
+
+<link rel="stylesheet" href="/sdk-diatheke/css/bootstrap.min.css">
+<script src="/sdk-diatheke/js/jquery-2.x.min.js"></script>
+<style type="text/css">
+  :root #header + #content > #left > #rlblock_left {
+    display:none !important;
+  }
+</style>
+<link href="/sdk-diatheke/css/tabs.css" rel="stylesheet" type="text/css">
+<script src="/sdk-diatheke/js/tabs.js"></script>
+
+
+    
+  </head>
+  <body data-url="/sdk-diatheke/using-diatheke-sdk/streaming/">
+    
+      <div id="headermain"></div>
+<nav id="sidebar" class="showVisitedLinks">
+
+
+
+<div class="highlightable">
+  <div id="header-wrapper">
+    <div id="header">
+      
+	
+  
+    <p><img src="/sdk-diatheke/images/logo-white.png" alt="Cobalt's SDK Documentation" /></p>
+
+<p>Diatheke SDK &ndash; Cobalt</p>
+
+  
+
+
+    </div>
+        <div class="searchbox">
+		    <label for="search-by"><i class="fa fa-search"></i></label>
+		    <input data-search-input id="search-by" type="text" placeholder="Search...">
+		    <span data-search-clear=""><i class="fa fa-close"></i></span>
+		</div>
+		<script type="text/javascript" src="/sdk-diatheke/js/lunr.min.js"></script>
+		<script type="text/javascript" src="/sdk-diatheke/js/auto-complete.js"></script>
+		<script type="text/javascript">
+        
+            var baseurl = "https:\/\/cobaltspeech.github.io\/sdk-diatheke";
+        
+		</script>
+		<script type="text/javascript" src="/sdk-diatheke/js/search.js"></script>
+  </div>
+
+      <ul class="topics">
+            <li data-nav-id="/sdk-diatheke/" class="dd-item">
+            <a href="/sdk-diatheke/"><i class="fa fa-fw fa-home"></i></a>
+            </li>
+    <li data-nav-id="/sdk-diatheke/getting-started/" class="dd-item
+        ">
+      <div>
+      <a href="/sdk-diatheke/getting-started/">Getting Started</a><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+    </li>
+    <li data-nav-id="/sdk-diatheke/using-diatheke-sdk/" class="dd-item parent haschildren
+        ">
+      <div>
+      <a href="/sdk-diatheke/using-diatheke-sdk/">Using Diatheke SDK</a>
+            <i class="fa fa-angle-down fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+      <li data-nav-id="/sdk-diatheke/using-diatheke-sdk/installation/" class="dd-item">
+        <div>
+          <a href="/sdk-diatheke/using-diatheke-sdk/installation/">
+            Installing the SDK
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/sdk-diatheke/using-diatheke-sdk/connecting/" class="dd-item">
+        <div>
+          <a href="/sdk-diatheke/using-diatheke-sdk/connecting/">
+            Setup Connection
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/sdk-diatheke/using-diatheke-sdk/recognize/" class="dd-item">
+        <div>
+          <a href="/sdk-diatheke/using-diatheke-sdk/recognize/">
+            Synchronous Recognition
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/sdk-diatheke/using-diatheke-sdk/streaming/" class="dd-item active">
+        <div>
+          <a href="/sdk-diatheke/using-diatheke-sdk/streaming/">
+            Streaming Recognition
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/sdk-diatheke/using-diatheke-sdk/client-configs/" class="dd-item">
+        <div>
+          <a href="/sdk-diatheke/using-diatheke-sdk/client-configs/">
+            Recognition Configurations
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+        </ul>
+    </li>
+    <li data-nav-id="/sdk-diatheke/protobuf/" class="dd-item
+        ">
+      <div>
+      <a href="/sdk-diatheke/protobuf/">Diatheke API Reference</a><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+    </li>
+
+
+
+        <section id="shortcuts">
+                <li class="" role=""><h3>More</h3><a href="https://github.com/cobaltspeech/sdk-diatheke" target="_blank" rel="noopener"><i class='fa fa-github'></i> <label>Github repo</label></a></li>
+                <li class="" role=""><a href="https://www.cobaltspeech.com/contact" target="_blank" rel="noopener"><i class='fa fa-bookmark'></i> <label>Contact us</label></a></li>
+        </section>
+            <a id="clear-history" class="" href="#" data-clear-history-toggle=""><i class="fa  fa-history"></i> Clear History</a>
+
+    <hr />
+    <li></li>
+    
+    </ul>
+
+ <section id="footer">
+    </section>
+  </div>
+</nav>
+
+
+
+<section id="body">
+<div id="overlay"></div>
+<div class="padding highlightable">
+
+  <div id="top-bar">
+    <div id="breadcrumbs" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+        <span id="sidebar-toggle-span">
+          <a href="#" id="sidebar-toggle" data-sidebar-toggle="">
+            <i class="fa fa-bars"></i>
+          </a>
+        </span>
+        <span id="toc-menu"><i class="fa fa-list-alt"></i></span>
+        <span class="links">
+        
+
+
+
+
+
+
+
+ <a href='/sdk-diatheke/'>Diatheke SDK Documentation</a> > <a href='/sdk-diatheke/using-diatheke-sdk/'>Using Diatheke SDK</a> > Streaming Recognition
+
+ 
+
+ 
+
+   
+        </span>
+    </div>
+    
+    
+    <div class="progress">
+        <div class="wrapper">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#streaming-from-an-audio-file">Streaming from an audio file</a></li>
+<li><a href="#streaming-from-microphone">Streaming from microphone</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+        </div>
+    </div>
+    
+
+  </div>
+
+
+<div id="body-inner">
+  
+    <h1>Streaming Recognition</h1>
+  
+
+
+
+    
+    
+    
+    <p>The following example shows how to transcribe an audio file using Cubic’s
+Streaming Recognize Request. The stream can come from a file on disk or be
+directly from a microphone in real time.</p>
+
+<h3 id="streaming-from-an-audio-file">Streaming from an audio file</h3>
+
+<p>We support several file formats including WAV, MP3, FLAC etc. For more details, please
+see the protocol buffer specification file in the SDK repository (<code>grpc/cubic.proto</code>).
+The examples below use a WAV file as input to the streaming recognition. We will query
+the server for available models and use the first model to transcribe the speech.</p>
+
+<div class='code-tabs'>
+  <ul class="nav-tabs"></ul>
+  <div class="tab-content">
+<div class="tab-pane" title="Go">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#6ab825;font-weight:bold">package</span> main
+
+<span style="color:#6ab825;font-weight:bold">import</span> (
+    <span style="color:#ed9d13">&#34;context&#34;</span>
+    <span style="color:#ed9d13">&#34;fmt&#34;</span>
+    <span style="color:#ed9d13">&#34;log&#34;</span>
+    <span style="color:#ed9d13">&#34;os&#34;</span>
+
+    <span style="color:#ed9d13">&#34;github.com/cobaltspeech/sdk-cubic/grpc/go-cubic&#34;</span>
+    <span style="color:#ed9d13">&#34;github.com/cobaltspeech/sdk-cubic/grpc/go-cubic/cubicpb&#34;</span>
+)
+
+<span style="color:#6ab825;font-weight:bold">const</span> serverAddr = <span style="color:#ed9d13">&#34;127.0.0.1:2727&#34;</span>
+
+<span style="color:#6ab825;font-weight:bold">func</span> <span style="color:#447fcf">main</span>() {
+    client, err := cubic.<span style="color:#447fcf">NewClient</span>(serverAddr)
+    <span style="color:#6ab825;font-weight:bold">if</span> err != <span style="color:#6ab825;font-weight:bold">nil</span> {
+        log.<span style="color:#447fcf">Fatal</span>(err)
+    }
+    <span style="color:#6ab825;font-weight:bold">defer</span> client.<span style="color:#447fcf">Close</span>()
+
+    modelResp, err := client.<span style="color:#447fcf">ListModels</span>(context.<span style="color:#447fcf">Background</span>())
+    <span style="color:#6ab825;font-weight:bold">if</span> err != <span style="color:#6ab825;font-weight:bold">nil</span> {
+        log.<span style="color:#447fcf">Fatal</span>(err)
+    }
+
+    <span style="color:#999;font-style:italic">// Use the first available model
+</span><span style="color:#999;font-style:italic"></span>   model := modelResp.Models[<span style="color:#3677a9">0</span>]
+
+    f, err := os.<span style="color:#447fcf">Open</span>(<span style="color:#ed9d13">&#34;test.wav&#34;</span>)
+    <span style="color:#6ab825;font-weight:bold">if</span> err != <span style="color:#6ab825;font-weight:bold">nil</span> {
+        log.<span style="color:#447fcf">Fatal</span>(err)
+    }
+
+    <span style="color:#6ab825;font-weight:bold">defer</span> f.<span style="color:#447fcf">Close</span>()
+
+    cfg := &amp;cubicpb.RecognitionConfig{
+        ModelId: model.Id,
+    }
+
+    <span style="color:#999;font-style:italic">// Define a callback function to handle results
+</span><span style="color:#999;font-style:italic"></span>   resultHandler := <span style="color:#6ab825;font-weight:bold">func</span>(resp *cubicpb.RecognitionResponse) {
+        <span style="color:#6ab825;font-weight:bold">for</span> _, r := <span style="color:#6ab825;font-weight:bold">range</span> resp.Results {
+            <span style="color:#6ab825;font-weight:bold">if</span> !r.IsPartial {
+                fmt.<span style="color:#447fcf">Println</span>(r.Alternatives[<span style="color:#3677a9">0</span>].Transcript)
+            }
+        }
+    }
+
+    err = client.<span style="color:#447fcf">StreamingRecognize</span>(context.<span style="color:#447fcf">Background</span>(), cfg, f, resultHandler)
+    <span style="color:#6ab825;font-weight:bold">if</span> err != <span style="color:#6ab825;font-weight:bold">nil</span> {
+        log.<span style="color:#447fcf">Fatal</span>(err)
+    }
+
+}</code></pre></div>
+</div>
+
+<div class="tab-pane" title="Python">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#6ab825;font-weight:bold">import</span> <span style="color:#447fcf;text-decoration:underline">cubic</span>
+
+serverAddress = <span style="color:#ed9d13">&#39;127.0.0.1:2727&#39;</span>
+
+client = cubic.Client(serverAddress)
+
+<span style="color:#999;font-style:italic"># get list of available models</span>
+modelResp = client.ListModels()
+<span style="color:#6ab825;font-weight:bold">for</span> model <span style="color:#6ab825;font-weight:bold">in</span> modelResp.models:
+    <span style="color:#6ab825;font-weight:bold">print</span>(<span style="color:#ed9d13">&#34;ID = {}, Name = {}&#34;</span>.format(model.<span style="color:#24909d">id</span>, model.name))
+
+<span style="color:#999;font-style:italic"># use the first available model</span>
+model = modelResp.models[<span style="color:#3677a9">0</span>]
+
+cfg = cubic.RecognitionConfig(
+    model_id = model.<span style="color:#24909d">id</span>
+)
+
+<span style="color:#999;font-style:italic"># client.StreamingRecognize takes any binary</span>
+<span style="color:#999;font-style:italic"># stream object that has a read(nBytes) method.</span>
+<span style="color:#999;font-style:italic"># The method should return nBytes from the stream.</span>
+
+<span style="color:#999;font-style:italic"># open audio file stream</span>
+audio = <span style="color:#24909d">open</span>(<span style="color:#ed9d13">&#39;test.wav&#39;</span>, <span style="color:#ed9d13">&#39;rb&#39;</span>)
+
+<span style="color:#999;font-style:italic"># send streaming request to cubic and </span>
+<span style="color:#999;font-style:italic"># print out results as they come in</span>
+<span style="color:#6ab825;font-weight:bold">for</span> resp <span style="color:#6ab825;font-weight:bold">in</span> client.StreamingRecognize(cfg, audio):
+    <span style="color:#6ab825;font-weight:bold">for</span> result <span style="color:#6ab825;font-weight:bold">in</span> resp.results:
+        <span style="color:#6ab825;font-weight:bold">if</span> result.is_partial:
+            <span style="color:#6ab825;font-weight:bold">print</span>(<span style="color:#ed9d13">&#34;</span><span style="color:#ed9d13">\r</span><span style="color:#ed9d13">{0}&#34;</span>.format(result.alternatives[<span style="color:#3677a9">0</span>].transcript), end=<span style="color:#ed9d13">&#34;&#34;</span>)
+        <span style="color:#6ab825;font-weight:bold">else</span>:
+            <span style="color:#6ab825;font-weight:bold">print</span>(<span style="color:#ed9d13">&#34;</span><span style="color:#ed9d13">\r</span><span style="color:#ed9d13">{0}&#34;</span>.format(result.alternatives[<span style="color:#3677a9">0</span>].transcript), end=<span style="color:#ed9d13">&#34;</span><span style="color:#ed9d13">\n</span><span style="color:#ed9d13">&#34;</span>)</code></pre></div>
+</div>
+
+<p></div>
+</div></p>
+
+<h3 id="streaming-from-microphone">Streaming from microphone</h3>
+
+<p>Streaming audio from microphone input typically needs us to interact with system
+libraries. There are several options available, and although the examples here use
+one, you may choose to use an alternative as long as the recording audio format is
+chosen correctly.</p>
+
+<div class='code-tabs'>
+  <ul class="nav-tabs"></ul>
+  <div class="tab-content">
+<div class="tab-pane" title="Go">
+  <p>This example utilizes the portaudio <a href="https://github.com/gordonklaus/portaudio">bindings</a> for Go
+to stream audio from a microphone. To use this package, install <a href="http://www.portaudio.com/">PortAudio</a>
+development headers and libraries using an appropriate package manager for your system (e.g. <code>apt-get install portaudio19-dev</code> on Ubuntu, <code>brew install portaudio</code> for OSX, etc.) or build from <a href="http://portaudio.com/docs/v19-doxydocs/tutorial_start.html">source</a>.</p>
+<div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#6ab825;font-weight:bold">package</span> main
+
+<span style="color:#6ab825;font-weight:bold">import</span> (
+    <span style="color:#ed9d13">&#34;bytes&#34;</span>
+    <span style="color:#ed9d13">&#34;context&#34;</span>
+    <span style="color:#ed9d13">&#34;encoding/binary&#34;</span>
+    <span style="color:#ed9d13">&#34;fmt&#34;</span>
+    <span style="color:#ed9d13">&#34;log&#34;</span>
+
+    <span style="color:#ed9d13">&#34;github.com/cobaltspeech/sdk-cubic/grpc/go-cubic&#34;</span>
+    <span style="color:#ed9d13">&#34;github.com/cobaltspeech/sdk-cubic/grpc/go-cubic/cubicpb&#34;</span>
+    <span style="color:#ed9d13">&#34;github.com/gordonklaus/portaudio&#34;</span>
+)
+
+<span style="color:#6ab825;font-weight:bold">const</span> serverAddr = <span style="color:#ed9d13">&#34;127.0.0.1:2727&#34;</span>
+
+<span style="color:#999;font-style:italic">// Microphone implements the io.ReadCloser interface and provides 
+</span><span style="color:#999;font-style:italic">// a data stream for microphone input.
+</span><span style="color:#999;font-style:italic"></span><span style="color:#6ab825;font-weight:bold">type</span> Microphone <span style="color:#6ab825;font-weight:bold">struct</span> {
+    buffer []<span style="color:#6ab825;font-weight:bold">int16</span>
+    stream *portaudio.Stream
+}
+
+<span style="color:#999;font-style:italic">// NewMicrophone instantiates a Microphone object with the desired
+</span><span style="color:#999;font-style:italic">// sampling rate and buffer size. When streaming to cubic, the sample
+</span><span style="color:#999;font-style:italic">// rate should be set to the sample rate of the model used.
+</span><span style="color:#999;font-style:italic"></span><span style="color:#6ab825;font-weight:bold">func</span> <span style="color:#447fcf">NewMicrophone</span>(sampleRate, bufferSize <span style="color:#6ab825;font-weight:bold">uint32</span>) (*Microphone, <span style="color:#6ab825;font-weight:bold">error</span>) {
+
+    <span style="color:#999;font-style:italic">// bufferSize is measured in number of bytes. Since we are capturing
+</span><span style="color:#999;font-style:italic"></span>   <span style="color:#999;font-style:italic">// 16 bit audio, each sample is 2 bytes. The microphone has a int16
+</span><span style="color:#999;font-style:italic"></span>   <span style="color:#999;font-style:italic">// buffer, so we use the number of samples as its size.
+</span><span style="color:#999;font-style:italic"></span>   numSamples := bufferSize/<span style="color:#3677a9">2</span>
+    mic := Microphone{buffer: <span style="color:#24909d">make</span>([]<span style="color:#6ab825;font-weight:bold">int16</span>, numSamples)}
+
+    portaudio.<span style="color:#447fcf">Initialize</span>()
+    stream, err := portaudio.<span style="color:#447fcf">OpenDefaultStream</span>(<span style="color:#3677a9">1</span>, <span style="color:#3677a9">0</span>, <span style="color:#24909d">float64</span>(sampleRate), <span style="color:#24909d">int</span>(numSamples), mic.buffer)
+    <span style="color:#6ab825;font-weight:bold">if</span> err != <span style="color:#6ab825;font-weight:bold">nil</span> {
+        <span style="color:#6ab825;font-weight:bold">return</span> <span style="color:#6ab825;font-weight:bold">nil</span>, err
+    }
+    mic.stream = stream
+
+    err = mic.stream.<span style="color:#447fcf">Start</span>()
+    <span style="color:#6ab825;font-weight:bold">if</span> err != <span style="color:#6ab825;font-weight:bold">nil</span> {
+        <span style="color:#6ab825;font-weight:bold">return</span> <span style="color:#6ab825;font-weight:bold">nil</span>, err
+    }
+
+    <span style="color:#6ab825;font-weight:bold">return</span> &amp;mic, <span style="color:#6ab825;font-weight:bold">nil</span>
+}
+
+<span style="color:#999;font-style:italic">// Read copies N bytes into the passed buffer from the microphone audio buffer
+</span><span style="color:#999;font-style:italic">// where N is the buffer size passed to `cubic.NewClient`. Also, to be compatible
+</span><span style="color:#999;font-style:italic">// with the cubic client, it returns two things : an int representing the number of
+</span><span style="color:#999;font-style:italic">// bytes copied and an error.
+</span><span style="color:#999;font-style:italic"></span><span style="color:#6ab825;font-weight:bold">func</span> (mic *Microphone) <span style="color:#447fcf">Read</span>(buffer []<span style="color:#6ab825;font-weight:bold">byte</span>) (<span style="color:#6ab825;font-weight:bold">int</span>, <span style="color:#6ab825;font-weight:bold">error</span>) {
+    err := mic.stream.<span style="color:#447fcf">Read</span>()
+    <span style="color:#6ab825;font-weight:bold">if</span> err != <span style="color:#6ab825;font-weight:bold">nil</span> {
+        <span style="color:#6ab825;font-weight:bold">return</span> <span style="color:#3677a9">0</span>, err
+    }
+    byteBuffer := <span style="color:#24909d">new</span>(bytes.Buffer)
+    err = binary.<span style="color:#447fcf">Write</span>(byteBuffer, binary.LittleEndian, mic.buffer)
+    <span style="color:#6ab825;font-weight:bold">if</span> err != <span style="color:#6ab825;font-weight:bold">nil</span> {
+        <span style="color:#6ab825;font-weight:bold">return</span> <span style="color:#3677a9">0</span>, err
+    }
+    <span style="color:#24909d">copy</span>(buffer, byteBuffer.<span style="color:#447fcf">Bytes</span>())
+    <span style="color:#6ab825;font-weight:bold">return</span> <span style="color:#24909d">len</span>(buffer), <span style="color:#6ab825;font-weight:bold">nil</span>
+}
+
+<span style="color:#999;font-style:italic">// Close shuts the microphone stream down and cleans up
+</span><span style="color:#999;font-style:italic"></span><span style="color:#6ab825;font-weight:bold">func</span> (mic *Microphone) <span style="color:#447fcf">Close</span>() {
+    mic.stream.<span style="color:#447fcf">Stop</span>()
+    mic.stream.<span style="color:#447fcf">Close</span>()
+    portaudio.<span style="color:#447fcf">Terminate</span>()
+}
+
+<span style="color:#6ab825;font-weight:bold">func</span> <span style="color:#447fcf">main</span>() {
+
+    bufferSize := <span style="color:#24909d">uint32</span>(<span style="color:#3677a9">8192</span>)
+    client, err := cubic.<span style="color:#447fcf">NewClient</span>(serverAddr, cubic.<span style="color:#447fcf">WithInsecure</span>(), cubic.<span style="color:#447fcf">WithStreamingBufferSize</span>(bufferSize))
+    <span style="color:#6ab825;font-weight:bold">if</span> err != <span style="color:#6ab825;font-weight:bold">nil</span> {
+        log.<span style="color:#447fcf">Fatal</span>(err)
+    }
+    <span style="color:#6ab825;font-weight:bold">defer</span> client.<span style="color:#447fcf">Close</span>()
+
+    modelResp, err := client.<span style="color:#447fcf">ListModels</span>(context.<span style="color:#447fcf">Background</span>())
+    <span style="color:#6ab825;font-weight:bold">if</span> err != <span style="color:#6ab825;font-weight:bold">nil</span> {
+        log.<span style="color:#447fcf">Fatal</span>(err)
+    }
+
+    <span style="color:#999;font-style:italic">// Use the first available model
+</span><span style="color:#999;font-style:italic"></span>   model := modelResp.Models[<span style="color:#3677a9">0</span>]
+
+    cfg := &amp;cubicpb.RecognitionConfig{
+        ModelId: model.Id,
+    }
+
+    <span style="color:#999;font-style:italic">// Define a callback function to handle results
+</span><span style="color:#999;font-style:italic"></span>   resultHandler := <span style="color:#6ab825;font-weight:bold">func</span>(resp *cubicpb.RecognitionResponse) {
+        <span style="color:#6ab825;font-weight:bold">for</span> _, r := <span style="color:#6ab825;font-weight:bold">range</span> resp.Results {
+            <span style="color:#6ab825;font-weight:bold">if</span> r.IsPartial {
+                fmt.<span style="color:#447fcf">Print</span>(<span style="color:#ed9d13">&#34;\r&#34;</span>, r.Alternatives[<span style="color:#3677a9">0</span>].Transcript) <span style="color:#999;font-style:italic">// print on same line
+</span><span style="color:#999;font-style:italic"></span>           } <span style="color:#6ab825;font-weight:bold">else</span> {
+                fmt.<span style="color:#447fcf">Println</span>(<span style="color:#ed9d13">&#34;\r&#34;</span>, r.Alternatives[<span style="color:#3677a9">0</span>].Transcript) <span style="color:#999;font-style:italic">// print and move to new line
+</span><span style="color:#999;font-style:italic"></span>           }
+        }
+    }
+
+    <span style="color:#999;font-style:italic">// Create microphone stream
+</span><span style="color:#999;font-style:italic"></span>   mic, err := <span style="color:#447fcf">NewMicrophone</span>(model.Attributes.SampleRate, bufferSize)
+    <span style="color:#6ab825;font-weight:bold">if</span> err != <span style="color:#6ab825;font-weight:bold">nil</span> {
+        log.<span style="color:#447fcf">Fatal</span>(err)
+    }
+    <span style="color:#6ab825;font-weight:bold">defer</span> mic.<span style="color:#447fcf">Close</span>()
+
+    <span style="color:#999;font-style:italic">// Since Microphone implements the io.ReadCloser interface, we can
+</span><span style="color:#999;font-style:italic"></span>   <span style="color:#999;font-style:italic">// pass it directly to the StreamingRecognize function.
+</span><span style="color:#999;font-style:italic"></span>   err = client.<span style="color:#447fcf">StreamingRecognize</span>(context.<span style="color:#447fcf">Background</span>(), cfg, mic, resultHandler)
+    <span style="color:#6ab825;font-weight:bold">if</span> err != <span style="color:#6ab825;font-weight:bold">nil</span> {
+        log.<span style="color:#447fcf">Fatal</span>(err)
+    }
+}</code></pre></div>
+</div>
+
+<div class="tab-pane" title="Python">
+  <p>This example requires the <a href="http://people.csail.mit.edu/hubert/pyaudio/">pyaudio</a>
+module to stream audio from a microphone. Instructions for installing pyaudio for
+different systems are available at the link. On most platforms, this is simply <code>pip install pyaudio</code>.</p>
+<div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#6ab825;font-weight:bold">import</span> <span style="color:#447fcf;text-decoration:underline">cubic</span>
+<span style="color:#6ab825;font-weight:bold">import</span> <span style="color:#447fcf;text-decoration:underline">pyaudio</span>
+
+serverAddress = <span style="color:#ed9d13">&#39;127.0.0.1:2727&#39;</span>
+
+client = cubic.Client(serverAddress)
+
+<span style="color:#999;font-style:italic"># get list of available models</span>
+modelResp = client.ListModels()
+
+<span style="color:#999;font-style:italic"># use the first available model</span>
+model = modelResp.models[<span style="color:#3677a9">0</span>]
+
+cfg = cubic.RecognitionConfig(
+    model_id = model.<span style="color:#24909d">id</span>
+)
+
+<span style="color:#999;font-style:italic"># client.StreamingRecognize takes any binary stream object that has a read(nBytes)</span>
+<span style="color:#999;font-style:italic"># method. The method should return nBytes from the stream. So pyaudio is a suitable</span>
+<span style="color:#999;font-style:italic"># library to use here for streaming audio from the microphone. Other libraries or</span>
+<span style="color:#999;font-style:italic"># modules may also be used as long as they have the read method or have been wrapped</span>
+<span style="color:#999;font-style:italic"># to do so.</span>
+
+<span style="color:#999;font-style:italic"># open microphone stream</span>
+p = pyaudio.PyAudio()
+audio = p.<span style="color:#24909d">open</span>(format=pyaudio.paInt16,              <span style="color:#999;font-style:italic"># 16 bit samples</span>
+                channels=<span style="color:#3677a9">1</span>,                         <span style="color:#999;font-style:italic"># mono audio</span>
+                rate=model.attributes.sample_rate,  <span style="color:#999;font-style:italic"># sample rate in hertz</span>
+                <span style="color:#24909d">input</span>=True)                         <span style="color:#999;font-style:italic"># audio input stream</span>
+
+<span style="color:#999;font-style:italic"># send streaming request to cubic and </span>
+<span style="color:#999;font-style:italic"># print out results as they come in</span>
+<span style="color:#6ab825;font-weight:bold">try</span>:
+    <span style="color:#6ab825;font-weight:bold">for</span> resp <span style="color:#6ab825;font-weight:bold">in</span> client.StreamingRecognize(cfg, audio):
+        <span style="color:#6ab825;font-weight:bold">for</span> result <span style="color:#6ab825;font-weight:bold">in</span> resp.results:
+            <span style="color:#6ab825;font-weight:bold">if</span> result.is_partial:
+                <span style="color:#6ab825;font-weight:bold">print</span>(<span style="color:#ed9d13">&#34;</span><span style="color:#ed9d13">\r</span><span style="color:#ed9d13">{0}&#34;</span>.format(result.alternatives[<span style="color:#3677a9">0</span>].transcript), end=<span style="color:#ed9d13">&#34;&#34;</span>)
+            <span style="color:#6ab825;font-weight:bold">else</span>:
+                <span style="color:#6ab825;font-weight:bold">print</span>(<span style="color:#ed9d13">&#34;</span><span style="color:#ed9d13">\r</span><span style="color:#ed9d13">{0}&#34;</span>.format(result.alternatives[<span style="color:#3677a9">0</span>].transcript), end=<span style="color:#ed9d13">&#34;</span><span style="color:#ed9d13">\n</span><span style="color:#ed9d13">&#34;</span>)
+<span style="color:#6ab825;font-weight:bold">except</span> <span style="color:#bbb">KeyboardInterrupt</span>:
+    <span style="color:#999;font-style:italic"># stop streaming when ctrl+C pressed</span>
+    <span style="color:#6ab825;font-weight:bold">pass</span>
+<span style="color:#6ab825;font-weight:bold">except</span> <span style="color:#bbb">Exception</span> <span style="color:#6ab825;font-weight:bold">as</span> err:
+    <span style="color:#6ab825;font-weight:bold">print</span>(<span style="color:#ed9d13">&#34;Error while trying to stream audio : {}&#34;</span>.format(err))
+
+audio.stop_stream()
+audio.close()</code></pre></div>
+</div>
+
+<p></div>
+</div></p>
+
+    
+    
+          <footer class=" footline" >
+	
+</footer>
+  </div>
+</div>
+
+<div id="navigation">
+<a class="nav nav-prev" href="/sdk-diatheke/using-diatheke-sdk/recognize/" title="Synchronous Recognition"> <i class="fa fa-chevron-left"></i><label>Synchronous Recognition</label></a>
+    <a class="nav nav-next" href="/sdk-diatheke/using-diatheke-sdk/client-configs/" title="Recognition Configurations" style="margin-right: 0px;"><label>Recognition Configurations</label><i class="fa fa-chevron-right"></i></a></div>
+
+</section>
+<div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
+  <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
+</div>    
+
+<script src="/sdk-diatheke/js/clipboard.min.js"></script>
+<script src="/sdk-diatheke/js/featherlight.min.js"></script>
+<script src="/sdk-diatheke/js/html5shiv-printshiv.min.js"></script>
+
+<script src="/sdk-diatheke/js/modernizr.custom.71422.js"></script>
+<script src="/sdk-diatheke/js/docdock.js"></script>
+<script src="/sdk-diatheke/theme-original/script.js"></script>
+
+
+    
+
+    
+    
+
+    
+  </body>
+</html>
