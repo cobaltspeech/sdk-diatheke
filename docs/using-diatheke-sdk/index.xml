@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Using Diatheke SDK on Diatheke SDK -- Cobalt</title>
+    <link>https://cobaltspeech.github.io/sdk-diatheke/using-diatheke-sdk/</link>
+    <description>Recent content in Using Diatheke SDK on Diatheke SDK -- Cobalt</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="https://cobaltspeech.github.io/sdk-diatheke/using-diatheke-sdk/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Including the SDK</title>
+      <link>https://cobaltspeech.github.io/sdk-diatheke/using-diatheke-sdk/include/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://cobaltspeech.github.io/sdk-diatheke/using-diatheke-sdk/include/</guid>
+      <description>&lt;p&gt;Language-specific instructions to include the SDK in your project
+are given below.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Error Handling</title>
+      <link>https://cobaltspeech.github.io/sdk-diatheke/using-diatheke-sdk/errors/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://cobaltspeech.github.io/sdk-diatheke/using-diatheke-sdk/errors/</guid>
+      <description>For the sake of clarity, most examples in the documentation do not fully demonstrate how to handle errors, preferring instead to focus on the topic at hand. However, the Diatheke SDK does report errors, and client applications should be prepared to handle them. A description of how errors are handled for each language is given below.
+C++ The C++ SDK uses exceptions to report errors. Errors originating from the SDK will have the class type Diatheke::ClientError, which inherits from the std::exception class.</description>
+    </item>
+    
+    <item>
+      <title>Connecting to the Server</title>
+      <link>https://cobaltspeech.github.io/sdk-diatheke/using-diatheke-sdk/connecting/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://cobaltspeech.github.io/sdk-diatheke/using-diatheke-sdk/connecting/</guid>
+      <description>&lt;p&gt;Once you have the Diatheke server up and running, you are ready to create
+a client connection.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Streaming ASR</title>
+      <link>https://cobaltspeech.github.io/sdk-diatheke/using-diatheke-sdk/streaming-asr/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://cobaltspeech.github.io/sdk-diatheke/using-diatheke-sdk/streaming-asr/</guid>
+      <description>Not to be confused with a session&amp;rsquo;s audio input stream, a plain ASR stream is used to process audio and receive a transcript from Diatheke. Sending audio on an ASR stream does not affect the state of any running sessions, or cause the dialog to transition between states. It essentially forwards the ASR request to the underlying Cubic engine.
+This functionality is particularly useful for ASR tasks that fall outside of the normal dialog flow.</description>
+    </item>
+    
+    <item>
+      <title>Streaming TTS</title>
+      <link>https://cobaltspeech.github.io/sdk-diatheke/using-diatheke-sdk/streaming-tts/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://cobaltspeech.github.io/sdk-diatheke/using-diatheke-sdk/streaming-tts/</guid>
+      <description>Not to be confused with a session&amp;rsquo;s audio output stream, a plain TTS stream is used to synthesize speech unrelated to any currently running sessions or Diatheke models. This means that, unlike audio output from a session which is sent to the client in response to user input as defined in the model, the audio output for a plain TTS stream is returned to the client immediately after the TTS request is made.</description>
+    </item>
+    
+  </channel>
+</rss>

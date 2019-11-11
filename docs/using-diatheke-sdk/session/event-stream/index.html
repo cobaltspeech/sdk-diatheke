@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Diatheke SDK -- Cobalt</title>
+    
+      <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Event Stream :: Diatheke SDK -- Cobalt</title>
+<link rel="shortcut icon" href="/sdk-diatheke/images/favicon.ico" type="image/x-icon" />
+<link href="/sdk-diatheke/css/nucleus.css" rel="stylesheet">
+<link href="/sdk-diatheke/css/font-awesome.min.css" rel="stylesheet">
+<link href="/sdk-diatheke/css/hybrid.css" rel="stylesheet">
+<link href="/sdk-diatheke/css/featherlight.min.css" rel="stylesheet">
+<link href="/sdk-diatheke/css/auto-complete.css" rel="stylesheet">
+<link href="/sdk-diatheke/theme-original/style.css" rel="stylesheet">
+
+  <link href="/sdk-diatheke/theme-original/variant-blue.css" rel="stylesheet">
+
+<link rel="stylesheet" href="/sdk-diatheke/css/bootstrap.min.css">
+<script src="/sdk-diatheke/js/jquery-2.x.min.js"></script>
+<style type="text/css">
+  :root #header + #content > #left > #rlblock_left {
+    display:none !important;
+  }
+</style>
+<link href="/sdk-diatheke/css/tabs.css" rel="stylesheet" type="text/css">
+<script src="/sdk-diatheke/js/tabs.js"></script>
+
+
+    
+  </head>
+  <body data-url="/sdk-diatheke/using-diatheke-sdk/session/event-stream/">
+    
+      <div id="headermain"></div>
+<nav id="sidebar" class="showVisitedLinks">
+
+
+
+<div class="highlightable">
+  <div id="header-wrapper">
+    <div id="header">
+      
+	
+  
+    <p><img src="/sdk-diatheke/images/logo-white.png" alt="Cobalt's SDK Documentation" /></p>
+
+<p>Diatheke SDK &ndash; Cobalt</p>
+
+  
+
+
+    </div>
+        <div class="searchbox">
+		    <label for="search-by"><i class="fa fa-search"></i></label>
+		    <input data-search-input id="search-by" type="text" placeholder="Search...">
+		    <span data-search-clear=""><i class="fa fa-close"></i></span>
+		</div>
+		<script type="text/javascript" src="/sdk-diatheke/js/lunr.min.js"></script>
+		<script type="text/javascript" src="/sdk-diatheke/js/auto-complete.js"></script>
+		<script type="text/javascript">
+        
+            var baseurl = "https:\/\/cobaltspeech.github.io\/sdk-diatheke";
+        
+		</script>
+		<script type="text/javascript" src="/sdk-diatheke/js/search.js"></script>
+  </div>
+
+      <ul class="topics">
+            <li data-nav-id="/sdk-diatheke/" class="dd-item">
+            <a href="/sdk-diatheke/"><i class="fa fa-fw fa-home"></i></a>
+            </li>
+    <li data-nav-id="/sdk-diatheke/getting-started/" class="dd-item
+        ">
+      <div>
+      <a href="/sdk-diatheke/getting-started/">Getting Started</a><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+    </li>
+    <li data-nav-id="/sdk-diatheke/using-diatheke-sdk/" class="dd-item parent haschildren
+        ">
+      <div>
+      <a href="/sdk-diatheke/using-diatheke-sdk/">Using Diatheke SDK</a>
+            <i class="fa fa-angle-down fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+      <li data-nav-id="/sdk-diatheke/using-diatheke-sdk/include/" class="dd-item">
+        <div>
+          <a href="/sdk-diatheke/using-diatheke-sdk/include/">
+            Including the SDK
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/sdk-diatheke/using-diatheke-sdk/errors/" class="dd-item">
+        <div>
+          <a href="/sdk-diatheke/using-diatheke-sdk/errors/">
+            Error Handling
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/sdk-diatheke/using-diatheke-sdk/connecting/" class="dd-item">
+        <div>
+          <a href="/sdk-diatheke/using-diatheke-sdk/connecting/">
+            Connecting to the Server
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+    <li data-nav-id="/sdk-diatheke/using-diatheke-sdk/session/" class="dd-item parent haschildren
+        ">
+      <div>
+      <a href="/sdk-diatheke/using-diatheke-sdk/session/">Sessions</a>
+            <i class="fa fa-angle-down fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+      <li data-nav-id="/sdk-diatheke/using-diatheke-sdk/session/create-session/" class="dd-item">
+        <div>
+          <a href="/sdk-diatheke/using-diatheke-sdk/session/create-session/">
+            Creating a Session
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/sdk-diatheke/using-diatheke-sdk/session/event-stream/" class="dd-item active">
+        <div>
+          <a href="/sdk-diatheke/using-diatheke-sdk/session/event-stream/">
+            Event Stream
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/sdk-diatheke/using-diatheke-sdk/session/push-text/" class="dd-item">
+        <div>
+          <a href="/sdk-diatheke/using-diatheke-sdk/session/push-text/">
+            Push Text
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/sdk-diatheke/using-diatheke-sdk/session/audio-input/" class="dd-item">
+        <div>
+          <a href="/sdk-diatheke/using-diatheke-sdk/session/audio-input/">
+            Audio Input
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/sdk-diatheke/using-diatheke-sdk/session/audio-output/" class="dd-item">
+        <div>
+          <a href="/sdk-diatheke/using-diatheke-sdk/session/audio-output/">
+            Audio Output
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+        </ul>
+    </li>
+      <li data-nav-id="/sdk-diatheke/using-diatheke-sdk/streaming-asr/" class="dd-item">
+        <div>
+          <a href="/sdk-diatheke/using-diatheke-sdk/streaming-asr/">
+            Streaming ASR
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/sdk-diatheke/using-diatheke-sdk/streaming-tts/" class="dd-item">
+        <div>
+          <a href="/sdk-diatheke/using-diatheke-sdk/streaming-tts/">
+            Streaming TTS
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+        </ul>
+    </li>
+    <li data-nav-id="/sdk-diatheke/protobuf/" class="dd-item
+        ">
+      <div>
+      <a href="/sdk-diatheke/protobuf/">Diatheke API Reference</a><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+    </li>
+    <li data-nav-id="/sdk-diatheke/glossary/" class="dd-item
+        ">
+      <div>
+      <a href="/sdk-diatheke/glossary/">Glossary</a><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+    </li>
+
+
+
+        <section id="shortcuts">
+                <li class="" role=""><h3>More</h3><a href="https://github.com/cobaltspeech/sdk-diatheke" target="_blank" rel="noopener"><i class='fa fa-github'></i> <label>Github repo</label></a></li>
+                <li class="" role=""><a href="https://www.cobaltspeech.com/contact" target="_blank" rel="noopener"><i class='fa fa-bookmark'></i> <label>Contact us</label></a></li>
+        </section>
+            <a id="clear-history" class="" href="#" data-clear-history-toggle=""><i class="fa  fa-history"></i> Clear History</a>
+
+    <hr />
+    <li></li>
+    
+    </ul>
+
+ <section id="footer">
+    </section>
+  </div>
+</nav>
+
+
+
+<section id="body">
+<div id="overlay"></div>
+<div class="padding highlightable">
+
+  <div id="top-bar">
+    <div id="breadcrumbs" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+        <span id="sidebar-toggle-span">
+          <a href="#" id="sidebar-toggle" data-sidebar-toggle="">
+            <i class="fa fa-bars"></i>
+          </a>
+        </span>
+        <span id="toc-menu"><i class="fa fa-list-alt"></i></span>
+        <span class="links">
+        
+
+
+
+
+
+
+
+
+
+
+ <a href='/sdk-diatheke/'>Diatheke SDK Documentation</a> > <a href='/sdk-diatheke/using-diatheke-sdk/'>Using Diatheke SDK</a> > <a href='/sdk-diatheke/using-diatheke-sdk/session/'>Sessions</a> > Event Stream
+
+ 
+
+ 
+
+ 
+
+   
+        </span>
+    </div>
+    
+    
+    <div class="progress">
+        <div class="wrapper">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#creating-the-event-stream">Creating the Event Stream</a></li>
+<li><a href="#event-handling">Event Handling</a>
+<ul>
+<li><a href="#recognize-event">Recognize Event</a></li>
+<li><a href="#reply-event">Reply Event</a></li>
+<li><a href="#command-event">Command Event</a>
+<ul>
+<li><a href="#command-finished">Command Finished</a></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+        </div>
+    </div>
+    
+
+  </div>
+
+
+<div id="body-inner">
+  
+    <h1>Event Stream</h1>
+  
+
+
+
+    
+    
+    
+    
+
+<p>Diatheke server uses an
+<a href="https://en.wikipedia.org/wiki/Event-driven_architecture">event driven architecure</a>
+to notify clients when significant events happen for a session. These
+include <a href="#recognize-event">Recognize</a>, <a href="#reply-event">Reply</a>, and
+<a href="#command-event">Command</a> events. These events are delivered to the
+client via a session&rsquo;s event stream.</p>
+
+<h2 id="creating-the-event-stream">Creating the Event Stream</h2>
+
+<p>The following demonstrates how to create a an event stream for a session.
+<div class='code-tabs'>
+  <ul class="nav-tabs"></ul>
+  <div class="tab-content"></p>
+
+<div class="tab-pane" title="Go">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#999;font-style:italic">// Create the stream using the client and session ID.
+</span><span style="color:#999;font-style:italic"></span>stream, err := client.<span style="color:#447fcf">SessionEventStream</span>(context.<span style="color:#447fcf">Background</span>(), sessionID)
+
+<span style="color:#999;font-style:italic">// OR create the stream using the Session object
+</span><span style="color:#999;font-style:italic"></span>stream, err := session.<span style="color:#447fcf">EventStream</span>(context.<span style="color:#447fcf">Background</span>())</code></pre></div>
+</div>
+
+<div class="tab-pane" title="C&#43;&#43;">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">std::unique_ptr&lt;Diatheke::EventStream&gt; stream;
+
+<span style="color:#999;font-style:italic">// Create the stream using the client and session ID
+</span><span style="color:#999;font-style:italic"></span>stream = client.sessionEventStream(sessionID);
+
+<span style="color:#999;font-style:italic">// OR create the stream using the session object
+</span><span style="color:#999;font-style:italic"></span>stream = session.eventStream();
+</code></pre></div>
+</div>
+
+<p></div>
+</div></p>
+
+<p>This creates a server stream that will deliver events to the client. The
+stream will be closed by the server when the session ends.</p>
+
+<h2 id="event-handling">Event Handling</h2>
+
+<p>The recommended way to handle events from the stream is to setup a loop
+that waits for the next event, then handles the event based on its type:</p>
+
+<div class='code-tabs'>
+  <ul class="nav-tabs"></ul>
+  <div class="tab-content">
+
+<div class="tab-pane" title="Go">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#6ab825;font-weight:bold">for</span> {
+    <span style="color:#999;font-style:italic">// Wait for the next event from the server
+</span><span style="color:#999;font-style:italic"></span>    event, err := eventStream.<span style="color:#447fcf">Recv</span>()
+
+    <span style="color:#999;font-style:italic">// This indicates the stream has finished, which will happen
+</span><span style="color:#999;font-style:italic"></span>    <span style="color:#999;font-style:italic">// when the session ends or the context used to create the stream
+</span><span style="color:#999;font-style:italic"></span>    <span style="color:#999;font-style:italic">// closes.
+</span><span style="color:#999;font-style:italic"></span>    <span style="color:#6ab825;font-weight:bold">if</span> err == io.EOF {
+        <span style="color:#6ab825;font-weight:bold">break</span>
+    }
+
+    <span style="color:#999;font-style:italic">// Handle any other errors
+</span><span style="color:#999;font-style:italic"></span>    <span style="color:#6ab825;font-weight:bold">if</span> err != <span style="color:#6ab825;font-weight:bold">nil</span> {
+        fmt.<span style="color:#447fcf">Printf</span>(<span style="color:#ed9d13">&#34;Error: %v\n&#34;</span>, err)
+        <span style="color:#6ab825;font-weight:bold">break</span>
+    }
+
+    <span style="color:#999;font-style:italic">// Handle the event based on its type.
+</span><span style="color:#999;font-style:italic"></span>    <span style="color:#6ab825;font-weight:bold">switch</span> e := event.Result.(<span style="color:#6ab825;font-weight:bold">type</span>) {
+    <span style="color:#6ab825;font-weight:bold">case</span> *diathekepb.DiathekeEvent_Recognize:
+        <span style="color:#447fcf">handleRecognizeEvent</span>(e.Recognize)
+
+    <span style="color:#6ab825;font-weight:bold">case</span> *diathekepb.DiathekeEvent_Reply:
+        <span style="color:#447fcf">handleReplyEvent</span>(e.Reply)
+
+    <span style="color:#6ab825;font-weight:bold">case</span> *diathekepb.DiathekeEvent_Command:
+        <span style="color:#447fcf">handleCommandEvent</span>(e.Command, manager.Session)
+
+    <span style="color:#6ab825;font-weight:bold">default</span>:
+        fmt.<span style="color:#447fcf">Printf</span>(<span style="color:#ed9d13">&#34;Error: received unknown event type from Diatheke\n&#34;</span>)
+    }
+}</code></pre></div>
+</div>
+
+<div class="tab-pane" title="C&#43;&#43;">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#999;font-style:italic">// Receive events from the event stream until it is closed, which will
+</span><span style="color:#999;font-style:italic">// happen when the session ends, or the context used to create the stream
+</span><span style="color:#999;font-style:italic">// closes.
+</span><span style="color:#999;font-style:italic"></span>cobaltspeech::diatheke::DiathekeEvent event;
+<span style="color:#6ab825;font-weight:bold">while</span> (eventStream-&gt;waitForEvent(&amp;event))
+{
+    <span style="color:#999;font-style:italic">// Check for the event type
+</span><span style="color:#999;font-style:italic"></span>    <span style="color:#6ab825;font-weight:bold">if</span> (event.has_recognize())
+    {
+        handleRecognizeEvent(event.recognize());
+    }
+    <span style="color:#6ab825;font-weight:bold">else</span> <span style="color:#6ab825;font-weight:bold">if</span> (event.has_reply())
+    {
+        handleReplyEvent(event.reply());
+    }
+    <span style="color:#6ab825;font-weight:bold">else</span> <span style="color:#6ab825;font-weight:bold">if</span> (event.has_command())
+    {
+        handleCommandEvent(event.command(), eventStream.get());
+    }
+    <span style="color:#6ab825;font-weight:bold">else</span>
+    {
+        std::cerr &lt;&lt; <span style="color:#ed9d13">&#34;Received unknown event type from Diatheke&#34;</span> &lt;&lt; std::endl;
+    }
+}
+
+<span style="color:#999;font-style:italic">// It is good practice to close the event stream when we are done with it.
+</span><span style="color:#999;font-style:italic">// This will allow the server to report errors related to the stream, if 
+</span><span style="color:#999;font-style:italic">// there were any.
+</span><span style="color:#999;font-style:italic"></span>eventStream-&gt;close();
+</code></pre></div>
+</div>
+
+<p></div>
+</div></p>
+
+<h3 id="recognize-event">Recognize Event</h3>
+
+<p>The Recognize event is sent when Diatheke has received user input. In
+the case of <a href="../push-text">text-based</a> input, the text of the event
+will be the same as what was typed by the user. In the case of
+<a href="../audio-input">audio-based</a> input, the event is sent when enough audio
+has been processed that a transcription is available. In this case, the
+text of the event will be the ASR transcription. The event will also
+indicate whether the user input was recognized by the
+<a href="../../../glossary#nlu">NLU</a> as a valid
+<a href="../../../glossary#intent">intent</a> or <a href="../../../glossary#entity">entity</a>.</p>
+
+<p>Most often, this event will be used by clients to give some kind of
+visual indication to the user about whether their input was recognized
+or not.</p>
+
+<div class='code-tabs'>
+  <ul class="nav-tabs"></ul>
+  <div class="tab-content">
+
+<div class="tab-pane" title="Go">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#6ab825;font-weight:bold">func</span> <span style="color:#447fcf">handleRecognizeEvent</span>(event *diathekepb.RecognizeEvent) {
+    <span style="color:#999;font-style:italic">// Check if Diatheke recognized the last input as valid.
+</span><span style="color:#999;font-style:italic"></span>    <span style="color:#6ab825;font-weight:bold">if</span> event.ValidInput {
+        fmt.<span style="color:#447fcf">Printf</span>(<span style="color:#ed9d13">&#34;Valid input: %s\n&#34;</span>, event.Text)
+    } <span style="color:#6ab825;font-weight:bold">else</span> {
+        fmt.<span style="color:#447fcf">Printf</span>(<span style="color:#ed9d13">&#34;Invalid input: %s\n&#34;</span>, event.Text)
+    }
+}</code></pre></div>
+</div>
+
+<div class="tab-pane" title="C&#43;&#43;">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#6ab825;font-weight:bold">void</span> <span style="color:#447fcf">handleRecognizeEvent</span>(<span style="color:#6ab825;font-weight:bold">const</span> cobaltspeech::diatheke::RecognizeEvent &amp;event)
+{
+    <span style="color:#6ab825;font-weight:bold">if</span>(event.valid_input())
+    {
+        std::cout &lt;&lt; <span style="color:#ed9d13">&#34;Valid input: &#34;</span> &lt;&lt; event.text() &lt;&lt; std::endl;
+    }
+    <span style="color:#6ab825;font-weight:bold">else</span>
+    {
+        std::cout &lt;&lt; <span style="color:#ed9d13">&#34;Invalid input: &#34;</span> &lt;&lt; event.text() &lt;&lt; std::endl;
+    }
+}
+</code></pre></div>
+</div>
+
+<p></div>
+</div></p>
+
+<h3 id="reply-event">Reply Event</h3>
+
+<p>The Reply event is sent when, based on the session&rsquo;s model, Diatheke has a
+reply for the user. This might happen when Diatheke needs additional
+information from the user, in which case the text of the Reply event will
+be a prompt. This event may also be sent to give the user information,
+such as after running a command. The text for all Reply events is
+defined in the Diatheke model.</p>
+
+<p>Most often, this event will be used by clients to give some kind of visual
+feedback to the user.</p>
+
+<div class='code-tabs'>
+  <ul class="nav-tabs"></ul>
+  <div class="tab-content">
+
+<div class="tab-pane" title="Go">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#6ab825;font-weight:bold">func</span> <span style="color:#447fcf">handleReplyEvent</span>(event *diathekepb.ReplyEvent) {
+    fmt.<span style="color:#447fcf">Printf</span>(<span style="color:#ed9d13">&#34;Reply text: %s\n&#34;</span>, event.Text)
+}</code></pre></div>
+</div>
+
+<div class="tab-pane" title="C&#43;&#43;">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#6ab825;font-weight:bold">void</span> <span style="color:#447fcf">handleReplyEvent</span>(<span style="color:#6ab825;font-weight:bold">const</span> cobaltspeech::diatheke::ReplyEvent &amp;event)
+{
+    std::cout &lt;&lt; <span style="color:#ed9d13">&#34;Reply text: &#34;</span> &lt;&lt; event.text() &lt;&lt; std::endl;
+}
+</code></pre></div>
+</div>
+
+<p></div>
+</div></p>
+
+<h3 id="command-event">Command Event</h3>
+
+<p>The Command event is sent when Diatheke wants the client to execute a
+command. This happens after the corresponding
+<a href="../../../glossary#intent">intent</a> and <a href="../../../glossary#entity">entities</a>
+have been recognized, and Diatheke is in a state where the command has
+all the required information to execute (as defined by the Diatheke model).</p>
+
+<p>From the client perspective, this is the most important event that will
+come from Diatheke because it is what prompts the client code to do useful
+work by executing the commands.</p>
+
+<div class='code-tabs'>
+  <ul class="nav-tabs"></ul>
+  <div class="tab-content">
+
+<div class="tab-pane" title="Go">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#6ab825;font-weight:bold">func</span> <span style="color:#447fcf">handleCommandEvent</span>(event *diathekepb.CommandEvent, session diatheke.Session) {
+    <span style="color:#999;font-style:italic">// Use the command ID and parameters to execute a task.
+</span><span style="color:#999;font-style:italic"></span>    fmt.<span style="color:#447fcf">Printf</span>(<span style="color:#ed9d13">&#34;Command ID: %v\n&#34;</span>, event.CommandId)
+    fmt.<span style="color:#447fcf">Printf</span>(<span style="color:#ed9d13">&#34;Parameters:\n&#34;</span>)
+    <span style="color:#6ab825;font-weight:bold">for</span> param, value := <span style="color:#6ab825;font-weight:bold">range</span> event.Parameters {
+        fmt.<span style="color:#447fcf">Printf</span>(<span style="color:#ed9d13">&#34;  %v = %v\n&#34;</span>, param, value)
+    }
+    fmt.<span style="color:#447fcf">Printf</span>(<span style="color:#ed9d13">&#34;\n&#34;</span>)
+
+    <span style="color:#999;font-style:italic">// After executing the command, be sure to notify Diatheke that
+</span><span style="color:#999;font-style:italic"></span>    <span style="color:#999;font-style:italic">// we are done. This is important to do so that dialog flow may continue
+</span><span style="color:#999;font-style:italic"></span>    <span style="color:#999;font-style:italic">// after the command is finished.
+</span><span style="color:#999;font-style:italic"></span>    status := &amp;diathekepb.CommandStatus{
+        SessionId: session.ID,
+        CommandId: event.CommandId,
+
+        <span style="color:#999;font-style:italic">// Indicate success or failure.
+</span><span style="color:#999;font-style:italic"></span>        ReturnStatus: diathekepb.CommandStatus_SUCCESS,
+
+        <span style="color:#999;font-style:italic">// If the ReturnStatus above is CommandStatus_FAILURE,
+</span><span style="color:#999;font-style:italic"></span>        <span style="color:#999;font-style:italic">// the ErrorMessageText field of this struct should also be populated.
+</span><span style="color:#999;font-style:italic"></span>        <span style="color:#999;font-style:italic">// ErrorMessageText: &#34;some message describing the error&#34;,
+</span><span style="color:#999;font-style:italic"></span>
+        <span style="color:#999;font-style:italic">// Return parameters as necessary. Depending on the Diatheke model,
+</span><span style="color:#999;font-style:italic"></span>        <span style="color:#999;font-style:italic">// some commands may be expected to have output.
+</span><span style="color:#999;font-style:italic"></span>        OutputParameters: event.Parameters,
+
+        <span style="color:#999;font-style:italic">// Internal data that should always be set from the original command
+</span><span style="color:#999;font-style:italic"></span>        <span style="color:#999;font-style:italic">// event.
+</span><span style="color:#999;font-style:italic"></span>        CommandStateId: event.CommandStateId,
+    }
+    
+    <span style="color:#6ab825;font-weight:bold">if</span> err := session.<span style="color:#447fcf">CommandFinished</span>(context.<span style="color:#447fcf">Background</span>(), status); err != <span style="color:#6ab825;font-weight:bold">nil</span> {
+        fmt.<span style="color:#447fcf">Printf</span>(<span style="color:#ed9d13">&#34;Error: %v\n&#34;</span>, err)
+    }
+}</code></pre></div>
+</div>
+
+<div class="tab-pane" title="C&#43;&#43;">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#6ab825;font-weight:bold">void</span> <span style="color:#447fcf">handleCommandEvent</span>(<span style="color:#6ab825;font-weight:bold">const</span> cobaltspeech::diatheke::CommandEvent &amp;event,
+                        Diatheke::EventStream *stream)
+{
+    <span style="color:#999;font-style:italic">// Use the command ID and parameters to execute a task.
+</span><span style="color:#999;font-style:italic"></span>    std::cout &lt;&lt; <span style="color:#ed9d13">&#34;Command ID: &#34;</span> &lt;&lt; event.command_id() &lt;&lt; std::endl;
+    std::cout &lt;&lt; <span style="color:#ed9d13">&#34;Parameters:&#34;</span> &lt;&lt; std::endl;
+    <span style="color:#6ab825;font-weight:bold">for</span> (<span style="color:#6ab825;font-weight:bold">const</span> <span style="color:#6ab825;font-weight:bold">auto</span> &amp;pair : event.parameters())
+    {
+        std::string param = pair.first;
+        std::string value = pair.second;
+        std::cout &lt;&lt; <span style="color:#ed9d13">&#34;  &#34;</span> &lt;&lt; param &lt;&lt; <span style="color:#ed9d13">&#34; &#34;</span> &lt;&lt; value &lt;&lt; std::endl;
+    }
+    std::cout &lt;&lt; std::endl;
+
+    Diatheke::CommandStatus status(event);
+
+    <span style="color:#999;font-style:italic">// Set the status code to indicate whether the command failed
+</span><span style="color:#999;font-style:italic"></span>    status.setStatusCode(Diatheke::CommandStatus::SUCCESS);
+
+    <span style="color:#999;font-style:italic">// If the status code is FAILURE, the error message should also be set
+</span><span style="color:#999;font-style:italic"></span>    <span style="color:#999;font-style:italic">// status.setError(&#34;some message describing the error&#34;);
+</span><span style="color:#999;font-style:italic"></span>
+    <span style="color:#999;font-style:italic">// Update return parameters as necessary. For example:
+</span><span style="color:#999;font-style:italic"></span>    <span style="color:#999;font-style:italic">// status.setStringParam(&#34;some key&#34;, &#34;some value&#34;);
+</span><span style="color:#999;font-style:italic"></span>
+    <span style="color:#999;font-style:italic">// Notify Diatheke that the command is finished. This is important
+</span><span style="color:#999;font-style:italic"></span>    <span style="color:#999;font-style:italic">// to do so that dialog flow may continue after the command is
+</span><span style="color:#999;font-style:italic"></span>    <span style="color:#999;font-style:italic">// finished.
+</span><span style="color:#999;font-style:italic"></span>    eventStream-&gt;commandFinished(status);
+}
+</code></pre></div>
+</div>
+
+<p></div>
+</div></p>
+
+<h4 id="command-finished">Command Finished</h4>
+
+<p>After receiving a Command event, it is important to notify Diatheke when
+command execution has completed. Not only does it let Diatheke know the
+final command status (success or failure), but calling <code>CommandFinished</code>
+allows Diatheke to continue processing and execute any additional commands
+or replies as defined by the Diatheke model.</p>
+
+<p>For long running commands, it should be noted that calling <code>CommandFinished</code>
+will restore the dialog to the state Diatheke was at when the Command event
+was sent. This allows dialog to remain responsive to other intents while
+waiting for long-running commands to finish.</p>
+
+<div class='code-tabs'>
+  <ul class="nav-tabs"></ul>
+  <div class="tab-content">
+
+<div class="tab-pane" title="Go">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#999;font-style:italic">// Use the client
+</span><span style="color:#999;font-style:italic"></span>err := client.<span style="color:#447fcf">CommandFinished</span>(context.<span style="color:#447fcf">Background</span>(), status)
+
+<span style="color:#999;font-style:italic">// OR use the Session object
+</span><span style="color:#999;font-style:italic"></span>err := session.<span style="color:#447fcf">CommandFinished</span>(context.<span style="color:#447fcf">Background</span>(), status)</code></pre></div>
+</div>
+
+<div class="tab-pane" title="C&#43;&#43;">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#999;font-style:italic">// Use the client
+</span><span style="color:#999;font-style:italic"></span>client.commandFinished(sessionID, status);
+
+<span style="color:#999;font-style:italic">// OR use the Session object
+</span><span style="color:#999;font-style:italic"></span>session.commandFinished(status);
+
+<span style="color:#999;font-style:italic">// OR use the EventStream object
+</span><span style="color:#999;font-style:italic"></span>stream-&gt;commandFinished(status);
+</code></pre></div>
+</div>
+
+<p></div>
+</div></p>
+
+
+    
+    
+          <footer class=" footline" >
+	
+</footer>
+  </div>
+</div>
+
+<div id="navigation">
+<a class="nav nav-prev" href="/sdk-diatheke/using-diatheke-sdk/session/create-session/" title="Creating a Session"> <i class="fa fa-chevron-left"></i><label>Creating a Session</label></a>
+    <a class="nav nav-next" href="/sdk-diatheke/using-diatheke-sdk/session/push-text/" title="Push Text" style="margin-right: 0px;"><label>Push Text</label><i class="fa fa-chevron-right"></i></a></div>
+
+</section>
+<div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
+  <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
+</div>    
+
+<script src="/sdk-diatheke/js/clipboard.min.js"></script>
+<script src="/sdk-diatheke/js/featherlight.min.js"></script>
+<script src="/sdk-diatheke/js/html5shiv-printshiv.min.js"></script>
+
+<script src="/sdk-diatheke/js/modernizr.custom.71422.js"></script>
+<script src="/sdk-diatheke/js/docdock.js"></script>
+<script src="/sdk-diatheke/theme-original/script.js"></script>
+
+
+    
+
+    
+    
+
+    
+  </body>
+</html>

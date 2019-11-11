@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Sessions on Diatheke SDK -- Cobalt</title>
+    <link>https://cobaltspeech.github.io/sdk-diatheke/using-diatheke-sdk/session/</link>
+    <description>Recent content in Sessions on Diatheke SDK -- Cobalt</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="https://cobaltspeech.github.io/sdk-diatheke/using-diatheke-sdk/session/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Creating a Session</title>
+      <link>https://cobaltspeech.github.io/sdk-diatheke/using-diatheke-sdk/session/create-session/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://cobaltspeech.github.io/sdk-diatheke/using-diatheke-sdk/session/create-session/</guid>
+      <description>New sessions may be created using a Diatheke model, which defines what is allowed in the session&amp;rsquo;s conversation. For example, if the model defines an intent that includes the phrase &amp;ldquo;check account balance&amp;rdquo;, a user may speak that phrase and expect Diatheke to respond. If, however, the user speaks the phrase &amp;ldquo;buy pizza&amp;rdquo;, and that intent is not in the model, Diatheke may ignore the phrase or reply with an error message, such as &amp;ldquo;I didn&amp;rsquo;t understand that&amp;rdquo;.</description>
+    </item>
+    
+    <item>
+      <title>Event Stream</title>
+      <link>https://cobaltspeech.github.io/sdk-diatheke/using-diatheke-sdk/session/event-stream/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://cobaltspeech.github.io/sdk-diatheke/using-diatheke-sdk/session/event-stream/</guid>
+      <description>Diatheke server uses an event driven architecure to notify clients when significant events happen for a session. These include Recognize, Reply, and Command events. These events are delivered to the client via a session&amp;rsquo;s event stream.
+Creating the Event Stream The following demonstrates how to create a an event stream for a session.  // Create the stream using the client and session ID. stream, err := client.SessionEventStream(context.Background(), sessionID) // OR create the stream using the Session object stream, err := session.</description>
+    </item>
+    
+    <item>
+      <title>Push Text</title>
+      <link>https://cobaltspeech.github.io/sdk-diatheke/using-diatheke-sdk/session/push-text/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://cobaltspeech.github.io/sdk-diatheke/using-diatheke-sdk/session/push-text/</guid>
+      <description>There are two ways to provide user input to a session: audio and text. Text input is sent using the PushText method as described below. Diatheke will respond with appropriate events on the session&amp;rsquo;s event stream.
+ // Push text using the client and sessionID err := client.PushText(context.Background(), sessionID, &amp;#34;What&amp;#39;s the capitol of Assyria?&amp;#34;) // OR push text using the session object err := session.PushText(context.Background(), &amp;#34;What&amp;#39;s the capitol of Assyria?&amp;#34;)  // Push text using the client and sessionID client.</description>
+    </item>
+    
+    <item>
+      <title>Audio Input</title>
+      <link>https://cobaltspeech.github.io/sdk-diatheke/using-diatheke-sdk/session/audio-input/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://cobaltspeech.github.io/sdk-diatheke/using-diatheke-sdk/session/audio-input/</guid>
+      <description>In addition to pushing text, a client may provide the session input by using audio.
+Creating the Audio Input Stream To provide the session with audio input, the client code should first create the input stream. For a given session, only a single audio input stream should be open at a time, but it perfectly acceptable to open and close multiple audio streams over the course of a single session.</description>
+    </item>
+    
+    <item>
+      <title>Audio Output</title>
+      <link>https://cobaltspeech.github.io/sdk-diatheke/using-diatheke-sdk/session/audio-output/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://cobaltspeech.github.io/sdk-diatheke/using-diatheke-sdk/session/audio-output/</guid>
+      <description>The audio output stream is the audio version of the Reply event. When Diatheke wants to reply to user input, this stream will receive notifications with the text of the reply, and the TTS generated audio bytes.
+Creating the Audio Reply Stream Before any audio for the session can be received, the client code should first create the audio reply stream. Similar to the event stream, this stream will be closed by the server when the session ends.</description>
+    </item>
+    
+  </channel>
+</rss>
