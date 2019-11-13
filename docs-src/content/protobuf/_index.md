@@ -360,22 +360,22 @@ CommandStatus are the resulting states of a command.
 
 ## Scalar Value Types
 
-| .proto Type | Notes | Go Type | Python Type |
-| ----------- | ----- | ------- | ----------- |
-| double |  | float64 | float |
-| float |  | float32 | float |
-| int32 | Uses variable-length encoding. Inefficient for encoding negative numbers – if your field is likely to have negative values, use sint32 instead. | int32 | int |
-| int64 | Uses variable-length encoding. Inefficient for encoding negative numbers – if your field is likely to have negative values, use sint64 instead. | int64 | int/long |
-| uint32 | Uses variable-length encoding. | uint32 | int/long |
-| uint64 | Uses variable-length encoding. | uint64 | int/long |
-| sint32 | Uses variable-length encoding. Signed int value. These more efficiently encode negative numbers than regular int32s. | int32 | int |
-| sint64 | Uses variable-length encoding. Signed int value. These more efficiently encode negative numbers than regular int64s. | int64 | int/long |
-| fixed32 | Always four bytes. More efficient than uint32 if values are often greater than 2^28. | uint32 | int |
-| fixed64 | Always eight bytes. More efficient than uint64 if values are often greater than 2^56. | uint64 | int/long |
-| sfixed32 | Always four bytes. | int32 | int |
-| sfixed64 | Always eight bytes. | int64 | int/long |
-| bool |  | bool | boolean |
-| string | A string must always contain UTF-8 encoded or 7-bit ASCII text. | string | str/unicode |
-| bytes | May contain any arbitrary sequence of bytes. | []byte | str |
+| .proto Type | Notes | Go Type | Python Type | C++ Type |
+| ----------- | ----- | ------- | ----------- | -------- |
+| double |  | float64 | float | double
+| float |  | float32 | float | float
+| int32 | Uses variable-length encoding. Inefficient for encoding negative numbers – if your field is likely to have negative values, use sint32 instead. | int32 | int | int32
+| int64 | Uses variable-length encoding. Inefficient for encoding negative numbers – if your field is likely to have negative values, use sint64 instead. | int64 | int/long | int64
+| uint32 | Uses variable-length encoding. | uint32 | int/long | uint32
+| uint64 | Uses variable-length encoding. | uint64 | int/long | uint64
+| sint32 | Uses variable-length encoding. Signed int value. These more efficiently encode negative numbers than regular int32s. | int32 | int | int32
+| sint64 | Uses variable-length encoding. Signed int value. These more efficiently encode negative numbers than regular int64s. | int64 | int/long | int64
+| fixed32 | Always four bytes. More efficient than uint32 if values are often greater than 2^28. | uint32 | int | uint32
+| fixed64 | Always eight bytes. More efficient than uint64 if values are often greater than 2^56. | uint64 | int/long | uint64
+| sfixed32 | Always four bytes. | int32 | int | int32
+| sfixed64 | Always eight bytes. | int64 | int/long | int64
+| bool |  | bool | boolean | bool
+| string | A string must always contain UTF-8 encoded or 7-bit ASCII text. | string | str/unicode | string
+| bytes | May contain any arbitrary sequence of bytes. | []byte | str | string
 
 
