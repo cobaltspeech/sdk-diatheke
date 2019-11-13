@@ -19,7 +19,7 @@ To begin a new dialog, create a session by doing the following:
 {{% tab "Go" %}}
 ```go
 // The Diatheke model ID is defined in the Diatheke server config file.
-diathekeModelID = "1"
+diathekeModelID := "1"
 sessionID, err := client.NewSession(context.Background(), diathekeModelID)
 
 // Be sure to close the session when we are done with it.

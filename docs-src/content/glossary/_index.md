@@ -36,48 +36,57 @@ the command might handle the actual playback of an audio file.
 ### Entity
 An entity (a.k.a. a slot) appears in an [utterance](#utterance).
 It represents a value in an [intent](#intent) that can change between 
-utterances or even be omitted entirely in some cases.
+utterances or even be omitted entirely in some cases. Entities are
+defined in the Diatheke model.
 
 {{% panel theme="default" header="Examples" %}}
-"What's the weather forecast for 
-<mark style="background-color: SlateBlue; color: white">Paris</mark>?" </br>
+1. "What's the weather forecast for
+  <mark style="background-color: SlateBlue; color: white">Paris</mark>?" </br>
 
-"Book me <mark style="background-color: DodgerBlue; color: white">three</mark>
-<mark style="background-color: Orange;">plane</mark> tickets from
-<mark style="background-color: SlateBlue; color: white">London</mark> to
-<mark style="background-color: Violet;">New York</mark>, please" </br>
+2. "Book me <mark style="background-color: DodgerBlue; color: white">three</mark>
+  <mark style="background-color: Orange;">plane</mark> tickets from
+  <mark style="background-color: SlateBlue; color: white">London</mark> to
+  <mark style="background-color: Violet;">New York</mark>, please." </br>
 
-"Play the song <mark style="background-color: SeaGreen; color: white">New York</mark>" </br>
+3. "Play the song <mark style="background-color: SeaGreen; color: white">New York</mark>" </br>
 
-"Pay <mark style="background-color: DodgerBlue; color: white">three</mark>
-pounds off my credit card" </br>
+4. "Pay <mark style="background-color: DodgerBlue; color: white">three</mark>
+  pounds off my credit card." </br>
 {{% /panel %}}
 
-The first two examples have entities that are Cities - the first has a single
-City, while the second might have a SourceCity and DestinationCity. 
+The first two examples have entities that are cities - the first has a single
+<mark style="background-color: SlateBlue; color: white">City</mark>,
+ while the second might have a 
+<mark style="background-color: SlateBlue; color: white">SourceCity</mark> and
+<mark style="background-color: Violet;">DestinationCity</mark>.
 
-The second and fourth examples have entities that are numbers, though they are
-interpreted differently in the two utterances. One is a quantity, and the other
-is an amount of money.
+The second and fourth examples have entities that are 
+<mark style="background-color: DodgerBlue; color: white">numbers</mark>,
+though they are interpreted differently in the two utterances. One is a quantity,
+and the other is an amount of money.
 
 The same words can mean different entities in different contexts. E.g. 'New York'
-could be either a City or a SongName, depending on the context.
+could be either a 
+<mark style="background-color: Violet;">City</mark> or a
+<mark style="background-color: SeaGreen; color: white">SongName</mark>,
+depending on the context.
 
 
 ### Intent
-Intent is the name for a group of [utterances](#utterance) which mean the 
+Intent is the name for a group of [utterances](#utterance) which mean the
 same sort of thing and result in a particular [action](#action) being taken.
+Intents are defined as part of the Diatheke model.
 
 {{% panel theme="default" header="Example - GetWeatherForecastIntent" %}}
 "What's the weather forecast for Paris?" </br>
 "What's the weather like in London?" </br>
-"What's the weather today?" </br>
+"Is it going to be sunny today?" </br>
 {{% /panel %}}
 
 {{% panel theme="default" header="Example - BookTicketIntent" %}}
-"Book me three plane tickets from London to New York, please" </br>
-"Book me two train tickets from Newcastle to Edinburgh" </br>
-"Book me five bus tickets to Grand Junction" </br>
+"Book me three plane tickets from London to New York, please." </br>
+"Book me two train tickets from Newcastle to Edinburgh." </br>
+"Book me five bus tickets to Grand Junction." </br>
 {{% /panel %}}
 
 
@@ -85,8 +94,8 @@ same sort of thing and result in a particular [action](#action) being taken.
 [Natural Language Understanding](https://en.wikipedia.org/wiki/Natural-language_understanding)
 (NLU) is a field within artificial intelligence that deals with machine
 reading comprehesion. It attempts to discern the meaning of (sometimes
-incomplete) sentences to execute an [intent](#intent) with its associated
-[entites](#entity).
+incomplete) sentences. In Diatheke, these interpretations are the
+[intent](#intent) with its associated [entites](#entity).
 
 
 ### Session

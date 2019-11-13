@@ -273,13 +273,13 @@ curl <span style="color:#40ffff">$URL</span> -L -o <span style="color:#40ffff">$
 
 <li><p>Load the docker image</p>
 <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">docker load &lt; <span style="color:#40ffff">$IMAGE_NAME</span></code></pre></div>
-<p>This will output the name of the image (e.g. diatheke-demo-en_us-16).</p></li>
+<p>This will output the name of the image (e.g. <code>diatheke-demo-en_us-16</code>).</p></li>
 
 <li><p>Start the diatheke service</p>
 <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">docker run -p <span style="color:#3677a9">9002</span>:9002 --name cobalt diathekesvr-demo-en_us-16</code></pre></div>
-<p>That will start listening for grpc commands on port 9002.  (You can
-replace <code>--name cobalt</code> with whatever name you want.  That just provides
-a way to refer back to the currently running container.)</p></li>
+<p>That will start listening for grpc commands on port 9002. You can replace
+<code>--name cobalt</code> with any name you want to give the docker container.
+The name simply provides a way to refer back to the running container.</p></li>
 </ol>
 
 <h3 id="contents-of-the-docker-image">Contents of the docker image</h3>
@@ -304,16 +304,16 @@ a way to refer back to the currently running container.)</p></li>
 <li><strong>Config Files</strong>
 
 <ul>
-<li>Cubic configuration at /data/configs/cubicsvr.cfg.toml</li>
-<li>Luna configuration at /data/configs/lunasvr.cfg.toml</li>
-<li>Diatheke configuration at /data/configs/diathekesvr.cfg.toml</li>
+<li>Cubic: /data/configs/cubicsvr.cfg.toml</li>
+<li>Luna: /data/configs/lunasvr.cfg.toml</li>
+<li>Diatheke: /data/configs/diathekesvr.cfg.toml</li>
 </ul></li>
-<li><strong>Models</strong>
+<li><strong>Model Directories</strong>
 
 <ul>
-<li>Cubic model at /data/models/cubic</li>
-<li>Luna model at /data/models/luna</li>
-<li>Diatheke model at /data/models/diatheke</li>
+<li>Cubic: /data/models/cubic</li>
+<li>Luna: /data/models/luna</li>
+<li>Diatheke: /data/models/diatheke</li>
 </ul></li>
 </ul>
 

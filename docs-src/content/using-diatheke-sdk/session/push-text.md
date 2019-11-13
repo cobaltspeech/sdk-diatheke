@@ -14,20 +14,20 @@ on the session's [event stream](../event-stream).
 {{% tab "Go" %}}
 ``` go
 // Push text using the client and sessionID
-err := client.PushText(context.Background(), sessionID, "What's the capitol of Assyria?")
+err := client.PushText(context.Background(), sessionID, "What's the capital of Assyria?")
 
 // OR push text using the session object
-err := session.PushText(context.Background(), "What's the capitol of Assyria?")
+err := session.PushText(context.Background(), "What's the capital of Assyria?")
 ```
 {{% /tab %}}
 
 {{% tab "C++" %}}
 ``` c++
 // Push text using the client and sessionID
-client.pushText(sessionID, "What's the capitol of Assyria?");
+client.pushText(sessionID, "What's the capital of Assyria?");
 
 // OR push text using the session object
-session.pushText("What's the capitol of Assyria?");
+session.pushText("What's the capital of Assyria?");
 ```
 {{% /tab %}}
 
