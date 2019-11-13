@@ -4,8 +4,8 @@ description: "Describes how to connect to a running Diatheke server instance."
 weight: 23
 ---
 
-Once you have the Diatheke server up and running, you are ready to create
-a client connection.
+Once you have the Diatheke server [up and running](../../getting-started),
+you are ready to create a client connection.
 
 <!--more-->
 

@@ -29,7 +29,7 @@ the `diathekesvr` binary and model files.
     docker load < $IMAGE_NAME
     ```
 
-    This will output the name of the image (e.g. diatheke-demo-en_us-16).
+    This will output the name of the image (e.g. `diatheke-demo-en_us-16`).
 
 4. Start the diatheke service
 
@@ -37,9 +37,9 @@ the `diathekesvr` binary and model files.
     docker run -p 9002:9002 --name cobalt diathekesvr-demo-en_us-16
     ```
 
-    That will start listening for grpc commands on port 9002.  (You can
-    replace `--name cobalt` with whatever name you want.  That just provides
-    a way to refer back to the currently running container.)
+    That will start listening for grpc commands on port 9002. You can replace
+    `--name cobalt` with any name you want to give the docker container.
+    The name simply provides a way to refer back to the running container.
 
 
 ### Contents of the docker image
@@ -55,13 +55,13 @@ the `diathekesvr` binary and model files.
   - Luna ([TTS](../glossary/#tts))
   - Diatheke (Dialog)
 - **Config Files**
-  - Cubic configuration at /data/configs/cubicsvr.cfg.toml
-  - Luna configuration at /data/configs/lunasvr.cfg.toml
-  - Diatheke configuration at /data/configs/diathekesvr.cfg.toml
-- **Models**
-  - Cubic model at /data/models/cubic
-  - Luna model at /data/models/luna
-  - Diatheke model at /data/models/diatheke
+  - Cubic: /data/configs/cubicsvr.cfg.toml
+  - Luna: /data/configs/lunasvr.cfg.toml
+  - Diatheke: /data/configs/diathekesvr.cfg.toml
+- **Model Directories**
+  - Cubic: /data/models/cubic
+  - Luna: /data/models/luna
+  - Diatheke: /data/models/diatheke
 
 
 ## Installing the Diatheke SDK

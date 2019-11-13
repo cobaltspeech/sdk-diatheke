@@ -7,8 +7,9 @@ weight: 22
 For the sake of clarity, most examples in the documentation do not fully
 demonstrate how to handle errors, preferring instead to focus on the topic
 at hand. However, the Diatheke SDK does report errors, and client
-applications should be prepared to handle them. A description of how errors
-are handled for each language is given below.
+applications should be prepared to handle them.
+
+A description of how errors are handled for each language is given below.
 
 ## C++
 
@@ -25,7 +26,7 @@ try
     // Call SDK functions in here. The function calls may be in this
     // try block, or within functions that the try block calls.
 }
-catch (const Diatheke::ClientError err &err)
+catch (const Diatheke::ClientError &err)
 {
     // Handle the error here. The specific error message can be
     // retrieved using err.what().

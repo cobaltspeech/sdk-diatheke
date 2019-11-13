@@ -260,8 +260,9 @@
 <p>For the sake of clarity, most examples in the documentation do not fully
 demonstrate how to handle errors, preferring instead to focus on the topic
 at hand. However, the Diatheke SDK does report errors, and client
-applications should be prepared to handle them. A description of how errors
-are handled for each language is given below.</p>
+applications should be prepared to handle them.</p>
+
+<p>A description of how errors are handled for each language is given below.</p>
 
 <h2 id="c">C++</h2>
 
@@ -276,7 +277,7 @@ For example:</p>
     <span style="color:#999;font-style:italic">// Call SDK functions in here. The function calls may be in this
 </span><span style="color:#999;font-style:italic"></span>    <span style="color:#999;font-style:italic">// try block, or within functions that the try block calls.
 </span><span style="color:#999;font-style:italic"></span>}
-<span style="color:#6ab825;font-weight:bold">catch</span> (<span style="color:#6ab825;font-weight:bold">const</span> Diatheke::ClientError err &amp;err)
+<span style="color:#6ab825;font-weight:bold">catch</span> (<span style="color:#6ab825;font-weight:bold">const</span> Diatheke::ClientError &amp;err)
 {
     <span style="color:#999;font-style:italic">// Handle the error here. The specific error message can be
 </span><span style="color:#999;font-style:italic"></span>    <span style="color:#999;font-style:italic">// retrieved using err.what().

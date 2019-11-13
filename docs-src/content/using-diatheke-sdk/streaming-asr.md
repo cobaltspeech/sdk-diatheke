@@ -6,19 +6,24 @@ weight: 25
 
 Not to be confused with a session's [audio input stream](../session/audio-input),
 a plain [ASR](../../glossary#asr) stream is used to process audio and
-receive a transcript from Diatheke. Sending audio on an ASR stream does
-not affect the state of any running [sessions](../session), or cause
-the dialog to transition between states. It essentially forwards the
-ASR request to the underlying Cubic engine.
+receive a transcript from Diatheke. This functionality is particularly
+useful for ASR tasks that fall outside of the normal dialog flow. For
+example, an application that wants to allow a user to record a note while
+in the middle of a task could use this stream to get a transcript that can
+be saved.
 
-This functionality is particularly useful for ASR tasks that fall
-outside of the normal dialog flow. For example, an application that
-wants to allow a user to record a note while in the middle of a task
-could use this stream to get a transcript that can be saved.
+
+Sending audio on an ASR stream does not affect the state of any running
+[sessions](../session), or cause the dialog to transition between states.
+It essentially forwards the ASR request to the underlying Cubic engine and
+forwards the transcription back to the client. The fact that the ASR stream
+can be used without a session, makes it particularly useful for debugging
+audio issues.
+
 
 ## Creating an ASR Stream
 The ASR stream requires a Cubic model (defined in the Cubic server config
-file) to be specified at creation.The returned stream will be a
+file) to be specified at creation. The returned stream will be a
 bi-direction stream that allows the client code to push audio to the
 server, while concurrently receiving transcripts from the server as they
 become available.
@@ -43,7 +48,7 @@ stream, err := client.StreamASR(context.Background(), cubicModel)
 {{% tab "C++" %}}
 ``` c++
 // Specify the Cubic model to use (not a Diatheke model)
-std::string cubicModel := "1"
+std::string cubicModel = "1";
 
 // Create the bi-directional ASR stream
 std::unique_ptr<Diatheke::ASRStream> stream = client.streamASR(cubicModel);
@@ -56,7 +61,7 @@ std::unique_ptr<Diatheke::ASRStream> stream = client.streamASR(cubicModel);
 ## Pushing Audio
 It is the client code's responsibility to handle getting audio data, whether
 it is from a microphone, file, or some other source. Audio data should be
-formatted and encoded based on the specific [ASR](../../../glossary#asr)
+formatted and encoded based on the specific [ASR](../../glossary#asr)
 model being used for the stream. The audio data is then pushed to the
 server as demonstrated below.
 
