@@ -6,7 +6,7 @@ weight: 1001
 ### Action
 When a user says something, it is converted to [intents](#intent) and
 [entities](#entity). Then, the system can take any *action* in response.
-Actions can include [text-to-speech](#tts) output, or running a particular
+Actions can include [text-to-speech](#tts) output, or running a specific
 [command](#command).
 
 For example, if someone asks to pay money off their credit card, then
