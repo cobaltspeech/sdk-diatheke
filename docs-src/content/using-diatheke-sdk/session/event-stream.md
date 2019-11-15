@@ -336,3 +336,49 @@ stream->commandFinished(status);
 {{% /tab %}}
 
 {{% /tabs %}}
+
+
+## Event flow
+### Audio Based
+For an [audio-based](../audio-input) dialog, the flow events is shown below.
+Based on the Diatheke model, the server will send events in response to
+recognized audio and intents.
+
+{{<mermaid align="center">}}
+sequenceDiagram;
+    Note left of Client: Client records<br>audio
+    Client ->> Diatheke: Audio input
+    Client ->> Diatheke: Audio input
+    Client ->> Diatheke: Audio input
+    Note right of Diatheke: ASR creates</br>transcript
+    Note right of Diatheke: NLU interprets</br>transcript
+    Diatheke -->> Client: Recognize event
+    Note right of Diatheke: Model finds</br>command for intent
+    Diatheke -->> Client: Command event
+    Note left of Client: Client executes<br>command
+    Client ->> Diatheke: CommandFinished
+    Note right of Diatheke: Model finds</br>Say action</br>after command
+    Diatheke -->> Client: Reply event
+{{< /mermaid >}}
+
+### Text Based
+For a [text-based](../push-text) dialog, the flow events is shown below.
+As with the audio-based dialog, the specific type and number of events
+will depend on the Diatheke model.
+{{<mermaid align="center">}}
+sequenceDiagram;
+    Note left of Client: Client sends<br>text
+    Client ->> Diatheke: Text input
+    Note right of Diatheke: NLU interprets</br>text
+    Diatheke -->> Client: Recognize event
+    Note right of Diatheke: Model finds</br>command for intent
+    Diatheke -->> Client: Command event
+    Note left of Client: Client executes<br>command
+    Client ->> Diatheke: CommandFinished
+    Note right of Diatheke: Model finds</br>another command
+    Diatheke -->> Client: Command event
+    Note left of Client: Client executes<br>command
+    Client ->> Diatheke: CommandFinished
+    Note right of Diatheke: Model finds</br>Say action</br>after command
+    Diatheke -->> Client: Reply event
+{{< /mermaid >}}

@@ -249,6 +249,11 @@
 <li><a href="#command-finished">Command Finished</a></li>
 </ul></li>
 </ul></li>
+<li><a href="#event-flow">Event flow</a>
+<ul>
+<li><a href="#audio-based">Audio Based</a></li>
+<li><a href="#text-based">Text Based</a></li>
+</ul></li>
 </ul></li>
 </ul>
 </nav>
@@ -602,6 +607,58 @@ waiting for long-running commands to finish.</p>
 </div>
 
 <p></div>
+</div></p>
+
+<h2 id="event-flow">Event flow</h2>
+
+<h3 id="audio-based">Audio Based</h3>
+
+<p>For an <a href="../audio-input">audio-based</a> dialog, the flow events is shown below.
+Based on the Diatheke model, the server will send events in response to
+recognized audio and intents.</p>
+
+<link href="/sdk-diatheke/mermaid/mermaid.css" type="text/css" rel="stylesheet"/>
+<script defer src="/sdk-diatheke/mermaid/mermaid.js">mermaid.initialize({startOnLoad:true});</script>
+<div class="mermaid" align="center" >
+sequenceDiagram;
+    Note left of Client: Client records<br>audio
+    Client ->> Diatheke: Audio input
+    Client ->> Diatheke: Audio input
+    Client ->> Diatheke: Audio input
+    Note right of Diatheke: ASR creates</br>transcript
+    Note right of Diatheke: NLU interprets</br>transcript
+    Diatheke -->> Client: Recognize event
+    Note right of Diatheke: Model finds</br>command for intent
+    Diatheke -->> Client: Command event
+    Note left of Client: Client executes<br>command
+    Client ->> Diatheke: CommandFinished
+    Note right of Diatheke: Model finds</br>Say action</br>after command
+    Diatheke -->> Client: Reply event
+</div>
+
+<h3 id="text-based">Text Based</h3>
+
+<p>For a <a href="../push-text">text-based</a> dialog, the flow events is shown below.
+As with the audio-based dialog, the specific type and number of events
+will depend on the Diatheke model.
+<link href="/sdk-diatheke/mermaid/mermaid.css" type="text/css" rel="stylesheet"/>
+<script defer src="/sdk-diatheke/mermaid/mermaid.js">mermaid.initialize({startOnLoad:true});</script>
+<div class="mermaid" align="center" >
+sequenceDiagram;
+    Note left of Client: Client sends<br>text
+    Client ->> Diatheke: Text input
+    Note right of Diatheke: NLU interprets</br>text
+    Diatheke -->> Client: Recognize event
+    Note right of Diatheke: Model finds</br>command for intent
+    Diatheke -->> Client: Command event
+    Note left of Client: Client executes<br>command
+    Client ->> Diatheke: CommandFinished
+    Note right of Diatheke: Model finds</br>another command
+    Diatheke -->> Client: Command event
+    Note left of Client: Client executes<br>command
+    Client ->> Diatheke: CommandFinished
+    Note right of Diatheke: Model finds</br>Say action</br>after command
+    Diatheke -->> Client: Reply event
 </div></p>
 
 
