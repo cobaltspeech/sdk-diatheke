@@ -55,7 +55,7 @@ class AudioInputStream(object):
 
     def __next__(self):
         # Note this function is being called from the thread that the actual
-        # stream is running on.
+        # stream is running on (i.e., from self._stream_thread).
 
         # Create a new request object to be sent
         request = AudioInput()
