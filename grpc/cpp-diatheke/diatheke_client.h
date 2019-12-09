@@ -99,7 +99,7 @@ public:
      *
      * This function may be used alone or in addition to an audio input
      * stream to drive the conversation with Diatheke. On the server side,
-     * the audio input stream essentially calls this function automaticaly as
+     * the audio input stream essentially calls this function automatically as
      * transcriptions are available.
      */
     void pushText(const std::string &sessionID, const std::string &text);
