@@ -12,7 +12,7 @@ setup(
     url='https://github.com/cobaltspeech/sdk-diatheke',
     packages=["diatheke"],
     version_config={
-        "version_format": "{tag}.dev{commits}+{sha}"
+        "version_format": "{tag}.dev{sha}"
     },
     setup_requires=['better-setuptools-git-version'],
     install_requires=['grpcio-tools']
