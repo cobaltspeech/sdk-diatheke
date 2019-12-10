@@ -44,7 +44,11 @@ class AudioInputStream(object):
         self._id_sent = False
         self._is_finished = False
 
-        # Set up a thread to run the StreamAudioInput function with this class
+        # They way client gRPC streaming works in Python is that the streaming
+        # method accepts an iterator to send many messages to the server until
+        # it is done, at which point the server returns a single response. The
+        # function call blocks until this happens. To avoid blocking, we set
+        # up a thread to run the StreamAudioInput function with this class
         # as the iterator argument to that function.
         self._stream_thread = threading.Thread(target=client_stub.StreamAudioInput,
                                                args=(self,))
