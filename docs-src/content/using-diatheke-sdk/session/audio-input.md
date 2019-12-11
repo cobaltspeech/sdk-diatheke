@@ -109,6 +109,7 @@ stream->finished();
 
 # Push the audio data to the input stream. This function may be called
 # multiple times.
+stream.write(buffer)
 
 # Be sure to notify Diatheke that no more audio will be coming when
 # we are done writing data.
