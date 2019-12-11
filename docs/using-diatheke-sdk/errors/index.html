@@ -235,6 +235,7 @@
 <ul>
 <li><a href="#c">C++</a></li>
 <li><a href="#go">Go</a></li>
+<li><a href="#python">Python</a></li>
 </ul></li>
 </ul>
 </nav>
@@ -294,6 +295,24 @@ an error in addition to their other return values. For example:</p>
 <span style="color:#6ab825;font-weight:bold">if</span> err != <span style="color:#6ab825;font-weight:bold">nil</span> {
     <span style="color:#999;font-style:italic">// Handle the error here.
 </span><span style="color:#999;font-style:italic"></span>}</code></pre></div>
+<h2 id="python">Python</h2>
+
+<p>The Python SDK uses <a href="https://docs.python.org/3/library/exceptions.html">built-in exceptions</a>
+to report errors. They can be handled by wrapping the client code in a
+<a href="https://docs.python.org/3/tutorial/errors.html#handling-exceptions">try &hellip; except statement</a>.
+For example:</p>
+<div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#6ab825;font-weight:bold">try</span>:
+    <span style="color:#999;font-style:italic"># Call SDK functions in here. The SDK functions may be</span>
+    <span style="color:#999;font-style:italic"># called directly, or within other functions that this</span>
+    <span style="color:#999;font-style:italic"># block eventually calls.</span>
+
+<span style="color:#6ab825;font-weight:bold">except</span> <span style="color:#bbb">BaseException</span> <span style="color:#6ab825;font-weight:bold">as</span> err:
+    <span style="color:#999;font-style:italic"># Handle the error here. To have better control over how</span>
+    <span style="color:#999;font-style:italic"># individual errors are handled, you may use more concrete</span>
+    <span style="color:#999;font-style:italic"># exception types in the except statement.</span>
+
+<span style="color:#6ab825;font-weight:bold">finally</span>:
+    <span style="color:#999;font-style:italic"># Do any final cleanup here.</span></code></pre></div>
 
     
     

@@ -38,6 +38,16 @@ stream = session.eventStream();
 ```
 {{% /tab %}}
 
+{{% tab "Python" %}}
+``` python
+# Create the stream using the client and session ID
+stream = client.session_event_stream(session_id)
+
+# OR create the stream using the Session object
+stream = session.event_stream()
+```
+{{% /tab %}}
+
 {{% /tabs %}}
 
 This creates a server stream that will deliver events to the client. The
@@ -121,6 +131,26 @@ eventStream->close();
 ```
 {{% /tab %}}
 
+{{% tab "Python" %}}
+``` python
+# Receive events from the event stream until it is closed, which will
+# happen when the session ends.
+for event in event_stream:
+    # Check the event type
+    if event.HasField("recognize"):
+        handle_recognize_event(event.recognize)
+
+    elif event.HasField("reply"):
+        handle_reply_event(event.reply)
+
+    elif event.HasField("command"):
+        handle_command_event(event.command, session)
+
+    else:
+        print("Received unknown event type from Diatheke.")
+```
+{{% /tab %}}
+
 {{% /tabs %}}
 
 
@@ -170,6 +200,16 @@ void handleRecognizeEvent(const cobaltspeech::diatheke::RecognizeEvent &event)
 ```
 {{% /tab %}}
 
+{{% tab "Python" %}}
+``` python
+def handle_recognize_event(event):
+    if event.valid_input:
+        print("Valid input: " + event.text)
+    else:
+        print("Invalid input: " + event.text)
+```
+{{% /tab %}}
+
 {{% /tabs %}}
 
 
@@ -200,6 +240,13 @@ void handleReplyEvent(const cobaltspeech::diatheke::ReplyEvent &event)
 {
     std::cout << "Reply text: " << event.text() << std::endl;
 }
+```
+{{% /tab %}}
+
+{{% tab "Python" %}}
+``` python
+def handle_reply_event(event):
+    print("Reply text: " + event.text)
 ```
 {{% /tab %}}
 
@@ -295,6 +342,45 @@ void handleCommandEvent(const cobaltspeech::diatheke::CommandEvent &event,
 ```
 {{% /tab %}}
 
+{{% tab "Python" %}}
+``` python
+def handle_command_event(event, session):
+    # Use the command ID and parameters to execute a task.
+    print("Command ID: " + event.command_id)
+    print("Parameters:")
+    for param in event.parameters:
+        value = event.parameters[param]
+        print("  {} = {}".format(param, value))
+    print("\n")
+
+    # After executing the command, be sure to notify Diatheke that we
+    # are done. This is important to do so that dialog flow may continue
+    # after the command is finished.
+    result = diatheke.CommandStatus()
+    result.session_id = session.id
+    result.command_id = event.command_id
+
+    # Indicate success or failure
+    result.return_status = diatheke.CommandStatus.SUCCESS
+
+    # If the return_status above is diatheke.CommandStatus.FAILURE,
+    # the error_message_text field of this object should also be
+    # populated.
+    # result.error_message_text = "some message describing the error"
+
+    # Return parameters as necessary. Depending on the Diatheke model,
+    # some commands may be expected to have output.
+    result.output_parameters.update(event.parameters)
+
+    # Internal data that should always be set from the original command
+    # event.
+    result.command_state_id = event.command_state_id
+
+    # Send the result to Diatheke
+    session.command_finished(result)
+```
+{{% /tab %}}
+
 {{% /tabs %}}
 
 
@@ -332,6 +418,16 @@ session.commandFinished(status);
 
 // OR use the EventStream object
 stream->commandFinished(status);
+```
+{{% /tab %}}
+
+{{% tab "Python" %}}
+``` python
+# Use the client
+client.command_finished(status)
+
+# OR use the Session object
+session.command_finished(status)
 ```
 {{% /tab %}}
 

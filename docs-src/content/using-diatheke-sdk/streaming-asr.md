@@ -55,6 +55,16 @@ std::unique_ptr<Diatheke::ASRStream> stream = client.streamASR(cubicModel);
 ```
 {{% /tab %}}
 
+{{% tab "Python" %}}
+``` python
+# Specify the Cubic model to use (not a Diatheke model)
+cubic_model = "1"
+
+# Create the bi-directional ASR stream
+stream = client.stream_asr(cubic_model)
+```
+{{% /tab %}}
+
 {{% /tabs %}}
 
 
@@ -111,6 +121,22 @@ stream->pushAudio(buffer.c_str(), buffer.size());
 // Be sure to notify Diatheke that no more audio will be coming when we
 // are done writing data.
 stream->finishAudio();
+```
+{{% /tab %}}
+
+{{% tab "Python" %}}
+``` python
+# Get the audio data from a source. This could be a microphone, file, or
+# any other source. Here we assume the audio data was retrieved previously
+# and stored in a buffer.
+
+# Push the audio data to the stream. This function may be called multiple
+# times. It is safe to call concurrently with the corresponding result_stream.
+stream.write(buffer)
+
+# Be sure to notify Diatheke that no more audio will be coming when are
+# done writing data.
+stream.audio_finished()
 ```
 {{% /tab %}}
 
@@ -176,6 +202,20 @@ while (stream->waitForResult(&result))
               << std::endl
               << std::endl;
 }
+```
+{{% /tab %}}
+
+{{% tab "Python" %}}
+``` python
+# Wait for a transcription from the server. It is safe to do this
+# concurrently with the stream's write() method. The for loop
+# will continue to iterate until the stream's audio_finished() method
+# has been called.
+for result in stream.result_stream:
+    # Display the transcript
+    print("ASR Response:")
+    print("  Transcript: " + result.text)
+    print("  Confidence Score: {}\n".format(result.confidence_score))
 ```
 {{% /tab %}}
 

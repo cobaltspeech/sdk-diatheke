@@ -40,6 +40,16 @@ stream = session.streamAudioReplies();
 ```
 {{% /tab %}}
 
+{{% tab "Python" %}}
+``` python
+# Create the stream using the client and session ID
+stream = client.stream_audio_replies(session_id)
+
+# OR create the stream using the Session object
+stream = session.stream_audio_replies()
+```
+{{% /tab %}}
+
 {{% /tabs %}}
 
 
@@ -135,6 +145,30 @@ while (stream->waitForReply(&reply))
 }
 
 stream->close();
+```
+{{% /tab %}}
+
+{{% tab "Python" %}}
+``` python
+# Wait for replies from the server until the stream is closed, which
+# will happen when the session is closed.
+for msg in stream:
+    # Check which message type we have received
+    if msg.HasField("text"):
+        # The text of the reply comes first for a reply from Diatheke
+        print("Text: " + reply.text)
+
+    elif msg.HasField("data"):
+        # Audio data is received until speech synthesis is done.
+        print("Data size (bytes): {}".format(len(reply.data)))
+
+    elif msg.HasField("end"):
+        # This message comes at the end of a reply, after speech synthesis
+        # is complete. It has no data.
+        print("Reply complete")
+
+    else:
+        print("Received unexpected AudioReply type")
 ```
 {{% /tab %}}
 

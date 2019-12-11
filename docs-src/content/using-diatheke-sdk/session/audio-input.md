@@ -37,6 +37,16 @@ stream = session.streamAudioInput();
 ```
 {{% /tab %}}
 
+{{% tab "Python" %}}
+``` python
+# Create the stream using the client and session ID
+stream = client.stream_audio_input(session_id)
+
+# OR create the stream using the Session object
+stream = session.stream_audio_input()
+```
+{{% /tab %}}
+
 {{% /tabs %}}
 
 
@@ -82,12 +92,27 @@ std::string buffer;
 // and stored in our buffer.
 
 // Push the audio data to the input stream. This function may be called
-// multiple time.
+// multiple times.
 stream->pushAudio(buffer.c_str(), buffer.size());
 
 // Be sure to notify Diatheke that no more audio will be coming when we
 // are done writing data.
 stream->finished();
+```
+{{% /tab %}}
+
+{{% tab "Python" %}}
+``` python
+# Get the audio data from a source. This could be a microphone, file, or
+# any other source. Here we assume the audio data was retrieved previously
+# and stored in a buffer.
+
+# Push the audio data to the input stream. This function may be called
+# multiple times.
+
+# Be sure to notify Diatheke that no more audio will be coming when
+# we are done writing data.
+stream.finish()
 ```
 {{% /tab %}}
 

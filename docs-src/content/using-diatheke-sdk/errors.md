@@ -48,3 +48,26 @@ if err != nil {
     // Handle the error here.
 }
 ```
+
+
+## Python
+
+The Python SDK uses [built-in exceptions](https://docs.python.org/3/library/exceptions.html)
+to report errors. They can be handled by wrapping the client code in a
+[try ... except statement](https://docs.python.org/3/tutorial/errors.html#handling-exceptions).
+For example:
+
+```python
+try:
+    # Call SDK functions in here. The SDK functions may be
+    # called directly, or within other functions that this
+    # block eventually calls.
+
+except BaseException as err:
+    # Handle the error here. To have better control over how
+    # individual errors are handled, you may use more concrete
+    # exception types in the except statement.
+
+finally:
+    # Do any final cleanup here.
+```

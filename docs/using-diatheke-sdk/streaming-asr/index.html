@@ -307,6 +307,14 @@ than one ASR stream running at a time.</p>
 </code></pre></div>
 </div>
 
+<div class="tab-pane" title="Python">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#999;font-style:italic"># Specify the Cubic model to use (not a Diatheke model)</span>
+cubic_model = <span style="color:#ed9d13">&#34;1&#34;</span>
+
+<span style="color:#999;font-style:italic"># Create the bi-directional ASR stream</span>
+stream = client.stream_asr(cubic_model)</code></pre></div>
+</div>
+
 <p></div>
 </div></p>
 
@@ -364,6 +372,20 @@ be coming.</p>
 </span><span style="color:#999;font-style:italic">// are done writing data.
 </span><span style="color:#999;font-style:italic"></span>stream-&gt;finishAudio();
 </code></pre></div>
+</div>
+
+<div class="tab-pane" title="Python">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#999;font-style:italic"># Get the audio data from a source. This could be a microphone, file, or</span>
+<span style="color:#999;font-style:italic"># any other source. Here we assume the audio data was retrieved previously</span>
+<span style="color:#999;font-style:italic"># and stored in a buffer.</span>
+
+<span style="color:#999;font-style:italic"># Push the audio data to the stream. This function may be called multiple</span>
+<span style="color:#999;font-style:italic"># times. It is safe to call concurrently with the corresponding result_stream.</span>
+stream.write(<span style="color:#24909d">buffer</span>)
+
+<span style="color:#999;font-style:italic"># Be sure to notify Diatheke that no more audio will be coming when are</span>
+<span style="color:#999;font-style:italic"># done writing data.</span>
+stream.audio_finished()</code></pre></div>
 </div>
 
 <p></div>
@@ -430,6 +452,18 @@ the stream is closed (e.g., by calling AudioFinished()).</p>
               &lt;&lt; std::endl;
 }
 </code></pre></div>
+</div>
+
+<div class="tab-pane" title="Python">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#999;font-style:italic"># Wait for a transcription from the server. It is safe to do this</span>
+<span style="color:#999;font-style:italic"># concurrently with the stream&#39;s write() method. The for loop</span>
+<span style="color:#999;font-style:italic"># will continue to iterate until the stream&#39;s audio_finished() method</span>
+<span style="color:#999;font-style:italic"># has been called.</span>
+<span style="color:#6ab825;font-weight:bold">for</span> result <span style="color:#6ab825;font-weight:bold">in</span> stream.result_stream:
+    <span style="color:#999;font-style:italic"># Display the transcript</span>
+    <span style="color:#6ab825;font-weight:bold">print</span>(<span style="color:#ed9d13">&#34;ASR Response:&#34;</span>)
+    <span style="color:#6ab825;font-weight:bold">print</span>(<span style="color:#ed9d13">&#34;  Transcript: &#34;</span> + result.text)
+    <span style="color:#6ab825;font-weight:bold">print</span>(<span style="color:#ed9d13">&#34;  Confidence Score: {}</span><span style="color:#ed9d13">\n</span><span style="color:#ed9d13">&#34;</span>.format(result.confidence_score))</code></pre></div>
 </div>
 
 <p></div>
