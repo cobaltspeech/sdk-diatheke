@@ -31,6 +31,16 @@ session.pushText("What's the capital of Assyria?");
 ```
 {{% /tab %}}
 
+{{% tab "Python" %}}
+``` python
+# Push text using the client and session ID
+client.push_text(session_id, "What's the capital of Assyria?")
+
+# OR push text using the session object
+session.push_text("What's the capital of Assyria?")
+```
+{{% /tab %}}
+
 {{% /tabs %}}
 
 {{% panel theme="info" header="Note" %}}

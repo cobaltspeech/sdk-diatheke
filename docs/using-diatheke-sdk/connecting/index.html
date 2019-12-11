@@ -324,6 +324,14 @@ default setup, expecting the server to be listening on a TLS encrypted connectio
 </code></pre></div>
 </div>
 
+<div class="tab-pane" title="Python">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#6ab825;font-weight:bold">import</span> <span style="color:#447fcf;text-decoration:underline">diatheke</span>
+
+client = diatheke.Client(server_address=<span style="color:#ed9d13">&#34;localhost:9002&#34;</span>)
+version = client.diatheke_version()
+<span style="color:#6ab825;font-weight:bold">print</span>(<span style="color:#ed9d13">&#34;Diatheke version {}&#34;</span>.format(version))</code></pre></div>
+</div>
+
 <p></div>
 </div></p>
 
@@ -346,6 +354,11 @@ attempting to connect with an insecure client will fail.</p>
 <div class="tab-pane" title="C&#43;&#43;">
   <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">Diatheke::Client client(serverAddr, <span style="color:#24909d">true</span>);
 </code></pre></div>
+</div>
+
+<div class="tab-pane" title="Python">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">client = diatheke.Client(server_addres=<span style="color:#ed9d13">&#34;localhost:9002&#34;</span>,
+                         insecure=True)</code></pre></div>
 </div>
 
 <p></div>
@@ -372,7 +385,7 @@ authenticated TLS. This can be done with:</p>
   <div class="tab-content">
 
 <div class="tab-pane" title="Go">
-  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#999;font-style:italic">// certPerm and keyPem are the bytes of the client certificate and key
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#999;font-style:italic">// certPem and keyPem are the bytes of the client certificate and key
 </span><span style="color:#999;font-style:italic">// provided to you.
 </span><span style="color:#999;font-style:italic"></span>client, err := diatheke.<span style="color:#447fcf">NewClient</span>(serverAddr, diatheke.<span style="color:#447fcf">WithClientCert</span>(certPem, keyPem))</code></pre></div>
 </div>
@@ -380,6 +393,14 @@ authenticated TLS. This can be done with:</p>
 <div class="tab-pane" title="C&#43;&#43;">
   <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#999;font-style:italic">// Currently unsupported in C++.
 </span></code></pre></div>
+</div>
+
+<div class="tab-pane" title="Python">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#999;font-style:italic"># cert_pem and key_pem are the contents of the client certificate and key</span>
+<span style="color:#999;font-style:italic"># provided to you.</span>
+client = diatheke.Client(server_address=<span style="color:#ed9d13">&#34;localhost:9002&#34;</span>,
+                         client_certificate=cert_pem,
+                         client_key=key_pem)</code></pre></div>
 </div>
 
 <p></div>

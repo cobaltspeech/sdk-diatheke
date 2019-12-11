@@ -309,6 +309,14 @@ client via a session&rsquo;s event stream.</p>
 </code></pre></div>
 </div>
 
+<div class="tab-pane" title="Python">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#999;font-style:italic"># Create the stream using the client and session ID</span>
+stream = client.session_event_stream(session_id)
+
+<span style="color:#999;font-style:italic"># OR create the stream using the Session object</span>
+stream = session.event_stream()</code></pre></div>
+</div>
+
 <p></div>
 </div></p>
 
@@ -392,6 +400,24 @@ that waits for the next event, then handles the event based on its type:</p>
 </code></pre></div>
 </div>
 
+<div class="tab-pane" title="Python">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#999;font-style:italic"># Receive events from the event stream until it is closed, which will</span>
+<span style="color:#999;font-style:italic"># happen when the session ends.</span>
+<span style="color:#6ab825;font-weight:bold">for</span> event <span style="color:#6ab825;font-weight:bold">in</span> event_stream:
+    <span style="color:#999;font-style:italic"># Check the event type</span>
+    <span style="color:#6ab825;font-weight:bold">if</span> event.HasField(<span style="color:#ed9d13">&#34;recognize&#34;</span>):
+        handle_recognize_event(event.recognize)
+
+    <span style="color:#6ab825;font-weight:bold">elif</span> event.HasField(<span style="color:#ed9d13">&#34;reply&#34;</span>):
+        handle_reply_event(event.reply)
+
+    <span style="color:#6ab825;font-weight:bold">elif</span> event.HasField(<span style="color:#ed9d13">&#34;command&#34;</span>):
+        handle_command_event(event.command, session)
+
+    <span style="color:#6ab825;font-weight:bold">else</span>:
+        <span style="color:#6ab825;font-weight:bold">print</span>(<span style="color:#ed9d13">&#34;Received unknown event type from Diatheke.&#34;</span>)</code></pre></div>
+</div>
+
 <p></div>
 </div></p>
 
@@ -441,6 +467,14 @@ or not.</p>
 </code></pre></div>
 </div>
 
+<div class="tab-pane" title="Python">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#6ab825;font-weight:bold">def</span> <span style="color:#447fcf">handle_recognize_event</span>(event):
+    <span style="color:#6ab825;font-weight:bold">if</span> event.valid_input:
+        <span style="color:#6ab825;font-weight:bold">print</span>(<span style="color:#ed9d13">&#34;Valid input: &#34;</span> + event.text)
+    <span style="color:#6ab825;font-weight:bold">else</span>:
+        <span style="color:#6ab825;font-weight:bold">print</span>(<span style="color:#ed9d13">&#34;Invalid input: &#34;</span> + event.text)</code></pre></div>
+</div>
+
 <p></div>
 </div></p>
 
@@ -472,6 +506,11 @@ feedback to the user.</p>
     std::cout &lt;&lt; <span style="color:#ed9d13">&#34;Reply text: &#34;</span> &lt;&lt; event.text() &lt;&lt; std::endl;
 }
 </code></pre></div>
+</div>
+
+<div class="tab-pane" title="Python">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#6ab825;font-weight:bold">def</span> <span style="color:#447fcf">handle_reply_event</span>(event):
+    <span style="color:#6ab825;font-weight:bold">print</span>(<span style="color:#ed9d13">&#34;Reply text: &#34;</span> + event.text)</code></pre></div>
 </div>
 
 <p></div>
@@ -566,6 +605,43 @@ work by executing the commands.</p>
 </code></pre></div>
 </div>
 
+<div class="tab-pane" title="Python">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#6ab825;font-weight:bold">def</span> <span style="color:#447fcf">handle_command_event</span>(event, session):
+    <span style="color:#999;font-style:italic"># Use the command ID and parameters to execute a task.</span>
+    <span style="color:#6ab825;font-weight:bold">print</span>(<span style="color:#ed9d13">&#34;Command ID: &#34;</span> + event.command_id)
+    <span style="color:#6ab825;font-weight:bold">print</span>(<span style="color:#ed9d13">&#34;Parameters:&#34;</span>)
+    <span style="color:#6ab825;font-weight:bold">for</span> param <span style="color:#6ab825;font-weight:bold">in</span> event.parameters:
+        value = event.parameters[param]
+        <span style="color:#6ab825;font-weight:bold">print</span>(<span style="color:#ed9d13">&#34;  {} = {}&#34;</span>.format(param, value))
+    <span style="color:#6ab825;font-weight:bold">print</span>(<span style="color:#ed9d13">&#34;</span><span style="color:#ed9d13">\n</span><span style="color:#ed9d13">&#34;</span>)
+
+    <span style="color:#999;font-style:italic"># After executing the command, be sure to notify Diatheke that we</span>
+    <span style="color:#999;font-style:italic"># are done. This is important to do so that dialog flow may continue</span>
+    <span style="color:#999;font-style:italic"># after the command is finished.</span>
+    result = diatheke.CommandStatus()
+    result.session_id = session.<span style="color:#24909d">id</span>
+    result.command_id = event.command_id
+
+    <span style="color:#999;font-style:italic"># Indicate success or failure</span>
+    result.return_status = diatheke.CommandStatus.SUCCESS
+
+    <span style="color:#999;font-style:italic"># If the return_status above is diatheke.CommandStatus.FAILURE,</span>
+    <span style="color:#999;font-style:italic"># the error_message_text field of this object should also be</span>
+    <span style="color:#999;font-style:italic"># populated.</span>
+    <span style="color:#999;font-style:italic"># result.error_message_text = &#34;some message describing the error&#34;</span>
+
+    <span style="color:#999;font-style:italic"># Return parameters as necessary. Depending on the Diatheke model,</span>
+    <span style="color:#999;font-style:italic"># some commands may be expected to have output.</span>
+    result.output_parameters.update(event.parameters)
+
+    <span style="color:#999;font-style:italic"># Internal data that should always be set from the original command</span>
+    <span style="color:#999;font-style:italic"># event.</span>
+    result.command_state_id = event.command_state_id
+
+    <span style="color:#999;font-style:italic"># Send the result to Diatheke</span>
+    session.command_finished(result)</code></pre></div>
+</div>
+
 <p></div>
 </div></p>
 
@@ -604,6 +680,14 @@ waiting for long-running commands to finish.</p>
 <span style="color:#999;font-style:italic">// OR use the EventStream object
 </span><span style="color:#999;font-style:italic"></span>stream-&gt;commandFinished(status);
 </code></pre></div>
+</div>
+
+<div class="tab-pane" title="Python">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#999;font-style:italic"># Use the client</span>
+client.command_finished(status)
+
+<span style="color:#999;font-style:italic"># OR use the Session object</span>
+session.command_finished(status)</code></pre></div>
 </div>
 
 <p></div>

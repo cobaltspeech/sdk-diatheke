@@ -51,6 +51,17 @@ std::unique_ptr<Diatheke::TTSStream> stream =
 ```
 {{% /tab %}}
 
+{{% tab "Python" %}}
+``` python
+# Specify the Luna model to use (not a Diatheke model)
+luna_model = "1"
+sentence = "this is the text to synthesize"
+
+# Create the TTS stream
+stream = client.stream_tts(luna_model, sentence)
+```
+{{% /tab %}}
+
 {{% /tabs %}}
 
 ## Receiving Audio
@@ -108,6 +119,19 @@ while (stream->waitForAudio(&response))
 }
 
 std::cout << "Synthesis complete." << std::endl;
+```
+{{% /tab %}}
+
+{{% tab "Python" %}}
+``` python
+# Receive data from the TTS stream until it is closed, which will happen
+# when synthesis is complete.
+for response in stream:
+    # Use the audio data
+    audio_data = response.data
+    print("TTS Data size (bytes): {}".format(len(audio_data)))
+
+print("Synthesis complete.")
 ```
 {{% /tab %}}
 

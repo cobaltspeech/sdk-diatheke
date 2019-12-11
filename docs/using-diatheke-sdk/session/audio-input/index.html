@@ -296,6 +296,14 @@ and close multiple audio streams over the course of a single session.</p>
 </code></pre></div>
 </div>
 
+<div class="tab-pane" title="Python">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#999;font-style:italic"># Create the stream using the client and session ID</span>
+stream = client.stream_audio_input(session_id)
+
+<span style="color:#999;font-style:italic"># OR create the stream using the Session object</span>
+stream = session.stream_audio_input()</code></pre></div>
+</div>
+
 <p></div>
 </div></p>
 
@@ -339,13 +347,26 @@ created previously.</p>
 </span><span style="color:#999;font-style:italic">// and stored in our buffer.
 </span><span style="color:#999;font-style:italic"></span>
 <span style="color:#999;font-style:italic">// Push the audio data to the input stream. This function may be called
-</span><span style="color:#999;font-style:italic">// multiple time.
+</span><span style="color:#999;font-style:italic">// multiple times.
 </span><span style="color:#999;font-style:italic"></span>stream-&gt;pushAudio(buffer.c_str(), buffer.size());
 
 <span style="color:#999;font-style:italic">// Be sure to notify Diatheke that no more audio will be coming when we
 </span><span style="color:#999;font-style:italic">// are done writing data.
 </span><span style="color:#999;font-style:italic"></span>stream-&gt;finished();
 </code></pre></div>
+</div>
+
+<div class="tab-pane" title="Python">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#999;font-style:italic"># Get the audio data from a source. This could be a microphone, file, or</span>
+<span style="color:#999;font-style:italic"># any other source. Here we assume the audio data was retrieved previously</span>
+<span style="color:#999;font-style:italic"># and stored in a buffer.</span>
+
+<span style="color:#999;font-style:italic"># Push the audio data to the input stream. This function may be called</span>
+<span style="color:#999;font-style:italic"># multiple times.</span>
+
+<span style="color:#999;font-style:italic"># Be sure to notify Diatheke that no more audio will be coming when</span>
+<span style="color:#999;font-style:italic"># we are done writing data.</span>
+stream.finish()</code></pre></div>
 </div>
 
 <p></div>

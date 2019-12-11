@@ -38,6 +38,17 @@ client.endSession(sessionID);
 ```
 {{% /tab %}}
 
+{{% tab "Python" %}}
+``` python
+# The Diatheke model ID is defined in the Diatheke server config file.
+diatheke_model_id = "1"
+session_id = client.new_session(diatheke_model_id)
+
+# Be sure to close the session when we are done with it.
+client.end_session(session_id)
+```
+{{% /tab %}}
+
 {{% /tabs %}}
 
 Creating a new session will return a session ID, which is required for all
@@ -85,6 +96,16 @@ Diatheke::Session session(sessionID, &client);
 
 // Use session methods without the ID as a parameter
 session.EndSession();
+```
+{{% /tab %}}
+
+{{% tab "Python" %}}
+``` python
+# Wrap the session ID in the convenience class
+session = diatheke.Session(session_id, client)
+
+# Use session methods without the ID as a parameter
+session.end_session()
 ```
 {{% /tab %}}
 

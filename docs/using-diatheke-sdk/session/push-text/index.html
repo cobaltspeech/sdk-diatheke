@@ -279,6 +279,14 @@ on the session&rsquo;s <a href="../event-stream">event stream</a>.</p>
 </code></pre></div>
 </div>
 
+<div class="tab-pane" title="Python">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#999;font-style:italic"># Push text using the client and session ID</span>
+client.push_text(session_id, <span style="color:#ed9d13">&#34;What&#39;s the capital of Assyria?&#34;</span>)
+
+<span style="color:#999;font-style:italic"># OR push text using the session object</span>
+session.push_text(<span style="color:#ed9d13">&#34;What&#39;s the capital of Assyria?&#34;</span>)</code></pre></div>
+</div>
+
 <p></div>
 </div></p>
 

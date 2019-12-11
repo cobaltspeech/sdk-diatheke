@@ -76,6 +76,16 @@ int main(int argc, char *argv[])
 ```
 {{% /tab %}}
 
+{{% tab "Python" %}}
+``` python
+import diatheke
+
+client = diatheke.Client(server_address="localhost:9002")
+version = client.diatheke_version()
+print("Diatheke version {}".format(version))
+```
+{{% /tab %}}
+
 {{%/tabs %}}
 
 
@@ -101,6 +111,13 @@ Diatheke::Client client(serverAddr, true);
 ```
 {{% /tab %}}
 
+{{% tab "Python" %}}
+``` python
+client = diatheke.Client(server_addres="localhost:9002",
+                         insecure=True)
+```
+{{% /tab %}}
+
 {{%/tabs %}}
 
 ## Client Authentication
@@ -123,7 +140,7 @@ authenticated TLS. This can be done with:
 
 {{% tab "Go" %}}
 ``` go
-// certPerm and keyPem are the bytes of the client certificate and key
+// certPem and keyPem are the bytes of the client certificate and key
 // provided to you.
 client, err := diatheke.NewClient(serverAddr, diatheke.WithClientCert(certPem, keyPem))
 ```
@@ -134,6 +151,16 @@ client, err := diatheke.NewClient(serverAddr, diatheke.WithClientCert(certPem, k
 
 // Currently unsupported in C++.
 
+```
+{{% /tab %}}
+
+{{% tab "Python" %}}
+``` python
+# cert_pem and key_pem are the contents of the client certificate and key
+# provided to you.
+client = diatheke.Client(server_address="localhost:9002",
+                         client_certificate=cert_pem,
+                         client_key=key_pem)
 ```
 {{% /tab %}}
 

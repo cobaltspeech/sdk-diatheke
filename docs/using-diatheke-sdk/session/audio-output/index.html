@@ -298,6 +298,14 @@ stream will be closed by the server when the session ends.</p>
 </code></pre></div>
 </div>
 
+<div class="tab-pane" title="Python">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#999;font-style:italic"># Create the stream using the client and session ID</span>
+stream = client.stream_audio_replies(session_id)
+
+<span style="color:#999;font-style:italic"># OR create the stream using the Session object</span>
+stream = session.stream_audio_replies()</code></pre></div>
+</div>
+
 <p></div>
 </div></p>
 
@@ -394,6 +402,28 @@ saves it to a file, or some other processing of the audio data.</p>
 
 stream-&gt;close();
 </code></pre></div>
+</div>
+
+<div class="tab-pane" title="Python">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#999;font-style:italic"># Wait for replies from the server until the stream is closed, which</span>
+<span style="color:#999;font-style:italic"># will happen when the session is closed.</span>
+<span style="color:#6ab825;font-weight:bold">for</span> msg <span style="color:#6ab825;font-weight:bold">in</span> stream:
+    <span style="color:#999;font-style:italic"># Check which message type we have received</span>
+    <span style="color:#6ab825;font-weight:bold">if</span> msg.HasField(<span style="color:#ed9d13">&#34;text&#34;</span>):
+        <span style="color:#999;font-style:italic"># The text of the reply comes first for a reply from Diatheke</span>
+        <span style="color:#6ab825;font-weight:bold">print</span>(<span style="color:#ed9d13">&#34;Text: &#34;</span> + reply.text)
+
+    <span style="color:#6ab825;font-weight:bold">elif</span> msg.HasField(<span style="color:#ed9d13">&#34;data&#34;</span>):
+        <span style="color:#999;font-style:italic"># Audio data is received until speech synthesis is done.</span>
+        <span style="color:#6ab825;font-weight:bold">print</span>(<span style="color:#ed9d13">&#34;Data size (bytes): {}&#34;</span>.format(<span style="color:#24909d">len</span>(reply.data)))
+
+    <span style="color:#6ab825;font-weight:bold">elif</span> msg.HasField(<span style="color:#ed9d13">&#34;end&#34;</span>):
+        <span style="color:#999;font-style:italic"># This message comes at the end of a reply, after speech synthesis</span>
+        <span style="color:#999;font-style:italic"># is complete. It has no data.</span>
+        <span style="color:#6ab825;font-weight:bold">print</span>(<span style="color:#ed9d13">&#34;Reply complete&#34;</span>)
+
+    <span style="color:#6ab825;font-weight:bold">else</span>:
+        <span style="color:#6ab825;font-weight:bold">print</span>(<span style="color:#ed9d13">&#34;Received unexpected AudioReply type&#34;</span>)</code></pre></div>
 </div>
 
 <p></div>

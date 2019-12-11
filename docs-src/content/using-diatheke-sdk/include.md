@@ -35,3 +35,17 @@ The `go build` command will automatically fetch the sdk-diatheke code
 from GitHub to use in your Go project.
 {{% /panel %}}
 
+
+## Python
+The Python SDK requires Python v3.5.0 or greater. The SDK may be installed
+from GitHub using `pip`:
+
+```bash
+pip install "git+https://github.com/cobaltspeech/sdk-diatheke#egg=cobalt-diatheke&subdirectory=grpc/py-diatheke"
+```
+
+Once installed, simply import the Diatheke module to use the SDK:
+
+```python
+import diatheke
+```
