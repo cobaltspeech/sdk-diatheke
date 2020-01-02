@@ -15,5 +15,5 @@ setup(
         "version_format": "{tag}.dev{sha}"
     },
     setup_requires=['better-setuptools-git-version'],
-    install_requires=['grpcio-tools']
+    install_requires=['protobuf', 'grpcio']
 )
