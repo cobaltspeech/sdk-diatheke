@@ -2,7 +2,7 @@
 
 .PHONY: all go py go-test py-test gendoc
 
-all: go py gendoc
+all: go py swift gendoc
 
 ifeq ($(PROTOINC),)
 $(error "env variable PROTOINC must be defined to the location of googleapis proto files")
@@ -11,9 +11,19 @@ endif
 GO_OUTDIR=go-diatheke/diathekepb
 PY_OUTDIR=py-diatheke/diatheke
 DOCS_OUTDIR=../docs-src/content/protobuf
+SWIFTDIR=../deps/swift/bin
 
 go: ${GO_OUTDIR}/diatheke.pb.go
 py: $(PY_OUTDIR)/diatheke_pb2.py ${PY_OUTDIR}/diatheke_pb2_grpc.py py-test
+
+swift:
+	protoc -I . -I ${PROTOINC} \
+		--plugin=$$(which protoc-gen-grpc-swift) \
+		--grpc-swift_out=Client=true,Server=false,Visibility=Public:./swift-diatheke \
+		--plugin=$$(which protoc-gen-swift) \
+		--swift_opt=Visibility=Public \
+		--swift_out=./swift-diatheke \
+		diatheke.proto
 
 ${GO_OUTDIR}/diatheke.pb.go: diatheke.proto
 	mkdir -p ${GO_OUTDIR}
