@@ -36,7 +36,9 @@ ${PY_OUTDIR}/diatheke_pb2.py: diatheke.proto
 ${PY_OUTDIR}/diatheke_pb2_grpc.py: diatheke.proto
 	mkdir -p ${PY_OUTDIR}
 	python -m grpc_tools.protoc -I . -I ${PROTOINC} --grpc_python_out=${PY_OUTDIR} $<
-
+android:
+	cp diatheke.proto android-diatheke/src/main/proto/diatheke.proto
+	cd android-diatheke && gradle wrapper && ./gradlew build
 go-test:
 	cd go-diatheke && go test
 	cd go-diatheke/diathekepb/gw && go test
