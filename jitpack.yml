@@ -1,0 +1,3 @@
+install:
+  - cp grpc/diatheke.proto grpc/android-diatheke/src/main/proto/diatheke.proto
+  - cd ./grpc/android-diatheke && chmod +x gradlew && ./gradlew clean install -xtest
