@@ -49,6 +49,25 @@ client.end_session(session_id)
 ```
 {{% /tab %}}
 
+{{% tab "Swift/iOS" %}}
+```swift
+// The Diatheke model ID is defined in the Diatheke server config file.
+let modelID = "1"
+var sessionID: String
+
+client.newSession(model: modelID, success: { (sessionID) in
+    self.sessionID = sessionID
+}) { (error) in
+    print(error.localizedDescription)
+}
+
+// Be sure to close the session when we are done with it.
+client.endSession(sessionID: sessionID) { (error) in
+    print(error.localizedDescription)
+}
+```
+{{% /tab %}}
+
 {{% /tabs %}}
 
 Creating a new session will return a session ID, which is required for all
@@ -106,6 +125,18 @@ session = diatheke.Session(session_id, client)
 
 # Use session methods without the ID as a parameter
 session.end_session()
+```
+{{% /tab %}}
+
+{{% tab "Swift/iOS" %}}
+```swift
+// Wrap the session ID in the convenience class
+let session = Session(id: sessionID, client: client)
+
+# Use session methods without the ID as a parameter
+session.endSession { (error) in
+    print(error.localizedDescription)
+}
 ```
 {{% /tab %}}
 

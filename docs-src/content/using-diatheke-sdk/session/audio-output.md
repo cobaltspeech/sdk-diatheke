@@ -50,6 +50,20 @@ stream = session.stream_audio_replies()
 ```
 {{% /tab %}}
 
+{{% tab "Swift/iOS" %}}
+``` swift
+# Create the stream using the client and session ID
+let stream = client.streamAudioReplies(sessionID: sessionID) { (reply) in
+    // Handle audio reply
+}
+
+# OR create the stream using the Session object
+let stream = session.streamAudioReplies { (reply) in
+    // Handle audio reply
+}
+```
+{{% /tab %}}
+
 {{% /tabs %}}
 
 
@@ -169,6 +183,25 @@ for msg in stream:
 
     else:
         print("Received unexpected AudioReply type")
+```
+{{% /tab %}}
+
+{{% tab "Swift/iOS" %}}
+``` swift
+// Handle replies from the server until the stream is closed, which
+// will happen when the session is closed.
+let stream = session.streamAudioReplies { (reply) in
+    guard let outputMessage = reply.outputMessage else { return }
+    
+    switch outputMessage {
+    case .text(let text):
+        print("Text: \(text)")
+    case .data(let audioData):
+        print("Data size (bytes): \(audioData.count)")
+    case .end(_):
+        print("Reply complete")
+    }
+}
 ```
 {{% /tab %}}
 

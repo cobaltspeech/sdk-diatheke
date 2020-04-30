@@ -86,6 +86,21 @@ print("Diatheke version {}".format(version))
 ```
 {{% /tab %}}
 
+{{% tab "Swift/iOS" %}}
+``` swift
+import Diatheke
+
+class DiathekeConnection {
+    
+    let serverAddress = "localhost"
+    let serverPort = 9002
+
+    let client = Client(host: serverAddress, port: serverPort, useTLS: true)
+
+}
+```
+{{% /tab %}}
+
 {{%/tabs %}}
 
 
@@ -115,6 +130,12 @@ Diatheke::Client client(serverAddr, true);
 ``` python
 client = diatheke.Client(server_addres="localhost:9002",
                          insecure=True)
+```
+{{% /tab %}}
+
+{{% tab "Swift/iOS" %}}
+``` swift
+let client = Client(host: serverAddress, port: serverPort, useTLS: false)
 ```
 {{% /tab %}}
 
@@ -161,6 +182,22 @@ client, err := diatheke.NewClient(serverAddr, diatheke.WithClientCert(certPem, k
 client = diatheke.Client(server_address="localhost:9002",
                          client_certificate=cert_pem,
                          client_key=key_pem)
+```
+{{% /tab %}}
+
+{{% tab "Swift/iOS" %}}
+``` swift
+import Cubic
+import NIOSSL
+
+class DiathekeConnection {
+    
+    let serverAddress = "localhost"
+    let serverPort = 9002
+
+    let client = Client(host: serverAddress, port: serverPort, tlsCertificateFileName: "root", tlsCertificateFormat: .pem)
+
+}
 ```
 {{% /tab %}}
 

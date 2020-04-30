@@ -65,6 +65,19 @@ stream = client.stream_asr(cubic_model)
 ```
 {{% /tab %}}
 
+{{% tab "Swift/iOS" %}}
+``` swift
+# Specify the Cubic model to use (not a Diatheke model)
+let cubicModel = "1"
+
+# Create the bi-directional ASR stream
+let stream = client.streamASR(model: cubicModel) { (response) in
+    // Handle ASR response
+    self.handleASRResponse(response)
+}
+```
+{{% /tab %}}
+
 {{% /tabs %}}
 
 
@@ -137,6 +150,22 @@ stream.write(buffer)
 # Be sure to notify Diatheke that no more audio will be coming when are
 # done writing data.
 stream.audio_finished()
+```
+{{% /tab %}}
+
+{{% tab "Swift/iOS" %}}
+``` swift
+// Get the audio data from a source. This could be a microphone, file, or
+// any other source. Here we assume the audio data was retrieved previously
+// and stored in a buffer.
+
+// Push the audio data to the stream. This function may be called multiple
+// times. It is safe to call concurrently with the corresponding result_stream.
+stream.pushAudio(data: data)
+
+// Be sure to notify Diatheke that no more audio will be coming when are
+// done writing data.
+stream.finishAudio()
 ```
 {{% /tab %}}
 
@@ -217,6 +246,13 @@ for result in stream.result_stream:
     print("  Transcript: " + result.text)
     print("  Confidence Score: {}\n".format(result.confidence_score))
 ```
+{{% /tab %}}
+
+{{% tab "Swift/iOS" %}}
+``` swift
+func handleTTSResponse(_ response: Cobaltspeech_Diatheke_TTSResponse) {
+    print("TTS Data size (bytes): \(response.data.count)")
+}
 {{% /tab %}}
 
 {{% /tabs %}}

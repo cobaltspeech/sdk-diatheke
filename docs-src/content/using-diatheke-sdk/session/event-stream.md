@@ -48,6 +48,20 @@ stream = session.event_stream()
 ```
 {{% /tab %}}
 
+{{% tab "Swift/iOS" %}}
+```swift
+// Create the stream using the client and session ID
+let stream = client.sessionEventStream(sessionID: sessionID) { (event) in
+    // Handle the event
+}
+
+// OR create the stream using the Session object
+let stream = session.eventStream { (event) in
+    // Handle the event     
+}
+```
+{{% /tab %}}
+
 {{% /tabs %}}
 
 This creates a server stream that will deliver events to the client. The
@@ -151,6 +165,26 @@ for event in event_stream:
 ```
 {{% /tab %}}
 
+{{% tab "Swift/iOS" %}}
+```swift
+// Receive events from the event stream until it is closed, which will
+// happen when the session ends.
+let stream = client.sessionEventStream(sessionID: sessionID) { (event) in
+    guard let result = event.result else { return }
+
+    // Check the event type
+    switch result {
+        case .recognize(let recognizeEvent):
+            self.handleRecognizeEvent(recognizeEvent)
+        case .reply(let replyEvent):
+            self.handleReplyEvent(replyEvent)
+        case .command(let commandEvent):
+            self.handleCommandEvent(commandEvent, session: session)
+    }
+}
+```
+{{% /tab %}}
+
 {{% /tabs %}}
 
 
@@ -210,6 +244,19 @@ def handle_recognize_event(event):
 ```
 {{% /tab %}}
 
+{{% tab "Swift/iOS" %}}
+```swift
+func handleRecognizeEvent(_ event: Cobaltspeech_Diatheke_RecognizeEvent) {
+    // Check if Diatheke recognized the last input as valid.
+    if event.validInput {
+        print("Valid input: \(event.text)")
+    } else {
+        print("Invalid input: \(event.text)")
+    }
+}
+```
+{{% /tab %}}
+
 {{% /tabs %}}
 
 
@@ -247,6 +294,14 @@ void handleReplyEvent(const cobaltspeech::diatheke::ReplyEvent &event)
 ``` python
 def handle_reply_event(event):
     print("Reply text: " + event.text)
+```
+{{% /tab %}}
+
+{{% tab "Swift/iOS" %}}
+```swift
+func handleReplyEvent(_ event: Cobaltspeech_Diatheke_ReplyEvent) {
+    print("Reply text: \(event.text)")
+}
 ```
 {{% /tab %}}
 
@@ -381,6 +436,38 @@ def handle_command_event(event, session):
 ```
 {{% /tab %}}
 
+{{% tab "Swift/iOS" %}}
+```swift
+func handleCommandEvent(_ event: Cobaltspeech_Diatheke_CommandEvent, session: Session) {
+    // Use the command ID and parameters to execute a task.
+    print("Command ID: \(event.commandID)")
+    print("Parameters:")
+    
+    for (param, value) in event.parameters {
+        print("  \(param) = \(value)")
+    }
+    
+    let status = CommandStatus(command: event)
+    
+    // Set the status code to indicate whether the command failed
+    status.statusCode = .success
+    
+    // If the status code is FAILURE, the error message should also be set
+    status.errorMesage = "some message describing the error"
+
+    // Update return parameters as necessary. For example:
+    status.setParam(key: "some key", value: "some value")
+
+    // Notify Diatheke that the command is finished. This is important
+    // to do so that dialog flow may continue after the command is
+    // finished.
+    session.commandFinished(commandStatus: status) { (error) in
+        print(error.localizedDescription)
+    }
+}
+```
+{{% /tab %}}
+
 {{% /tabs %}}
 
 
@@ -428,6 +515,16 @@ client.command_finished(status)
 
 # OR use the Session object
 session.command_finished(status)
+```
+{{% /tab %}}
+
+{{% tab "Swift/iOS" %}}
+```swift
+// Use the client
+client.commandFinished(sessionID: sessionID, commandStatus: status)
+
+// OR use the Session object
+session.commandFinished(commandStatus: status)
 ```
 {{% /tab %}}
 

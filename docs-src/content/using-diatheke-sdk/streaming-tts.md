@@ -62,6 +62,20 @@ stream = client.stream_tts(luna_model, sentence)
 ```
 {{% /tab %}}
 
+{{% tab "Swift/iOS" %}}
+``` swift
+// Specify the Luna model to use (not a Diatheke model)
+let lunaModel = "1"
+let sentence = "this is the text to synthesize"
+
+// Create the TTS stream
+client.streamTTS(model: lunaModel, text: sentence) { (response) in
+    // Handle TTS response
+    self.handleTTSResponse(response)
+}
+```
+{{% /tab %}}
+
 {{% /tabs %}}
 
 ## Receiving Audio
@@ -132,6 +146,14 @@ for response in stream:
     print("TTS Data size (bytes): {}".format(len(audio_data)))
 
 print("Synthesis complete.")
+```
+{{% /tab %}}
+
+{{% tab "Swift/iOS" %}}
+``` swift
+func handleTTSResponse(_ response: Cobaltspeech_Diatheke_TTSResponse) {
+    print("TTS Data size (bytes): \(response.data.count)")
+}
 ```
 {{% /tab %}}
 
