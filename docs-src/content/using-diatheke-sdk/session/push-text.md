@@ -41,6 +41,20 @@ session.push_text("What's the capital of Assyria?")
 ```
 {{% /tab %}}
 
+{{% tab "Swift/iOS" %}}
+``` swift
+# Push text using the client and session ID
+client.pushText(sessionID: sessionID, text: "What's the capital of Assyria?") { (error) in
+        print(error.localizedDescription)
+}
+
+# OR push text using the session object
+session.pushText("What's the capital of Assyria?") { (error) in
+        print(error.localizedDescription)
+}
+```
+{{% /tab %}}
+
 {{% /tabs %}}
 
 {{% panel theme="info" header="Note" %}}

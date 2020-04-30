@@ -47,6 +47,20 @@ stream = session.stream_audio_input()
 ```
 {{% /tab %}}
 
+{{% tab "Swift/iOS" %}}
+``` swift
+# Create the stream using the client and session ID
+let stream = client.streamAudioInput(sessionID: sessionID) { (error) in
+        print(error.localizedDescription)
+}
+
+# OR create the stream using the Session object
+let stream = session.streamAudioInput { (error) in
+        print(error.localizedDescription)
+}
+```
+{{% /tab %}}
+
 {{% /tabs %}}
 
 
@@ -113,6 +127,22 @@ stream.write(buffer)
 
 # Be sure to notify Diatheke that no more audio will be coming when
 # we are done writing data.
+stream.finish()
+```
+{{% /tab %}}
+
+{{% tab "Swift/iOS" %}}
+``` swift
+// Get the audio data from a source. This could be a microphone, file, or
+// any other source. Here we assume the audio data was retrieved previously
+// and stored in a buffer.
+
+// Push the audio data to the input stream. This function may be called
+// multiple times.
+stream.pushAudio(data: data)
+
+// Be sure to notify Diatheke that no more audio will be coming when
+// we are done writing data.
 stream.finish()
 ```
 {{% /tab %}}

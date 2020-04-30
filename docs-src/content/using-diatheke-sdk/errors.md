@@ -71,3 +71,17 @@ except BaseException as err:
 finally:
     # Do any final cleanup here.
 ```
+
+
+## Swift
+
+In the Swift SDK Every method that can thow an error has `DiathekeFailureCallback` completion handler to report errors. For example:
+
+```swift
+client.newSession(model: model, success: { (sessionID) in
+    // Handle success response here
+}) { (error) in
+    // Handle the error here
+    print(error.localizedDescription)
+}
+```

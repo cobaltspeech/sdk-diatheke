@@ -49,3 +49,17 @@ Once installed, simply import the Diatheke module to use the SDK:
 ```python
 import diatheke
 ```
+
+### iOS
+
+#### Swift Package Manager
+
+The [Swift Package Manager](https://swift.org/package-manager/) is a tool for automating the distribution of Swift code and is integrated into the `swift` compiler.
+
+Once you have your Swift package set up, adding swift-cubic as a dependency is as easy as adding it to the `dependencies` value of your `Package.swift`.
+
+```swift
+dependencies: [
+    .package(url: "https://github.com/cobaltspeech/sdk-diatheke.git", .upToNextMajor(from: "1.0"))
+]
+```
