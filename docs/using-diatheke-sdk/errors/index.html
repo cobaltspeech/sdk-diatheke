@@ -42,8 +42,7 @@
       
 	
   
-    <p><img src="/sdk-diatheke/images/logo-white.png" alt="Cobalt's SDK Documentation" /></p>
-
+    <p><img src="/sdk-diatheke/images/logo-white.png" alt="Cobalt&rsquo;s SDK Documentation"></p>
 <p>Diatheke SDK &ndash; Cobalt</p>
 
   
@@ -230,14 +229,12 @@
     <div class="progress">
         <div class="wrapper">
     <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#c">C++</a></li>
-<li><a href="#go">Go</a></li>
-<li><a href="#python">Python</a></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#c">C++</a></li>
+    <li><a href="#go">Go</a></li>
+    <li><a href="#python">Python</a></li>
+    <li><a href="#swift">Swift</a></li>
+  </ul>
 </nav>
         </div>
     </div>
@@ -256,17 +253,12 @@
     
     
     
-    
-
-<p>For the sake of clarity, most examples in the documentation do not fully
+    <p>For the sake of clarity, most examples in the documentation do not fully
 demonstrate how to handle errors, preferring instead to focus on the topic
 at hand. However, the Diatheke SDK does report errors, and client
 applications should be prepared to handle them.</p>
-
 <p>A description of how errors are handled for each language is given below.</p>
-
 <h2 id="c">C++</h2>
-
 <p>The C++ SDK uses <a href="http://www.cplusplus.com/doc/tutorial/exceptions/">exceptions</a>
 to report errors. Errors originating from the SDK will have the class
 type <a href="https://github.com/cobaltspeech/sdk-diatheke/blob/master/grpc/cpp-diatheke/diatheke_client_error.h"><code>Diatheke::ClientError</code></a>,
@@ -283,9 +275,7 @@ For example:</p>
     <span style="color:#999;font-style:italic">// Handle the error here. The specific error message can be
 </span><span style="color:#999;font-style:italic"></span>    <span style="color:#999;font-style:italic">// retrieved using err.what().
 </span><span style="color:#999;font-style:italic"></span>}
-</code></pre></div>
-<h2 id="go">Go</h2>
-
+</code></pre></div><h2 id="go">Go</h2>
 <p>The Go SDK uses the built-in <code>error</code> type to return errors from functions
 (see <a href="https://blog.golang.org/error-handling-and-go">here</a> for general
 information about handling errors in Go). Most SDK functions will return
@@ -294,9 +284,8 @@ an error in addition to their other return values. For example:</p>
 </span><span style="color:#999;font-style:italic"></span>client, err := diatheke.<span style="color:#447fcf">NewClient</span>(<span style="color:#ed9d13">&#34;127.0.0.1:9002&#34;</span>)
 <span style="color:#6ab825;font-weight:bold">if</span> err != <span style="color:#6ab825;font-weight:bold">nil</span> {
     <span style="color:#999;font-style:italic">// Handle the error here.
-</span><span style="color:#999;font-style:italic"></span>}</code></pre></div>
-<h2 id="python">Python</h2>
-
+</span><span style="color:#999;font-style:italic"></span>}
+</code></pre></div><h2 id="python">Python</h2>
 <p>The Python SDK uses <a href="https://docs.python.org/3/library/exceptions.html">built-in exceptions</a>
 to report errors. They can be handled by wrapping the client code in a
 <a href="https://docs.python.org/3/tutorial/errors.html#handling-exceptions">try &hellip; except statement</a>.
@@ -312,7 +301,16 @@ For example:</p>
     <span style="color:#999;font-style:italic"># exception types in the except statement.</span>
 
 <span style="color:#6ab825;font-weight:bold">finally</span>:
-    <span style="color:#999;font-style:italic"># Do any final cleanup here.</span></code></pre></div>
+    <span style="color:#999;font-style:italic"># Do any final cleanup here.</span>
+</code></pre></div><h2 id="swift">Swift</h2>
+<p>In the Swift SDK Every method that can thow an error has <code>DiathekeFailureCallback</code> completion handler to report errors. For example:</p>
+<div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift">client.newSession(model: model, success: { (sessionID) <span style="color:#6ab825;font-weight:bold">in</span>
+    <span style="color:#999;font-style:italic">// Handle success response here</span>
+}) { (error) <span style="color:#6ab825;font-weight:bold">in</span>
+    <span style="color:#999;font-style:italic">// Handle the error here</span>
+    print(error.localizedDescription)
+}
+</code></pre></div>
 
     
     

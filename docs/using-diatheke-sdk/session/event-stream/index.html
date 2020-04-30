@@ -42,8 +42,7 @@
       
 	
   
-    <p><img src="/sdk-diatheke/images/logo-white.png" alt="Cobalt's SDK Documentation" /></p>
-
+    <p><img src="/sdk-diatheke/images/logo-white.png" alt="Cobalt&rsquo;s SDK Documentation"></p>
 <p>Diatheke SDK &ndash; Cobalt</p>
 
   
@@ -236,26 +235,22 @@
     <div class="progress">
         <div class="wrapper">
     <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#creating-the-event-stream">Creating the Event Stream</a></li>
-<li><a href="#event-handling">Event Handling</a>
-<ul>
-<li><a href="#recognize-event">Recognize Event</a></li>
-<li><a href="#reply-event">Reply Event</a></li>
-<li><a href="#command-event">Command Event</a>
-<ul>
-<li><a href="#command-finished">Command Finished</a></li>
-</ul></li>
-</ul></li>
-<li><a href="#event-flow">Event flow</a>
-<ul>
-<li><a href="#audio-based">Audio Based</a></li>
-<li><a href="#text-based">Text Based</a></li>
-</ul></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#creating-the-event-stream">Creating the Event Stream</a></li>
+    <li><a href="#event-handling">Event Handling</a>
+      <ul>
+        <li><a href="#recognize-event">Recognize Event</a></li>
+        <li><a href="#reply-event">Reply Event</a></li>
+        <li><a href="#command-event">Command Event</a></li>
+      </ul>
+    </li>
+    <li><a href="#event-flow">Event flow</a>
+      <ul>
+        <li><a href="#audio-based">Audio Based</a></li>
+        <li><a href="#text-based">Text Based</a></li>
+      </ul>
+    </li>
+  </ul>
 </nav>
         </div>
     </div>
@@ -274,155 +269,113 @@
     
     
     
-    
-
-<p>Diatheke server uses an
+    <p>Diatheke server uses an
 <a href="https://en.wikipedia.org/wiki/Event-driven_architecture">event driven architecure</a>
 to notify clients when significant events happen for a session. These
 include <a href="#recognize-event">Recognize</a>, <a href="#reply-event">Reply</a>, and
 <a href="#command-event">Command</a> events. These events are delivered to the
 client via a session&rsquo;s event stream.</p>
-
 <h2 id="creating-the-event-stream">Creating the Event Stream</h2>
-
-<p>The following demonstrates how to create a an event stream for a session.
-<div class='code-tabs'>
-  <ul class="nav-tabs"></ul>
-  <div class="tab-content"></p>
-
-<div class="tab-pane" title="Go">
-  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#999;font-style:italic">// Create the stream using the client and session ID.
-</span><span style="color:#999;font-style:italic"></span>stream, err := client.<span style="color:#447fcf">SessionEventStream</span>(context.<span style="color:#447fcf">Background</span>(), sessionID)
-
-<span style="color:#999;font-style:italic">// OR create the stream using the Session object
-</span><span style="color:#999;font-style:italic"></span>stream, err := session.<span style="color:#447fcf">EventStream</span>(context.<span style="color:#447fcf">Background</span>())</code></pre></div>
-</div>
-
-<div class="tab-pane" title="C&#43;&#43;">
-  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">std::unique_ptr&lt;Diatheke::EventStream&gt; stream;
-
-<span style="color:#999;font-style:italic">// Create the stream using the client and session ID
-</span><span style="color:#999;font-style:italic"></span>stream = client.sessionEventStream(sessionID);
-
-<span style="color:#999;font-style:italic">// OR create the stream using the session object
-</span><span style="color:#999;font-style:italic"></span>stream = session.eventStream();
-</code></pre></div>
-</div>
-
-<div class="tab-pane" title="Python">
-  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#999;font-style:italic"># Create the stream using the client and session ID</span>
-stream = client.session_event_stream(session_id)
-
-<span style="color:#999;font-style:italic"># OR create the stream using the Session object</span>
-stream = session.event_stream()</code></pre></div>
-</div>
-
-<p></div>
-</div></p>
-
+<p>The following demonstrates how to create a an event stream for a session.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p><!-- raw HTML omitted -->// OR create the stream using the Session object
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->stream, err := session.<!-- raw HTML omitted -->EventStream<!-- raw HTML omitted -->(context.<!-- raw HTML omitted -->Background<!-- raw HTML omitted -->())
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p><!-- raw HTML omitted -->// Create the stream using the client and session ID
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->stream = client.sessionEventStream(sessionID);</p>
+<p><!-- raw HTML omitted -->// OR create the stream using the session object
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->stream = session.eventStream();
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p><!-- raw HTML omitted --># OR create the stream using the Session object<!-- raw HTML omitted -->
+stream = session.event_stream()
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p><!-- raw HTML omitted -->// OR create the stream using the Session object<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->let<!-- raw HTML omitted --> <!-- raw HTML omitted -->stream<!-- raw HTML omitted --> = session.eventStream { (event) <!-- raw HTML omitted -->in<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->// Handle the event     <!-- raw HTML omitted -->
+}
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
 <p>This creates a server stream that will deliver events to the client. The
 stream will be closed by the server when the session ends.</p>
-
 <h2 id="event-handling">Event Handling</h2>
-
 <p>The recommended way to handle events from the stream is to setup a loop
 that waits for the next event, then handles the event based on its type:</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<pre><code>&lt;span style=&quot;color:#999;font-style:italic&quot;&gt;// This indicates the stream has finished, which will happen
+</code></pre>
+<p><!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->    <!-- raw HTML omitted -->// when the session ends or the context used to create the stream
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->    <!-- raw HTML omitted -->// closes.
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->    <!-- raw HTML omitted -->if<!-- raw HTML omitted --> err == io.EOF {
+<!-- raw HTML omitted -->break<!-- raw HTML omitted -->
+}</p>
+<pre><code>&lt;span style=&quot;color:#999;font-style:italic&quot;&gt;// Handle any other errors
+</code></pre>
+<p><!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->    <!-- raw HTML omitted -->if<!-- raw HTML omitted --> err != <!-- raw HTML omitted -->nil<!-- raw HTML omitted --> {
+fmt.<!-- raw HTML omitted -->Printf<!-- raw HTML omitted -->(<!-- raw HTML omitted -->&quot;Error: %v\n&quot;<!-- raw HTML omitted -->, err)
+<!-- raw HTML omitted -->break<!-- raw HTML omitted -->
+}</p>
+<pre><code>&lt;span style=&quot;color:#999;font-style:italic&quot;&gt;// Handle the event based on its type.
+</code></pre>
+<p><!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->    <!-- raw HTML omitted -->switch<!-- raw HTML omitted --> e := event.Result.(<!-- raw HTML omitted -->type<!-- raw HTML omitted -->) {
+<!-- raw HTML omitted -->case<!-- raw HTML omitted --> *diathekepb.DiathekeEvent_Recognize:
+<!-- raw HTML omitted -->handleRecognizeEvent<!-- raw HTML omitted -->(e.Recognize)</p>
+<pre><code>&lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;case&lt;/span&gt; *diathekepb.DiathekeEvent_Reply:
+    &lt;span style=&quot;color:#447fcf&quot;&gt;handleReplyEvent&lt;/span&gt;(e.Reply)
 
-<div class='code-tabs'>
-  <ul class="nav-tabs"></ul>
-  <div class="tab-content">
+&lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;case&lt;/span&gt; *diathekepb.DiathekeEvent_Command:
+    &lt;span style=&quot;color:#447fcf&quot;&gt;handleCommandEvent&lt;/span&gt;(e.Command, manager.Session)
 
-<div class="tab-pane" title="Go">
-  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#6ab825;font-weight:bold">for</span> {
-    <span style="color:#999;font-style:italic">// Wait for the next event from the server
-</span><span style="color:#999;font-style:italic"></span>    event, err := eventStream.<span style="color:#447fcf">Recv</span>()
-
-    <span style="color:#999;font-style:italic">// This indicates the stream has finished, which will happen
-</span><span style="color:#999;font-style:italic"></span>    <span style="color:#999;font-style:italic">// when the session ends or the context used to create the stream
-</span><span style="color:#999;font-style:italic"></span>    <span style="color:#999;font-style:italic">// closes.
-</span><span style="color:#999;font-style:italic"></span>    <span style="color:#6ab825;font-weight:bold">if</span> err == io.EOF {
-        <span style="color:#6ab825;font-weight:bold">break</span>
-    }
-
-    <span style="color:#999;font-style:italic">// Handle any other errors
-</span><span style="color:#999;font-style:italic"></span>    <span style="color:#6ab825;font-weight:bold">if</span> err != <span style="color:#6ab825;font-weight:bold">nil</span> {
-        fmt.<span style="color:#447fcf">Printf</span>(<span style="color:#ed9d13">&#34;Error: %v\n&#34;</span>, err)
-        <span style="color:#6ab825;font-weight:bold">break</span>
-    }
-
-    <span style="color:#999;font-style:italic">// Handle the event based on its type.
-</span><span style="color:#999;font-style:italic"></span>    <span style="color:#6ab825;font-weight:bold">switch</span> e := event.Result.(<span style="color:#6ab825;font-weight:bold">type</span>) {
-    <span style="color:#6ab825;font-weight:bold">case</span> *diathekepb.DiathekeEvent_Recognize:
-        <span style="color:#447fcf">handleRecognizeEvent</span>(e.Recognize)
-
-    <span style="color:#6ab825;font-weight:bold">case</span> *diathekepb.DiathekeEvent_Reply:
-        <span style="color:#447fcf">handleReplyEvent</span>(e.Reply)
-
-    <span style="color:#6ab825;font-weight:bold">case</span> *diathekepb.DiathekeEvent_Command:
-        <span style="color:#447fcf">handleCommandEvent</span>(e.Command, manager.Session)
-
-    <span style="color:#6ab825;font-weight:bold">default</span>:
-        fmt.<span style="color:#447fcf">Printf</span>(<span style="color:#ed9d13">&#34;Error: received unknown event type from Diatheke\n&#34;</span>)
-    }
-}</code></pre></div>
-</div>
-
-<div class="tab-pane" title="C&#43;&#43;">
-  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#999;font-style:italic">// Receive events from the event stream until it is closed, which will
-</span><span style="color:#999;font-style:italic">// happen when the session ends, or the context used to create the stream
-</span><span style="color:#999;font-style:italic">// closes.
-</span><span style="color:#999;font-style:italic"></span>cobaltspeech::diatheke::DiathekeEvent event;
-<span style="color:#6ab825;font-weight:bold">while</span> (eventStream-&gt;waitForEvent(&amp;event))
-{
-    <span style="color:#999;font-style:italic">// Check for the event type
-</span><span style="color:#999;font-style:italic"></span>    <span style="color:#6ab825;font-weight:bold">if</span> (event.has_recognize())
-    {
-        handleRecognizeEvent(event.recognize());
-    }
-    <span style="color:#6ab825;font-weight:bold">else</span> <span style="color:#6ab825;font-weight:bold">if</span> (event.has_reply())
-    {
-        handleReplyEvent(event.reply());
-    }
-    <span style="color:#6ab825;font-weight:bold">else</span> <span style="color:#6ab825;font-weight:bold">if</span> (event.has_command())
-    {
-        handleCommandEvent(event.command(), eventStream.get());
-    }
-    <span style="color:#6ab825;font-weight:bold">else</span>
-    {
-        std::cerr &lt;&lt; <span style="color:#ed9d13">&#34;Received unknown event type from Diatheke&#34;</span> &lt;&lt; std::endl;
-    }
+&lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;default&lt;/span&gt;:
+    fmt.&lt;span style=&quot;color:#447fcf&quot;&gt;Printf&lt;/span&gt;(&lt;span style=&quot;color:#ed9d13&quot;&gt;&amp;#34;Error: received unknown event type from Diatheke\n&amp;#34;&lt;/span&gt;)
 }
+</code></pre>
+<p>}
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p><!-- raw HTML omitted -->// It is good practice to close the event stream when we are done with it.
+<!-- raw HTML omitted --><!-- raw HTML omitted -->// This will allow the server to report errors related to the stream, if
+<!-- raw HTML omitted --><!-- raw HTML omitted -->// there were any.
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->eventStream-&gt;close();
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<pre><code>&lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;elif&lt;/span&gt; event.HasField(&lt;span style=&quot;color:#ed9d13&quot;&gt;&amp;#34;reply&amp;#34;&lt;/span&gt;):
+    handle_reply_event(event.reply)
 
-<span style="color:#999;font-style:italic">// It is good practice to close the event stream when we are done with it.
-</span><span style="color:#999;font-style:italic">// This will allow the server to report errors related to the stream, if 
-</span><span style="color:#999;font-style:italic">// there were any.
-</span><span style="color:#999;font-style:italic"></span>eventStream-&gt;close();
-</code></pre></div>
-</div>
+&lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;elif&lt;/span&gt; event.HasField(&lt;span style=&quot;color:#ed9d13&quot;&gt;&amp;#34;command&amp;#34;&lt;/span&gt;):
+    handle_command_event(event.command, session)
 
-<div class="tab-pane" title="Python">
-  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#999;font-style:italic"># Receive events from the event stream until it is closed, which will</span>
-<span style="color:#999;font-style:italic"># happen when the session ends.</span>
-<span style="color:#6ab825;font-weight:bold">for</span> event <span style="color:#6ab825;font-weight:bold">in</span> event_stream:
-    <span style="color:#999;font-style:italic"># Check the event type</span>
-    <span style="color:#6ab825;font-weight:bold">if</span> event.HasField(<span style="color:#ed9d13">&#34;recognize&#34;</span>):
-        handle_recognize_event(event.recognize)
-
-    <span style="color:#6ab825;font-weight:bold">elif</span> event.HasField(<span style="color:#ed9d13">&#34;reply&#34;</span>):
-        handle_reply_event(event.reply)
-
-    <span style="color:#6ab825;font-weight:bold">elif</span> event.HasField(<span style="color:#ed9d13">&#34;command&#34;</span>):
-        handle_command_event(event.command, session)
-
-    <span style="color:#6ab825;font-weight:bold">else</span>:
-        <span style="color:#6ab825;font-weight:bold">print</span>(<span style="color:#ed9d13">&#34;Received unknown event type from Diatheke.&#34;</span>)</code></pre></div>
-</div>
-
-<p></div>
-</div></p>
-
+&lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;else&lt;/span&gt;:
+    &lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;print&lt;/span&gt;(&lt;span style=&quot;color:#ed9d13&quot;&gt;&amp;#34;Received unknown event type from Diatheke.&amp;#34;&lt;/span&gt;)
+</code></pre>
+<p><!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<pre><code>&lt;span style=&quot;color:#999;font-style:italic&quot;&gt;// Check the event type&lt;/span&gt;
+&lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;switch&lt;/span&gt; result {
+    &lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;case&lt;/span&gt; .recognize(&lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;let&lt;/span&gt; &lt;span style=&quot;color:#40ffff&quot;&gt;recognizeEvent&lt;/span&gt;):
+        &lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;self&lt;/span&gt;.handleRecognizeEvent(recognizeEvent)
+    &lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;case&lt;/span&gt; .reply(&lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;let&lt;/span&gt; &lt;span style=&quot;color:#40ffff&quot;&gt;replyEvent&lt;/span&gt;):
+        &lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;self&lt;/span&gt;.handleReplyEvent(replyEvent)
+    &lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;case&lt;/span&gt; .command(&lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;let&lt;/span&gt; &lt;span style=&quot;color:#40ffff&quot;&gt;commandEvent&lt;/span&gt;):
+        &lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;self&lt;/span&gt;.handleCommandEvent(commandEvent, session: session)
+}
+</code></pre>
+<p>}
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
 <h3 id="recognize-event">Recognize Event</h3>
-
 <p>The Recognize event is sent when Diatheke has received user input. In
 the case of <a href="../push-text">text-based</a> input, the text of the event
 will be the same as what was typed by the user. In the case of
@@ -432,275 +385,186 @@ text of the event will be the ASR transcription. The event will also
 indicate whether the user input was recognized by the
 <a href="../../../glossary#nlu">NLU</a> as a valid
 <a href="../../../glossary#intent">intent</a> or <a href="../../../glossary#entity">entity</a>.</p>
-
 <p>Most often, this event will be used by clients to give some kind of
 visual indication to the user about whether their input was recognized
 or not.</p>
-
-<div class='code-tabs'>
-  <ul class="nav-tabs"></ul>
-  <div class="tab-content">
-
-<div class="tab-pane" title="Go">
-  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#6ab825;font-weight:bold">func</span> <span style="color:#447fcf">handleRecognizeEvent</span>(event *diathekepb.RecognizeEvent) {
-    <span style="color:#999;font-style:italic">// Check if Diatheke recognized the last input as valid.
-</span><span style="color:#999;font-style:italic"></span>    <span style="color:#6ab825;font-weight:bold">if</span> event.ValidInput {
-        fmt.<span style="color:#447fcf">Printf</span>(<span style="color:#ed9d13">&#34;Valid input: %s\n&#34;</span>, event.Text)
-    } <span style="color:#6ab825;font-weight:bold">else</span> {
-        fmt.<span style="color:#447fcf">Printf</span>(<span style="color:#ed9d13">&#34;Invalid input: %s\n&#34;</span>, event.Text)
-    }
-}</code></pre></div>
-</div>
-
-<div class="tab-pane" title="C&#43;&#43;">
-  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#6ab825;font-weight:bold">void</span> <span style="color:#447fcf">handleRecognizeEvent</span>(<span style="color:#6ab825;font-weight:bold">const</span> cobaltspeech::diatheke::RecognizeEvent &amp;event)
-{
-    <span style="color:#6ab825;font-weight:bold">if</span>(event.valid_input())
-    {
-        std::cout &lt;&lt; <span style="color:#ed9d13">&#34;Valid input: &#34;</span> &lt;&lt; event.text() &lt;&lt; std::endl;
-    }
-    <span style="color:#6ab825;font-weight:bold">else</span>
-    {
-        std::cout &lt;&lt; <span style="color:#ed9d13">&#34;Invalid input: &#34;</span> &lt;&lt; event.text() &lt;&lt; std::endl;
-    }
-}
-</code></pre></div>
-</div>
-
-<div class="tab-pane" title="Python">
-  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#6ab825;font-weight:bold">def</span> <span style="color:#447fcf">handle_recognize_event</span>(event):
-    <span style="color:#6ab825;font-weight:bold">if</span> event.valid_input:
-        <span style="color:#6ab825;font-weight:bold">print</span>(<span style="color:#ed9d13">&#34;Valid input: &#34;</span> + event.text)
-    <span style="color:#6ab825;font-weight:bold">else</span>:
-        <span style="color:#6ab825;font-weight:bold">print</span>(<span style="color:#ed9d13">&#34;Invalid input: &#34;</span> + event.text)</code></pre></div>
-</div>
-
-<p></div>
-</div></p>
-
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
 <h3 id="reply-event">Reply Event</h3>
-
 <p>The Reply event is sent when, based on the session&rsquo;s model, Diatheke has a
 reply for the user. This might happen when Diatheke needs additional
 information from the user, in which case the text of the Reply event will
 be a prompt. This event may also be sent to give the user information,
 such as after running a command. The text for all Reply events is
 defined in the Diatheke model.</p>
-
 <p>Most often, this event will be used by clients to give some kind of visual
 feedback to the user.</p>
-
-<div class='code-tabs'>
-  <ul class="nav-tabs"></ul>
-  <div class="tab-content">
-
-<div class="tab-pane" title="Go">
-  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#6ab825;font-weight:bold">func</span> <span style="color:#447fcf">handleReplyEvent</span>(event *diathekepb.ReplyEvent) {
-    fmt.<span style="color:#447fcf">Printf</span>(<span style="color:#ed9d13">&#34;Reply text: %s\n&#34;</span>, event.Text)
-}</code></pre></div>
-</div>
-
-<div class="tab-pane" title="C&#43;&#43;">
-  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#6ab825;font-weight:bold">void</span> <span style="color:#447fcf">handleReplyEvent</span>(<span style="color:#6ab825;font-weight:bold">const</span> cobaltspeech::diatheke::ReplyEvent &amp;event)
-{
-    std::cout &lt;&lt; <span style="color:#ed9d13">&#34;Reply text: &#34;</span> &lt;&lt; event.text() &lt;&lt; std::endl;
-}
-</code></pre></div>
-</div>
-
-<div class="tab-pane" title="Python">
-  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#6ab825;font-weight:bold">def</span> <span style="color:#447fcf">handle_reply_event</span>(event):
-    <span style="color:#6ab825;font-weight:bold">print</span>(<span style="color:#ed9d13">&#34;Reply text: &#34;</span> + event.text)</code></pre></div>
-</div>
-
-<p></div>
-</div></p>
-
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
 <h3 id="command-event">Command Event</h3>
-
 <p>The Command event is sent when Diatheke wants the client to execute a
 command. This happens after the corresponding
 <a href="../../../glossary#intent">intent</a> and <a href="../../../glossary#entity">entities</a>
 have been recognized, and Diatheke is in a state where the command has
 all the required information to execute (as defined by the Diatheke model).</p>
-
 <p>From the client perspective, this is the most important event that will
 come from Diatheke because it is what prompts the client code to do useful
 work by executing the commands.</p>
-
-<div class='code-tabs'>
-  <ul class="nav-tabs"></ul>
-  <div class="tab-content">
-
-<div class="tab-pane" title="Go">
-  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#6ab825;font-weight:bold">func</span> <span style="color:#447fcf">handleCommandEvent</span>(event *diathekepb.CommandEvent, session diatheke.Session) {
-    <span style="color:#999;font-style:italic">// Use the command ID and parameters to execute a task.
-</span><span style="color:#999;font-style:italic"></span>    fmt.<span style="color:#447fcf">Printf</span>(<span style="color:#ed9d13">&#34;Command ID: %v\n&#34;</span>, event.CommandId)
-    fmt.<span style="color:#447fcf">Printf</span>(<span style="color:#ed9d13">&#34;Parameters:\n&#34;</span>)
-    <span style="color:#6ab825;font-weight:bold">for</span> param, value := <span style="color:#6ab825;font-weight:bold">range</span> event.Parameters {
-        fmt.<span style="color:#447fcf">Printf</span>(<span style="color:#ed9d13">&#34;  %v = %v\n&#34;</span>, param, value)
-    }
-    fmt.<span style="color:#447fcf">Printf</span>(<span style="color:#ed9d13">&#34;\n&#34;</span>)
-
-    <span style="color:#999;font-style:italic">// After executing the command, be sure to notify Diatheke that
-</span><span style="color:#999;font-style:italic"></span>    <span style="color:#999;font-style:italic">// we are done. This is important to do so that dialog flow may continue
-</span><span style="color:#999;font-style:italic"></span>    <span style="color:#999;font-style:italic">// after the command is finished.
-</span><span style="color:#999;font-style:italic"></span>    status := &amp;diathekepb.CommandStatus{
-        SessionId: session.ID,
-        CommandId: event.CommandId,
-
-        <span style="color:#999;font-style:italic">// Indicate success or failure.
-</span><span style="color:#999;font-style:italic"></span>        ReturnStatus: diathekepb.CommandStatus_SUCCESS,
-
-        <span style="color:#999;font-style:italic">// If the ReturnStatus above is CommandStatus_FAILURE,
-</span><span style="color:#999;font-style:italic"></span>        <span style="color:#999;font-style:italic">// the ErrorMessageText field of this struct should also be populated.
-</span><span style="color:#999;font-style:italic"></span>        <span style="color:#999;font-style:italic">// ErrorMessageText: &#34;some message describing the error&#34;,
-</span><span style="color:#999;font-style:italic"></span>
-        <span style="color:#999;font-style:italic">// Return parameters as necessary. Depending on the Diatheke model,
-</span><span style="color:#999;font-style:italic"></span>        <span style="color:#999;font-style:italic">// some commands may be expected to have output.
-</span><span style="color:#999;font-style:italic"></span>        OutputParameters: event.Parameters,
-
-        <span style="color:#999;font-style:italic">// Internal data that should always be set from the original command
-</span><span style="color:#999;font-style:italic"></span>        <span style="color:#999;font-style:italic">// event.
-</span><span style="color:#999;font-style:italic"></span>        CommandStateId: event.CommandStateId,
-    }
-    
-    <span style="color:#6ab825;font-weight:bold">if</span> err := session.<span style="color:#447fcf">CommandFinished</span>(context.<span style="color:#447fcf">Background</span>(), status); err != <span style="color:#6ab825;font-weight:bold">nil</span> {
-        fmt.<span style="color:#447fcf">Printf</span>(<span style="color:#ed9d13">&#34;Error: %v\n&#34;</span>, err)
-    }
-}</code></pre></div>
-</div>
-
-<div class="tab-pane" title="C&#43;&#43;">
-  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#6ab825;font-weight:bold">void</span> <span style="color:#447fcf">handleCommandEvent</span>(<span style="color:#6ab825;font-weight:bold">const</span> cobaltspeech::diatheke::CommandEvent &amp;event,
-                        Diatheke::EventStream *stream)
-{
-    <span style="color:#999;font-style:italic">// Use the command ID and parameters to execute a task.
-</span><span style="color:#999;font-style:italic"></span>    std::cout &lt;&lt; <span style="color:#ed9d13">&#34;Command ID: &#34;</span> &lt;&lt; event.command_id() &lt;&lt; std::endl;
-    std::cout &lt;&lt; <span style="color:#ed9d13">&#34;Parameters:&#34;</span> &lt;&lt; std::endl;
-    <span style="color:#6ab825;font-weight:bold">for</span> (<span style="color:#6ab825;font-weight:bold">const</span> <span style="color:#6ab825;font-weight:bold">auto</span> &amp;pair : event.parameters())
-    {
-        std::string param = pair.first;
-        std::string value = pair.second;
-        std::cout &lt;&lt; <span style="color:#ed9d13">&#34;  &#34;</span> &lt;&lt; param &lt;&lt; <span style="color:#ed9d13">&#34; &#34;</span> &lt;&lt; value &lt;&lt; std::endl;
-    }
-    std::cout &lt;&lt; std::endl;
-
-    Diatheke::CommandStatus status(event);
-
-    <span style="color:#999;font-style:italic">// Set the status code to indicate whether the command failed
-</span><span style="color:#999;font-style:italic"></span>    status.setStatusCode(Diatheke::CommandStatus::SUCCESS);
-
-    <span style="color:#999;font-style:italic">// If the status code is FAILURE, the error message should also be set
-</span><span style="color:#999;font-style:italic"></span>    <span style="color:#999;font-style:italic">// status.setError(&#34;some message describing the error&#34;);
-</span><span style="color:#999;font-style:italic"></span>
-    <span style="color:#999;font-style:italic">// Update return parameters as necessary. For example:
-</span><span style="color:#999;font-style:italic"></span>    <span style="color:#999;font-style:italic">// status.setStringParam(&#34;some key&#34;, &#34;some value&#34;);
-</span><span style="color:#999;font-style:italic"></span>
-    <span style="color:#999;font-style:italic">// Notify Diatheke that the command is finished. This is important
-</span><span style="color:#999;font-style:italic"></span>    <span style="color:#999;font-style:italic">// to do so that dialog flow may continue after the command is
-</span><span style="color:#999;font-style:italic"></span>    <span style="color:#999;font-style:italic">// finished.
-</span><span style="color:#999;font-style:italic"></span>    eventStream-&gt;commandFinished(status);
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<pre><code>&lt;span style=&quot;color:#999;font-style:italic&quot;&gt;// After executing the command, be sure to notify Diatheke that
+</code></pre>
+<p><!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->    <!-- raw HTML omitted -->// we are done. This is important to do so that dialog flow may continue
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->    <!-- raw HTML omitted -->// after the command is finished.
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->    status := &amp;diathekepb.CommandStatus{
+SessionId: session.ID,
+CommandId: event.CommandId,</p>
+<pre><code>    &lt;span style=&quot;color:#999;font-style:italic&quot;&gt;// Indicate success or failure.
+</code></pre>
+<p><!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->        ReturnStatus: diathekepb.CommandStatus_SUCCESS,</p>
+<pre><code>    &lt;span style=&quot;color:#999;font-style:italic&quot;&gt;// If the ReturnStatus above is CommandStatus_FAILURE,
+</code></pre>
+<p><!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->        <!-- raw HTML omitted -->// the ErrorMessageText field of this struct should also be populated.
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->        <!-- raw HTML omitted -->// ErrorMessageText: &quot;some message describing the error&quot;,
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->
+<!-- raw HTML omitted -->// Return parameters as necessary. Depending on the Diatheke model,
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->        <!-- raw HTML omitted -->// some commands may be expected to have output.
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->        OutputParameters: event.Parameters,</p>
+<pre><code>    &lt;span style=&quot;color:#999;font-style:italic&quot;&gt;// Internal data that should always be set from the original command
+</code></pre>
+<p><!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->        <!-- raw HTML omitted -->// event.
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->        CommandStateId: event.CommandStateId,
+}</p>
+<pre><code>&lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;if&lt;/span&gt; err := session.&lt;span style=&quot;color:#447fcf&quot;&gt;CommandFinished&lt;/span&gt;(context.&lt;span style=&quot;color:#447fcf&quot;&gt;Background&lt;/span&gt;(), status); err != &lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;nil&lt;/span&gt; {
+    fmt.&lt;span style=&quot;color:#447fcf&quot;&gt;Printf&lt;/span&gt;(&lt;span style=&quot;color:#ed9d13&quot;&gt;&amp;#34;Error: %v\n&amp;#34;&lt;/span&gt;, err)
 }
-</code></pre></div>
-</div>
+</code></pre>
+<p>}
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<pre><code>Diatheke::CommandStatus status(event);
 
-<div class="tab-pane" title="Python">
-  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#6ab825;font-weight:bold">def</span> <span style="color:#447fcf">handle_command_event</span>(event, session):
-    <span style="color:#999;font-style:italic"># Use the command ID and parameters to execute a task.</span>
-    <span style="color:#6ab825;font-weight:bold">print</span>(<span style="color:#ed9d13">&#34;Command ID: &#34;</span> + event.command_id)
-    <span style="color:#6ab825;font-weight:bold">print</span>(<span style="color:#ed9d13">&#34;Parameters:&#34;</span>)
-    <span style="color:#6ab825;font-weight:bold">for</span> param <span style="color:#6ab825;font-weight:bold">in</span> event.parameters:
-        value = event.parameters[param]
-        <span style="color:#6ab825;font-weight:bold">print</span>(<span style="color:#ed9d13">&#34;  {} = {}&#34;</span>.format(param, value))
-    <span style="color:#6ab825;font-weight:bold">print</span>(<span style="color:#ed9d13">&#34;</span><span style="color:#ed9d13">\n</span><span style="color:#ed9d13">&#34;</span>)
+&lt;span style=&quot;color:#999;font-style:italic&quot;&gt;// Set the status code to indicate whether the command failed
+</code></pre>
+<p><!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->    status.setStatusCode(Diatheke::CommandStatus::SUCCESS);</p>
+<pre><code>&lt;span style=&quot;color:#999;font-style:italic&quot;&gt;// If the status code is FAILURE, the error message should also be set
+</code></pre>
+<p><!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->    <!-- raw HTML omitted -->// status.setError(&quot;some message describing the error&quot;);
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->
+<!-- raw HTML omitted -->// Update return parameters as necessary. For example:
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->    <!-- raw HTML omitted -->// status.setStringParam(&quot;some key&quot;, &quot;some value&quot;);
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->
+<!-- raw HTML omitted -->// Notify Diatheke that the command is finished. This is important
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->    <!-- raw HTML omitted -->// to do so that dialog flow may continue after the command is
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->    <!-- raw HTML omitted -->// finished.
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->    eventStream-&gt;commandFinished(status);
+}
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<pre><code>&lt;span style=&quot;color:#999;font-style:italic&quot;&gt;# After executing the command, be sure to notify Diatheke that we&lt;/span&gt;
+&lt;span style=&quot;color:#999;font-style:italic&quot;&gt;# are done. This is important to do so that dialog flow may continue&lt;/span&gt;
+&lt;span style=&quot;color:#999;font-style:italic&quot;&gt;# after the command is finished.&lt;/span&gt;
+result = diatheke.CommandStatus()
+result.session_id = session.id
+result.command_id = event.command_id
 
-    <span style="color:#999;font-style:italic"># After executing the command, be sure to notify Diatheke that we</span>
-    <span style="color:#999;font-style:italic"># are done. This is important to do so that dialog flow may continue</span>
-    <span style="color:#999;font-style:italic"># after the command is finished.</span>
-    result = diatheke.CommandStatus()
-    result.session_id = session.<span style="color:#24909d">id</span>
-    result.command_id = event.command_id
+&lt;span style=&quot;color:#999;font-style:italic&quot;&gt;# Indicate success or failure&lt;/span&gt;
+result.return_status = diatheke.CommandStatus.SUCCESS
 
-    <span style="color:#999;font-style:italic"># Indicate success or failure</span>
-    result.return_status = diatheke.CommandStatus.SUCCESS
+&lt;span style=&quot;color:#999;font-style:italic&quot;&gt;# If the return_status above is diatheke.CommandStatus.FAILURE,&lt;/span&gt;
+&lt;span style=&quot;color:#999;font-style:italic&quot;&gt;# the error_message_text field of this object should also be&lt;/span&gt;
+&lt;span style=&quot;color:#999;font-style:italic&quot;&gt;# populated.&lt;/span&gt;
+&lt;span style=&quot;color:#999;font-style:italic&quot;&gt;# result.error_message_text = &amp;#34;some message describing the error&amp;#34;&lt;/span&gt;
 
-    <span style="color:#999;font-style:italic"># If the return_status above is diatheke.CommandStatus.FAILURE,</span>
-    <span style="color:#999;font-style:italic"># the error_message_text field of this object should also be</span>
-    <span style="color:#999;font-style:italic"># populated.</span>
-    <span style="color:#999;font-style:italic"># result.error_message_text = &#34;some message describing the error&#34;</span>
+&lt;span style=&quot;color:#999;font-style:italic&quot;&gt;# Return parameters as necessary. Depending on the Diatheke model,&lt;/span&gt;
+&lt;span style=&quot;color:#999;font-style:italic&quot;&gt;# some commands may be expected to have output.&lt;/span&gt;
+result.output_parameters.update(event.parameters)
 
-    <span style="color:#999;font-style:italic"># Return parameters as necessary. Depending on the Diatheke model,</span>
-    <span style="color:#999;font-style:italic"># some commands may be expected to have output.</span>
-    result.output_parameters.update(event.parameters)
+&lt;span style=&quot;color:#999;font-style:italic&quot;&gt;# Internal data that should always be set from the original command&lt;/span&gt;
+&lt;span style=&quot;color:#999;font-style:italic&quot;&gt;# event.&lt;/span&gt;
+result.command_state_id = event.command_state_id
 
-    <span style="color:#999;font-style:italic"># Internal data that should always be set from the original command</span>
-    <span style="color:#999;font-style:italic"># event.</span>
-    result.command_state_id = event.command_state_id
+&lt;span style=&quot;color:#999;font-style:italic&quot;&gt;# Send the result to Diatheke&lt;/span&gt;
+session.command_finished(result)
+</code></pre>
+<p><!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<pre><code>&lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;for&lt;/span&gt; (param, value) &lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;in&lt;/span&gt; event.parameters {
+    print(&lt;span style=&quot;color:#ed9d13&quot;&gt;&amp;#34;  &lt;/span&gt;&lt;span style=&quot;color:#ed9d13&quot;&gt;\(&lt;/span&gt;param&lt;span style=&quot;color:#ed9d13&quot;&gt;)&lt;/span&gt;&lt;span style=&quot;color:#ed9d13&quot;&gt; = &lt;/span&gt;&lt;span style=&quot;color:#ed9d13&quot;&gt;\(&lt;/span&gt;value&lt;span style=&quot;color:#ed9d13&quot;&gt;)&lt;/span&gt;&lt;span style=&quot;color:#ed9d13&quot;&gt;&amp;#34;&lt;/span&gt;)
+}
 
-    <span style="color:#999;font-style:italic"># Send the result to Diatheke</span>
-    session.command_finished(result)</code></pre></div>
-</div>
+&lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;let&lt;/span&gt; &lt;span style=&quot;color:#40ffff&quot;&gt;status&lt;/span&gt; = CommandStatus(command: event)
 
-<p></div>
-</div></p>
+&lt;span style=&quot;color:#999;font-style:italic&quot;&gt;// Set the status code to indicate whether the command failed&lt;/span&gt;
+status.statusCode = .success
 
+&lt;span style=&quot;color:#999;font-style:italic&quot;&gt;// If the status code is FAILURE, the error message should also be set&lt;/span&gt;
+status.errorMesage = &lt;span style=&quot;color:#ed9d13&quot;&gt;&amp;#34;some message describing the error&amp;#34;&lt;/span&gt;
+
+&lt;span style=&quot;color:#999;font-style:italic&quot;&gt;// Update return parameters as necessary. For example:&lt;/span&gt;
+status.setParam(key: &lt;span style=&quot;color:#ed9d13&quot;&gt;&amp;#34;some key&amp;#34;&lt;/span&gt;, value: &lt;span style=&quot;color:#ed9d13&quot;&gt;&amp;#34;some value&amp;#34;&lt;/span&gt;)
+
+&lt;span style=&quot;color:#999;font-style:italic&quot;&gt;// Notify Diatheke that the command is finished. This is important&lt;/span&gt;
+&lt;span style=&quot;color:#999;font-style:italic&quot;&gt;// to do so that dialog flow may continue after the command is&lt;/span&gt;
+&lt;span style=&quot;color:#999;font-style:italic&quot;&gt;// finished.&lt;/span&gt;
+session.commandFinished(commandStatus: status) { (error) &lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;in&lt;/span&gt;
+    print(error.localizedDescription)
+}
+</code></pre>
+<p>}
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
 <h4 id="command-finished">Command Finished</h4>
-
 <p>After receiving a Command event, it is important to notify Diatheke when
 command execution has completed. Not only does it let Diatheke know the
 final command status (success or failure), but calling <code>CommandFinished</code>
 allows Diatheke to continue processing and execute any additional commands
 or replies as defined by the Diatheke model.</p>
-
 <p>For long running commands, it should be noted that calling <code>CommandFinished</code>
 will restore the dialog to the state Diatheke was at when the Command event
 was sent. This allows dialog to remain responsive to other intents while
 waiting for long-running commands to finish.</p>
-
-<div class='code-tabs'>
-  <ul class="nav-tabs"></ul>
-  <div class="tab-content">
-
-<div class="tab-pane" title="Go">
-  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#999;font-style:italic">// Use the client
-</span><span style="color:#999;font-style:italic"></span>err := client.<span style="color:#447fcf">CommandFinished</span>(context.<span style="color:#447fcf">Background</span>(), status)
-
-<span style="color:#999;font-style:italic">// OR use the Session object
-</span><span style="color:#999;font-style:italic"></span>err := session.<span style="color:#447fcf">CommandFinished</span>(context.<span style="color:#447fcf">Background</span>(), status)</code></pre></div>
-</div>
-
-<div class="tab-pane" title="C&#43;&#43;">
-  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#999;font-style:italic">// Use the client
-</span><span style="color:#999;font-style:italic"></span>client.commandFinished(sessionID, status);
-
-<span style="color:#999;font-style:italic">// OR use the Session object
-</span><span style="color:#999;font-style:italic"></span>session.commandFinished(status);
-
-<span style="color:#999;font-style:italic">// OR use the EventStream object
-</span><span style="color:#999;font-style:italic"></span>stream-&gt;commandFinished(status);
-</code></pre></div>
-</div>
-
-<div class="tab-pane" title="Python">
-  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#999;font-style:italic"># Use the client</span>
-client.command_finished(status)
-
-<span style="color:#999;font-style:italic"># OR use the Session object</span>
-session.command_finished(status)</code></pre></div>
-</div>
-
-<p></div>
-</div></p>
-
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p><!-- raw HTML omitted -->// OR use the Session object
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->err := session.<!-- raw HTML omitted -->CommandFinished<!-- raw HTML omitted -->(context.<!-- raw HTML omitted -->Background<!-- raw HTML omitted -->(), status)
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p><!-- raw HTML omitted -->// OR use the Session object
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->session.commandFinished(status);</p>
+<p><!-- raw HTML omitted -->// OR use the EventStream object
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->stream-&gt;commandFinished(status);
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p><!-- raw HTML omitted --># OR use the Session object<!-- raw HTML omitted -->
+session.command_finished(status)
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p><!-- raw HTML omitted -->// OR use the Session object<!-- raw HTML omitted -->
+session.commandFinished(commandStatus: status)
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
 <h2 id="event-flow">Event flow</h2>
-
 <h3 id="audio-based">Audio Based</h3>
-
 <p>For an <a href="../audio-input">audio-based</a> dialog, the flow events is shown below.
 Based on the Diatheke model, the server will send events in response to
 recognized audio and intents.</p>
-
 <link href="/sdk-diatheke/mermaid/mermaid.css" type="text/css" rel="stylesheet"/>
 <script defer src="/sdk-diatheke/mermaid/mermaid.js">mermaid.initialize({startOnLoad:true});</script>
 <div class="mermaid" align="center" >
@@ -719,9 +583,7 @@ sequenceDiagram;
     Note right of Diatheke: Model finds</br>Say action</br>after command
     Diatheke -->> Client: Reply event
 </div>
-
 <h3 id="text-based">Text Based</h3>
-
 <p>For a <a href="../push-text">text-based</a> dialog, the flow events is shown below.
 As with the audio-based dialog, the specific type and number of events
 will depend on the Diatheke model.

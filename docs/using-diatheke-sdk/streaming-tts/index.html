@@ -42,8 +42,7 @@
       
 	
   
-    <p><img src="/sdk-diatheke/images/logo-white.png" alt="Cobalt's SDK Documentation" /></p>
-
+    <p><img src="/sdk-diatheke/images/logo-white.png" alt="Cobalt&rsquo;s SDK Documentation"></p>
 <p>Diatheke SDK &ndash; Cobalt</p>
 
   
@@ -230,13 +229,10 @@
     <div class="progress">
         <div class="wrapper">
     <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#creating-the-tts-stream">Creating the TTS Stream</a></li>
-<li><a href="#receiving-audio">Receiving Audio</a></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#creating-the-tts-stream">Creating the TTS Stream</a></li>
+    <li><a href="#receiving-audio">Receiving Audio</a></li>
+  </ul>
 </nav>
         </div>
     </div>
@@ -255,137 +251,89 @@
     
     
     
-    
-
-<p>Not to be confused with a session&rsquo;s <a href="../session/audio-output">audio output stream</a>,
+    <p>Not to be confused with a session&rsquo;s <a href="../session/audio-output">audio output stream</a>,
 a plain <a href="../../glossary#tts">TTS</a> stream is used to synthesize speech
 unrelated to any currently running <a href="../session">sessions</a> or Diatheke
 models. This means that, unlike audio output from a session which is
 sent to the client in response to user input as defined in the model,
 the audio output for a plain TTS stream is returned to the client
 immediately after the TTS request is made.</p>
-
 <p>This functionality is provided mainly as a convenience. There may be
 some situations where it is useful to synthesize audio unrelated to a
 running session (such as debugging). For the majority of situations,
 Cobalt recommends embedding TTS replies in the Diatheke model itself,
 so that they may be returned as part of the normal dialog flow for a
 session.</p>
-
 <h2 id="creating-the-tts-stream">Creating the TTS Stream</h2>
-
 <p>The TTS stream requires a Luna model (defined in the Luna server config
 file) and the text to synthesize to be specified at creation. The
 returned stream will receive audio data from the server until synthesis
 is complete and the stream is closed.</p>
-
-<div class='code-tabs'>
-  <ul class="nav-tabs"></ul>
-  <div class="tab-content">
-
-<div class="tab-pane" title="Go">
-  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#999;font-style:italic">// Specify the Luna model to use (not a Diatheke model)
-</span><span style="color:#999;font-style:italic"></span>lunaModel := <span style="color:#ed9d13">&#34;1&#34;</span>
-sentence := <span style="color:#ed9d13">&#34;this is the text to synthesize&#34;</span>
-
-<span style="color:#999;font-style:italic">// Create the TTS stream
-</span><span style="color:#999;font-style:italic"></span>stream, err := client.<span style="color:#447fcf">StreamTTS</span>(context.<span style="color:#447fcf">Background</span>(), lunaModel, sentence)</code></pre></div>
-</div>
-
-<div class="tab-pane" title="C&#43;&#43;">
-  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#999;font-style:italic">// Specify the Luna model to use (not a Diatheke model)
-</span><span style="color:#999;font-style:italic"></span>std::string lunaModel = <span style="color:#ed9d13">&#34;1&#34;</span>;
-std::string sentence = <span style="color:#ed9d13">&#34;this is the text to synthesize&#34;</span>;
-
-<span style="color:#999;font-style:italic">// Create the TTS stream
-</span><span style="color:#999;font-style:italic"></span>std::unique_ptr&lt;Diatheke::TTSStream&gt; stream = 
-    client.streamTTS(lunaModel, sentence);
-</code></pre></div>
-</div>
-
-<div class="tab-pane" title="Python">
-  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#999;font-style:italic"># Specify the Luna model to use (not a Diatheke model)</span>
-luna_model = <span style="color:#ed9d13">&#34;1&#34;</span>
-sentence = <span style="color:#ed9d13">&#34;this is the text to synthesize&#34;</span>
-
-<span style="color:#999;font-style:italic"># Create the TTS stream</span>
-stream = client.stream_tts(luna_model, sentence)</code></pre></div>
-</div>
-
-<p></div>
-</div></p>
-
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p><!-- raw HTML omitted -->// Create the TTS stream
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->stream, err := client.<!-- raw HTML omitted -->StreamTTS<!-- raw HTML omitted -->(context.<!-- raw HTML omitted -->Background<!-- raw HTML omitted -->(), lunaModel, sentence)
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p><!-- raw HTML omitted -->// Create the TTS stream
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->std::unique_ptr&lt;Diatheke::TTSStream&gt; stream =
+client.streamTTS(lunaModel, sentence);
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p><!-- raw HTML omitted --># Create the TTS stream<!-- raw HTML omitted -->
+stream = client.stream_tts(luna_model, sentence)
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p><!-- raw HTML omitted -->// Create the TTS stream<!-- raw HTML omitted -->
+client.streamTTS(model: lunaModel, text: sentence) { (response) <!-- raw HTML omitted -->in<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->// Handle TTS response<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->self<!-- raw HTML omitted -->.handleTTSResponse(response)
+}
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
 <h2 id="receiving-audio">Receiving Audio</h2>
-
 <p>The only data returned on the TTS stream will be audio data. The simplest
 way to receive it is to set up a loop to receive and process the data
 until the stream is closed, as shown below.</p>
-
 <p>The TTS generated audio data will be formatted and encoded based on the
 specific TTS model being used for the stream. It is the client code&rsquo;s
 responsibility to handle the output audio, whether it sends it to an output
 device (e.g., speakers), saves it to a file, or does some other processing
 of the audio data.</p>
-
-<div class='code-tabs'>
-  <ul class="nav-tabs"></ul>
-  <div class="tab-content">
-
-<div class="tab-pane" title="Go">
-  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#999;font-style:italic">// Receive data from the TTS stream until it is closed, which will happen
-</span><span style="color:#999;font-style:italic">// when synthesis is complete, or the context used to create the stream
-</span><span style="color:#999;font-style:italic">// is cancelled.
-</span><span style="color:#999;font-style:italic"></span><span style="color:#6ab825;font-weight:bold">for</span> {
-    <span style="color:#999;font-style:italic">// Wait for data from the server
-</span><span style="color:#999;font-style:italic"></span>    msg, err := stream.<span style="color:#447fcf">Recv</span>()
-
-    <span style="color:#999;font-style:italic">// This indicates the stream has finished, which will happen
-</span><span style="color:#999;font-style:italic"></span>    <span style="color:#999;font-style:italic">// when the session ends or the context used to create the stream
-</span><span style="color:#999;font-style:italic"></span>    <span style="color:#999;font-style:italic">// closes.
-</span><span style="color:#999;font-style:italic"></span>    <span style="color:#6ab825;font-weight:bold">if</span> err == io.EOF {
-        <span style="color:#6ab825;font-weight:bold">break</span>
-    }
-    <span style="color:#6ab825;font-weight:bold">if</span> err != <span style="color:#6ab825;font-weight:bold">nil</span> {
-        fmt.<span style="color:#447fcf">Printf</span>(<span style="color:#ed9d13">&#34;Error: %v\n&#34;</span>, err)
-        <span style="color:#6ab825;font-weight:bold">return</span>
-    }
-
-    <span style="color:#999;font-style:italic">// Use the audio data, which will be an array of bytes.
-</span><span style="color:#999;font-style:italic"></span>    fmt.<span style="color:#447fcf">Printf</span>(<span style="color:#ed9d13">&#34;TTS Data size (bytes): %v\n&#34;</span>, <span style="color:#24909d">len</span>(msg.Data))
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<pre><code>&lt;span style=&quot;color:#999;font-style:italic&quot;&gt;// This indicates the stream has finished, which will happen
+</code></pre>
+<p><!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->    <!-- raw HTML omitted -->// when the session ends or the context used to create the stream
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->    <!-- raw HTML omitted -->// closes.
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->    <!-- raw HTML omitted -->if<!-- raw HTML omitted --> err == io.EOF {
+<!-- raw HTML omitted -->break<!-- raw HTML omitted -->
 }
-
-fmt.<span style="color:#447fcf">Printf</span>(<span style="color:#ed9d13">&#34;Synthesis complete.\n&#34;</span>)</code></pre></div>
-</div>
-
-<div class="tab-pane" title="C&#43;&#43;">
-  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#999;font-style:italic">// Receive data from the TTS stream until it is closed, which will happen
-</span><span style="color:#999;font-style:italic">// when synthesis is complete.
-</span><span style="color:#999;font-style:italic"></span>cobaltspeech::diatheke::TTSResponse response;
-<span style="color:#6ab825;font-weight:bold">while</span> (stream-&gt;waitForAudio(&amp;response))
-{
-    <span style="color:#999;font-style:italic">// Use the audio data, which will be given as a string. Think of it as an
-</span><span style="color:#999;font-style:italic"></span>    <span style="color:#999;font-style:italic">// array of chars (a char is one byte).
-</span><span style="color:#999;font-style:italic"></span>    std::string audioData = response.data();
-    std::cout &lt;&lt; <span style="color:#ed9d13">&#34;TTS Data size (bytes): &#34;</span> &lt;&lt; audioData.size() &lt;&lt; std::endl;
-}
-
-std::cout &lt;&lt; <span style="color:#ed9d13">&#34;Synthesis complete.&#34;</span> &lt;&lt; std::endl;
-</code></pre></div>
-</div>
-
-<div class="tab-pane" title="Python">
-  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#999;font-style:italic"># Receive data from the TTS stream until it is closed, which will happen</span>
-<span style="color:#999;font-style:italic"># when synthesis is complete.</span>
-<span style="color:#6ab825;font-weight:bold">for</span> response <span style="color:#6ab825;font-weight:bold">in</span> stream:
-    <span style="color:#999;font-style:italic"># Use the audio data</span>
-    audio_data = response.data
-    <span style="color:#6ab825;font-weight:bold">print</span>(<span style="color:#ed9d13">&#34;TTS Data size (bytes): {}&#34;</span>.format(<span style="color:#24909d">len</span>(audio_data)))
-
-<span style="color:#6ab825;font-weight:bold">print</span>(<span style="color:#ed9d13">&#34;Synthesis complete.&#34;</span>)</code></pre></div>
-</div>
-
-<p></div>
-</div></p>
+<!-- raw HTML omitted -->if<!-- raw HTML omitted --> err != <!-- raw HTML omitted -->nil<!-- raw HTML omitted --> {
+fmt.<!-- raw HTML omitted -->Printf<!-- raw HTML omitted -->(<!-- raw HTML omitted -->&quot;Error: %v\n&quot;<!-- raw HTML omitted -->, err)
+<!-- raw HTML omitted -->return<!-- raw HTML omitted -->
+}</p>
+<pre><code>&lt;span style=&quot;color:#999;font-style:italic&quot;&gt;// Use the audio data, which will be an array of bytes.
+</code></pre>
+<p><!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->    fmt.<!-- raw HTML omitted -->Printf<!-- raw HTML omitted -->(<!-- raw HTML omitted -->&quot;TTS Data size (bytes): %v\n&quot;<!-- raw HTML omitted -->, <!-- raw HTML omitted -->len<!-- raw HTML omitted -->(msg.Data))
+}</p>
+<p>fmt.<!-- raw HTML omitted -->Printf<!-- raw HTML omitted -->(<!-- raw HTML omitted -->&quot;Synthesis complete.\n&quot;<!-- raw HTML omitted -->)
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>std::cout &lt;&lt; <!-- raw HTML omitted -->&quot;Synthesis complete.&quot;<!-- raw HTML omitted --> &lt;&lt; std::endl;
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p><!-- raw HTML omitted -->print<!-- raw HTML omitted -->(<!-- raw HTML omitted -->&quot;Synthesis complete.&quot;<!-- raw HTML omitted -->)
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
 
 
     

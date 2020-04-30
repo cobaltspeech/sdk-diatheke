@@ -42,8 +42,7 @@
       
 	
   
-    <p><img src="/sdk-diatheke/images/logo-white.png" alt="Cobalt's SDK Documentation" /></p>
-
+    <p><img src="/sdk-diatheke/images/logo-white.png" alt="Cobalt&rsquo;s SDK Documentation"></p>
 <p>Diatheke SDK &ndash; Cobalt</p>
 
   
@@ -236,13 +235,13 @@
     <div class="progress">
         <div class="wrapper">
     <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#creating-the-audio-input-stream">Creating the Audio Input Stream</a></li>
-<li><a href="#pushing-audio">Pushing Audio</a></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#creating-the-audio-input-stream">Creating the Audio Input Stream</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#pushing-audio">Pushing Audio</a></li>
+  </ul>
 </nav>
         </div>
     </div>
@@ -261,122 +260,95 @@
     
     
     
-    
-
-<p>In addition to <a href="../push-text">pushing text</a>, a client may provide
+    <p>In addition to <a href="../push-text">pushing text</a>, a client may provide
 the session input by using audio.</p>
-
 <h2 id="creating-the-audio-input-stream">Creating the Audio Input Stream</h2>
-
 <p>To provide the session with audio input, the client code should first
 create the input stream. For a given session, only a single audio input
 stream should be open at a time, but it perfectly acceptable to open
 and close multiple audio streams over the course of a single session.</p>
-
-<div class='code-tabs'>
-  <ul class="nav-tabs"></ul>
-  <div class="tab-content">
-
-<div class="tab-pane" title="Go">
-  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#999;font-style:italic">// Create the stream using the client and session ID
-</span><span style="color:#999;font-style:italic"></span>stream, err := client.<span style="color:#447fcf">StreamAudioInput</span>(context.<span style="color:#447fcf">Background</span>(), sessionID)
-
-<span style="color:#999;font-style:italic">// OR create the stream using the Session object
-</span><span style="color:#999;font-style:italic"></span>stream, err := session.<span style="color:#447fcf">StreamAudioInput</span>(context.<span style="color:#447fcf">Background</span>())</code></pre></div>
-</div>
-
-<div class="tab-pane" title="C&#43;&#43;">
-  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">std::unique_ptr&lt;Diatheke::AudioInputStream&gt; stream;
-
-<span style="color:#999;font-style:italic">// Create the stream using the client and session ID
-</span><span style="color:#999;font-style:italic"></span>stream = client.streamAudioInput(sessionID);
-
-<span style="color:#999;font-style:italic">// OR create the stream using the Session object
-</span><span style="color:#999;font-style:italic"></span>stream = session.streamAudioInput();
-</code></pre></div>
-</div>
-
-<div class="tab-pane" title="Python">
-  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#999;font-style:italic"># Create the stream using the client and session ID</span>
-stream = client.stream_audio_input(session_id)
-
-<span style="color:#999;font-style:italic"># OR create the stream using the Session object</span>
-stream = session.stream_audio_input()</code></pre></div>
-</div>
-
-<p></div>
-</div></p>
-
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p><!-- raw HTML omitted -->// OR create the stream using the Session object
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->stream, err := session.<!-- raw HTML omitted -->StreamAudioInput<!-- raw HTML omitted -->(context.<!-- raw HTML omitted -->Background<!-- raw HTML omitted -->())
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p><!-- raw HTML omitted -->// Create the stream using the client and session ID
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->stream = client.streamAudioInput(sessionID);</p>
+<p><!-- raw HTML omitted -->// OR create the stream using the Session object
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->stream = session.streamAudioInput();
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p><!-- raw HTML omitted --># OR create the stream using the Session object<!-- raw HTML omitted -->
+stream = session.stream_audio_input()
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h1 id="or-create-the-stream-using-the-session-object">OR create the stream using the Session object</h1>
+<p><!-- raw HTML omitted -->let<!-- raw HTML omitted --> <!-- raw HTML omitted -->stream<!-- raw HTML omitted --> = session.streamAudioInput { (error) <!-- raw HTML omitted -->in<!-- raw HTML omitted -->
+print(error.localizedDescription)
+}
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
 <h2 id="pushing-audio">Pushing Audio</h2>
-
 <p>It is the client code&rsquo;s responsibility to handle getting audio data, whether
 it is from a microphone, file, or some other source. Audio input should be
 formatted and encoded based on the specific <a href="../../../glossary#asr">ASR</a>
 model being used for the session (as defined in the Diatheke server config
 file). The audio data may then be sent to the server using the stream
 created previously.</p>
-
-<div class='code-tabs'>
-  <ul class="nav-tabs"></ul>
-  <div class="tab-content">
-
-<div class="tab-pane" title="Go">
-  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#999;font-style:italic">// The audio data should be formatted as an array of bytes.
-</span><span style="color:#999;font-style:italic"></span>buffer := <span style="color:#24909d">make</span>([]<span style="color:#6ab825;font-weight:bold">byte</span>, <span style="color:#3677a9">8192</span>)
-
-<span style="color:#999;font-style:italic">// Get the audio data from a source. This could be a microphone, file, or
-</span><span style="color:#999;font-style:italic">// any other source. Here we assume the audio data was retrieved previously
-</span><span style="color:#999;font-style:italic">// and stored in our buffer.
-</span><span style="color:#999;font-style:italic"></span>
-<span style="color:#999;font-style:italic">// Push the audio data to the input stream. This function may be called
-</span><span style="color:#999;font-style:italic">// multiple times.
-</span><span style="color:#999;font-style:italic"></span>bytesWritten, err := stream.<span style="color:#447fcf">Write</span>(buffer);
-
-<span style="color:#999;font-style:italic">// Be sure to notify Diatheke that no more audio will be coming when we
-</span><span style="color:#999;font-style:italic">// are done writing data.
-</span><span style="color:#999;font-style:italic"></span>err := stream.<span style="color:#447fcf">Finish</span>();</code></pre></div>
-</div>
-
-<div class="tab-pane" title="C&#43;&#43;">
-  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#999;font-style:italic">// Store audio data as a string. Think of the string as an array of chars
-</span><span style="color:#999;font-style:italic">// or bytes (a char is one byte of data).
-</span><span style="color:#999;font-style:italic"></span>std::string buffer;
-
-<span style="color:#999;font-style:italic">// Get the audio data from a source. This could be a microphone, file, or
-</span><span style="color:#999;font-style:italic">// any other source. Here we assume the audio data was retrieved previously
-</span><span style="color:#999;font-style:italic">// and stored in our buffer.
-</span><span style="color:#999;font-style:italic"></span>
-<span style="color:#999;font-style:italic">// Push the audio data to the input stream. This function may be called
-</span><span style="color:#999;font-style:italic">// multiple times.
-</span><span style="color:#999;font-style:italic"></span>stream-&gt;pushAudio(buffer.c_str(), buffer.size());
-
-<span style="color:#999;font-style:italic">// Be sure to notify Diatheke that no more audio will be coming when we
-</span><span style="color:#999;font-style:italic">// are done writing data.
-</span><span style="color:#999;font-style:italic"></span>stream-&gt;finished();
-</code></pre></div>
-</div>
-
-<div class="tab-pane" title="Python">
-  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#999;font-style:italic"># Get the audio data from a source. This could be a microphone, file, or</span>
-<span style="color:#999;font-style:italic"># any other source. Here we assume the audio data was retrieved previously</span>
-<span style="color:#999;font-style:italic"># and stored in a buffer.</span>
-
-<span style="color:#999;font-style:italic"># Push the audio data to the input stream. This function may be called</span>
-<span style="color:#999;font-style:italic"># multiple times.</span>
-stream.write(<span style="color:#24909d">buffer</span>)
-
-<span style="color:#999;font-style:italic"># Be sure to notify Diatheke that no more audio will be coming when</span>
-<span style="color:#999;font-style:italic"># we are done writing data.</span>
-stream.finish()</code></pre></div>
-</div>
-
-<p></div>
-</div></p>
-
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p><!-- raw HTML omitted -->// Get the audio data from a source. This could be a microphone, file, or
+<!-- raw HTML omitted --><!-- raw HTML omitted -->// any other source. Here we assume the audio data was retrieved previously
+<!-- raw HTML omitted --><!-- raw HTML omitted -->// and stored in our buffer.
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->
+<!-- raw HTML omitted -->// Push the audio data to the input stream. This function may be called
+<!-- raw HTML omitted --><!-- raw HTML omitted -->// multiple times.
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->bytesWritten, err := stream.<!-- raw HTML omitted -->Write<!-- raw HTML omitted -->(buffer);</p>
+<p><!-- raw HTML omitted -->// Be sure to notify Diatheke that no more audio will be coming when we
+<!-- raw HTML omitted --><!-- raw HTML omitted -->// are done writing data.
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->err := stream.<!-- raw HTML omitted -->Finish<!-- raw HTML omitted -->();
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p><!-- raw HTML omitted -->// Get the audio data from a source. This could be a microphone, file, or
+<!-- raw HTML omitted --><!-- raw HTML omitted -->// any other source. Here we assume the audio data was retrieved previously
+<!-- raw HTML omitted --><!-- raw HTML omitted -->// and stored in our buffer.
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->
+<!-- raw HTML omitted -->// Push the audio data to the input stream. This function may be called
+<!-- raw HTML omitted --><!-- raw HTML omitted -->// multiple times.
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->stream-&gt;pushAudio(buffer.c_str(), buffer.size());</p>
+<p><!-- raw HTML omitted -->// Be sure to notify Diatheke that no more audio will be coming when we
+<!-- raw HTML omitted --><!-- raw HTML omitted -->// are done writing data.
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->stream-&gt;finished();
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p><!-- raw HTML omitted --># Push the audio data to the input stream. This function may be called<!-- raw HTML omitted -->
+<!-- raw HTML omitted --># multiple times.<!-- raw HTML omitted -->
+stream.write(<!-- raw HTML omitted -->buffer<!-- raw HTML omitted -->)</p>
+<p><!-- raw HTML omitted --># Be sure to notify Diatheke that no more audio will be coming when<!-- raw HTML omitted -->
+<!-- raw HTML omitted --># we are done writing data.<!-- raw HTML omitted -->
+stream.finish()
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p><!-- raw HTML omitted -->// Push the audio data to the input stream. This function may be called<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->// multiple times.<!-- raw HTML omitted -->
+stream.pushAudio(data: data)</p>
+<p><!-- raw HTML omitted -->// Be sure to notify Diatheke that no more audio will be coming when<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->// we are done writing data.<!-- raw HTML omitted -->
+stream.finish()
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
 <p>After all audio data has been pushed to the server, client code should be
 sure to call the Finish() method to notify Diatheke that no more audio will
 be coming.</p>
-
 <p>Transcriptions for session audio input are not returned as part of the
 audio input stream. They are returned as
 <a href="../event-stream#recognize-event">Recognize events</a> on the session&rsquo;s
