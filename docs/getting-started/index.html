@@ -42,8 +42,7 @@
       
 	
   
-    <p><img src="/sdk-diatheke/images/logo-white.png" alt="Cobalt's SDK Documentation" /></p>
-
+    <p><img src="/sdk-diatheke/images/logo-white.png" alt="Cobalt&rsquo;s SDK Documentation"></p>
 <p>Diatheke SDK &ndash; Cobalt</p>
 
   
@@ -224,19 +223,18 @@
     <div class="progress">
         <div class="wrapper">
     <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#installing-the-diatheke-server-image">Installing the Diatheke Server Image</a>
-<ul>
-<li><a href="#contents-of-the-docker-image">Contents of the docker image</a></li>
-</ul></li>
-<li><a href="#installing-the-diatheke-sdk">Installing the Diatheke SDK</a>
-<ul>
-<li><a href="#examples">Examples</a></li>
-</ul></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#installing-the-diatheke-server-image">Installing the Diatheke Server Image</a>
+      <ul>
+        <li><a href="#contents-of-the-docker-image">Contents of the docker image</a></li>
+      </ul>
+    </li>
+    <li><a href="#installing-the-diatheke-sdk">Installing the Diatheke SDK</a>
+      <ul>
+        <li><a href="#examples">Examples</a></li>
+      </ul>
+    </li>
+  </ul>
 </nav>
         </div>
     </div>
@@ -257,73 +255,71 @@
     
 
 <h2 id="installing-the-diatheke-server-image">Installing the Diatheke Server Image</h2>
-
 <p>The SDK communicates with a Diatheke Server instance using
 <a href="https://grpc.io">gRPC</a>. Cobalt distributes a docker image that contains
 the <code>diathekesvr</code> binary and model files.</p>
-
 <ol>
-<li><p>Contact Cobalt to get a link to the image file in AWS S3.  This link
-will expire in two weeks, so be sure to download the file to your own server.</p></li>
-
-<li><p>Download with the AWS CLI if you have it, or with curl:</p>
+<li>
+<p>Contact Cobalt to get a link to the image file in AWS S3.  This link
+will expire in two weeks, so be sure to download the file to your own server.</p>
+</li>
+<li>
+<p>Download with the AWS CLI if you have it, or with curl:</p>
 <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#40ffff">URL</span>=<span style="color:#ed9d13">&#34;the url sent by Cobalt&#34;</span>
 <span style="color:#40ffff">IMAGE_NAME</span>=<span style="color:#ed9d13">&#34;name you want to give the file (should end with the same extension as the url, usually bz2)&#34;</span>
-curl <span style="color:#40ffff">$URL</span> -L -o <span style="color:#40ffff">$IMAGE_NAME</span></code></pre></div></li>
-
-<li><p>Load the docker image</p>
-<div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">docker load &lt; <span style="color:#40ffff">$IMAGE_NAME</span></code></pre></div>
-<p>This will output the name of the image (e.g. <code>diatheke-demo-en_us-16</code>).</p></li>
-
-<li><p>Start the diatheke service</p>
-<div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">docker run -p <span style="color:#3677a9">9002</span>:9002 --name cobalt diathekesvr-demo-en_us-16</code></pre></div>
-<p>That will start listening for grpc commands on port 9002. You can replace
+curl <span style="color:#40ffff">$URL</span> -L -o <span style="color:#40ffff">$IMAGE_NAME</span>
+</code></pre></div></li>
+<li>
+<p>Load the docker image</p>
+<div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">docker load &lt; <span style="color:#40ffff">$IMAGE_NAME</span>
+</code></pre></div><p>This will output the name of the image (e.g. <code>diatheke-demo-en_us-16</code>).</p>
+</li>
+<li>
+<p>Start the diatheke service</p>
+<div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">docker run -p 9002:9002 --name cobalt diathekesvr-demo-en_us-16
+</code></pre></div><p>That will start listening for grpc commands on port 9002. You can replace
 <code>--name cobalt</code> with any name you want to give the docker container.
-The name simply provides a way to refer back to the running container.</p></li>
+The name simply provides a way to refer back to the running container.</p>
+</li>
 </ol>
-
 <h3 id="contents-of-the-docker-image">Contents of the docker image</h3>
-
 <ul>
 <li><strong>Base docker image</strong> : ubuntu:18.04</li>
 <li><strong>Additional dependencies</strong>
-
 <ul>
 <li>supervisor</li>
 <li>sox</li>
 <li>libsndfile1</li>
 <li>language-pack-en</li>
-</ul></li>
+</ul>
+</li>
 <li><strong>Servers</strong>
-
 <ul>
 <li>Cubic (<a href="../glossary/#asr">ASR</a>)</li>
 <li>Luna (<a href="../glossary/#tts">TTS</a>)</li>
 <li>Diatheke (Dialog)</li>
-</ul></li>
+</ul>
+</li>
 <li><strong>Config Files</strong>
-
 <ul>
 <li>Cubic: /data/configs/cubicsvr.cfg.toml</li>
 <li>Luna: /data/configs/lunasvr.cfg.toml</li>
 <li>Diatheke: /data/configs/diathekesvr.cfg.toml</li>
-</ul></li>
+</ul>
+</li>
 <li><strong>Model Directories</strong>
-
 <ul>
 <li>Cubic: /data/models/cubic</li>
 <li>Luna: /data/models/luna</li>
 <li>Diatheke: /data/models/diatheke</li>
-</ul></li>
 </ul>
-
+</li>
+</ul>
 <h2 id="installing-the-diatheke-sdk">Installing the Diatheke SDK</h2>
-
 <p>To install the Diatheke SDK, use git to clone the
 <a href="https://github.com/cobaltspeech/sdk-diatheke">sdk-diatheke repository</a>:</p>
-<div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">git clone https://github.com/cobaltspeech/sdk-diatheke.git</code></pre></div>
-<h3 id="examples">Examples</h3>
-
+<div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">git clone https://github.com/cobaltspeech/sdk-diatheke.git
+</code></pre></div><h3 id="examples">Examples</h3>
 <p>The sdk-diatheke repo contains <a href="https://github.com/cobaltspeech/sdk-diatheke/tree/master/examples">example code</a>
 with subdirectories for various languages to build demo client applications. Simply follow the README instructions for each language to build and run the
 sample applications.</p>

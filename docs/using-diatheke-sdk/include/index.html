@@ -42,8 +42,7 @@
       
 	
   
-    <p><img src="/sdk-diatheke/images/logo-white.png" alt="Cobalt's SDK Documentation" /></p>
-
+    <p><img src="/sdk-diatheke/images/logo-white.png" alt="Cobalt&rsquo;s SDK Documentation"></p>
 <p>Diatheke SDK &ndash; Cobalt</p>
 
   
@@ -230,14 +229,15 @@
     <div class="progress">
         <div class="wrapper">
     <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#c">C++</a></li>
-<li><a href="#go">Go</a></li>
-<li><a href="#python">Python</a></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#c">C++</a></li>
+    <li><a href="#go">Go</a></li>
+    <li><a href="#python">Python</a>
+      <ul>
+        <li><a href="#ios">iOS</a></li>
+      </ul>
+    </li>
+  </ul>
 </nav>
         </div>
     </div>
@@ -258,9 +258,7 @@
     
     <p>Language-specific instructions to include the SDK in your project
 are given below.</p>
-
 <h2 id="c">C++</h2>
-
 <p>To use the Diatheke SDK in a C++ project, you must first
 <a href="../../getting-started#installing-the-diatheke-sdk">download the SDK</a>.
 To help simplify the build process, the C++ SDK uses
@@ -268,31 +266,26 @@ To help simplify the build process, the C++ SDK uses
 build system with some additional work. Details for building and including
 the SDK in a C++ project are described in detail in
 <a href="https://github.com/cobaltspeech/sdk-diatheke/blob/master/grpc/cpp-diatheke/README.md">this README file</a>.</p>
-
 <h2 id="go">Go</h2>
-
 <p>The Go SDK supports Go modules and requires Go 1.12 or later. To use the
 SDK, import this package into your application:</p>
-<div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#6ab825;font-weight:bold">import</span> <span style="color:#ed9d13">&#34;github.com/cobaltspeech/sdk-diatheke/grpc/go-diatheke&#34;</span></code></pre></div>
-<div class="panel panel-info">
-    <div class="panel-heading">Note</div>
-    <div class="panel-body">
-When using Go, it is not necessary to download the SDK using git
-(unless you want to build the example code).
-The `go build` command will automatically fetch the sdk-diatheke code
-from GitHub to use in your Go project.
-</div>
-    
-
-<p></div></p>
-
+<div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#6ab825;font-weight:bold">import</span> <span style="color:#ed9d13">&#34;github.com/cobaltspeech/sdk-diatheke/grpc/go-diatheke&#34;</span>
+</code></pre></div><!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
 <h2 id="python">Python</h2>
-
 <p>The Python SDK requires Python v3.5.0 or greater. The SDK may be installed
 from GitHub using <code>pip</code>:</p>
-<div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">pip install <span style="color:#ed9d13">&#34;git+https://github.com/cobaltspeech/sdk-diatheke#egg=cobalt-diatheke&amp;subdirectory=grpc/py-diatheke&#34;</span></code></pre></div>
-<p>Once installed, simply import the Diatheke module to use the SDK:</p>
-<div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#6ab825;font-weight:bold">import</span> <span style="color:#447fcf;text-decoration:underline">diatheke</span></code></pre></div>
+<div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">pip install <span style="color:#ed9d13">&#34;git+https://github.com/cobaltspeech/sdk-diatheke#egg=cobalt-diatheke&amp;subdirectory=grpc/py-diatheke&#34;</span>
+</code></pre></div><p>Once installed, simply import the Diatheke module to use the SDK:</p>
+<div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#6ab825;font-weight:bold">import</span> <span style="color:#447fcf;text-decoration:underline">diatheke</span>
+</code></pre></div><h3 id="ios">iOS</h3>
+<h4 id="swift-package-manager">Swift Package Manager</h4>
+<p>The <a href="https://swift.org/package-manager/">Swift Package Manager</a> is a tool for automating the distribution of Swift code and is integrated into the <code>swift</code> compiler.</p>
+<p>Once you have your Swift package set up, adding swift-cubic as a dependency is as easy as adding it to the <code>dependencies</code> value of your <code>Package.swift</code>.</p>
+<div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift">dependencies: [
+    .package(url: <span style="color:#ed9d13">&#34;https://github.com/cobaltspeech/sdk-diatheke.git&#34;</span>, .upToNextMajor(from: <span style="color:#ed9d13">&#34;1.0&#34;</span>))
+]
+</code></pre></div>
 
     
     

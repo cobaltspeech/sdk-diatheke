@@ -42,8 +42,7 @@
       
 	
   
-    <p><img src="/sdk-diatheke/images/logo-white.png" alt="Cobalt's SDK Documentation" /></p>
-
+    <p><img src="/sdk-diatheke/images/logo-white.png" alt="Cobalt&rsquo;s SDK Documentation"></p>
 <p>Diatheke SDK &ndash; Cobalt</p>
 
   
@@ -224,36 +223,34 @@
     <div class="progress">
         <div class="wrapper">
     <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#diatheke-proto">diatheke.proto</a>
-<ul>
-<li><a href="#service-diatheke">Service: Diatheke</a></li>
-<li><a href="#message-asrrequest">Message: ASRRequest</a></li>
-<li><a href="#message-asrresponse">Message: ASRResponse</a></li>
-<li><a href="#message-audioinput">Message: AudioInput</a></li>
-<li><a href="#message-audioreply">Message: AudioReply</a></li>
-<li><a href="#message-commandevent">Message: CommandEvent</a></li>
-<li><a href="#message-commandevent-parametersentry">Message: CommandEvent.ParametersEntry</a></li>
-<li><a href="#message-commandstatus">Message: CommandStatus</a></li>
-<li><a href="#message-commandstatus-outputparametersentry">Message: CommandStatus.OutputParametersEntry</a></li>
-<li><a href="#message-diathekeevent">Message: DiathekeEvent</a></li>
-<li><a href="#message-empty">Message: Empty</a></li>
-<li><a href="#message-modelsresponse">Message: ModelsResponse</a></li>
-<li><a href="#message-newsessionrequest">Message: NewSessionRequest</a></li>
-<li><a href="#message-pushtextrequest">Message: PushTextRequest</a></li>
-<li><a href="#message-recognizeevent">Message: RecognizeEvent</a></li>
-<li><a href="#message-replyevent">Message: ReplyEvent</a></li>
-<li><a href="#message-sessionid">Message: SessionID</a></li>
-<li><a href="#message-ttsrequest">Message: TTSRequest</a></li>
-<li><a href="#message-ttsresponse">Message: TTSResponse</a></li>
-<li><a href="#message-versionresponse">Message: VersionResponse</a></li>
-<li><a href="#enum-commandstatus-statuscode">Enum: CommandStatus.StatusCode</a></li>
-</ul></li>
-<li><a href="#scalar-value-types">Scalar Value Types</a></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#diathekeproto">diatheke.proto</a>
+      <ul>
+        <li><a href="#service-diatheke">Service: Diatheke</a></li>
+        <li><a href="#message-asrrequest">Message: ASRRequest</a></li>
+        <li><a href="#message-asrresponse">Message: ASRResponse</a></li>
+        <li><a href="#message-audioinput">Message: AudioInput</a></li>
+        <li><a href="#message-audioreply">Message: AudioReply</a></li>
+        <li><a href="#message-commandevent">Message: CommandEvent</a></li>
+        <li><a href="#message-commandeventparametersentry">Message: CommandEvent.ParametersEntry</a></li>
+        <li><a href="#message-commandstatus">Message: CommandStatus</a></li>
+        <li><a href="#message-commandstatusoutputparametersentry">Message: CommandStatus.OutputParametersEntry</a></li>
+        <li><a href="#message-diathekeevent">Message: DiathekeEvent</a></li>
+        <li><a href="#message-empty">Message: Empty</a></li>
+        <li><a href="#message-modelsresponse">Message: ModelsResponse</a></li>
+        <li><a href="#message-newsessionrequest">Message: NewSessionRequest</a></li>
+        <li><a href="#message-pushtextrequest">Message: PushTextRequest</a></li>
+        <li><a href="#message-recognizeevent">Message: RecognizeEvent</a></li>
+        <li><a href="#message-replyevent">Message: ReplyEvent</a></li>
+        <li><a href="#message-sessionid">Message: SessionID</a></li>
+        <li><a href="#message-ttsrequest">Message: TTSRequest</a></li>
+        <li><a href="#message-ttsresponse">Message: TTSResponse</a></li>
+        <li><a href="#message-versionresponse">Message: VersionResponse</a></li>
+        <li><a href="#enum-commandstatusstatuscode">Enum: CommandStatus.StatusCode</a></li>
+      </ul>
+    </li>
+    <li><a href="#scalar-value-types">Scalar Value Types</a></li>
+  </ul>
 </nav>
         </div>
     </div>
@@ -273,21 +270,15 @@
     
     
 
-
-
 <p>The Diatheke API is defined using <a href="https://grpc.io/docs/guides/">gRPC and protocol buffers</a>.
 This section of the documentation is auto-generated from the
 <a href="https://github.com/cobaltspeech/sdk-diatheke/blob/master/grpc/diatheke.proto">protobuf file</a>.
 It describes the data types and functions defined in the spec. The &ldquo;messages&rdquo; below
 correspond to the data structures to be used, and the &ldquo;service&rdquo; contains the
 methods that can be called.</p>
-
-<h2 id="diatheke-proto">diatheke.proto</h2>
-
+<h2 id="diathekeproto">diatheke.proto</h2>
 <h3 id="service-diatheke">Service: Diatheke</h3>
-
 <p>Service that implements the Cobalt Diatheke Dialog Management API.</p>
-
 <table>
 <thead>
 <tr>
@@ -297,7 +288,6 @@ methods that can be called.</p>
 <th>Description</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>Version</td>
@@ -305,70 +295,60 @@ methods that can be called.</p>
 <td>VersionResponse</td>
 <td>Queries the Version of the Server.</td>
 </tr>
-
 <tr>
 <td>Models</td>
 <td>Empty</td>
 <td>ModelsResponse</td>
 <td>Models will return a list of available versions. Model values from this list may be used in NewSession calls.</td>
 </tr>
-
 <tr>
 <td>NewSession</td>
 <td>NewSessionRequest</td>
 <td>SessionID</td>
 <td>Requests a new session with the given config and returns the session ID, which is required for other rpc methods.</td>
 </tr>
-
 <tr>
 <td>EndSession</td>
 <td>SessionID</td>
 <td>Empty</td>
 <td>Terminates an existing session and closes any open event streams. It is an error if the SessionEndRequest has an invalid SessionID.</td>
 </tr>
-
 <tr>
 <td>SessionEventStream</td>
 <td>SessionID</td>
 <td>DiathekeEvent</td>
 <td>Requests a new event stream for the given session.</td>
 </tr>
-
 <tr>
 <td>CommandFinished</td>
 <td>CommandStatus</td>
 <td>Empty</td>
 <td>Notify Diatheke when a command has completed so that it may update the dialog state. The initial command request will come as part of a DiathekeEvent. While not strictly required (depeding on the model and command), it is best practice to always call this method when a command is complete. Cases where it is required include when the command has output parameters, or when the command is followed by another action in the Diatheke model.</td>
 </tr>
-
 <tr>
 <td>StreamAudioInput</td>
 <td>AudioInput</td>
 <td>Empty</td>
-<td>Begin an audio input stream for a session. The first message to the server should specify the sessionID, with binary audio data pushed for every subsequent message. As the audio is recognized, Diatheke will respond with appropriate events on the session&rsquo;s event stream. <p> While it is allowed to call this multiple times during a single session, clients should never have multiple audio input streams running concurrently for the same session (the audio may mix and result in unpredictable behavior). Previous audio streams should always be closed before starting a new one.</td>
+<td>Begin an audio input stream for a session. The first message to the server should specify the sessionID, with binary audio data pushed for every subsequent message. As the audio is recognized, Diatheke will respond with appropriate events on the session&rsquo;s event stream. <!-- raw HTML omitted --> While it is allowed to call this multiple times during a single session, clients should never have multiple audio input streams running concurrently for the same session (the audio may mix and result in unpredictable behavior). Previous audio streams should always be closed before starting a new one.</td>
 </tr>
-
 <tr>
 <td>StreamAudioReplies</td>
 <td>SessionID</td>
 <td>AudioReply</td>
 <td>Create an audio reply stream for a session. The returned stream will receive replies (&ldquo;say&rdquo; entries in the Diatheke model) from the server as they occur in the conversation. For each &ldquo;say&rdquo; entry, the stream will first receive the text to synthesize (defined by the model), followed by one or more messages containing the synthesized audio bytes. The &ldquo;say&rdquo; entry will end with a message indicating that TTS for that entry is complete. NOTE: The text in the first message of an audio reply is the same that will be received in the session&rsquo;s event stream.</td>
 </tr>
-
 <tr>
 <td>PushText</td>
 <td>PushTextRequest</td>
 <td>Empty</td>
 <td>Push text to Diatheke as part of the conversation for a session. Diatheke will respond with an appropriate event on the session&rsquo;s event stream based on whether the given text was recognized as a valid intent or not.</td>
 </tr>
-
 <tr>
 <td>StreamASR</td>
 <td>ASRRequest</td>
 <td>ASRResponse</td>
 <td>Manually run streaming ASR unrelated to any session by pushing audio data to the server on the audio stream. As transcriptions become available, the server will return them on the ASRResponse stream. The transcriptions may then be used for, e.g., the PushText method. This function is provided as a convenience.</td>
 </tr>
-
 <tr>
 <td>StreamTTS</td>
 <td>TTSRequest</td>
@@ -377,13 +357,9 @@ methods that can be called.</p>
 </tr>
 </tbody>
 </table>
-
-<p><!-- end services --></p>
-
+<!-- raw HTML omitted -->
 <h3 id="message-asrrequest">Message: ASRRequest</h3>
-
 <p>Request for streaming ASR unrelated to a session.</p>
-
 <table>
 <thead>
 <tr>
@@ -393,28 +369,23 @@ methods that can be called.</p>
 <th>Description</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>model</td>
 <td>string</td>
 <td></td>
-<td><p>The model to use for ASR. This message should always be sent before any audio data is sent.</p></td>
+<td><!-- raw HTML omitted -->The model to use for ASR. This message should always be sent before any audio data is sent.<!-- raw HTML omitted --></td>
 </tr>
-
 <tr>
 <td>audio</td>
 <td>bytes</td>
 <td></td>
-<td><p>Audio data to process. The encoding of the data should match what was specified in the Diatheke server configuration. NOTE: If the audio data is empty, the server may interpret it as the end of the stream and stop accepting further messages.</p></td>
+<td><!-- raw HTML omitted -->Audio data to process. The encoding of the data should match what was specified in the Diatheke server configuration. NOTE: If the audio data is empty, the server may interpret it as the end of the stream and stop accepting further messages.<!-- raw HTML omitted --></td>
 </tr>
 </tbody>
 </table>
-
 <h3 id="message-asrresponse">Message: ASRResponse</h3>
-
 <p>ASRResponse contains speech recognition results.</p>
-
 <table>
 <thead>
 <tr>
@@ -424,30 +395,25 @@ methods that can be called.</p>
 <th>Description</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>text</td>
 <td>string</td>
 <td></td>
-<td><p>Text is the Cubic engine&rsquo;s formatted transcript of pushed audio. This field will be the 1-best alternative.</p></td>
+<td><!-- raw HTML omitted -->Text is the Cubic engine&rsquo;s formatted transcript of pushed audio. This field will be the 1-best alternative.<!-- raw HTML omitted --></td>
 </tr>
-
 <tr>
 <td>confidence_score</td>
 <td>double</td>
 <td></td>
-<td><p>The confidence score is a floating point number between 0.0 - 1.0. A score of 1.0 indicates that the ASR engine is 100% confident in the transcription.</p></td>
+<td><!-- raw HTML omitted -->The confidence score is a floating point number between 0.0 - 1.0. A score of 1.0 indicates that the ASR engine is 100% confident in the transcription.<!-- raw HTML omitted --></td>
 </tr>
 </tbody>
 </table>
-
 <h3 id="message-audioinput">Message: AudioInput</h3>
-
 <p>Provides input audio data for StreamAudioInput. The first message
 sent must contain the session ID only. All subsequent messages
 must contain audio data only.</p>
-
 <table>
 <thead>
 <tr>
@@ -457,30 +423,25 @@ must contain audio data only.</p>
 <th>Description</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>session_id</td>
 <td>string</td>
 <td></td>
-<td><p>Session ID returned from the NewSession call.</p></td>
+<td><!-- raw HTML omitted -->Session ID returned from the NewSession call.<!-- raw HTML omitted --></td>
 </tr>
-
 <tr>
 <td>data</td>
 <td>bytes</td>
 <td></td>
-<td><p>Audio data to process. The encoding of the data should match what was specified in the Diatheke server configuration. NOTE: If the audio data is empty, the server may interpret it as the end of the stream and stop accepting further messages.</p></td>
+<td><!-- raw HTML omitted -->Audio data to process. The encoding of the data should match what was specified in the Diatheke server configuration. NOTE: If the audio data is empty, the server may interpret it as the end of the stream and stop accepting further messages.<!-- raw HTML omitted --></td>
 </tr>
 </tbody>
 </table>
-
 <h3 id="message-audioreply">Message: AudioReply</h3>
-
 <p>An AudioReply is the verbal and textual reply that Diatheke returns as
 part of a conversation (not to be confused with the server concepts of
 request and response).</p>
-
 <table>
 <thead>
 <tr>
@@ -490,43 +451,36 @@ request and response).</p>
 <th>Description</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>label</td>
 <td>string</td>
 <td></td>
-<td><p>The label defined in the Diatheke model. Identifies which &ldquo;say&rdquo; entry in the model this message corresponds to.</p></td>
+<td><!-- raw HTML omitted -->The label defined in the Diatheke model. Identifies which &ldquo;say&rdquo; entry in the model this message corresponds to.<!-- raw HTML omitted --></td>
 </tr>
-
 <tr>
 <td>text</td>
 <td>string</td>
 <td></td>
-<td><p>The reply text as defined in the Diatheke model. This is the first message that will be received for an AudioReply. It contains the same text as the corresponding ReplyEvent in the session&rsquo;s event stream.</p></td>
+<td><!-- raw HTML omitted -->The reply text as defined in the Diatheke model. This is the first message that will be received for an AudioReply. It contains the same text as the corresponding ReplyEvent in the session&rsquo;s event stream.<!-- raw HTML omitted --></td>
 </tr>
-
 <tr>
 <td>data</td>
 <td>bytes</td>
 <td></td>
-<td><p>The audio data from TTS. There can be any number of these messages for an AudioReply after the first text message and before the final end message. The encoding of the data will match what was specified in the server configuration.</p></td>
+<td><!-- raw HTML omitted -->The audio data from TTS. There can be any number of these messages for an AudioReply after the first text message and before the final end message. The encoding of the data will match what was specified in the server configuration.<!-- raw HTML omitted --></td>
 </tr>
-
 <tr>
 <td>end</td>
 <td>Empty</td>
 <td></td>
-<td><p>Indicates that TTS has finished streaming audio for the reply. This is the last message that will be received for an AudioReply.</p></td>
+<td><!-- raw HTML omitted -->Indicates that TTS has finished streaming audio for the reply. This is the last message that will be received for an AudioReply.<!-- raw HTML omitted --></td>
 </tr>
 </tbody>
 </table>
-
 <h3 id="message-commandevent">Message: CommandEvent</h3>
-
 <p>A CommandEvent occurs when Diatheke wants the client to execute the
 given command.</p>
-
 <table>
 <thead>
 <tr>
@@ -536,33 +490,28 @@ given command.</p>
 <th>Description</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>command_id</td>
 <td>string</td>
 <td></td>
-<td><p>ID of the command that should be run. i.e. &ldquo;COM01&rdquo; for Command #01.</p></td>
+<td><!-- raw HTML omitted -->ID of the command that should be run. i.e. &ldquo;COM01&rdquo; for Command #01.<!-- raw HTML omitted --></td>
 </tr>
-
 <tr>
 <td>parameters</td>
 <td>CommandEvent.ParametersEntry</td>
 <td>repeated</td>
-<td><p>A generic map of parameters (name, value). The parameters are defined in the Diatheke model. Depending on the command, these parameters should be sent back with the CommandStatus update.</p></td>
+<td><!-- raw HTML omitted -->A generic map of parameters (name, value). The parameters are defined in the Diatheke model. Depending on the command, these parameters should be sent back with the CommandStatus update.<!-- raw HTML omitted --></td>
 </tr>
-
 <tr>
 <td>command_state_id</td>
 <td>string</td>
 <td></td>
-<td><p>ID to keep track of the dialog state when the command is requested. This field is required in the CommandStatus message so that Diatheke can correctly update the dialog state when CommandFinished is called.</p></td>
+<td><!-- raw HTML omitted -->ID to keep track of the dialog state when the command is requested. This field is required in the CommandStatus message so that Diatheke can correctly update the dialog state when CommandFinished is called.<!-- raw HTML omitted --></td>
 </tr>
 </tbody>
 </table>
-
-<h3 id="message-commandevent-parametersentry">Message: CommandEvent.ParametersEntry</h3>
-
+<h3 id="message-commandeventparametersentry">Message: CommandEvent.ParametersEntry</h3>
 <table>
 <thead>
 <tr>
@@ -572,28 +521,23 @@ given command.</p>
 <th>Description</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>key</td>
 <td>string</td>
 <td></td>
-<td><p></p></td>
+<td><!-- raw HTML omitted --><!-- raw HTML omitted --></td>
 </tr>
-
 <tr>
 <td>value</td>
 <td>string</td>
 <td></td>
-<td><p></p></td>
+<td><!-- raw HTML omitted --><!-- raw HTML omitted --></td>
 </tr>
 </tbody>
 </table>
-
 <h3 id="message-commandstatus">Message: CommandStatus</h3>
-
 <p>The final status of an executed command.</p>
-
 <table>
 <thead>
 <tr>
@@ -603,54 +547,46 @@ given command.</p>
 <th>Description</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>session_id</td>
 <td>string</td>
 <td></td>
-<td><p>session_id should be the same as the status id returned from NewSessionResponse.</p></td>
+<td><!-- raw HTML omitted -->session_id should be the same as the status id returned from NewSessionResponse.<!-- raw HTML omitted --></td>
 </tr>
-
 <tr>
 <td>command_id</td>
 <td>string</td>
 <td></td>
-<td><p>ID of the command as given in the RunCommand object.</p></td>
+<td><!-- raw HTML omitted -->ID of the command as given in the RunCommand object.<!-- raw HTML omitted --></td>
 </tr>
-
 <tr>
 <td>return_status</td>
 <td>CommandStatus.StatusCode</td>
 <td></td>
-<td><p></p></td>
+<td><!-- raw HTML omitted --><!-- raw HTML omitted --></td>
 </tr>
-
 <tr>
 <td>output_parameters</td>
 <td>CommandStatus.OutputParametersEntry</td>
 <td>repeated</td>
-<td><p>The populated output parameters from the RunCommand object. For example, the map might contain the entry &ldquo;temperature&rdquo;, which was populated with a value of &ldquo;30&rdquo; after the command finished.</p></td>
+<td><!-- raw HTML omitted -->The populated output parameters from the RunCommand object. For example, the map might contain the entry &ldquo;temperature&rdquo;, which was populated with a value of &ldquo;30&rdquo; after the command finished.<!-- raw HTML omitted --></td>
 </tr>
-
 <tr>
 <td>error_message_text</td>
 <td>string</td>
 <td></td>
-<td><p>Set this field with an error message if an a error occured while executing the command.</p></td>
+<td><!-- raw HTML omitted -->Set this field with an error message if an a error occured while executing the command.<!-- raw HTML omitted --></td>
 </tr>
-
 <tr>
 <td>command_state_id</td>
 <td>string</td>
 <td></td>
-<td><p>State ID from the original CommandEvent. This field is required for Diatheke to correctly update the dialog state when CommandFinished is called.</p></td>
+<td><!-- raw HTML omitted -->State ID from the original CommandEvent. This field is required for Diatheke to correctly update the dialog state when CommandFinished is called.<!-- raw HTML omitted --></td>
 </tr>
 </tbody>
 </table>
-
-<h3 id="message-commandstatus-outputparametersentry">Message: CommandStatus.OutputParametersEntry</h3>
-
+<h3 id="message-commandstatusoutputparametersentry">Message: CommandStatus.OutputParametersEntry</h3>
 <table>
 <thead>
 <tr>
@@ -660,29 +596,24 @@ given command.</p>
 <th>Description</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>key</td>
 <td>string</td>
 <td></td>
-<td><p></p></td>
+<td><!-- raw HTML omitted --><!-- raw HTML omitted --></td>
 </tr>
-
 <tr>
 <td>value</td>
 <td>string</td>
 <td></td>
-<td><p></p></td>
+<td><!-- raw HTML omitted --><!-- raw HTML omitted --></td>
 </tr>
 </tbody>
 </table>
-
 <h3 id="message-diathekeevent">Message: DiathekeEvent</h3>
-
 <p>An event from Diatheke in response to either recognized audio or
 submitted text.</p>
-
 <table>
 <thead>
 <tr>
@@ -692,40 +623,32 @@ submitted text.</p>
 <th>Description</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>command</td>
 <td>CommandEvent</td>
 <td></td>
-<td><p>Indicates Diatheke found an actionable state in the dialog, and requests the client to perform the given command.</p><p>While not strictly required (depeding on the model and command), it is best practice to always call CommandFinished after receiving this event so that Diatheke can update the dialog state when the command is complete. Cases where it is required include when the command has output parameters, or when it is followed by another action in the Diatheke model.</p></td>
+<td><!-- raw HTML omitted -->Indicates Diatheke found an actionable state in the dialog, and requests the client to perform the given command.<!-- raw HTML omitted --><!-- raw HTML omitted -->While not strictly required (depeding on the model and command), it is best practice to always call CommandFinished after receiving this event so that Diatheke can update the dialog state when the command is complete. Cases where it is required include when the command has output parameters, or when it is followed by another action in the Diatheke model.<!-- raw HTML omitted --></td>
 </tr>
-
 <tr>
 <td>recognize</td>
 <td>RecognizeEvent</td>
 <td></td>
-<td><p>An event indicating whether pushed text and audio was recognized by ASR and/or Diatheke.</p></td>
+<td><!-- raw HTML omitted -->An event indicating whether pushed text and audio was recognized by ASR and/or Diatheke.<!-- raw HTML omitted --></td>
 </tr>
-
 <tr>
 <td>reply</td>
 <td>ReplyEvent</td>
 <td></td>
-<td><p>The textual reply from Diatheke in the conversation (not to be confused with the server concepts of request and response). For example, this could be a question to solicit more information from the user, a status report, or any other reply defined by the Diatheke model. The text of this message is also provided in the AudioReply stream (if one is open).</p></td>
+<td><!-- raw HTML omitted -->The textual reply from Diatheke in the conversation (not to be confused with the server concepts of request and response). For example, this could be a question to solicit more information from the user, a status report, or any other reply defined by the Diatheke model. The text of this message is also provided in the AudioReply stream (if one is open).<!-- raw HTML omitted --></td>
 </tr>
 </tbody>
 </table>
-
 <h3 id="message-empty">Message: Empty</h3>
-
 <p>This message is empty and has no fields.</p>
-
 <h3 id="message-modelsresponse">Message: ModelsResponse</h3>
-
 <p>The message sent by the server in response to a Models request.
 Returns an array of model names.</p>
-
 <table>
 <thead>
 <tr>
@@ -735,21 +658,17 @@ Returns an array of model names.</p>
 <th>Description</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>models</td>
 <td>string</td>
 <td>repeated</td>
-<td><p>Array of models available for use.</p></td>
+<td><!-- raw HTML omitted -->Array of models available for use.<!-- raw HTML omitted --></td>
 </tr>
 </tbody>
 </table>
-
 <h3 id="message-newsessionrequest">Message: NewSessionRequest</h3>
-
 <p>Request for the NewSession call.</p>
-
 <table>
 <thead>
 <tr>
@@ -759,21 +678,17 @@ Returns an array of model names.</p>
 <th>Description</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>model</td>
 <td>string</td>
 <td></td>
-<td><p>For applications that have more than one model to use for ASR/NLU. ASR grammar can vary between models, as well as sets of commands. Some applications will only have one model.</p></td>
+<td><!-- raw HTML omitted -->For applications that have more than one model to use for ASR/NLU. ASR grammar can vary between models, as well as sets of commands. Some applications will only have one model.<!-- raw HTML omitted --></td>
 </tr>
 </tbody>
 </table>
-
 <h3 id="message-pushtextrequest">Message: PushTextRequest</h3>
-
 <p>Request to push text to Diatheke as part of a conversation.</p>
-
 <table>
 <thead>
 <tr>
@@ -783,31 +698,26 @@ Returns an array of model names.</p>
 <th>Description</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>session_id</td>
 <td>string</td>
 <td></td>
-<td><p>Session ID returned from the NewSession call.</p></td>
+<td><!-- raw HTML omitted -->Session ID returned from the NewSession call.<!-- raw HTML omitted --></td>
 </tr>
-
 <tr>
 <td>text</td>
 <td>string</td>
 <td></td>
-<td><p>User input. This could be a transcription from manually run ASR, text selected from a dropdown list, entered in a prompt, etc.</p></td>
+<td><!-- raw HTML omitted -->User input. This could be a transcription from manually run ASR, text selected from a dropdown list, entered in a prompt, etc.<!-- raw HTML omitted --></td>
 </tr>
 </tbody>
 </table>
-
 <h3 id="message-recognizeevent">Message: RecognizeEvent</h3>
-
 <p>A RecognizeEvent occurs if a session&rsquo;s audio input has a transcription
 available, or if the PushText method was called. In both cases, the
 event will indicate whether the text was recognized as a valid intent
 by the Diatheke model.</p>
-
 <table>
 <thead>
 <tr>
@@ -817,33 +727,28 @@ by the Diatheke model.</p>
 <th>Description</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>text</td>
 <td>string</td>
 <td></td>
-<td><p>The pushed text or transcription of audio sent to Diatheke.</p></td>
+<td><!-- raw HTML omitted -->The pushed text or transcription of audio sent to Diatheke.<!-- raw HTML omitted --></td>
 </tr>
-
 <tr>
 <td>valid_input</td>
 <td>bool</td>
 <td></td>
-<td><p>True if the submitted text or audio transcription was recognized by the Diatheke model as a valid intent or entity.</p></td>
+<td><!-- raw HTML omitted -->True if the submitted text or audio transcription was recognized by the Diatheke model as a valid intent or entity.<!-- raw HTML omitted --></td>
 </tr>
 </tbody>
 </table>
-
 <h3 id="message-replyevent">Message: ReplyEvent</h3>
-
 <p>A ReplyEvent occurs when Diatheke has a reply in the conversation (not
 to be confused with the server concepts of request and response). These
 correspond to &ldquo;say&rdquo; entries in the Diatheke model. For example, it might
 be a prompt for additional information from the user, a status update,
 or a confirmation. ReplyEvents are not generated in response to
 StreamTTS calls.</p>
-
 <table>
 <thead>
 <tr>
@@ -853,28 +758,23 @@ StreamTTS calls.</p>
 <th>Description</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>text</td>
 <td>string</td>
 <td></td>
-<td><p>Text of the reply event (defined by the Diatheke model).</p></td>
+<td><!-- raw HTML omitted -->Text of the reply event (defined by the Diatheke model).<!-- raw HTML omitted --></td>
 </tr>
-
 <tr>
 <td>label</td>
 <td>string</td>
 <td></td>
-<td><p>Label of the reply event (defined by the Diatheke model).</p></td>
+<td><!-- raw HTML omitted -->Label of the reply event (defined by the Diatheke model).<!-- raw HTML omitted --></td>
 </tr>
 </tbody>
 </table>
-
 <h3 id="message-sessionid">Message: SessionID</h3>
-
 <p>Simple message that only contains the session ID.</p>
-
 <table>
 <thead>
 <tr>
@@ -884,21 +784,17 @@ StreamTTS calls.</p>
 <th>Description</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>session_id</td>
 <td>string</td>
 <td></td>
-<td><p>Session ID returned from the NewSession call.</p></td>
+<td><!-- raw HTML omitted -->Session ID returned from the NewSession call.<!-- raw HTML omitted --></td>
 </tr>
 </tbody>
 </table>
-
 <h3 id="message-ttsrequest">Message: TTSRequest</h3>
-
 <p>Request to synthesize speech unrelated to a session.</p>
-
 <table>
 <thead>
 <tr>
@@ -908,28 +804,23 @@ StreamTTS calls.</p>
 <th>Description</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>model</td>
 <td>string</td>
 <td></td>
-<td><p>The model to use for TTS (defined in the server config file).</p></td>
+<td><!-- raw HTML omitted -->The model to use for TTS (defined in the server config file).<!-- raw HTML omitted --></td>
 </tr>
-
 <tr>
 <td>text</td>
 <td>string</td>
 <td></td>
-<td><p>Text to synthesize</p></td>
+<td><!-- raw HTML omitted -->Text to synthesize<!-- raw HTML omitted --></td>
 </tr>
 </tbody>
 </table>
-
 <h3 id="message-ttsresponse">Message: TTSResponse</h3>
-
 <p>Response for text-to-speech unrelated to a session.</p>
-
 <table>
 <thead>
 <tr>
@@ -939,21 +830,17 @@ StreamTTS calls.</p>
 <th>Description</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>data</td>
 <td>bytes</td>
 <td></td>
-<td><p>The synthesized audio data. The data encoding will match what was specified in the server configuration.</p></td>
+<td><!-- raw HTML omitted -->The synthesized audio data. The data encoding will match what was specified in the server configuration.<!-- raw HTML omitted --></td>
 </tr>
 </tbody>
 </table>
-
 <h3 id="message-versionresponse">Message: VersionResponse</h3>
-
 <p>The message sent by the server for the <code>Version</code> method.</p>
-
 <table>
 <thead>
 <tr>
@@ -963,23 +850,18 @@ StreamTTS calls.</p>
 <th>Description</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>server</td>
 <td>string</td>
 <td></td>
-<td><p>Server that manages all of the the other components.</p></td>
+<td><!-- raw HTML omitted -->Server that manages all of the the other components.<!-- raw HTML omitted --></td>
 </tr>
 </tbody>
 </table>
-
-<p><!-- end messages --></p>
-
-<h3 id="enum-commandstatus-statuscode">Enum: CommandStatus.StatusCode</h3>
-
+<!-- raw HTML omitted -->
+<h3 id="enum-commandstatusstatuscode">Enum: CommandStatus.StatusCode</h3>
 <p>CommandStatus are the resulting states of a command.</p>
-
 <table>
 <thead>
 <tr>
@@ -988,14 +870,12 @@ StreamTTS calls.</p>
 <th>Description</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>SUCCESS</td>
 <td>0</td>
 <td>SUCCESS indicates that the command was successfully completed, and the dialog state may now move on to the next state.</td>
 </tr>
-
 <tr>
 <td>FAILURE</td>
 <td>1</td>
@@ -1003,13 +883,9 @@ StreamTTS calls.</p>
 </tr>
 </tbody>
 </table>
-
-<p><!-- end enums --></p>
-
-<p><!-- end HasExtensions --></p>
-
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
 <h2 id="scalar-value-types">Scalar Value Types</h2>
-
 <table>
 <thead>
 <tr>
@@ -1020,7 +896,6 @@ StreamTTS calls.</p>
 <th>C++ Type</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>double</td>
@@ -1029,7 +904,6 @@ StreamTTS calls.</p>
 <td>float</td>
 <td>double</td>
 </tr>
-
 <tr>
 <td>float</td>
 <td></td>
@@ -1037,7 +911,6 @@ StreamTTS calls.</p>
 <td>float</td>
 <td>float</td>
 </tr>
-
 <tr>
 <td>int32</td>
 <td>Uses variable-length encoding. Inefficient for encoding negative numbers – if your field is likely to have negative values, use sint32 instead.</td>
@@ -1045,7 +918,6 @@ StreamTTS calls.</p>
 <td>int</td>
 <td>int32</td>
 </tr>
-
 <tr>
 <td>int64</td>
 <td>Uses variable-length encoding. Inefficient for encoding negative numbers – if your field is likely to have negative values, use sint64 instead.</td>
@@ -1053,7 +925,6 @@ StreamTTS calls.</p>
 <td>int/long</td>
 <td>int64</td>
 </tr>
-
 <tr>
 <td>uint32</td>
 <td>Uses variable-length encoding.</td>
@@ -1061,7 +932,6 @@ StreamTTS calls.</p>
 <td>int/long</td>
 <td>uint32</td>
 </tr>
-
 <tr>
 <td>uint64</td>
 <td>Uses variable-length encoding.</td>
@@ -1069,7 +939,6 @@ StreamTTS calls.</p>
 <td>int/long</td>
 <td>uint64</td>
 </tr>
-
 <tr>
 <td>sint32</td>
 <td>Uses variable-length encoding. Signed int value. These more efficiently encode negative numbers than regular int32s.</td>
@@ -1077,7 +946,6 @@ StreamTTS calls.</p>
 <td>int</td>
 <td>int32</td>
 </tr>
-
 <tr>
 <td>sint64</td>
 <td>Uses variable-length encoding. Signed int value. These more efficiently encode negative numbers than regular int64s.</td>
@@ -1085,7 +953,6 @@ StreamTTS calls.</p>
 <td>int/long</td>
 <td>int64</td>
 </tr>
-
 <tr>
 <td>fixed32</td>
 <td>Always four bytes. More efficient than uint32 if values are often greater than 2^28.</td>
@@ -1093,7 +960,6 @@ StreamTTS calls.</p>
 <td>int</td>
 <td>uint32</td>
 </tr>
-
 <tr>
 <td>fixed64</td>
 <td>Always eight bytes. More efficient than uint64 if values are often greater than 2^56.</td>
@@ -1101,7 +967,6 @@ StreamTTS calls.</p>
 <td>int/long</td>
 <td>uint64</td>
 </tr>
-
 <tr>
 <td>sfixed32</td>
 <td>Always four bytes.</td>
@@ -1109,7 +974,6 @@ StreamTTS calls.</p>
 <td>int</td>
 <td>int32</td>
 </tr>
-
 <tr>
 <td>sfixed64</td>
 <td>Always eight bytes.</td>
@@ -1117,7 +981,6 @@ StreamTTS calls.</p>
 <td>int/long</td>
 <td>int64</td>
 </tr>
-
 <tr>
 <td>bool</td>
 <td></td>
@@ -1125,7 +988,6 @@ StreamTTS calls.</p>
 <td>boolean</td>
 <td>bool</td>
 </tr>
-
 <tr>
 <td>string</td>
 <td>A string must always contain UTF-8 encoded or 7-bit ASCII text.</td>
@@ -1133,7 +995,6 @@ StreamTTS calls.</p>
 <td>str/unicode</td>
 <td>string</td>
 </tr>
-
 <tr>
 <td>bytes</td>
 <td>May contain any arbitrary sequence of bytes.</td>

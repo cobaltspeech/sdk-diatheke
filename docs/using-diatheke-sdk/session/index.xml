@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Sessions on Diatheke SDK -- Cobalt</title>
@@ -26,7 +26,8 @@
       
       <guid>https://cobaltspeech.github.io/sdk-diatheke/using-diatheke-sdk/session/event-stream/</guid>
       <description>Diatheke server uses an event driven architecure to notify clients when significant events happen for a session. These include Recognize, Reply, and Command events. These events are delivered to the client via a session&amp;rsquo;s event stream.
-Creating the Event Stream The following demonstrates how to create a an event stream for a session.  // Create the stream using the client and session ID. stream, err := client.SessionEventStream(context.Background(), sessionID) // OR create the stream using the Session object stream, err := session.</description>
+Creating the Event Stream The following demonstrates how to create a an event stream for a session.
+// OR create the stream using the Session object stream, err := session.EventStream(context.Background()) // Create the stream using the client and session ID stream = client.</description>
     </item>
     
     <item>
@@ -36,7 +37,7 @@ Creating the Event Stream The following demonstrates how to create a an event st
       
       <guid>https://cobaltspeech.github.io/sdk-diatheke/using-diatheke-sdk/session/push-text/</guid>
       <description>There are two ways to provide user input to a session: audio and text. Text input is sent using the PushText method as described below. Diatheke will respond with appropriate events on the session&amp;rsquo;s event stream.
- // Push text using the client and sessionID err := client.PushText(context.Background(), sessionID, &amp;#34;What&amp;#39;s the capital of Assyria?&amp;#34;) // OR push text using the session object err := session.PushText(context.Background(), &amp;#34;What&amp;#39;s the capital of Assyria?&amp;#34;)  // Push text using the client and sessionID client.</description>
+// OR push text using the session object err := session.PushText(context.Background(), &amp;quot;What&#39;s the capital of Assyria?&amp;quot;) // OR push text using the session object session.pushText(&amp;quot;What&#39;s the capital of Assyria?&amp;quot;); # OR push text using the session objectsession.</description>
     </item>
     
     <item>

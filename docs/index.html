@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-	<meta name="generator" content="Hugo 0.55.4" />
+	<meta name="generator" content="Hugo 0.69.2" />
     <title>Diatheke SDK -- Cobalt</title>
     
       <meta charset="utf-8">
@@ -43,8 +43,7 @@
       
 	
   
-    <p><img src="/sdk-diatheke/images/logo-white.png" alt="Cobalt's SDK Documentation" /></p>
-
+    <p><img src="/sdk-diatheke/images/logo-white.png" alt="Cobalt&rsquo;s SDK Documentation"></p>
 <p>Diatheke SDK &ndash; Cobalt</p>
 
   
@@ -212,16 +211,11 @@
 <a href="#" id="sidebar-toggle" data-sidebar-toggle=""><i class="fa fa-bars"></i> navigation</a>
 </span>
  
-
-
 <h1 id="diatheke-api-overview">Diatheke API Overview</h1>
-
 <p>Diatheke is Cobalt&rsquo;s dialog management engine. It uses a combination of
 speech technologies and artificial intelligence to allow users to interact
 with computers and mobile devices through audio and text based dialogs.</p>
-
 <h2 id="audio-based-dialogs">Audio Based Dialogs</h2>
-
 <p>Audio based dialog management uses multiple speech technologies, including
 <a href="glossary#asr">Automatic Speech Recognition (ASR)</a>,
 <a href="glossary#nlu">Natural Language Understanding (NLU)</a>, and
@@ -234,7 +228,6 @@ perform an <a href="glossary#action">action</a>, as defined by the Diatheke mode
 One such action is for Diatheke to send a reply to the user. The reply text
 is sent to the TTS engine, which then synthesizes audio to send back to the
 client, as shown below.</p>
-
 <link href="/sdk-diatheke/mermaid/mermaid.css" type="text/css" rel="stylesheet"/>
 <script defer src="/sdk-diatheke/mermaid/mermaid.js">mermaid.initialize({startOnLoad:true});</script>
 <div class="mermaid" align="center" >
@@ -247,16 +240,13 @@ graph LR;
     E[Client</br>Application] ==>|Audio Input| A
     D ==>|Synthesized Audio| E
 </div>
-
 <h2 id="text-based-dialogs">Text Based Dialogs</h2>
-
 <p>Diatheke is also capable of processing dialogs without using audio input or
 output. In this case, text is sent to Diatheke, which forwards it directly
 to the NLU engine and converts the text to an intent and entities, as it
 did with the transcription in the audio workflow. The intent and entities
 are used to perform an action, such as sending a reply to the client
 application in the form of text, as shown below.</p>
-
 <link href="/sdk-diatheke/mermaid/mermaid.css" type="text/css" rel="stylesheet"/>
 <script defer src="/sdk-diatheke/mermaid/mermaid.js">mermaid.initialize({startOnLoad:true});</script>
 <div class="mermaid" align="center" >
@@ -267,9 +257,7 @@ graph LR;
     C[Client</br>Application] ==>|Text Input| A
     B ==>|Reply Text| C
 </div>
-
 <h2 id="commands">Commands</h2>
-
 <p>Diatheke uses an <a href="using-diatheke-sdk/session/event-stream">event stream</a> to
 notify the client application when significant events happen in Diatheke.
 The most important of these events is the
@@ -277,7 +265,6 @@ The most important of these events is the
 which represents a request from the server for the client application to
 execute a command defined in the Diatheke model. The client in turn notifies
 Diatheke when the command has finished, as shown below.</p>
-
 <link href="/sdk-diatheke/mermaid/mermaid.css" type="text/css" rel="stylesheet"/>
 <script defer src="/sdk-diatheke/mermaid/mermaid.js">mermaid.initialize({startOnLoad:true});</script>
 <div class="mermaid" align="center" >

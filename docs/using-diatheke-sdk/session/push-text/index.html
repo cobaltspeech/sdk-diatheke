@@ -42,8 +42,7 @@
       
 	
   
-    <p><img src="/sdk-diatheke/images/logo-white.png" alt="Cobalt's SDK Documentation" /></p>
-
+    <p><img src="/sdk-diatheke/images/logo-white.png" alt="Cobalt&rsquo;s SDK Documentation"></p>
 <p>Diatheke SDK &ndash; Cobalt</p>
 
   
@@ -235,7 +234,7 @@
     
     <div class="progress">
         <div class="wrapper">
-    
+    <nav id="TableOfContents"></nav>
         </div>
     </div>
     
@@ -257,49 +256,32 @@
 <a href="../audio-input">audio</a> and text. Text input is sent using the <code>PushText</code>
 method as described below. Diatheke will respond with appropriate events
 on the session&rsquo;s <a href="../event-stream">event stream</a>.</p>
-
-<div class='code-tabs'>
-  <ul class="nav-tabs"></ul>
-  <div class="tab-content">
-
-<div class="tab-pane" title="Go">
-  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#999;font-style:italic">// Push text using the client and sessionID
-</span><span style="color:#999;font-style:italic"></span>err := client.<span style="color:#447fcf">PushText</span>(context.<span style="color:#447fcf">Background</span>(), sessionID, <span style="color:#ed9d13">&#34;What&#39;s the capital of Assyria?&#34;</span>)
-
-<span style="color:#999;font-style:italic">// OR push text using the session object
-</span><span style="color:#999;font-style:italic"></span>err := session.<span style="color:#447fcf">PushText</span>(context.<span style="color:#447fcf">Background</span>(), <span style="color:#ed9d13">&#34;What&#39;s the capital of Assyria?&#34;</span>)</code></pre></div>
-</div>
-
-<div class="tab-pane" title="C&#43;&#43;">
-  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#999;font-style:italic">// Push text using the client and sessionID
-</span><span style="color:#999;font-style:italic"></span>client.pushText(sessionID, <span style="color:#ed9d13">&#34;What&#39;s the capital of Assyria?&#34;</span>);
-
-<span style="color:#999;font-style:italic">// OR push text using the session object
-</span><span style="color:#999;font-style:italic"></span>session.pushText(<span style="color:#ed9d13">&#34;What&#39;s the capital of Assyria?&#34;</span>);
-</code></pre></div>
-</div>
-
-<div class="tab-pane" title="Python">
-  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#999;font-style:italic"># Push text using the client and session ID</span>
-client.push_text(session_id, <span style="color:#ed9d13">&#34;What&#39;s the capital of Assyria?&#34;</span>)
-
-<span style="color:#999;font-style:italic"># OR push text using the session object</span>
-session.push_text(<span style="color:#ed9d13">&#34;What&#39;s the capital of Assyria?&#34;</span>)</code></pre></div>
-</div>
-
-<p></div>
-</div></p>
-
-<div class="panel panel-info">
-    <div class="panel-heading">Note</div>
-    <div class="panel-body">
-It is perfectly acceptable to use the `PushText` method while also
-using audio input. The choice to do so is left as a design decision
-for individual applications.
-</div>
-    
-
-<p></div></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p><!-- raw HTML omitted -->// OR push text using the session object
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->err := session.<!-- raw HTML omitted -->PushText<!-- raw HTML omitted -->(context.<!-- raw HTML omitted -->Background<!-- raw HTML omitted -->(), <!-- raw HTML omitted -->&quot;What's the capital of Assyria?&quot;<!-- raw HTML omitted -->)
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p><!-- raw HTML omitted -->// OR push text using the session object
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->session.pushText(<!-- raw HTML omitted -->&quot;What's the capital of Assyria?&quot;<!-- raw HTML omitted -->);
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p><!-- raw HTML omitted --># OR push text using the session object<!-- raw HTML omitted -->
+session.push_text(<!-- raw HTML omitted -->&quot;What's the capital of Assyria?&quot;<!-- raw HTML omitted -->)
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h1 id="or-push-text-using-the-session-object">OR push text using the session object</h1>
+<p>session.pushText(<!-- raw HTML omitted -->&quot;What's the capital of Assyria?&quot;<!-- raw HTML omitted -->) { (error) <!-- raw HTML omitted -->in<!-- raw HTML omitted -->
+print(error.localizedDescription)
+}
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
 
 
     
