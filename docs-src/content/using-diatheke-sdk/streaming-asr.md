@@ -250,8 +250,10 @@ for result in stream.result_stream:
 
 {{% tab "Swift/iOS" %}}
 ``` swift
-func handleTTSResponse(_ response: Cobaltspeech_Diatheke_TTSResponse) {
-    print("TTS Data size (bytes): \(response.data.count)")
+func handleASRResponse(_ response: Cobaltspeech_Diatheke_ASRResponse) {
+    print("ASR Response:")
+    print("Transcription: \(response.text)")
+    print("Confidence Score: \(response.confidenceScore)")
 }
 {{% /tab %}}
 
