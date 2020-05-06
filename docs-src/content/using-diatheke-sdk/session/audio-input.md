@@ -16,7 +16,6 @@ and close multiple audio streams over the course of a single session.
 {{< tabs >}}
 
 {{< tab "Go" "go" >}}
-``` go
 // Create the stream using the client and session ID
 stream, err := client.StreamAudioInput(context.Background(), sessionID)
 
@@ -25,7 +24,6 @@ stream, err := session.StreamAudioInput(context.Background())
 {{< /tab >}}
 
 {{< tab "C++" "c++" >}}
-``` c++
 std::unique_ptr<Diatheke::AudioInputStream> stream;
 
 // Create the stream using the client and session ID
@@ -36,7 +34,6 @@ stream = session.streamAudioInput();
 {{< /tab >}}
 
 {{< tab "Python" "python">}}
-``` python
 # Create the stream using the client and session ID
 stream = client.stream_audio_input(session_id)
 
@@ -45,7 +42,6 @@ stream = session.stream_audio_input()
 {{< /tab >}}
 
 {{< tab "Swift/iOS" "swift" >}}
-``` swift
 # Create the stream using the client and session ID
 let stream = client.streamAudioInput(sessionID: sessionID) { (error) in
         print(error.localizedDescription)
@@ -73,7 +69,6 @@ created previously.
 {{< tabs >}}
 
 {{< tab "Go" "go" >}}
-``` go
 // The audio data should be formatted as an array of bytes.
 buffer := make([]byte, 8192)
 
@@ -91,7 +86,6 @@ err := stream.Finish();
 {{< /tab >}}
 
 {{< tab "C++" "c++" >}}
-``` c++
 // Store audio data as a string. Think of the string as an array of chars
 // or bytes (a char is one byte of data).
 std::string buffer;
@@ -110,7 +104,6 @@ stream->finished();
 {{< /tab >}}
 
 {{< tab "Python" "python">}}
-``` python
 # Get the audio data from a source. This could be a microphone, file, or
 # any other source. Here we assume the audio data was retrieved previously
 # and stored in a buffer.
@@ -125,7 +118,6 @@ stream.finish()
 {{< /tab >}}
 
 {{< tab "Swift/iOS" "swift" >}}
-``` swift
 // Get the audio data from a source. This could be a microphone, file, or
 // any other source. Here we assume the audio data was retrieved previously
 // and stored in a buffer.
