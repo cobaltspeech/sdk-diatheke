@@ -93,7 +93,19 @@ class DiathekeConnection {
 }
 {{< /tab >}}
 
-{{< /tabs >}}
+{{< tab "Java/Android" "java" >}}
+```java
+	import cobaltspeech.diatheke.DiathekeGrpc;
+	String serverAddress = "localhost";
+	int serverPort = 9002;
+	ManagedChannelBuilder<?> builder = ManagedChannelBuilder
+			.forAddress(serverAddress,serverPort);
+	builder.usePlaintext();
+	ManagedChannel mCubicChannel = builder.build();
+	DiathekeGrpc.DiathekeStub mClient = DiathekeGrpc.newStub(mCubicChannel);
+{{< /tab >}}
+
+{{</tabs >}}
 
 
 ## Insecure Connection
@@ -123,7 +135,11 @@ client = diatheke.Client(server_addres="localhost:9002",
 let client = Client(host: serverAddress, port: serverPort, useTLS: false)
 {{< /tab >}}
 
-{{< /tabs >}}
+{{< tab "Java/Android" "java" >}}
+DiathekeGrpc.DiathekeStub mClient = DiathekeGrpc.newStub(mCubicChannel);
+{{< /tab >}}
+
+{{</tabs >}}
 
 ## Client Authentication
 
@@ -177,4 +193,10 @@ class DiathekeConnection {
 }
 {{< /tab >}}
 
-{{< /tabs >}}
+{{< tab "Java/Android" "java" >}}
+ManagedChannelBuilder<?> builder = ManagedChannelBuilder
+	.forAddress(serverAddress,serverPort)
+	.useTransportSecurity(certChainFile, privateKeyFile)
+{{< /tab >}}
+
+{{</tabs >}}

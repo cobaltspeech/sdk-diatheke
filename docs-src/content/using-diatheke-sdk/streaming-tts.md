@@ -68,6 +68,29 @@ client.streamTTS(model: lunaModel, text: sentence) { (response) in
 }
 {{< /tab >}}
 
+{{< tab "Java/Android" "java" >}}
+DiathekeOuterClass.TTSRequest ttsRequest = DiathekeOuterClass.TTSRequest.newBuilder()
+        .setModel(modelId)
+        .setText(text)
+        .build();
+mClient.streamTTS(ttsRequest, new StreamObserver<DiathekeOuterClass.TTSResponse>() {
+    @Override
+    public void onNext(DiathekeOuterClass.TTSResponse value) {
+        handleTTSResponse(value);
+    }
+
+    @Override
+    public void onError(Throwable t) {
+
+    }
+
+    @Override
+    public void onCompleted() {
+
+    }
+});
+{{< /tab >}}
+
 {{< /tabs >}}
 
 ## Receiving Audio
@@ -138,6 +161,13 @@ print("Synthesis complete.")
 {{< tab "Swift/iOS" "swift" >}}
 func handleTTSResponse(_ response: Cobaltspeech_Diatheke_TTSResponse) {
     print("TTS Data size (bytes): \(response.data.count)")
+}
+{{< /tab >}}
+
+{{< tab "Java/Android" "java" >}}
+private void handleTTSResponse(DiathekeOuterClass.TTSResponse value) {
+    ByteString data = value.getData();
+    Log.i("TTSResponse",String.format("TTS Data size (bytes): %d", data.size()))
 }
 {{< /tab >}}
 

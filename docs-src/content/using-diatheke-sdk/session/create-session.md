@@ -60,6 +60,29 @@ client.endSession(sessionID: sessionID) { (error) in
 }
 {{< /tab >}}
 
+{{< tab "Java/Android" "java" >}}
+String modelID = "1"
+DiathekeOuterClass.NewSessionRequest request = DiathekeOuterClass.NewSessionRequest.newBuilder()
+        .setModel(modelId)
+        .build();
+mClient.newSession(request, new StreamObserver<DiathekeOuterClass.SessionID>() {
+    @Override
+    public void onNext(DiathekeOuterClass.SessionID value) {
+        String sessionId = value.getSessionId();
+    }
+
+    @Override
+    public void onError(Throwable t) {
+
+    }
+
+    @Override
+    public void onCompleted() {
+
+    }
+});
+{{< /tab >}}
+
 {{< /tabs >}}
 
 Creating a new session will return a session ID, which is required for all
@@ -122,6 +145,29 @@ let session = Session(id: sessionID, client: client)
 session.endSession { (error) in
     print(error.localizedDescription)
 }
+{{< /tab >}}
+
+{{< tab "Java/Android" "java" >}}
+// create request
+DiathekeOuterClass.SessionID session = DiathekeOuterClass.SessionID.newBuilder()
+                .setSessionId(sessionId)
+                .build();
+mClient.endSession(session, new StreamObserver<DiathekeOuterClass.Empty>() {
+    @Override
+    public void onNext(DiathekeOuterClass.Empty value) {
+        
+    }
+
+    @Override
+    public void onError(Throwable t) {
+
+    }
+
+    @Override
+    public void onCompleted() {
+
+    }
+});
 {{< /tab >}}
 
 {{< /tabs >}}

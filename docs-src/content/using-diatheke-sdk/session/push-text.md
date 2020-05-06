@@ -46,6 +46,29 @@ session.pushText("What's the capital of Assyria?") { (error) in
         print(error.localizedDescription)
 }
 {{< /tab >}}
+{{< tab "Java/Android" "java" >}}
+
+DiathekeOuterClass.PushTextRequest pushTextRequesth = DiathekeOuterClass.PushTextRequest.newBuilder()
+        .setSessionId(sessionId)
+        .setText(text)
+        .build();
+mClient.pushText(pushTextRequesth, new StreamObserver<DiathekeOuterClass.Empty>() {
+        @Override
+        public void onNext(DiathekeOuterClass.Empty value) {
+        
+        }
+
+        @Override
+        public void onError(Throwable t) {
+
+        }
+
+        @Override
+        public void onCompleted() {
+
+        }
+});
+{{< /tab >}}
 
 {{< /tabs >}}
 
