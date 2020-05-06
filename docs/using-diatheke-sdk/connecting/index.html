@@ -258,75 +258,135 @@ you are ready to create a client connection.</p>
 running. This document will assume the values <code>127.0.0.1:9002</code>, but
 these can be replaced with your server address in actual code.</p>
 <h2 id="default-connection">Default Connection</h2>
-<p>The following code snippet connects to the server and queries its version.  It uses our recommended
+<p>The following code snippet connects to the server and queries its version.  It uses our recommended 
 default setup, expecting the server to be listening on a TLS encrypted connection.</p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<p><!-- raw HTML omitted -->import<!-- raw HTML omitted --> (
-<!-- raw HTML omitted -->&quot;context&quot;<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->&quot;fmt&quot;<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->&quot;log&quot;<!-- raw HTML omitted --></p>
-<pre><code>&lt;span style=&quot;color:#ed9d13&quot;&gt;&amp;#34;github.com/cobaltspeech/sdk-diatheke/grpc/go-diatheke&amp;#34;&lt;/span&gt;
-</code></pre>
-<p>)</p>
-<p><!-- raw HTML omitted -->const<!-- raw HTML omitted --> serverAddr = <!-- raw HTML omitted -->&quot;127.0.0.1:9002&quot;<!-- raw HTML omitted --></p>
-<p><!-- raw HTML omitted -->func<!-- raw HTML omitted --> <!-- raw HTML omitted -->main<!-- raw HTML omitted -->() {
-client, err := diatheke.<!-- raw HTML omitted -->NewClient<!-- raw HTML omitted -->(serverAddr)
-<!-- raw HTML omitted -->if<!-- raw HTML omitted --> err != <!-- raw HTML omitted -->nil<!-- raw HTML omitted --> {
-log.<!-- raw HTML omitted -->Fatal<!-- raw HTML omitted -->(err)
-}</p>
-<pre><code>&lt;span style=&quot;color:#999;font-style:italic&quot;&gt;// Be sure to close the client when we are done with it.
-</code></pre>
-<p><!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->	<!-- raw HTML omitted -->defer<!-- raw HTML omitted --> client.<!-- raw HTML omitted -->Close<!-- raw HTML omitted -->()</p>
-<pre><code>version, err := client.&lt;span style=&quot;color:#447fcf&quot;&gt;DiathekeVersion&lt;/span&gt;(context.&lt;span style=&quot;color:#447fcf&quot;&gt;Background&lt;/span&gt;())
-&lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;if&lt;/span&gt; err != &lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;nil&lt;/span&gt; {
-    log.&lt;span style=&quot;color:#447fcf&quot;&gt;Fatal&lt;/span&gt;(err)
+<div class='code-tabs'><ul class="nav-tabs"></ul><div class="tab-content">
+
+<div class="tab-pane" title="Go">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">
+<span style="color:#6ab825;font-weight:bold">package</span> main
+
+<span style="color:#6ab825;font-weight:bold">import</span> (
+	<span style="color:#ed9d13">&#34;context&#34;</span>
+	<span style="color:#ed9d13">&#34;fmt&#34;</span>
+	<span style="color:#ed9d13">&#34;log&#34;</span>
+
+	<span style="color:#ed9d13">&#34;github.com/cobaltspeech/sdk-diatheke/grpc/go-diatheke&#34;</span>
+)
+
+<span style="color:#6ab825;font-weight:bold">const</span> serverAddr = <span style="color:#ed9d13">&#34;127.0.0.1:9002&#34;</span>
+
+<span style="color:#6ab825;font-weight:bold">func</span> <span style="color:#447fcf">main</span>() {
+	client, err := diatheke.<span style="color:#447fcf">NewClient</span>(serverAddr)
+	<span style="color:#6ab825;font-weight:bold">if</span> err != <span style="color:#6ab825;font-weight:bold">nil</span> {
+		log.<span style="color:#447fcf">Fatal</span>(err)
+	}
+
+	<span style="color:#999;font-style:italic">// Be sure to close the client when we are done with it.
+</span><span style="color:#999;font-style:italic"></span>	<span style="color:#6ab825;font-weight:bold">defer</span> client.<span style="color:#447fcf">Close</span>()
+
+	version, err := client.<span style="color:#447fcf">DiathekeVersion</span>(context.<span style="color:#447fcf">Background</span>())
+	<span style="color:#6ab825;font-weight:bold">if</span> err != <span style="color:#6ab825;font-weight:bold">nil</span> {
+		log.<span style="color:#447fcf">Fatal</span>(err)
+	}
+
+	fmt.<span style="color:#447fcf">Println</span>(version)
+}
+</code></pre></div>
+</div>
+
+
+<div class="tab-pane" title="C&#43;&#43;">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">
+<span style="color:#999;font-style:italic">// File - main.cpp
+</span><span style="color:#999;font-style:italic"></span>
+<span style="color:#cd2828;font-weight:bold">#include</span> <span style="color:#cd2828;font-weight:bold">&#34;diatheke_client.h&#34;</span><span style="color:#cd2828;font-weight:bold">
+</span><span style="color:#cd2828;font-weight:bold"></span>
+<span style="color:#cd2828;font-weight:bold">#include</span> <span style="color:#cd2828;font-weight:bold">&lt;iostream&gt;</span><span style="color:#cd2828;font-weight:bold">
+</span><span style="color:#cd2828;font-weight:bold">#include</span> <span style="color:#cd2828;font-weight:bold">&lt;string&gt;</span><span style="color:#cd2828;font-weight:bold">
+</span><span style="color:#cd2828;font-weight:bold"></span>
+<span style="color:#6ab825;font-weight:bold">const</span> <span style="color:#6ab825;font-weight:bold">char</span>* serverAddr = <span style="color:#ed9d13">&#34;127.0.0.1:9002&#34;</span>;
+
+<span style="color:#6ab825;font-weight:bold">int</span> <span style="color:#447fcf">main</span>(<span style="color:#6ab825;font-weight:bold">int</span> argc, <span style="color:#6ab825;font-weight:bold">char</span> *argv[])
+{
+	Diatheke::Client client(serverAddr);
+	std::string version = client.diathekeVersion();
+	std::cout &lt;&lt; <span style="color:#ed9d13">&#34;Diatheke version: &#34;</span> &lt;&lt; version &lt;&lt; std::endl;
+
+	<span style="color:#6ab825;font-weight:bold">return</span> <span style="color:#3677a9">0</span>;
 }
 
-fmt.&lt;span style=&quot;color:#447fcf&quot;&gt;Println&lt;/span&gt;(version)
-</code></pre>
-<p>}
-<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<p><!-- raw HTML omitted -->int<!-- raw HTML omitted --> <!-- raw HTML omitted -->main<!-- raw HTML omitted -->(<!-- raw HTML omitted -->int<!-- raw HTML omitted --> argc, <!-- raw HTML omitted -->char<!-- raw HTML omitted --> *argv[])
-{
-Diatheke::Client client(serverAddr);
-std::string version = client.diathekeVersion();
-std::cout &lt;&lt; <!-- raw HTML omitted -->&quot;Diatheke version: &quot;<!-- raw HTML omitted --> &lt;&lt; version &lt;&lt; std::endl;</p>
-<pre><code>&lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;return&lt;/span&gt; &lt;span style=&quot;color:#3677a9&quot;&gt;0&lt;/span&gt;;
-</code></pre>
-<p>}</p>
-<p><!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<p>client = diatheke.Client(server_address=<!-- raw HTML omitted -->&quot;localhost:9002&quot;<!-- raw HTML omitted -->)
-version = client.diatheke_version()
-<!-- raw HTML omitted -->print<!-- raw HTML omitted -->(<!-- raw HTML omitted -->&quot;Diatheke version {}&quot;<!-- raw HTML omitted -->.format(version))
-<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<p><!-- raw HTML omitted -->class<!-- raw HTML omitted --> <!-- raw HTML omitted -->DiathekeConnection<!-- raw HTML omitted --> {</p>
-<pre><code>&lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;let&lt;/span&gt; &lt;span style=&quot;color:#40ffff&quot;&gt;serverAddress&lt;/span&gt; = &lt;span style=&quot;color:#ed9d13&quot;&gt;&amp;#34;localhost&amp;#34;&lt;/span&gt;
-&lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;let&lt;/span&gt; &lt;span style=&quot;color:#40ffff&quot;&gt;serverPort&lt;/span&gt; = &lt;span style=&quot;color:#3677a9&quot;&gt;9002&lt;/span&gt;
+</code></pre></div>
+</div>
 
-&lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;let&lt;/span&gt; &lt;span style=&quot;color:#40ffff&quot;&gt;client&lt;/span&gt; = Client(host: serverAddress, port: serverPort, useTLS: &lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;true&lt;/span&gt;)
-</code></pre>
-<p>}
-<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
+
+<div class="tab-pane" title="Python">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">
+<span style="color:#6ab825;font-weight:bold">import</span> <span style="color:#447fcf;text-decoration:underline">diatheke</span>
+
+client = diatheke.Client(server_address=<span style="color:#ed9d13">&#34;localhost:9002&#34;</span>)
+version = client.diatheke_version()
+<span style="color:#6ab825;font-weight:bold">print</span>(<span style="color:#ed9d13">&#34;Diatheke version {}&#34;</span>.format(version))
+</code></pre></div>
+</div>
+
+
+<div class="tab-pane" title="Swift/iOS">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift">
+<span style="color:#6ab825;font-weight:bold">import</span> <span style="color:#447fcf;text-decoration:underline">Diatheke</span>
+
+<span style="color:#6ab825;font-weight:bold">class</span> <span style="color:#447fcf;text-decoration:underline">DiathekeConnection</span> {
+    
+    <span style="color:#6ab825;font-weight:bold">let</span> <span style="color:#40ffff">serverAddress</span> = <span style="color:#ed9d13">&#34;localhost&#34;</span>
+    <span style="color:#6ab825;font-weight:bold">let</span> <span style="color:#40ffff">serverPort</span> = <span style="color:#3677a9">9002</span>
+
+    <span style="color:#6ab825;font-weight:bold">let</span> <span style="color:#40ffff">client</span> = Client(host: serverAddress, port: serverPort, useTLS: <span style="color:#6ab825;font-weight:bold">true</span>)
+
+}
+</code></pre></div>
+</div>
+
+
+</div></div>
+
 <h2 id="insecure-connection">Insecure Connection</h2>
-<p>It is sometimes required to connect to Diatheke server without TLS enabled
+<p>It is sometimes required to connect to Diatheke server without TLS enabled 
 (during debugging, for example). Note that if the server has TLS enabled,
 attempting to connect with an insecure client will fail.</p>
 <p>To create an insecure connection, do the following when creating the client:</p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
+<div class='code-tabs'><ul class="nav-tabs"></ul><div class="tab-content">
+
+<div class="tab-pane" title="Go">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">
+client, err := diatheke.<span style="color:#447fcf">NewClient</span>(serverAddr, diatheke.<span style="color:#447fcf">WithInsecure</span>())
+</code></pre></div>
+</div>
+
+
+<div class="tab-pane" title="C&#43;&#43;">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">
+Diatheke::Client client(serverAddr, <span style="color:#24909d">true</span>);
+</code></pre></div>
+</div>
+
+
+<div class="tab-pane" title="Python">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">
+client = diatheke.Client(server_addres=<span style="color:#ed9d13">&#34;localhost:9002&#34;</span>,
+                         insecure=True)
+</code></pre></div>
+</div>
+
+
+<div class="tab-pane" title="Swift/iOS">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift">
+<span style="color:#6ab825;font-weight:bold">let</span> <span style="color:#40ffff">client</span> = Client(host: serverAddress, port: serverPort, useTLS: <span style="color:#6ab825;font-weight:bold">false</span>)
+</code></pre></div>
+</div>
+
+
+</div></div>
+
 <h2 id="client-authentication">Client Authentication</h2>
 <p>In our recommended default setup, TLS is enabled in the gRPC setup, and when
 connecting to the server, clients validate the server&rsquo;s SSL certificate to make
@@ -339,21 +399,55 @@ appropriate certificate and key when connecting to it.</p>
 <p>Please note that in the client-authentication mode, the client will still also
 verify the server&rsquo;s certificate, and therefore this setup uses mutually
 authenticated TLS. This can be done with:</p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<p><!-- raw HTML omitted -->class<!-- raw HTML omitted --> <!-- raw HTML omitted -->DiathekeConnection<!-- raw HTML omitted --> {</p>
-<pre><code>&lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;let&lt;/span&gt; &lt;span style=&quot;color:#40ffff&quot;&gt;serverAddress&lt;/span&gt; = &lt;span style=&quot;color:#ed9d13&quot;&gt;&amp;#34;localhost&amp;#34;&lt;/span&gt;
-&lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;let&lt;/span&gt; &lt;span style=&quot;color:#40ffff&quot;&gt;serverPort&lt;/span&gt; = &lt;span style=&quot;color:#3677a9&quot;&gt;9002&lt;/span&gt;
+<div class='code-tabs'><ul class="nav-tabs"></ul><div class="tab-content">
 
-&lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;let&lt;/span&gt; &lt;span style=&quot;color:#40ffff&quot;&gt;client&lt;/span&gt; = Client(host: serverAddress, port: serverPort, tlsCertificateFileName: &lt;span style=&quot;color:#ed9d13&quot;&gt;&amp;#34;root&amp;#34;&lt;/span&gt;, tlsCertificateFormat: .pem)
-</code></pre>
-<p>}
-<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
+<div class="tab-pane" title="Go">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">
+<span style="color:#999;font-style:italic">// certPem and keyPem are the bytes of the client certificate and key
+</span><span style="color:#999;font-style:italic">// provided to you.
+</span><span style="color:#999;font-style:italic"></span>client, err := diatheke.<span style="color:#447fcf">NewClient</span>(serverAddr, diatheke.<span style="color:#447fcf">WithClientCert</span>(certPem, keyPem))
+</code></pre></div>
+</div>
+
+
+<div class="tab-pane" title="C&#43;&#43;">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">
+
+<span style="color:#999;font-style:italic">// Currently unsupported in C++.
+</span><span style="color:#999;font-style:italic"></span>
+</code></pre></div>
+</div>
+
+
+<div class="tab-pane" title="Python">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">
+<span style="color:#999;font-style:italic"># cert_pem and key_pem are the contents of the client certificate and key</span>
+<span style="color:#999;font-style:italic"># provided to you.</span>
+client = diatheke.Client(server_address=<span style="color:#ed9d13">&#34;localhost:9002&#34;</span>,
+                         client_certificate=cert_pem,
+                         client_key=key_pem)
+</code></pre></div>
+</div>
+
+
+<div class="tab-pane" title="Swift/iOS">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift">
+<span style="color:#6ab825;font-weight:bold">import</span> <span style="color:#447fcf;text-decoration:underline">Cubic</span>
+<span style="color:#6ab825;font-weight:bold">import</span> <span style="color:#447fcf;text-decoration:underline">NIOSSL</span>
+
+<span style="color:#6ab825;font-weight:bold">class</span> <span style="color:#447fcf;text-decoration:underline">DiathekeConnection</span> {
+    
+    <span style="color:#6ab825;font-weight:bold">let</span> <span style="color:#40ffff">serverAddress</span> = <span style="color:#ed9d13">&#34;localhost&#34;</span>
+    <span style="color:#6ab825;font-weight:bold">let</span> <span style="color:#40ffff">serverPort</span> = <span style="color:#3677a9">9002</span>
+
+    <span style="color:#6ab825;font-weight:bold">let</span> <span style="color:#40ffff">client</span> = Client(host: serverAddress, port: serverPort, tlsCertificateFileName: <span style="color:#ed9d13">&#34;root&#34;</span>, tlsCertificateFormat: .pem)
+
+}
+</code></pre></div>
+</div>
+
+
+</div></div>
 
     
     

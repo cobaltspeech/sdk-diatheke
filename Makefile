@@ -12,6 +12,8 @@ DEPSBIN := ${TOP}/deps/bin
 DEPSGO := ${TOP}/deps/go
 DEPSTMP := ${TOP}/deps/tmp
 SWIFT_GRPC_VERSION := 1.0.0-alpha.11
+
+HUGO_VERSION := 0.69.0
 $(shell mkdir -p $(DEPSBIN) $(DEPSGO) $(DEPSTMP) $(DEPSSWIFT))
 
 DEPSVENV := ${TOP}/deps/venv
@@ -28,7 +30,7 @@ ${DEPSBIN}/protoc:
 deps-hugo: ${DEPSBIN}/hugo
 ${DEPSBIN}/hugo:
 	cd ${DEPSBIN} && wget \
-		"https://github.com/gohugoio/hugo/releases/download/v0.59.1/hugo_0.59.1_Linux-64bit.tar.gz" -O - | tar xz hugo
+		"https://github.com/gohugoio/hugo/releases/download/v$(HUGO_VERSION)/hugo_$(HUGO_VERSION)_Linux-64bit.tar.gz" -O - | tar xz hugo
 
 deps-gendoc: ${DEPSBIN}/protoc-gen-doc
 ${DEPSBIN}/protoc-gen-doc:

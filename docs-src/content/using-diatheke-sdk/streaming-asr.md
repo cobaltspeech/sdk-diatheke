@@ -33,40 +33,33 @@ time, but as most the most common use case involves using a single
 input source (e.g., microphone), it usually won't make sense to have more
 than one ASR stream running at a time.
 
-{{%tabs %}}
+{{< tabs >}}
 
-{{% tab "Go" %}}
-``` go
+{{< tab "Go" "go" >}}
 // Specify the Cubic model to use (not a Diatheke model)
 cubicModel := "1"
 
 // Create the bi-directional ASR stream
 stream, err := client.StreamASR(context.Background(), cubicModel)
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "C++" %}}
-``` c++
+{{< tab "C++" "c++" >}}
 // Specify the Cubic model to use (not a Diatheke model)
 std::string cubicModel = "1";
 
 // Create the bi-directional ASR stream
 std::unique_ptr<Diatheke::ASRStream> stream = client.streamASR(cubicModel);
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "Python" %}}
-``` python
+{{< tab "Python" "python">}}
 # Specify the Cubic model to use (not a Diatheke model)
 cubic_model = "1"
 
 # Create the bi-directional ASR stream
 stream = client.stream_asr(cubic_model)
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "Swift/iOS" %}}
-``` swift
+{{< tab "Swift/iOS" "swift" >}}
 # Specify the Cubic model to use (not a Diatheke model)
 let cubicModel = "1"
 
@@ -75,10 +68,9 @@ let stream = client.streamASR(model: cubicModel) { (response) in
     // Handle ASR response
     self.handleASRResponse(response)
 }
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% /tabs %}}
+{{< /tabs >}}
 
 
 ## Pushing Audio
@@ -92,10 +84,9 @@ After all audio data has been pushed to the server, client code should be
 sure to call the AudioFinished() method to notify Diatheke that no more audio will
 be coming.
 
-{{%tabs %}}
+{{< tabs >}}
 
-{{% tab "Go" %}}
-``` go
+{{< tab "Go" "go" >}}
 // The audio data should be formatted as an array of bytes.
 buffer := make([]byte, 8192)
 
@@ -113,11 +104,9 @@ if _, err := stream.Write(buffer); err != nil {
 // Be sure to notify Diatheke that no more audio will be coming when we
 // are done writing data.
 stream.AudioFinished()
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "C++" %}}
-``` cpp
+{{< tab "C++" "c++" >}}
 // Store audio data as a string. Think of the string as an array of chars
 // or bytes (a char is one byte of data).
 std::string buffer;
@@ -134,11 +123,9 @@ stream->pushAudio(buffer.c_str(), buffer.size());
 // Be sure to notify Diatheke that no more audio will be coming when we
 // are done writing data.
 stream->finishAudio();
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "Python" %}}
-``` python
+{{< tab "Python" "python">}}
 # Get the audio data from a source. This could be a microphone, file, or
 # any other source. Here we assume the audio data was retrieved previously
 # and stored in a buffer.
@@ -150,11 +137,9 @@ stream.write(buffer)
 # Be sure to notify Diatheke that no more audio will be coming when are
 # done writing data.
 stream.audio_finished()
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "Swift/iOS" %}}
-``` swift
+{{< tab "Swift/iOS" "swift" >}}
 // Get the audio data from a source. This could be a microphone, file, or
 // any other source. Here we assume the audio data was retrieved previously
 // and stored in a buffer.
@@ -166,10 +151,9 @@ stream.pushAudio(data: data)
 // Be sure to notify Diatheke that no more audio will be coming when are
 // done writing data.
 stream.finishAudio()
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% /tabs %}}
+{{< /tabs >}}
 
 ## Receiving Transcriptions
 Transcripts are received over the same ASR stream used to push audio, as
@@ -187,10 +171,9 @@ confident that the transcript matches what was spoken.
 The receiving end of the ASR stream will close after the sending side of
 the stream is closed (e.g., by calling AudioFinished()).
 
-{{%tabs %}}
+{{< tabs >}}
 
-{{% tab "Go" %}}
-``` go
+{{< tab "Go" "go" >}}
 for {
     // Wait for a transcription from the server. It is safe to call this
     // method concurrently with the stream's Write() method.
@@ -212,11 +195,9 @@ for {
     fmt.Printf("  Transcription: %s\n", transcript.Text)
     fmt.Printf("  Confidence Score: %v\n\n", transcript.ConfidenceScore)
 }
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "C++" %}}
-``` c++
+{{< tab "C++" "c++" >}}
 // Wait for a transcription from the server. It is safe to call this
 // method concurrently with the stream's pushAudio() method. The
 // waitForResult() method will return false after the stream's
@@ -231,11 +212,9 @@ while (stream->waitForResult(&result))
               << std::endl
               << std::endl;
 }
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "Python" %}}
-``` python
+{{< tab "Python" "python">}}
 # Wait for a transcription from the server. It is safe to do this
 # concurrently with the stream's write() method. The for loop
 # will continue to iterate until the stream's audio_finished() method
@@ -245,16 +224,14 @@ for result in stream.result_stream:
     print("ASR Response:")
     print("  Transcript: " + result.text)
     print("  Confidence Score: {}\n".format(result.confidence_score))
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "Swift/iOS" %}}
-``` swift
+{{< tab "Swift/iOS" "swift" >}}
 func handleASRResponse(_ response: Cobaltspeech_Diatheke_ASRResponse) {
     print("ASR Response:")
     print("Transcription: \(response.text)")
     print("Confidence Score: \(response.confidenceScore)")
 }
-{{% /tab %}}
+{{< /tab >}}
 
-{{% /tabs %}}
+{{< /tabs >}}

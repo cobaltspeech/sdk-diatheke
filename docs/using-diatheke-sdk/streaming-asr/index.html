@@ -231,9 +231,6 @@
     <nav id="TableOfContents">
   <ul>
     <li><a href="#creating-an-asr-stream">Creating an ASR Stream</a></li>
-  </ul>
-
-  <ul>
     <li><a href="#pushing-audio">Pushing Audio</a></li>
     <li><a href="#receiving-transcriptions">Receiving Transcriptions</a></li>
   </ul>
@@ -278,31 +275,57 @@ become available.</p>
 time, but as most the most common use case involves using a single
 input source (e.g., microphone), it usually won&rsquo;t make sense to have more
 than one ASR stream running at a time.</p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<p><!-- raw HTML omitted -->// Create the bi-directional ASR stream
-<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->stream, err := client.<!-- raw HTML omitted -->StreamASR<!-- raw HTML omitted -->(context.<!-- raw HTML omitted -->Background<!-- raw HTML omitted -->(), cubicModel)
-<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<p><!-- raw HTML omitted -->// Create the bi-directional ASR stream
-<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->std::unique_ptr&lt;Diatheke::ASRStream&gt; stream = client.streamASR(cubicModel);
-<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<p><!-- raw HTML omitted --># Create the bi-directional ASR stream<!-- raw HTML omitted -->
+<div class='code-tabs'><ul class="nav-tabs"></ul><div class="tab-content">
+
+<div class="tab-pane" title="Go">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">
+<span style="color:#999;font-style:italic">// Specify the Cubic model to use (not a Diatheke model)
+</span><span style="color:#999;font-style:italic"></span>cubicModel := <span style="color:#ed9d13">&#34;1&#34;</span>
+
+<span style="color:#999;font-style:italic">// Create the bi-directional ASR stream
+</span><span style="color:#999;font-style:italic"></span>stream, err := client.<span style="color:#447fcf">StreamASR</span>(context.<span style="color:#447fcf">Background</span>(), cubicModel)
+</code></pre></div>
+</div>
+
+
+<div class="tab-pane" title="C&#43;&#43;">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">
+<span style="color:#999;font-style:italic">// Specify the Cubic model to use (not a Diatheke model)
+</span><span style="color:#999;font-style:italic"></span>std::string cubicModel = <span style="color:#ed9d13">&#34;1&#34;</span>;
+
+<span style="color:#999;font-style:italic">// Create the bi-directional ASR stream
+</span><span style="color:#999;font-style:italic"></span>std::unique_ptr&lt;Diatheke::ASRStream&gt; stream = client.streamASR(cubicModel);
+</code></pre></div>
+</div>
+
+
+<div class="tab-pane" title="Python">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">
+<span style="color:#999;font-style:italic"># Specify the Cubic model to use (not a Diatheke model)</span>
+cubic_model = <span style="color:#ed9d13">&#34;1&#34;</span>
+
+<span style="color:#999;font-style:italic"># Create the bi-directional ASR stream</span>
 stream = client.stream_asr(cubic_model)
-<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<h1 id="create-the-bi-directional-asr-stream">Create the bi-directional ASR stream</h1>
-<p><!-- raw HTML omitted -->let<!-- raw HTML omitted --> <!-- raw HTML omitted -->stream<!-- raw HTML omitted --> = client.streamASR(model: cubicModel) { (response) <!-- raw HTML omitted -->in<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->// Handle ASR response<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->self<!-- raw HTML omitted -->.handleASRResponse(response)
+</code></pre></div>
+</div>
+
+
+<div class="tab-pane" title="Swift/iOS">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift">
+# Specify the Cubic model to use (not a Diatheke model)
+<span style="color:#6ab825;font-weight:bold">let</span> <span style="color:#40ffff">cubicModel</span> = <span style="color:#ed9d13">&#34;1&#34;</span>
+
+# Create the bi-directional ASR stream
+<span style="color:#6ab825;font-weight:bold">let</span> <span style="color:#40ffff">stream</span> = client.streamASR(model: cubicModel) { (response) <span style="color:#6ab825;font-weight:bold">in</span>
+    <span style="color:#999;font-style:italic">// Handle ASR response</span>
+    <span style="color:#6ab825;font-weight:bold">self</span>.handleASRResponse(response)
 }
-<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
+</code></pre></div>
+</div>
+
+
+</div></div>
+
 <h2 id="pushing-audio">Pushing Audio</h2>
 <p>It is the client code&rsquo;s responsibility to handle getting audio data, whether
 it is from a microphone, file, or some other source. Audio data should be
@@ -312,56 +335,89 @@ server as demonstrated below.</p>
 <p>After all audio data has been pushed to the server, client code should be
 sure to call the AudioFinished() method to notify Diatheke that no more audio will
 be coming.</p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<p><!-- raw HTML omitted -->// Get the audio data from a source. This could be a microphone, file, or
-<!-- raw HTML omitted --><!-- raw HTML omitted -->// any other source. Here we assume the audio data was retrieved previously
-<!-- raw HTML omitted --><!-- raw HTML omitted -->// and stored in our buffer.
-<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->
-<!-- raw HTML omitted -->// Push the audio data to the stream. This function may be called multiple
-<!-- raw HTML omitted --><!-- raw HTML omitted -->// times. It is safe to call concurrently with the stream's Receive()
-<!-- raw HTML omitted --><!-- raw HTML omitted -->// method.
-<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->if<!-- raw HTML omitted --> _, err := stream.<!-- raw HTML omitted -->Write<!-- raw HTML omitted -->(buffer); err != <!-- raw HTML omitted -->nil<!-- raw HTML omitted --> {
-fmt.<!-- raw HTML omitted -->Printf<!-- raw HTML omitted -->(<!-- raw HTML omitted -->&quot;Error: %v\n&quot;<!-- raw HTML omitted -->, err)
-}</p>
-<p><!-- raw HTML omitted -->// Be sure to notify Diatheke that no more audio will be coming when we
-<!-- raw HTML omitted --><!-- raw HTML omitted -->// are done writing data.
-<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->stream.<!-- raw HTML omitted -->AudioFinished<!-- raw HTML omitted -->()
-<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<p><!-- raw HTML omitted -->// Get the audio data from a source. This could be a microphone, file, or
-<!-- raw HTML omitted --><!-- raw HTML omitted -->// any other source. Here we assume the audio data was retrieved previously
-<!-- raw HTML omitted --><!-- raw HTML omitted -->// and stored in our buffer.
-<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->
-<!-- raw HTML omitted -->// Push the audio data to the stream. This function may be called multiple
-<!-- raw HTML omitted --><!-- raw HTML omitted -->// times. It is safe to call concurrently with the stream's waitForResult()
-<!-- raw HTML omitted --><!-- raw HTML omitted -->// method.
-<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->stream-&gt;pushAudio(buffer.c_str(), buffer.size());</p>
-<p><!-- raw HTML omitted -->// Be sure to notify Diatheke that no more audio will be coming when we
-<!-- raw HTML omitted --><!-- raw HTML omitted -->// are done writing data.
-<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->stream-&gt;finishAudio();
-<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<p><!-- raw HTML omitted --># Push the audio data to the stream. This function may be called multiple<!-- raw HTML omitted -->
-<!-- raw HTML omitted --># times. It is safe to call concurrently with the corresponding result_stream.<!-- raw HTML omitted -->
-stream.write(<!-- raw HTML omitted -->buffer<!-- raw HTML omitted -->)</p>
-<p><!-- raw HTML omitted --># Be sure to notify Diatheke that no more audio will be coming when are<!-- raw HTML omitted -->
-<!-- raw HTML omitted --># done writing data.<!-- raw HTML omitted -->
+<div class='code-tabs'><ul class="nav-tabs"></ul><div class="tab-content">
+
+<div class="tab-pane" title="Go">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">
+<span style="color:#999;font-style:italic">// The audio data should be formatted as an array of bytes.
+</span><span style="color:#999;font-style:italic"></span>buffer := <span style="color:#24909d">make</span>([]<span style="color:#6ab825;font-weight:bold">byte</span>, <span style="color:#3677a9">8192</span>)
+
+<span style="color:#999;font-style:italic">// Get the audio data from a source. This could be a microphone, file, or
+</span><span style="color:#999;font-style:italic">// any other source. Here we assume the audio data was retrieved previously
+</span><span style="color:#999;font-style:italic">// and stored in our buffer.
+</span><span style="color:#999;font-style:italic"></span>
+<span style="color:#999;font-style:italic">// Push the audio data to the stream. This function may be called multiple
+</span><span style="color:#999;font-style:italic">// times. It is safe to call concurrently with the stream&#39;s Receive()
+</span><span style="color:#999;font-style:italic">// method.
+</span><span style="color:#999;font-style:italic"></span><span style="color:#6ab825;font-weight:bold">if</span> _, err := stream.<span style="color:#447fcf">Write</span>(buffer); err != <span style="color:#6ab825;font-weight:bold">nil</span> {
+    fmt.<span style="color:#447fcf">Printf</span>(<span style="color:#ed9d13">&#34;Error: %v\n&#34;</span>, err)
+}
+
+<span style="color:#999;font-style:italic">// Be sure to notify Diatheke that no more audio will be coming when we
+</span><span style="color:#999;font-style:italic">// are done writing data.
+</span><span style="color:#999;font-style:italic"></span>stream.<span style="color:#447fcf">AudioFinished</span>()
+</code></pre></div>
+</div>
+
+
+<div class="tab-pane" title="C&#43;&#43;">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">
+<span style="color:#999;font-style:italic">// Store audio data as a string. Think of the string as an array of chars
+</span><span style="color:#999;font-style:italic">// or bytes (a char is one byte of data).
+</span><span style="color:#999;font-style:italic"></span>std::string buffer;
+
+<span style="color:#999;font-style:italic">// Get the audio data from a source. This could be a microphone, file, or
+</span><span style="color:#999;font-style:italic">// any other source. Here we assume the audio data was retrieved previously
+</span><span style="color:#999;font-style:italic">// and stored in our buffer.
+</span><span style="color:#999;font-style:italic"></span>
+<span style="color:#999;font-style:italic">// Push the audio data to the stream. This function may be called multiple
+</span><span style="color:#999;font-style:italic">// times. It is safe to call concurrently with the stream&#39;s waitForResult()
+</span><span style="color:#999;font-style:italic">// method.
+</span><span style="color:#999;font-style:italic"></span>stream-&gt;pushAudio(buffer.c_str(), buffer.size());
+
+<span style="color:#999;font-style:italic">// Be sure to notify Diatheke that no more audio will be coming when we
+</span><span style="color:#999;font-style:italic">// are done writing data.
+</span><span style="color:#999;font-style:italic"></span>stream-&gt;finishAudio();
+</code></pre></div>
+</div>
+
+
+<div class="tab-pane" title="Python">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">
+<span style="color:#999;font-style:italic"># Get the audio data from a source. This could be a microphone, file, or</span>
+<span style="color:#999;font-style:italic"># any other source. Here we assume the audio data was retrieved previously</span>
+<span style="color:#999;font-style:italic"># and stored in a buffer.</span>
+
+<span style="color:#999;font-style:italic"># Push the audio data to the stream. This function may be called multiple</span>
+<span style="color:#999;font-style:italic"># times. It is safe to call concurrently with the corresponding result_stream.</span>
+stream.write(<span style="color:#24909d">buffer</span>)
+
+<span style="color:#999;font-style:italic"># Be sure to notify Diatheke that no more audio will be coming when are</span>
+<span style="color:#999;font-style:italic"># done writing data.</span>
 stream.audio_finished()
-<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<p><!-- raw HTML omitted -->// Push the audio data to the stream. This function may be called multiple<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->// times. It is safe to call concurrently with the corresponding result_stream.<!-- raw HTML omitted -->
-stream.pushAudio(data: data)</p>
-<p><!-- raw HTML omitted -->// Be sure to notify Diatheke that no more audio will be coming when are<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->// done writing data.<!-- raw HTML omitted -->
+</code></pre></div>
+</div>
+
+
+<div class="tab-pane" title="Swift/iOS">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift">
+<span style="color:#999;font-style:italic">// Get the audio data from a source. This could be a microphone, file, or</span>
+<span style="color:#999;font-style:italic">// any other source. Here we assume the audio data was retrieved previously</span>
+<span style="color:#999;font-style:italic">// and stored in a buffer.</span>
+
+<span style="color:#999;font-style:italic">// Push the audio data to the stream. This function may be called multiple</span>
+<span style="color:#999;font-style:italic">// times. It is safe to call concurrently with the corresponding result_stream.</span>
+stream.pushAudio(data: data)
+
+<span style="color:#999;font-style:italic">// Be sure to notify Diatheke that no more audio will be coming when are</span>
+<span style="color:#999;font-style:italic">// done writing data.</span>
 stream.finishAudio()
-<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
+</code></pre></div>
+</div>
+
+
+</div></div>
+
 <h2 id="receiving-transcriptions">Receiving Transcriptions</h2>
 <p>Transcripts are received over the same ASR stream used to push audio, as
 demonstrated below. It is safe to call both PushAudio() and Receive()
@@ -375,31 +431,83 @@ will be between 0.0 and 1.0, with 1.0 meaning that the ASR engine is very
 confident that the transcript matches what was spoken.</p>
 <p>The receiving end of the ASR stream will close after the sending side of
 the stream is closed (e.g., by calling AudioFinished()).</p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<pre><code>&lt;span style=&quot;color:#999;font-style:italic&quot;&gt;// This indicates the stream has finished, which will happen
-</code></pre>
-<p><!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->    <!-- raw HTML omitted -->// after the stream's AudioFinished() method is called or the
-<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->    <!-- raw HTML omitted -->// context used to create the stream closes.
-<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->    <!-- raw HTML omitted -->if<!-- raw HTML omitted --> err == io.EOF {
-<!-- raw HTML omitted -->break<!-- raw HTML omitted -->
+<div class='code-tabs'><ul class="nav-tabs"></ul><div class="tab-content">
+
+<div class="tab-pane" title="Go">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">
+<span style="color:#6ab825;font-weight:bold">for</span> {
+    <span style="color:#999;font-style:italic">// Wait for a transcription from the server. It is safe to call this
+</span><span style="color:#999;font-style:italic"></span>    <span style="color:#999;font-style:italic">// method concurrently with the stream&#39;s Write() method.
+</span><span style="color:#999;font-style:italic"></span>    transcript, err := stream.<span style="color:#447fcf">Receive</span>()
+
+    <span style="color:#999;font-style:italic">// This indicates the stream has finished, which will happen
+</span><span style="color:#999;font-style:italic"></span>    <span style="color:#999;font-style:italic">// after the stream&#39;s AudioFinished() method is called or the
+</span><span style="color:#999;font-style:italic"></span>    <span style="color:#999;font-style:italic">// context used to create the stream closes.
+</span><span style="color:#999;font-style:italic"></span>    <span style="color:#6ab825;font-weight:bold">if</span> err == io.EOF {
+        <span style="color:#6ab825;font-weight:bold">break</span>
+    }
+    <span style="color:#6ab825;font-weight:bold">if</span> err != <span style="color:#6ab825;font-weight:bold">nil</span> {
+        fmt.<span style="color:#447fcf">Printf</span>(<span style="color:#ed9d13">&#34;Error: %v\n&#34;</span>, err)
+        <span style="color:#6ab825;font-weight:bold">return</span>
+    }
+
+    <span style="color:#999;font-style:italic">// Display the transcript
+</span><span style="color:#999;font-style:italic"></span>    fmt.<span style="color:#447fcf">Printf</span>(<span style="color:#ed9d13">&#34;ASR Response:\n&#34;</span>)
+    fmt.<span style="color:#447fcf">Printf</span>(<span style="color:#ed9d13">&#34;  Transcription: %s\n&#34;</span>, transcript.Text)
+    fmt.<span style="color:#447fcf">Printf</span>(<span style="color:#ed9d13">&#34;  Confidence Score: %v\n\n&#34;</span>, transcript.ConfidenceScore)
 }
-<!-- raw HTML omitted -->if<!-- raw HTML omitted --> err != <!-- raw HTML omitted -->nil<!-- raw HTML omitted --> {
-fmt.<!-- raw HTML omitted -->Printf<!-- raw HTML omitted -->(<!-- raw HTML omitted -->&quot;Error: %v\n&quot;<!-- raw HTML omitted -->, err)
-<!-- raw HTML omitted -->return<!-- raw HTML omitted -->
-}</p>
-<pre><code>&lt;span style=&quot;color:#999;font-style:italic&quot;&gt;// Display the transcript
-</code></pre>
-<p><!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->    fmt.<!-- raw HTML omitted -->Printf<!-- raw HTML omitted -->(<!-- raw HTML omitted -->&quot;ASR Response:\n&quot;<!-- raw HTML omitted -->)
-fmt.<!-- raw HTML omitted -->Printf<!-- raw HTML omitted -->(<!-- raw HTML omitted -->&quot;  Transcription: %s\n&quot;<!-- raw HTML omitted -->, transcript.Text)
-fmt.<!-- raw HTML omitted -->Printf<!-- raw HTML omitted -->(<!-- raw HTML omitted -->&quot;  Confidence Score: %v\n\n&quot;<!-- raw HTML omitted -->, transcript.ConfidenceScore)
+</code></pre></div>
+</div>
+
+
+<div class="tab-pane" title="C&#43;&#43;">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">
+<span style="color:#999;font-style:italic">// Wait for a transcription from the server. It is safe to call this
+</span><span style="color:#999;font-style:italic">// method concurrently with the stream&#39;s pushAudio() method. The
+</span><span style="color:#999;font-style:italic">// waitForResult() method will return false after the stream&#39;s
+</span><span style="color:#999;font-style:italic">// finishAudio() method has been called.
+</span><span style="color:#999;font-style:italic"></span>cobaltspeech::diatheke::ASRResponse result;
+<span style="color:#6ab825;font-weight:bold">while</span> (stream-&gt;waitForResult(&amp;result))
+{
+    <span style="color:#999;font-style:italic">// Display the transcript
+</span><span style="color:#999;font-style:italic"></span>    std::cout &lt;&lt; <span style="color:#ed9d13">&#34;ASR Response:&#34;</span> &lt;&lt; std::endl;
+    std::cout &lt;&lt; <span style="color:#ed9d13">&#34;  Transcription: &#34;</span> &lt;&lt; result.text() &lt;&lt; std::endl;
+    std::cout &lt;&lt; <span style="color:#ed9d13">&#34;  Confidence Score: &#34;</span> &lt;&lt; result.confidence_score()
+              &lt;&lt; std::endl
+              &lt;&lt; std::endl;
 }
-<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
+</code></pre></div>
+</div>
+
+
+<div class="tab-pane" title="Python">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">
+<span style="color:#999;font-style:italic"># Wait for a transcription from the server. It is safe to do this</span>
+<span style="color:#999;font-style:italic"># concurrently with the stream&#39;s write() method. The for loop</span>
+<span style="color:#999;font-style:italic"># will continue to iterate until the stream&#39;s audio_finished() method</span>
+<span style="color:#999;font-style:italic"># has been called.</span>
+<span style="color:#6ab825;font-weight:bold">for</span> result <span style="color:#6ab825;font-weight:bold">in</span> stream.result_stream:
+    <span style="color:#999;font-style:italic"># Display the transcript</span>
+    <span style="color:#6ab825;font-weight:bold">print</span>(<span style="color:#ed9d13">&#34;ASR Response:&#34;</span>)
+    <span style="color:#6ab825;font-weight:bold">print</span>(<span style="color:#ed9d13">&#34;  Transcript: &#34;</span> + result.text)
+    <span style="color:#6ab825;font-weight:bold">print</span>(<span style="color:#ed9d13">&#34;  Confidence Score: {}</span><span style="color:#ed9d13">\n</span><span style="color:#ed9d13">&#34;</span>.format(result.confidence_score))
+</code></pre></div>
+</div>
+
+
+<div class="tab-pane" title="Swift/iOS">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift">
+<span style="color:#6ab825;font-weight:bold">func</span> <span style="color:#447fcf">handleASRResponse</span>(<span style="color:#6ab825;font-weight:bold">_</span> response: Cobaltspeech_Diatheke_ASRResponse) {
+    print(<span style="color:#ed9d13">&#34;ASR Response:&#34;</span>)
+    print(<span style="color:#ed9d13">&#34;Transcription: </span><span style="color:#ed9d13">\(</span>response.text<span style="color:#ed9d13">)</span><span style="color:#ed9d13">&#34;</span>)
+    print(<span style="color:#ed9d13">&#34;Confidence Score: </span><span style="color:#ed9d13">\(</span>response.confidenceScore<span style="color:#ed9d13">)</span><span style="color:#ed9d13">&#34;</span>)
+}
+</code></pre></div>
+</div>
+
+
+</div></div>
+
 
 
     

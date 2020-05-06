@@ -9,39 +9,36 @@ There are two ways to provide user input to a session:
 method as described below. Diatheke will respond with appropriate events
 on the session's [event stream](../event-stream).
 
-{{%tabs %}}
+{{< tabs >}}
 
-{{% tab "Go" %}}
+{{< tab "Go" "go" >}}
 ``` go
 // Push text using the client and sessionID
 err := client.PushText(context.Background(), sessionID, "What's the capital of Assyria?")
 
 // OR push text using the session object
 err := session.PushText(context.Background(), "What's the capital of Assyria?")
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "C++" %}}
+{{< tab "C++" "c++" >}}
 ``` c++
 // Push text using the client and sessionID
 client.pushText(sessionID, "What's the capital of Assyria?");
 
 // OR push text using the session object
 session.pushText("What's the capital of Assyria?");
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "Python" %}}
+{{< tab "Python" "python">}}
 ``` python
 # Push text using the client and session ID
 client.push_text(session_id, "What's the capital of Assyria?")
 
 # OR push text using the session object
 session.push_text("What's the capital of Assyria?")
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "Swift/iOS" %}}
+{{< tab "Swift/iOS" "swift" >}}
 ``` swift
 # Push text using the client and session ID
 client.pushText(sessionID: sessionID, text: "What's the capital of Assyria?") { (error) in
@@ -52,10 +49,9 @@ client.pushText(sessionID: sessionID, text: "What's the capital of Assyria?") { 
 session.pushText("What's the capital of Assyria?") { (error) in
         print(error.localizedDescription)
 }
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% /tabs %}}
+{{< /tabs >}}
 
 {{% panel theme="info" header="Note" %}}
 It is perfectly acceptable to use the `PushText` method while also

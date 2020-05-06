@@ -15,19 +15,18 @@ Before any audio for the session can be received, the client code should
 first create the audio reply stream. Similar to the event stream, this
 stream will be closed by the server when the session ends.
 
-{{%tabs %}}
+{{< tabs >}}
 
-{{% tab "Go" %}}
+{{< tab "Go" "go" >}}
 ``` go
 // Create the stream using the client and session ID
 stream, err := client.StreamAudioReplies(context.Background(), sessionID)
 
 // OR create the stream using the Session object
 stream, err := session.StreamAudioReplies(context.Background())
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "C++" %}}
+{{< tab "C++" "c++" >}}
 ``` c++
 // The stream is returned as a std::unique_ptr
 std::unique_ptr<Diatheke::AudioReplyStream> stream;
@@ -37,20 +36,18 @@ stream = client.streamAudioReplies(sessionID);
 
 // OR create the stream using the Session object
 stream = session.streamAudioReplies();
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "Python" %}}
+{{< tab "Python" "python">}}
 ``` python
 # Create the stream using the client and session ID
 stream = client.stream_audio_replies(session_id)
 
 # OR create the stream using the Session object
 stream = session.stream_audio_replies()
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "Swift/iOS" %}}
+{{< tab "Swift/iOS" "swift" >}}
 ``` swift
 # Create the stream using the client and session ID
 let stream = client.streamAudioReplies(sessionID: sessionID) { (reply) in
@@ -61,10 +58,9 @@ let stream = client.streamAudioReplies(sessionID: sessionID) { (reply) in
 let stream = session.streamAudioReplies { (reply) in
     // Handle audio reply
 }
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% /tabs %}}
+{{< /tabs >}}
 
 
 ## Receiving Audio
@@ -83,9 +79,9 @@ server config file). It is the client code's responsibility to handle
 the output audio, whether it sends it to an output device (e.g., speakers),
 saves it to a file, or some other processing of the audio data.
 
-{{%tabs %}}
+{{< tabs >}}
 
-{{% tab "Go" %}}
+{{< tab "Go" "go" >}}
 ``` go
 for {
     // Wait for replies from the server until the stream is closed,
@@ -122,10 +118,9 @@ for {
     default:
         fmt.Printf("received unexpected AudioReply type\n")
     }
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "C++" %}}
+{{< tab "C++" "c++" >}}
 ``` c++
 // Wait for replies until the stream is closed, which will happen when
 // the session is closed or the stream's context stops.
@@ -159,10 +154,9 @@ while (stream->waitForReply(&reply))
 }
 
 stream->close();
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "Python" %}}
+{{< tab "Python" "python">}}
 ``` python
 # Wait for replies from the server until the stream is closed, which
 # will happen when the session is closed.
@@ -183,10 +177,9 @@ for msg in stream:
 
     else:
         print("Received unexpected AudioReply type")
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "Swift/iOS" %}}
+{{< tab "Swift/iOS" "swift" >}}
 ``` swift
 // Handle replies from the server until the stream is closed, which
 // will happen when the session is closed.
@@ -202,7 +195,6 @@ let stream = session.streamAudioReplies { (reply) in
         print("Reply complete")
     }
 }
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% /tabs %}}
+{{< /tabs >}}
