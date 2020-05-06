@@ -56,6 +56,28 @@ let stream = session.streamAudioReplies { (reply) in
 }
 {{< /tab >}}
 
+{{< tab "Java/Android" "java" >}}
+DiathekeOuterClass.SessionID mSession= DiathekeOuterClass.SessionID.newBuilder()
+                .setSessionId(sessionId)
+                .build();
+mClient.streamAudioReplies(mSession, new StreamObserver<DiathekeOuterClass.AudioReply>() {
+    @Override
+    public void onNext(DiathekeOuterClass.AudioReply value) {
+        
+    }
+
+    @Override
+    public void onError(Throwable t) {
+
+    }
+
+    @Override
+    public void onCompleted() {
+
+    }
+});
+{{< /tab >}}
+
 {{< /tabs >}}
 
 
@@ -185,6 +207,26 @@ let stream = session.streamAudioReplies { (reply) in
         print("Data size (bytes): \(audioData.count)")
     case .end(_):
         print("Reply complete")
+    }
+}
+{{< /tab >}}
+
+{{< tab "Java/Android" "java" >}}
+@Override
+public void onNext(DiathekeOuterClass.AudioReply value) {
+    DiathekeOuterClass.AudioReply.OutputMessageCase outputMessageCase = value.getOutputMessageCase();
+    switch (outputMessageCase) {
+        case DATA:
+            ByteString data = value.getData();
+            Log.i("DATA",String.format("Data size %d",data.size()));
+            break;
+        case TEXT:
+            String text = value.getText();
+            Log.i("TEXT",String.format("Text: %s",text));
+            break;
+        case END:
+            Log.i("END","END");
+            break;
     }
 }
 {{< /tab >}}

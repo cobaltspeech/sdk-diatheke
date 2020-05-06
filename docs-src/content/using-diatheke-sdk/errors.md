@@ -85,3 +85,23 @@ client.newSession(model: model, success: { (sessionID) in
     print(error.localizedDescription)
 }
 ```
+## Android 
+
+```java diathekeStub.sessionEventStream(DiathekeOuterClass.SessionID.newBuilder().build(), new StreamObserver<DiathekeOuterClass.DiathekeEvent>() {
+            @Override
+            public void onNext(DiathekeOuterClass.DiathekeEvent value) {
+                // Handle success response here
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                // Handle the error here
+                Log.e("DIATHEKE_ERROR",t.getMessage());
+            }
+
+            @Override
+            public void onCompleted() {
+                
+            }
+        });
+```

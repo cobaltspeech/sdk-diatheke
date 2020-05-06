@@ -169,6 +169,37 @@ let stream = client.sessionEventStream(sessionID: sessionID) { (event) in
 }
 {{< /tab >}}
 
+{{< tab "Java/Android" "java" >}}
+mClient.sessionEventStream(session, new StreamObserver<DiathekeOuterClass.DiathekeEvent>() {
+    @Override
+    public void onNext(DiathekeOuterClass.DiathekeEvent value) {
+        switch (value.getResultCase()) {
+                case COMMAND:
+                    DiathekeOuterClass.CommandEvent command = value.getCommand();
+                    break;
+                case RECOGNIZE:
+                    DiathekeOuterClass.RecognizeEvent recognize = value.getRecognize();
+                    break;
+                case REPLY:
+                    DiathekeOuterClass.ReplyEvent reply = value.getReply();
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public void onError(Throwable t) {
+
+    }
+
+    @Override
+    public void onCompleted() {
+
+    }
+});
+{{< /tab >}}
 {{< /tabs >}}
 
 
@@ -233,6 +264,18 @@ func handleRecognizeEvent(_ event: Cobaltspeech_Diatheke_RecognizeEvent) {
 }
 {{< /tab >}}
 
+{{< tab "Java/Android" "java" >}}
+private void handleRecognizeEvent(DiathekeOuterClass.RecognizeEvent event) {
+    // Check if Diatheke recognized the last input as valid.
+    if (event.getValidInput()) {
+        Log.i("RecognizeEvent",String.format("Valid input: %s\n", event.getText()));
+    } else {
+        Log.i("RecognizeEvent",String.format("Invalid input: %s\n",event.getText()));
+    }
+}
+
+{{< /tab >}}
+
 {{< /tabs >}}
 
 
@@ -270,6 +313,12 @@ def handle_reply_event(event):
 {{< tab "Swift/iOS" "swift" >}}
 func handleReplyEvent(_ event: Cobaltspeech_Diatheke_ReplyEvent) {
     print("Reply text: \(event.text)")
+}
+{{< /tab >}}
+
+{{< tab "Java/Android" "java" >}}
+private void handleReplyEvent(DiathekeOuterClass.ReplyEvent reply) {
+    Log.i("ReplyEvent",reply.getText());
 }
 {{< /tab >}}
 
@@ -428,6 +477,17 @@ func handleCommandEvent(_ event: Cobaltspeech_Diatheke_CommandEvent, session: Se
 }
 {{< /tab >}}
 
+{{< tab "Java/Android" "java" >}}
+private void handleCommandEvent(DiathekeOuterClass.CommandEvent command) {
+    Log.i("CommandEvent",command.getCommandId());
+    Log.i("CommandEvent",command.getCommandStateId());
+    Map<String, String> parametersMap = command.getParametersMap();
+    for (Map.Entry<String, String> entity : parametersMap.entrySet()) {
+        Log.i("CommandEvent",String.format("%s=%s",entity.getKey(),entity.getValue()));
+    }
+}
+{{< /tab >}}
+
 {{< /tabs >}}
 
 
@@ -478,6 +538,26 @@ client.commandFinished(sessionID: sessionID, commandStatus: status)
 
 // OR use the Session object
 session.commandFinished(commandStatus: status)
+{{< /tab >}}
+
+{{< tab "Java/Android" "java" >}}
+DiathekeOuterClass.CommandStatus status = DiathekeOuterClass.CommandStatus.newBuilder().build();
+mClient.commandFinished(status, new StreamObserver<DiathekeOuterClass.Empty>() {
+    @Override
+    public void onNext(DiathekeOuterClass.Empty value) {
+        
+    }
+
+    @Override
+    public void onError(Throwable t) {
+
+    }
+
+    @Override
+    public void onCompleted() {
+
+    }
+});
 {{< /tab >}}
 
 {{< /tabs >}}

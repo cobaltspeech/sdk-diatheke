@@ -70,8 +70,27 @@ let stream = client.streamASR(model: cubicModel) { (response) in
 }
 {{< /tab >}}
 
-{{< /tabs >}}
+{{< tab "Java/Android" "java" >}}
+StreamObserver<DiathekeOuterClass.ASRRequest> asrRequestStreamObserver = mClient.streamASR(new StreamObserver<DiathekeOuterClass.ASRResponse>() {
+    @Override
+    public void onNext(DiathekeOuterClass.ASRResponse value) {
 
+    }
+
+    @Override
+    public void onError(Throwable t) {
+
+    }
+
+    @Override
+    public void onCompleted() {
+
+    }
+});
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Pushing Audio
 It is the client code's responsibility to handle getting audio data, whether
@@ -153,6 +172,12 @@ stream.pushAudio(data: data)
 stream.finishAudio()
 {{< /tab >}}
 
+{{< tab "Java/Android" "java" >}}
+DiathekeOuterClass.ASRRequest asrRequest = DiathekeOuterClass.ASRRequest.newBuilder()
+                .setAudio(ByteString.copyFrom(bytes)).build();
+        asrRequestStreamObserver.onNext(asrRequest);
+{{< /tab >}}
+
 {{< /tabs >}}
 
 ## Receiving Transcriptions
@@ -231,6 +256,13 @@ func handleASRResponse(_ response: Cobaltspeech_Diatheke_ASRResponse) {
     print("ASR Response:")
     print("Transcription: \(response.text)")
     print("Confidence Score: \(response.confidenceScore)")
+}
+{{< /tab >}}
+
+{{< tab "Java/Android" "java" >}}
+private void handleASRResponse(DiathekeOuterClass.ASRResponse value) {
+    Log.i("ASRResponse",String.format("%d",value.getConfidenceScore()));
+    Log.i("ASRResponse",String.format("%d",value.getText()));
 }
 {{< /tab >}}
 

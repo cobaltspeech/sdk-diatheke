@@ -50,9 +50,9 @@ Once installed, simply import the Diatheke module to use the SDK:
 import diatheke
 ```
 
-### iOS
+## iOS
 
-#### Swift Package Manager
+### Swift Package Manager
 
 The [Swift Package Manager](https://swift.org/package-manager/) is a tool for automating the distribution of Swift code and is integrated into the `swift` compiler.
 
@@ -62,4 +62,30 @@ Once you have your Swift package set up, adding swift-cubic as a dependency is a
 dependencies: [
     .package(url: "https://github.com/cobaltspeech/sdk-diatheke.git", .upToNextMajor(from: "1.0"))
 ]
+```
+
+## Android (Java)
+
+### Gradle 
+
+Add it in your root build.gradle at the end of repositories:
+
+```gradle 
+    allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+```
+Add the dependency
+```gradle 
+    dependencies {
+        implementation 'com.github.cobaltspeech:sdk-diatheke:Tag'
+        implementation 'io.grpc:grpc-protobuf-lite:1.25.0'
+        implementation 'io.grpc:grpc-okhttp:1.24.0'
+        implementation 'io.grpc:grpc-stub:1.24.0'
+        implementation 'io.grpc:grpc-auth:1.24.0'
+
+	}
 ```

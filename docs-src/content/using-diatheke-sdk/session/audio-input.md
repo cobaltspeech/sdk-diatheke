@@ -53,9 +53,26 @@ let stream = session.streamAudioInput { (error) in
 }
 {{< /tab >}}
 
+{{< tab "Java/Android" "java" >}}
+StreamObserver<DiathekeOuterClass.AudioInput> audioInputStreamObserver = mClient.streamAudioInput(new StreamObserver<DiathekeOuterClass.Empty>() {
+            @Override
+            public void onNext(DiathekeOuterClass.Empty value) {
+
+            }
+
+            @Override
+            public void onError(Throwable t) {
+
+            }
+
+            @Override
+            public void onCompleted() {
+
+            }
+        });
+{{< /tab >}}
+
 {{< /tabs >}}
-
-
 
 ## Pushing Audio
 
@@ -129,6 +146,15 @@ stream.pushAudio(data: data)
 // Be sure to notify Diatheke that no more audio will be coming when
 // we are done writing data.
 stream.finish()
+{{< /tab >}}
+
+{{< tab "Java/Android" "java" >}}
+byte[] bytes = ...;
+ByteString byteString=ByteString.copyFrom(bytes);
+DiathekeOuterClass.AudioInput audioInput = DiathekeOuterClass.AudioInput.newBuilder()
+        .setSessionId(sessionId)
+        .setData(byteString).build();
+audioInputStreamObserver.onNext(audioInput);
 {{< /tab >}}
 
 {{< /tabs >}}
