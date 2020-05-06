@@ -259,7 +259,7 @@
     <p>Language-specific instructions to include the SDK in your project
 are given below.</p>
 <h2 id="c">C++</h2>
-<p>To use the Diatheke SDK in a C++ project, you must first
+<p>To use the Diatheke SDK in a C++ project, you must first 
 <a href="../../getting-started#installing-the-diatheke-sdk">download the SDK</a>.
 To help simplify the build process, the C++ SDK uses
 <a href="http://www.cmake.org">CMake</a>, although it is possible to use a different
@@ -270,8 +270,15 @@ the SDK in a C++ project are described in detail in
 <p>The Go SDK supports Go modules and requires Go 1.12 or later. To use the
 SDK, import this package into your application:</p>
 <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#6ab825;font-weight:bold">import</span> <span style="color:#ed9d13">&#34;github.com/cobaltspeech/sdk-diatheke/grpc/go-diatheke&#34;</span>
-</code></pre></div><!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
+</code></pre></div><div class="panel panel-info">
+	<div class="panel-heading">Note</div>
+	<div class="panel-body">
+When using Go, it is not necessary to download the SDK using git
+(unless you want to build the example code).
+The `go build` command will automatically fetch the sdk-diatheke code
+from GitHub to use in your Go project.
+</div>
+</div>
 <h2 id="python">Python</h2>
 <p>The Python SDK requires Python v3.5.0 or greater. The SDK may be installed
 from GitHub using <code>pip</code>:</p>

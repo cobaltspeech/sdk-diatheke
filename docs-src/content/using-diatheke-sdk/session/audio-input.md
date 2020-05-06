@@ -13,19 +13,18 @@ create the input stream. For a given session, only a single audio input
 stream should be open at a time, but it perfectly acceptable to open
 and close multiple audio streams over the course of a single session.
 
-{{%tabs %}}
+{{< tabs >}}
 
-{{% tab "Go" %}}
+{{< tab "Go" "go" >}}
 ``` go
 // Create the stream using the client and session ID
 stream, err := client.StreamAudioInput(context.Background(), sessionID)
 
 // OR create the stream using the Session object
 stream, err := session.StreamAudioInput(context.Background())
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "C++" %}}
+{{< tab "C++" "c++" >}}
 ``` c++
 std::unique_ptr<Diatheke::AudioInputStream> stream;
 
@@ -34,20 +33,18 @@ stream = client.streamAudioInput(sessionID);
 
 // OR create the stream using the Session object
 stream = session.streamAudioInput();
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "Python" %}}
+{{< tab "Python" "python">}}
 ``` python
 # Create the stream using the client and session ID
 stream = client.stream_audio_input(session_id)
 
 # OR create the stream using the Session object
 stream = session.stream_audio_input()
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "Swift/iOS" %}}
+{{< tab "Swift/iOS" "swift" >}}
 ``` swift
 # Create the stream using the client and session ID
 let stream = client.streamAudioInput(sessionID: sessionID) { (error) in
@@ -58,10 +55,9 @@ let stream = client.streamAudioInput(sessionID: sessionID) { (error) in
 let stream = session.streamAudioInput { (error) in
         print(error.localizedDescription)
 }
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% /tabs %}}
+{{< /tabs >}}
 
 
 
@@ -74,9 +70,9 @@ model being used for the session (as defined in the Diatheke server config
 file). The audio data may then be sent to the server using the stream
 created previously.
 
-{{%tabs %}}
+{{< tabs >}}
 
-{{% tab "Go" %}}
+{{< tab "Go" "go" >}}
 ``` go
 // The audio data should be formatted as an array of bytes.
 buffer := make([]byte, 8192)
@@ -92,10 +88,9 @@ bytesWritten, err := stream.Write(buffer);
 // Be sure to notify Diatheke that no more audio will be coming when we
 // are done writing data.
 err := stream.Finish();
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "C++" %}}
+{{< tab "C++" "c++" >}}
 ``` c++
 // Store audio data as a string. Think of the string as an array of chars
 // or bytes (a char is one byte of data).
@@ -112,10 +107,9 @@ stream->pushAudio(buffer.c_str(), buffer.size());
 // Be sure to notify Diatheke that no more audio will be coming when we
 // are done writing data.
 stream->finished();
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "Python" %}}
+{{< tab "Python" "python">}}
 ``` python
 # Get the audio data from a source. This could be a microphone, file, or
 # any other source. Here we assume the audio data was retrieved previously
@@ -128,10 +122,9 @@ stream.write(buffer)
 # Be sure to notify Diatheke that no more audio will be coming when
 # we are done writing data.
 stream.finish()
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "Swift/iOS" %}}
+{{< tab "Swift/iOS" "swift" >}}
 ``` swift
 // Get the audio data from a source. This could be a microphone, file, or
 // any other source. Here we assume the audio data was retrieved previously
@@ -144,10 +137,9 @@ stream.pushAudio(data: data)
 // Be sure to notify Diatheke that no more audio will be coming when
 // we are done writing data.
 stream.finish()
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% /tabs %}}
+{{< /tabs >}}
 
 After all audio data has been pushed to the server, client code should be
 sure to call the Finish() method to notify Diatheke that no more audio will

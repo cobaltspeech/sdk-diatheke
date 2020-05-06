@@ -39,3 +39,6 @@ name = "<i class='fa fa-bookmark'></i> <label>Contact us</label>"
 identifier = "contactus"
 url = "https://www.cobaltspeech.com/contact"
 weight = 20
+
+[markup.goldmark.renderer]
+unsafe= true

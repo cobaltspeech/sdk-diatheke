@@ -237,9 +237,6 @@
     <nav id="TableOfContents">
   <ul>
     <li><a href="#creating-the-audio-reply-stream">Creating the Audio Reply Stream</a></li>
-  </ul>
-
-  <ul>
     <li><a href="#receiving-audio">Receiving Audio</a></li>
   </ul>
 </nav>
@@ -268,36 +265,69 @@ the reply, and the <a href="../../../glossary#tts">TTS</a> generated audio bytes
 <p>Before any audio for the session can be received, the client code should
 first create the audio reply stream. Similar to the event stream, this
 stream will be closed by the server when the session ends.</p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<p><!-- raw HTML omitted -->// OR create the stream using the Session object
-<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->stream, err := session.<!-- raw HTML omitted -->StreamAudioReplies<!-- raw HTML omitted -->(context.<!-- raw HTML omitted -->Background<!-- raw HTML omitted -->())
-<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<p><!-- raw HTML omitted -->// Create the stream using the client and session ID
-<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->stream = client.streamAudioReplies(sessionID);</p>
-<p><!-- raw HTML omitted -->// OR create the stream using the Session object
-<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->stream = session.streamAudioReplies();
-<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<p><!-- raw HTML omitted --># OR create the stream using the Session object<!-- raw HTML omitted -->
+<div class='code-tabs'><ul class="nav-tabs"></ul><div class="tab-content">
+
+<div class="tab-pane" title="Go">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">
+<span style="color:#ed9d13">``</span><span style="color:#a61717;background-color:#e3d2d2">`</span> <span style="color:#6ab825;font-weight:bold">go</span>
+<span style="color:#999;font-style:italic">// Create the stream using the client and session ID
+</span><span style="color:#999;font-style:italic"></span>stream, err := client.<span style="color:#447fcf">StreamAudioReplies</span>(context.<span style="color:#447fcf">Background</span>(), sessionID)
+
+<span style="color:#999;font-style:italic">// OR create the stream using the Session object
+</span><span style="color:#999;font-style:italic"></span>stream, err := session.<span style="color:#447fcf">StreamAudioReplies</span>(context.<span style="color:#447fcf">Background</span>())
+</code></pre></div>
+</div>
+
+
+<div class="tab-pane" title="C&#43;&#43;">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">
+<span style="color:#a61717;background-color:#e3d2d2">```</span> c++
+<span style="color:#999;font-style:italic">// The stream is returned as a std::unique_ptr
+</span><span style="color:#999;font-style:italic"></span>std::unique_ptr&lt;Diatheke::AudioReplyStream&gt; stream;
+
+<span style="color:#999;font-style:italic">// Create the stream using the client and session ID
+</span><span style="color:#999;font-style:italic"></span>stream = client.streamAudioReplies(sessionID);
+
+<span style="color:#999;font-style:italic">// OR create the stream using the Session object
+</span><span style="color:#999;font-style:italic"></span>stream = session.streamAudioReplies();
+</code></pre></div>
+</div>
+
+
+<div class="tab-pane" title="Python">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">
+<span style="color:#ed9d13">``</span><span style="color:#a61717;background-color:#e3d2d2">`</span> python
+<span style="color:#999;font-style:italic"># Create the stream using the client and session ID</span>
+stream = client.stream_audio_replies(session_id)
+
+<span style="color:#999;font-style:italic"># OR create the stream using the Session object</span>
 stream = session.stream_audio_replies()
-<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<h1 id="or-create-the-stream-using-the-session-object">OR create the stream using the Session object</h1>
-<p><!-- raw HTML omitted -->let<!-- raw HTML omitted --> <!-- raw HTML omitted -->stream<!-- raw HTML omitted --> = session.streamAudioReplies { (reply) <!-- raw HTML omitted -->in<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->// Handle audio reply<!-- raw HTML omitted -->
+</code></pre></div>
+</div>
+
+
+<div class="tab-pane" title="Swift/iOS">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift">
+``` swift
+# Create the stream using the client and session ID
+<span style="color:#6ab825;font-weight:bold">let</span> <span style="color:#40ffff">stream</span> = client.streamAudioReplies(sessionID: sessionID) { (reply) <span style="color:#6ab825;font-weight:bold">in</span>
+    <span style="color:#999;font-style:italic">// Handle audio reply</span>
 }
-<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
+
+# OR create the stream using the Session object
+<span style="color:#6ab825;font-weight:bold">let</span> <span style="color:#40ffff">stream</span> = session.streamAudioReplies { (reply) <span style="color:#6ab825;font-weight:bold">in</span>
+    <span style="color:#999;font-style:italic">// Handle audio reply</span>
+}
+</code></pre></div>
+</div>
+
+
+</div></div>
+
 <h2 id="receiving-audio">Receiving Audio</h2>
 <p>A single reply from Diatheke will have multiple messages on the audio reply
 stream. First, it will receive a message containing the text of the reply.
-Then, it will receive one or more messages containing the
+Then, it will receive one or more messages containing the 
 <a href="../../../glossary#TTS">TTS</a> generated audio data. Lastly, it will receive
 an empty message that contains no data, but serves as an indicator that the
 reply has finished TTS generation and that no more data will be coming for
@@ -308,73 +338,138 @@ specific TTS model being used for the session (as defined in the Diatheke
 server config file). It is the client code&rsquo;s responsibility to handle
 the output audio, whether it sends it to an output device (e.g., speakers),
 saves it to a file, or some other processing of the audio data.</p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<pre><code>&lt;span style=&quot;color:#999;font-style:italic&quot;&gt;// This indicates the stream has finished, which will happen
-</code></pre>
-<p><!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->    <!-- raw HTML omitted -->// when the session ends or the context used to create the stream
-<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->    <!-- raw HTML omitted -->// closes.
-<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->    <!-- raw HTML omitted -->if<!-- raw HTML omitted --> err == io.EOF {
-<!-- raw HTML omitted -->break<!-- raw HTML omitted -->
-}
-<!-- raw HTML omitted -->if<!-- raw HTML omitted --> err != <!-- raw HTML omitted -->nil<!-- raw HTML omitted --> {
-fmt.<!-- raw HTML omitted -->Printf<!-- raw HTML omitted -->(<!-- raw HTML omitted -->&quot;Error: %v\n&quot;<!-- raw HTML omitted -->, err)
-<!-- raw HTML omitted -->return<!-- raw HTML omitted -->
-}</p>
-<pre><code>&lt;span style=&quot;color:#999;font-style:italic&quot;&gt;// Check which message type we have received.
-</code></pre>
-<p><!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->    <!-- raw HTML omitted -->switch<!-- raw HTML omitted --> reply := msg.OutputMessage.(<!-- raw HTML omitted -->type<!-- raw HTML omitted -->) {
-<!-- raw HTML omitted -->case<!-- raw HTML omitted --> *diathekepb.AudioReply_Text:
-<!-- raw HTML omitted -->// The text of the reply comes first for a reply from Diatheke.
-<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->        fmt.<!-- raw HTML omitted -->Printf<!-- raw HTML omitted -->(<!-- raw HTML omitted -->&quot;Text: %s\n&quot;<!-- raw HTML omitted -->, reply.Text)</p>
-<pre><code>&lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;case&lt;/span&gt; *diathekepb.AudioReply_Data:
-    &lt;span style=&quot;color:#999;font-style:italic&quot;&gt;// Audio data is received until speech synthesis is done.
-</code></pre>
-<p><!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->        fmt.<!-- raw HTML omitted -->Printf<!-- raw HTML omitted -->(<!-- raw HTML omitted -->&quot;Data size (bytes): %v\n&quot;<!-- raw HTML omitted -->, <!-- raw HTML omitted -->len<!-- raw HTML omitted -->(reply.Data))</p>
-<pre><code>&lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;case&lt;/span&gt; *diathekepb.AudioReply_End:
-    &lt;span style=&quot;color:#999;font-style:italic&quot;&gt;// This message comes at the end of a reply, after speech synthesis
-</code></pre>
-<p><!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->        <!-- raw HTML omitted -->// is complete. It has no data.
-<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->        fmt.<!-- raw HTML omitted -->Printf<!-- raw HTML omitted -->(<!-- raw HTML omitted -->&quot;Reply complete\n&quot;<!-- raw HTML omitted -->)</p>
-<pre><code>&lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;default&lt;/span&gt;:
-    fmt.&lt;span style=&quot;color:#447fcf&quot;&gt;Printf&lt;/span&gt;(&lt;span style=&quot;color:#ed9d13&quot;&gt;&amp;#34;received unexpected AudioReply type\n&amp;#34;&lt;/span&gt;)
-}
-</code></pre>
-<p><!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<p>stream-&gt;close();
-<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<pre><code>&lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;elif&lt;/span&gt; msg.HasField(&lt;span style=&quot;color:#ed9d13&quot;&gt;&amp;#34;data&amp;#34;&lt;/span&gt;):
-    &lt;span style=&quot;color:#999;font-style:italic&quot;&gt;# Audio data is received until speech synthesis is done.&lt;/span&gt;
-    &lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;print&lt;/span&gt;(&lt;span style=&quot;color:#ed9d13&quot;&gt;&amp;#34;Data size (bytes): {}&amp;#34;&lt;/span&gt;.format(&lt;span style=&quot;color:#24909d&quot;&gt;len&lt;/span&gt;(reply.data)))
+<div class='code-tabs'><ul class="nav-tabs"></ul><div class="tab-content">
 
-&lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;elif&lt;/span&gt; msg.HasField(&lt;span style=&quot;color:#ed9d13&quot;&gt;&amp;#34;end&amp;#34;&lt;/span&gt;):
-    &lt;span style=&quot;color:#999;font-style:italic&quot;&gt;# This message comes at the end of a reply, after speech synthesis&lt;/span&gt;
-    &lt;span style=&quot;color:#999;font-style:italic&quot;&gt;# is complete. It has no data.&lt;/span&gt;
-    &lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;print&lt;/span&gt;(&lt;span style=&quot;color:#ed9d13&quot;&gt;&amp;#34;Reply complete&amp;#34;&lt;/span&gt;)
+<div class="tab-pane" title="Go">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">
+<span style="color:#ed9d13">``</span><span style="color:#a61717;background-color:#e3d2d2">`</span> <span style="color:#6ab825;font-weight:bold">go</span>
+<span style="color:#6ab825;font-weight:bold">for</span> {
+    <span style="color:#999;font-style:italic">// Wait for replies from the server until the stream is closed,
+</span><span style="color:#999;font-style:italic"></span>    <span style="color:#999;font-style:italic">// which will happen when the session is closed or the stream&#39;s
+</span><span style="color:#999;font-style:italic"></span>    <span style="color:#999;font-style:italic">// context ends.
+</span><span style="color:#999;font-style:italic"></span>    msg, err := stream.<span style="color:#447fcf">Recv</span>()
 
-&lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;else&lt;/span&gt;:
-    &lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;print&lt;/span&gt;(&lt;span style=&quot;color:#ed9d13&quot;&gt;&amp;#34;Received unexpected AudioReply type&amp;#34;&lt;/span&gt;)
-</code></pre>
-<p><!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<pre><code>&lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;switch&lt;/span&gt; outputMessage {
-&lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;case&lt;/span&gt; .text(&lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;let&lt;/span&gt; &lt;span style=&quot;color:#40ffff&quot;&gt;text&lt;/span&gt;):
-    print(&lt;span style=&quot;color:#ed9d13&quot;&gt;&amp;#34;Text: &lt;/span&gt;&lt;span style=&quot;color:#ed9d13&quot;&gt;\(&lt;/span&gt;text&lt;span style=&quot;color:#ed9d13&quot;&gt;)&lt;/span&gt;&lt;span style=&quot;color:#ed9d13&quot;&gt;&amp;#34;&lt;/span&gt;)
-&lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;case&lt;/span&gt; .data(&lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;let&lt;/span&gt; &lt;span style=&quot;color:#40ffff&quot;&gt;audioData&lt;/span&gt;):
-    print(&lt;span style=&quot;color:#ed9d13&quot;&gt;&amp;#34;Data size (bytes): &lt;/span&gt;&lt;span style=&quot;color:#ed9d13&quot;&gt;\(&lt;/span&gt;audioData.count&lt;span style=&quot;color:#ed9d13&quot;&gt;)&lt;/span&gt;&lt;span style=&quot;color:#ed9d13&quot;&gt;&amp;#34;&lt;/span&gt;)
-&lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;case&lt;/span&gt; .end(&lt;span style=&quot;color:#6ab825;font-weight:bold&quot;&gt;_&lt;/span&gt;):
-    print(&lt;span style=&quot;color:#ed9d13&quot;&gt;&amp;#34;Reply complete&amp;#34;&lt;/span&gt;)
+    <span style="color:#999;font-style:italic">// This indicates the stream has finished, which will happen
+</span><span style="color:#999;font-style:italic"></span>    <span style="color:#999;font-style:italic">// when the session ends or the context used to create the stream
+</span><span style="color:#999;font-style:italic"></span>    <span style="color:#999;font-style:italic">// closes.
+</span><span style="color:#999;font-style:italic"></span>    <span style="color:#6ab825;font-weight:bold">if</span> err == io.EOF {
+        <span style="color:#6ab825;font-weight:bold">break</span>
+    }
+    <span style="color:#6ab825;font-weight:bold">if</span> err != <span style="color:#6ab825;font-weight:bold">nil</span> {
+        fmt.<span style="color:#447fcf">Printf</span>(<span style="color:#ed9d13">&#34;Error: %v\n&#34;</span>, err)
+        <span style="color:#6ab825;font-weight:bold">return</span>
+    }
+
+    <span style="color:#999;font-style:italic">// Check which message type we have received.
+</span><span style="color:#999;font-style:italic"></span>    <span style="color:#6ab825;font-weight:bold">switch</span> reply := msg.OutputMessage.(<span style="color:#6ab825;font-weight:bold">type</span>) {
+    <span style="color:#6ab825;font-weight:bold">case</span> *diathekepb.AudioReply_Text:
+        <span style="color:#999;font-style:italic">// The text of the reply comes first for a reply from Diatheke.
+</span><span style="color:#999;font-style:italic"></span>        fmt.<span style="color:#447fcf">Printf</span>(<span style="color:#ed9d13">&#34;Text: %s\n&#34;</span>, reply.Text)
+
+    <span style="color:#6ab825;font-weight:bold">case</span> *diathekepb.AudioReply_Data:
+        <span style="color:#999;font-style:italic">// Audio data is received until speech synthesis is done.
+</span><span style="color:#999;font-style:italic"></span>        fmt.<span style="color:#447fcf">Printf</span>(<span style="color:#ed9d13">&#34;Data size (bytes): %v\n&#34;</span>, <span style="color:#24909d">len</span>(reply.Data))
+
+    <span style="color:#6ab825;font-weight:bold">case</span> *diathekepb.AudioReply_End:
+        <span style="color:#999;font-style:italic">// This message comes at the end of a reply, after speech synthesis
+</span><span style="color:#999;font-style:italic"></span>        <span style="color:#999;font-style:italic">// is complete. It has no data.
+</span><span style="color:#999;font-style:italic"></span>        fmt.<span style="color:#447fcf">Printf</span>(<span style="color:#ed9d13">&#34;Reply complete\n&#34;</span>)
+
+    <span style="color:#6ab825;font-weight:bold">default</span>:
+        fmt.<span style="color:#447fcf">Printf</span>(<span style="color:#ed9d13">&#34;received unexpected AudioReply type\n&#34;</span>)
+    }
+</code></pre></div>
+</div>
+
+
+<div class="tab-pane" title="C&#43;&#43;">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">
+<span style="color:#a61717;background-color:#e3d2d2">```</span> c++
+<span style="color:#999;font-style:italic">// Wait for replies until the stream is closed, which will happen when
+</span><span style="color:#999;font-style:italic">// the session is closed or the stream&#39;s context stops.
+</span><span style="color:#999;font-style:italic"></span>cobaltspeech::diatheke::AudioReply reply;
+<span style="color:#6ab825;font-weight:bold">while</span> (stream-&gt;waitForReply(&amp;reply))
+{
+    <span style="color:#999;font-style:italic">// Check which message type we have received
+</span><span style="color:#999;font-style:italic"></span>    <span style="color:#6ab825;font-weight:bold">if</span> (reply.has_text())
+    {
+        <span style="color:#999;font-style:italic">// The text of the reply comes first for a reply from Diatheke.
+</span><span style="color:#999;font-style:italic"></span>        std::cout &lt;&lt; <span style="color:#ed9d13">&#34;Text: &#34;</span> &lt;&lt; reply.text() &lt;&lt; std::endl;
+    }
+    <span style="color:#6ab825;font-weight:bold">else</span> <span style="color:#447fcf">if</span> (reply.has_data())
+    {
+        <span style="color:#999;font-style:italic">// Audio data is received until speech synthesis is done.
+</span><span style="color:#999;font-style:italic"></span>        <span style="color:#999;font-style:italic">// It is returned as a string (think of it as an array of
+</span><span style="color:#999;font-style:italic"></span>        <span style="color:#999;font-style:italic">// chars/bytes).
+</span><span style="color:#999;font-style:italic"></span>        std::string audioData = reply.data();
+        std::cout &lt;&lt; <span style="color:#ed9d13">&#34;Data size (bytes): &#34;</span> &lt;&lt; audioData.size() &lt;&lt; std::endl;
+    }
+    <span style="color:#6ab825;font-weight:bold">else</span> <span style="color:#447fcf">if</span> (reply.has_end())
+    {
+        <span style="color:#999;font-style:italic">// This message comes at the end of a reply, after speech synthesis
+</span><span style="color:#999;font-style:italic"></span>        <span style="color:#999;font-style:italic">// is complete. It has no data.
+</span><span style="color:#999;font-style:italic"></span>        std::cout &lt;&lt; <span style="color:#ed9d13">&#34;Reply complete&#34;</span> &lt;&lt; std::endl;
+    }
+    <span style="color:#6ab825;font-weight:bold">else</span>
+    {
+        std::cerr &lt;&lt; <span style="color:#ed9d13">&#34;received unexpected AudioReply type&#34;</span> &lt;&lt; std::endl;
+    }
 }
-</code></pre>
-<p>}
-<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
+
+stream-&gt;close();
+</code></pre></div>
+</div>
+
+
+<div class="tab-pane" title="Python">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">
+<span style="color:#ed9d13">``</span><span style="color:#a61717;background-color:#e3d2d2">`</span> python
+<span style="color:#999;font-style:italic"># Wait for replies from the server until the stream is closed, which</span>
+<span style="color:#999;font-style:italic"># will happen when the session is closed.</span>
+<span style="color:#6ab825;font-weight:bold">for</span> msg <span style="color:#6ab825;font-weight:bold">in</span> stream:
+    <span style="color:#999;font-style:italic"># Check which message type we have received</span>
+    <span style="color:#6ab825;font-weight:bold">if</span> msg.HasField(<span style="color:#ed9d13">&#34;text&#34;</span>):
+        <span style="color:#999;font-style:italic"># The text of the reply comes first for a reply from Diatheke</span>
+        <span style="color:#6ab825;font-weight:bold">print</span>(<span style="color:#ed9d13">&#34;Text: &#34;</span> + reply.text)
+
+    <span style="color:#6ab825;font-weight:bold">elif</span> msg.HasField(<span style="color:#ed9d13">&#34;data&#34;</span>):
+        <span style="color:#999;font-style:italic"># Audio data is received until speech synthesis is done.</span>
+        <span style="color:#6ab825;font-weight:bold">print</span>(<span style="color:#ed9d13">&#34;Data size (bytes): {}&#34;</span>.format(<span style="color:#24909d">len</span>(reply.data)))
+
+    <span style="color:#6ab825;font-weight:bold">elif</span> msg.HasField(<span style="color:#ed9d13">&#34;end&#34;</span>):
+        <span style="color:#999;font-style:italic"># This message comes at the end of a reply, after speech synthesis</span>
+        <span style="color:#999;font-style:italic"># is complete. It has no data.</span>
+        <span style="color:#6ab825;font-weight:bold">print</span>(<span style="color:#ed9d13">&#34;Reply complete&#34;</span>)
+
+    <span style="color:#6ab825;font-weight:bold">else</span>:
+        <span style="color:#6ab825;font-weight:bold">print</span>(<span style="color:#ed9d13">&#34;Received unexpected AudioReply type&#34;</span>)
+</code></pre></div>
+</div>
+
+
+<div class="tab-pane" title="Swift/iOS">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift">
+``` swift
+<span style="color:#999;font-style:italic">// Handle replies from the server until the stream is closed, which</span>
+<span style="color:#999;font-style:italic">// will happen when the session is closed.</span>
+<span style="color:#6ab825;font-weight:bold">let</span> <span style="color:#40ffff">stream</span> = session.streamAudioReplies { (reply) <span style="color:#6ab825;font-weight:bold">in</span>
+    <span style="color:#6ab825;font-weight:bold">guard</span> <span style="color:#6ab825;font-weight:bold">let</span> <span style="color:#40ffff">outputMessage</span> = reply.outputMessage <span style="color:#6ab825;font-weight:bold">else</span> { <span style="color:#6ab825;font-weight:bold">return</span> }
+    
+    <span style="color:#6ab825;font-weight:bold">switch</span> outputMessage {
+    <span style="color:#6ab825;font-weight:bold">case</span> .text(<span style="color:#6ab825;font-weight:bold">let</span> <span style="color:#40ffff">text</span>):
+        print(<span style="color:#ed9d13">&#34;Text: </span><span style="color:#ed9d13">\(</span>text<span style="color:#ed9d13">)</span><span style="color:#ed9d13">&#34;</span>)
+    <span style="color:#6ab825;font-weight:bold">case</span> .data(<span style="color:#6ab825;font-weight:bold">let</span> <span style="color:#40ffff">audioData</span>):
+        print(<span style="color:#ed9d13">&#34;Data size (bytes): </span><span style="color:#ed9d13">\(</span>audioData.count<span style="color:#ed9d13">)</span><span style="color:#ed9d13">&#34;</span>)
+    <span style="color:#6ab825;font-weight:bold">case</span> .end(<span style="color:#6ab825;font-weight:bold">_</span>):
+        print(<span style="color:#ed9d13">&#34;Reply complete&#34;</span>)
+    }
+}
+</code></pre></div>
+</div>
+
+
+</div></div>
+
 
 
     

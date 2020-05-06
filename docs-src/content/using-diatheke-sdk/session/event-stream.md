@@ -14,20 +14,17 @@ client via a session's event stream.
 
 ## Creating the Event Stream
 The following demonstrates how to create a an event stream for a session.
-{{%tabs %}}
+{{< tabs >}}
 
-{{% tab "Go" %}}
-``` go
+{{< tab "Go" "go" >}}
 // Create the stream using the client and session ID.
 stream, err := client.SessionEventStream(context.Background(), sessionID)
 
 // OR create the stream using the Session object
 stream, err := session.EventStream(context.Background())
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "C++" %}}
-``` c++
+{{< tab "C++" "c++" >}}
 std::unique_ptr<Diatheke::EventStream> stream;
 
 // Create the stream using the client and session ID
@@ -35,21 +32,17 @@ stream = client.sessionEventStream(sessionID);
 
 // OR create the stream using the session object
 stream = session.eventStream();
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "Python" %}}
-``` python
+{{< tab "Python" "python">}}
 # Create the stream using the client and session ID
 stream = client.session_event_stream(session_id)
 
 # OR create the stream using the Session object
 stream = session.event_stream()
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "Swift/iOS" %}}
-```swift
+{{< tab "Swift/iOS" "swift" >}}
 // Create the stream using the client and session ID
 let stream = client.sessionEventStream(sessionID: sessionID) { (event) in
     // Handle the event
@@ -59,10 +52,9 @@ let stream = client.sessionEventStream(sessionID: sessionID) { (event) in
 let stream = session.eventStream { (event) in
     // Handle the event     
 }
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% /tabs %}}
+{{< /tabs >}}
 
 This creates a server stream that will deliver events to the client. The
 stream will be closed by the server when the session ends.
@@ -72,10 +64,9 @@ stream will be closed by the server when the session ends.
 The recommended way to handle events from the stream is to setup a loop
 that waits for the next event, then handles the event based on its type:
 
-{{%tabs %}}
+{{< tabs >}}
 
-{{% tab "Go" %}}
-``` go
+{{< tab "Go" "go" >}}
 for {
     // Wait for the next event from the server
     event, err := eventStream.Recv()
@@ -108,11 +99,9 @@ for {
         fmt.Printf("Error: received unknown event type from Diatheke\n")
     }
 }
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "C++" %}}
-``` c++
+{{< tab "C++" "c++" >}}
 // Receive events from the event stream until it is closed, which will
 // happen when the session ends, or the context used to create the stream
 // closes.
@@ -142,11 +131,9 @@ while (eventStream->waitForEvent(&event))
 // This will allow the server to report errors related to the stream, if 
 // there were any.
 eventStream->close();
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "Python" %}}
-``` python
+{{< tab "Python" "python">}}
 # Receive events from the event stream until it is closed, which will
 # happen when the session ends.
 for event in event_stream:
@@ -162,11 +149,9 @@ for event in event_stream:
 
     else:
         print("Received unknown event type from Diatheke.")
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "Swift/iOS" %}}
-```swift
+{{< tab "Swift/iOS" "swift" >}}
 // Receive events from the event stream until it is closed, which will
 // happen when the session ends.
 let stream = client.sessionEventStream(sessionID: sessionID) { (event) in
@@ -182,10 +167,9 @@ let stream = client.sessionEventStream(sessionID: sessionID) { (event) in
             self.handleCommandEvent(commandEvent, session: session)
     }
 }
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% /tabs %}}
+{{< /tabs >}}
 
 
 ### Recognize Event
@@ -203,10 +187,9 @@ Most often, this event will be used by clients to give some kind of
 visual indication to the user about whether their input was recognized
 or not.
 
-{{%tabs %}}
+{{< tabs >}}
 
-{{% tab "Go" %}}
-``` go
+{{< tab "Go" "go" >}}
 func handleRecognizeEvent(event *diathekepb.RecognizeEvent) {
     // Check if Diatheke recognized the last input as valid.
     if event.ValidInput {
@@ -215,11 +198,9 @@ func handleRecognizeEvent(event *diathekepb.RecognizeEvent) {
         fmt.Printf("Invalid input: %s\n", event.Text)
     }
 }
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "C++" %}}
-``` c++
+{{< tab "C++" "c++" >}}
 void handleRecognizeEvent(const cobaltspeech::diatheke::RecognizeEvent &event)
 {
     if(event.valid_input())
@@ -231,21 +212,17 @@ void handleRecognizeEvent(const cobaltspeech::diatheke::RecognizeEvent &event)
         std::cout << "Invalid input: " << event.text() << std::endl;
     }
 }
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "Python" %}}
-``` python
+{{< tab "Python" "python">}}
 def handle_recognize_event(event):
     if event.valid_input:
         print("Valid input: " + event.text)
     else:
         print("Invalid input: " + event.text)
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "Swift/iOS" %}}
-```swift
+{{< tab "Swift/iOS" "swift" >}}
 func handleRecognizeEvent(_ event: Cobaltspeech_Diatheke_RecognizeEvent) {
     // Check if Diatheke recognized the last input as valid.
     if event.validInput {
@@ -254,10 +231,9 @@ func handleRecognizeEvent(_ event: Cobaltspeech_Diatheke_RecognizeEvent) {
         print("Invalid input: \(event.text)")
     }
 }
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% /tabs %}}
+{{< /tabs >}}
 
 
 ### Reply Event
@@ -271,41 +247,33 @@ defined in the Diatheke model.
 Most often, this event will be used by clients to give some kind of visual
 feedback to the user.
 
-{{%tabs %}}
+{{< tabs >}}
 
-{{% tab "Go" %}}
-``` go
+{{< tab "Go" "go" >}}
 func handleReplyEvent(event *diathekepb.ReplyEvent) {
     fmt.Printf("Reply text: %s\n", event.Text)
 }
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "C++" %}}
-``` c++
+{{< tab "C++" "c++" >}}
 void handleReplyEvent(const cobaltspeech::diatheke::ReplyEvent &event)
 {
     std::cout << "Reply text: " << event.text() << std::endl;
 }
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "Python" %}}
-``` python
+{{< tab "Python" "python">}}
 def handle_reply_event(event):
     print("Reply text: " + event.text)
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "Swift/iOS" %}}
-```swift
+{{< tab "Swift/iOS" "swift" >}}
 func handleReplyEvent(_ event: Cobaltspeech_Diatheke_ReplyEvent) {
     print("Reply text: \(event.text)")
 }
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% /tabs %}}
+{{< /tabs >}}
 
 
 ### Command Event
@@ -319,10 +287,9 @@ From the client perspective, this is the most important event that will
 come from Diatheke because it is what prompts the client code to do useful
 work by executing the commands.
 
-{{%tabs %}}
+{{< tabs >}}
 
-{{% tab "Go" %}}
-``` go
+{{< tab "Go" "go" >}}
 func handleCommandEvent(event *diathekepb.CommandEvent, session diatheke.Session) {
     // Use the command ID and parameters to execute a task.
     fmt.Printf("Command ID: %v\n", event.CommandId)
@@ -359,11 +326,9 @@ func handleCommandEvent(event *diathekepb.CommandEvent, session diatheke.Session
         fmt.Printf("Error: %v\n", err)
     }
 }
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "C++" %}}
-``` c++
+{{< tab "C++" "c++" >}}
 void handleCommandEvent(const cobaltspeech::diatheke::CommandEvent &event,
                         Diatheke::EventStream *stream)
 {
@@ -394,11 +359,9 @@ void handleCommandEvent(const cobaltspeech::diatheke::CommandEvent &event,
     // finished.
     eventStream->commandFinished(status);
 }
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "Python" %}}
-``` python
+{{< tab "Python" "python">}}
 def handle_command_event(event, session):
     # Use the command ID and parameters to execute a task.
     print("Command ID: " + event.command_id)
@@ -433,11 +396,9 @@ def handle_command_event(event, session):
 
     # Send the result to Diatheke
     session.command_finished(result)
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "Swift/iOS" %}}
-```swift
+{{< tab "Swift/iOS" "swift" >}}
 func handleCommandEvent(_ event: Cobaltspeech_Diatheke_CommandEvent, session: Session) {
     // Use the command ID and parameters to execute a task.
     print("Command ID: \(event.commandID)")
@@ -465,10 +426,9 @@ func handleCommandEvent(_ event: Cobaltspeech_Diatheke_CommandEvent, session: Se
         print(error.localizedDescription)
     }
 }
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% /tabs %}}
+{{< /tabs >}}
 
 
 #### Command Finished
@@ -483,20 +443,17 @@ will restore the dialog to the state Diatheke was at when the Command event
 was sent. This allows dialog to remain responsive to other intents while
 waiting for long-running commands to finish.
 
-{{%tabs %}}
+{{< tabs >}}
 
-{{% tab "Go" %}}
-``` go
+{{< tab "Go" "go" >}}
 // Use the client
 err := client.CommandFinished(context.Background(), status)
 
 // OR use the Session object
 err := session.CommandFinished(context.Background(), status)
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "C++" %}}
-``` c++
+{{< tab "C++" "c++" >}}
 // Use the client
 client.commandFinished(sessionID, status);
 
@@ -505,30 +462,25 @@ session.commandFinished(status);
 
 // OR use the EventStream object
 stream->commandFinished(status);
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "Python" %}}
-``` python
+{{< tab "Python" "python">}}
 # Use the client
 client.command_finished(status)
 
 # OR use the Session object
 session.command_finished(status)
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "Swift/iOS" %}}
-```swift
+{{< tab "Swift/iOS" "swift" >}}
 // Use the client
 client.commandFinished(sessionID: sessionID, commandStatus: status)
 
 // OR use the Session object
 session.commandFinished(commandStatus: status)
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% /tabs %}}
+{{< /tabs >}}
 
 
 ## Event flow

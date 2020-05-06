@@ -14,43 +14,36 @@ reply with an error message, such as "I didn't understand that".
 
 To begin a new dialog, create a session by doing the following:
 
-{{%tabs %}}
+{{< tabs >}}
 
-{{% tab "Go" %}}
-```go
+{{< tab "Go" "go" >}}
 // The Diatheke model ID is defined in the Diatheke server config file.
 diathekeModelID := "1"
 sessionID, err := client.NewSession(context.Background(), diathekeModelID)
 
 // Be sure to close the session when we are done with it.
 defer client.EndSession(context.Background(), sessionID)
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "C++" %}}
-```c++
+{{< tab "C++" "c++" >}}
 // The Diatheke model ID is defined in the Diatheke server config file.
 std::string diathekeModelID = "1";
 std::string sessionID = client.newSession(diathekeModelID);
 
 // Be sure to close the session when we are done with it.
 client.endSession(sessionID);
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "Python" %}}
-``` python
+{{< tab "Python" "python">}}
 # The Diatheke model ID is defined in the Diatheke server config file.
 diatheke_model_id = "1"
 session_id = client.new_session(diatheke_model_id)
 
 # Be sure to close the session when we are done with it.
 client.end_session(session_id)
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "Swift/iOS" %}}
-```swift
+{{< tab "Swift/iOS" "swift" >}}
 // The Diatheke model ID is defined in the Diatheke server config file.
 let modelID = "1"
 var sessionID: String
@@ -65,10 +58,9 @@ client.newSession(model: modelID, success: { (sessionID) in
 client.endSession(sessionID: sessionID) { (error) in
     print(error.localizedDescription)
 }
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% /tabs %}}
+{{< /tabs >}}
 
 Creating a new session will return a session ID, which is required for all
 the session functions in the SDK.
@@ -93,10 +85,9 @@ sessions, the SDK provides a convenience class that wraps the client and
 session ID. The session object includes all the session functions as class
 members.
 
-{{%tabs %}}
+{{< tabs >}}
 
-{{% tab "Go" %}}
-``` go
+{{< tab "Go" "go" >}}
 // Wrap the session ID in the convenience class
 session := diatheke.Session{
     ID: sessionID,
@@ -105,31 +96,25 @@ session := diatheke.Session{
 
 // Use session methods without the ID as a parameter
 err := session.EndSession(context.Background());
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "C++" %}}
-``` c++
+{{< tab "C++" "c++" >}}
 // Wrap the session ID in the convenience class
 Diatheke::Session session(sessionID, &client);
 
 // Use session methods without the ID as a parameter
 session.EndSession();
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "Python" %}}
-``` python
+{{< tab "Python" "python">}}
 # Wrap the session ID in the convenience class
 session = diatheke.Session(session_id, client)
 
 # Use session methods without the ID as a parameter
 session.end_session()
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "Swift/iOS" %}}
-```swift
+{{< tab "Swift/iOS" "swift" >}}
 // Wrap the session ID in the convenience class
 let session = Session(id: sessionID, client: client)
 
@@ -137,7 +122,6 @@ let session = Session(id: sessionID, client: client)
 session.endSession { (error) in
     print(error.localizedDescription)
 }
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% /tabs %}}
+{{< /tabs >}}

@@ -264,35 +264,66 @@ Diatheke to respond. If, however, the user speaks the phrase &ldquo;buy pizza&rd
 and that intent is <em>not</em> in the model, Diatheke may ignore the phrase or
 reply with an error message, such as &ldquo;I didn&rsquo;t understand that&rdquo;.</p>
 <p>To begin a new dialog, create a session by doing the following:</p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<p><!-- raw HTML omitted -->// Be sure to close the session when we are done with it.
-<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->defer<!-- raw HTML omitted --> client.<!-- raw HTML omitted -->EndSession<!-- raw HTML omitted -->(context.<!-- raw HTML omitted -->Background<!-- raw HTML omitted -->(), sessionID)
-<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<p><!-- raw HTML omitted -->// Be sure to close the session when we are done with it.
-<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->client.endSession(sessionID);
-<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<p><!-- raw HTML omitted --># Be sure to close the session when we are done with it.<!-- raw HTML omitted -->
+<div class='code-tabs'><ul class="nav-tabs"></ul><div class="tab-content">
+
+<div class="tab-pane" title="Go">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">
+<span style="color:#999;font-style:italic">// The Diatheke model ID is defined in the Diatheke server config file.
+</span><span style="color:#999;font-style:italic"></span>diathekeModelID := <span style="color:#ed9d13">&#34;1&#34;</span>
+sessionID, err := client.<span style="color:#447fcf">NewSession</span>(context.<span style="color:#447fcf">Background</span>(), diathekeModelID)
+
+<span style="color:#999;font-style:italic">// Be sure to close the session when we are done with it.
+</span><span style="color:#999;font-style:italic"></span><span style="color:#6ab825;font-weight:bold">defer</span> client.<span style="color:#447fcf">EndSession</span>(context.<span style="color:#447fcf">Background</span>(), sessionID)
+</code></pre></div>
+</div>
+
+
+<div class="tab-pane" title="C&#43;&#43;">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">
+<span style="color:#999;font-style:italic">// The Diatheke model ID is defined in the Diatheke server config file.
+</span><span style="color:#999;font-style:italic"></span>std::string diathekeModelID = <span style="color:#ed9d13">&#34;1&#34;</span>;
+std::string sessionID = client.newSession(diathekeModelID);
+
+<span style="color:#999;font-style:italic">// Be sure to close the session when we are done with it.
+</span><span style="color:#999;font-style:italic"></span>client.endSession(sessionID);
+</code></pre></div>
+</div>
+
+
+<div class="tab-pane" title="Python">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">
+<span style="color:#999;font-style:italic"># The Diatheke model ID is defined in the Diatheke server config file.</span>
+diatheke_model_id = <span style="color:#ed9d13">&#34;1&#34;</span>
+session_id = client.new_session(diatheke_model_id)
+
+<span style="color:#999;font-style:italic"># Be sure to close the session when we are done with it.</span>
 client.end_session(session_id)
-<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<p>client.newSession(model: modelID, success: { (sessionID) <!-- raw HTML omitted -->in<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->self<!-- raw HTML omitted -->.sessionID = sessionID
-}) { (error) <!-- raw HTML omitted -->in<!-- raw HTML omitted -->
-print(error.localizedDescription)
-}</p>
-<p><!-- raw HTML omitted -->// Be sure to close the session when we are done with it.<!-- raw HTML omitted -->
-client.endSession(sessionID: sessionID) { (error) <!-- raw HTML omitted -->in<!-- raw HTML omitted -->
-print(error.localizedDescription)
+</code></pre></div>
+</div>
+
+
+<div class="tab-pane" title="Swift/iOS">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift">
+<span style="color:#999;font-style:italic">// The Diatheke model ID is defined in the Diatheke server config file.</span>
+<span style="color:#6ab825;font-weight:bold">let</span> <span style="color:#40ffff">modelID</span> = <span style="color:#ed9d13">&#34;1&#34;</span>
+<span style="color:#6ab825;font-weight:bold">var</span> <span style="color:#40ffff">sessionID</span>: <span style="color:#24909d">String</span>
+
+client.newSession(model: modelID, success: { (sessionID) <span style="color:#6ab825;font-weight:bold">in</span>
+    <span style="color:#6ab825;font-weight:bold">self</span>.sessionID = sessionID
+}) { (error) <span style="color:#6ab825;font-weight:bold">in</span>
+    print(error.localizedDescription)
 }
-<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
+
+<span style="color:#999;font-style:italic">// Be sure to close the session when we are done with it.</span>
+client.endSession(sessionID: sessionID) { (error) <span style="color:#6ab825;font-weight:bold">in</span>
+    print(error.localizedDescription)
+}
+</code></pre></div>
+</div>
+
+
+</div></div>
+
 <p>Creating a new session will return a session ID, which is required for all
 the session functions in the SDK.</p>
 <p>As shown in the example, sessions should be closed when they are no longer
@@ -311,30 +342,59 @@ restart the client and resume the session when the command has finished.</p>
 sessions, the SDK provides a convenience class that wraps the client and
 session ID. The session object includes all the session functions as class
 members.</p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<p><!-- raw HTML omitted -->// Use session methods without the ID as a parameter
-<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->err := session.<!-- raw HTML omitted -->EndSession<!-- raw HTML omitted -->(context.<!-- raw HTML omitted -->Background<!-- raw HTML omitted -->());
-<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<p><!-- raw HTML omitted -->// Use session methods without the ID as a parameter
-<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->session.EndSession();
-<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<p><!-- raw HTML omitted --># Use session methods without the ID as a parameter<!-- raw HTML omitted -->
-session.end_session()
-<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<h1 id="use-session-methods-without-the-id-span-stylecolor6ab825font-weightboldasspan-a-parameter">Use session methods without the ID <!-- raw HTML omitted -->as<!-- raw HTML omitted --> a parameter</h1>
-<p>session.endSession { (error) <!-- raw HTML omitted -->in<!-- raw HTML omitted -->
-print(error.localizedDescription)
+<div class='code-tabs'><ul class="nav-tabs"></ul><div class="tab-content">
+
+<div class="tab-pane" title="Go">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">
+<span style="color:#999;font-style:italic">// Wrap the session ID in the convenience class
+</span><span style="color:#999;font-style:italic"></span>session := diatheke.Session{
+    ID: sessionID,
+    Parent: client,
 }
-<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
+
+<span style="color:#999;font-style:italic">// Use session methods without the ID as a parameter
+</span><span style="color:#999;font-style:italic"></span>err := session.<span style="color:#447fcf">EndSession</span>(context.<span style="color:#447fcf">Background</span>());
+</code></pre></div>
+</div>
+
+
+<div class="tab-pane" title="C&#43;&#43;">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">
+<span style="color:#999;font-style:italic">// Wrap the session ID in the convenience class
+</span><span style="color:#999;font-style:italic"></span>Diatheke::Session session(sessionID, &amp;client);
+
+<span style="color:#999;font-style:italic">// Use session methods without the ID as a parameter
+</span><span style="color:#999;font-style:italic"></span>session.EndSession();
+</code></pre></div>
+</div>
+
+
+<div class="tab-pane" title="Python">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">
+<span style="color:#999;font-style:italic"># Wrap the session ID in the convenience class</span>
+session = diatheke.Session(session_id, client)
+
+<span style="color:#999;font-style:italic"># Use session methods without the ID as a parameter</span>
+session.end_session()
+</code></pre></div>
+</div>
+
+
+<div class="tab-pane" title="Swift/iOS">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift">
+<span style="color:#999;font-style:italic">// Wrap the session ID in the convenience class</span>
+<span style="color:#6ab825;font-weight:bold">let</span> <span style="color:#40ffff">session</span> = Session(id: sessionID, client: client)
+
+# Use session methods without the ID <span style="color:#6ab825;font-weight:bold">as</span> a parameter
+session.endSession { (error) <span style="color:#6ab825;font-weight:bold">in</span>
+    print(error.localizedDescription)
+}
+</code></pre></div>
+</div>
+
+
+</div></div>
+
 
 
     

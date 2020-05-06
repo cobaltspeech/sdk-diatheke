@@ -26,9 +26,9 @@ file) and the text to synthesize to be specified at creation. The
 returned stream will receive audio data from the server until synthesis
 is complete and the stream is closed.
 
-{{%tabs %}}
+{{< tabs >}}
 
-{{% tab "Go" %}}
+{{< tab "Go" "go" >}}
 ``` go
 // Specify the Luna model to use (not a Diatheke model)
 lunaModel := "1"
@@ -36,10 +36,9 @@ sentence := "this is the text to synthesize"
 
 // Create the TTS stream
 stream, err := client.StreamTTS(context.Background(), lunaModel, sentence)
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "C++" %}}
+{{< tab "C++" "c++" >}}
 ``` c++
 // Specify the Luna model to use (not a Diatheke model)
 std::string lunaModel = "1";
@@ -48,10 +47,9 @@ std::string sentence = "this is the text to synthesize";
 // Create the TTS stream
 std::unique_ptr<Diatheke::TTSStream> stream = 
     client.streamTTS(lunaModel, sentence);
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "Python" %}}
+{{< tab "Python" "python">}}
 ``` python
 # Specify the Luna model to use (not a Diatheke model)
 luna_model = "1"
@@ -59,10 +57,9 @@ sentence = "this is the text to synthesize"
 
 # Create the TTS stream
 stream = client.stream_tts(luna_model, sentence)
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "Swift/iOS" %}}
+{{< tab "Swift/iOS" "swift" >}}
 ``` swift
 // Specify the Luna model to use (not a Diatheke model)
 let lunaModel = "1"
@@ -73,10 +70,9 @@ client.streamTTS(model: lunaModel, text: sentence) { (response) in
     // Handle TTS response
     self.handleTTSResponse(response)
 }
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% /tabs %}}
+{{< /tabs >}}
 
 ## Receiving Audio
 The only data returned on the TTS stream will be audio data. The simplest
@@ -89,9 +85,9 @@ responsibility to handle the output audio, whether it sends it to an output
 device (e.g., speakers), saves it to a file, or does some other processing
 of the audio data.
 
-{{% tabs %}}
+{{< tabs >}}
 
-{{% tab "Go" %}}
+{{< tab "Go" "go" >}}
 ``` go
 // Receive data from the TTS stream until it is closed, which will happen
 // when synthesis is complete, or the context used to create the stream
@@ -116,10 +112,9 @@ for {
 }
 
 fmt.Printf("Synthesis complete.\n")
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "C++" %}}
+{{< tab "C++" "c++" >}}
 ``` c++
 // Receive data from the TTS stream until it is closed, which will happen
 // when synthesis is complete.
@@ -133,10 +128,9 @@ while (stream->waitForAudio(&response))
 }
 
 std::cout << "Synthesis complete." << std::endl;
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "Python" %}}
+{{< tab "Python" "python">}}
 ``` python
 # Receive data from the TTS stream until it is closed, which will happen
 # when synthesis is complete.
@@ -146,15 +140,13 @@ for response in stream:
     print("TTS Data size (bytes): {}".format(len(audio_data)))
 
 print("Synthesis complete.")
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "Swift/iOS" %}}
+{{< tab "Swift/iOS" "swift" >}}
 ``` swift
 func handleTTSResponse(_ response: Cobaltspeech_Diatheke_TTSResponse) {
     print("TTS Data size (bytes): \(response.data.count)")
 }
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% /tabs %}}
+{{< /tabs >}}

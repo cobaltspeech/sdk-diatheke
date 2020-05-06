@@ -18,10 +18,9 @@ these can be replaced with your server address in actual code.
 The following code snippet connects to the server and queries its version.  It uses our recommended 
 default setup, expecting the server to be listening on a TLS encrypted connection.
 
-{{%tabs %}}
+{{< tabs >}}
 
-{{% tab "Go" %}}
-``` go
+{{< tab "Go" "go" >}}
 package main
 
 import (
@@ -50,11 +49,9 @@ func main() {
 
 	fmt.Println(version)
 }
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "C++" %}}
-``` c++
+{{< tab "C++" "c++" >}}
 // File - main.cpp
 
 #include "diatheke_client.h"
@@ -73,21 +70,17 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "Python" %}}
-``` python
+{{< tab "Python" "python">}}
 import diatheke
 
 client = diatheke.Client(server_address="localhost:9002")
 version = client.diatheke_version()
 print("Diatheke version {}".format(version))
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "Swift/iOS" %}}
-``` swift
+{{< tab "Swift/iOS" "swift" >}}
 import Diatheke
 
 class DiathekeConnection {
@@ -98,10 +91,9 @@ class DiathekeConnection {
     let client = Client(host: serverAddress, port: serverPort, useTLS: true)
 
 }
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{%/tabs %}}
+{{< /tabs >}}
 
 
 ## Insecure Connection
@@ -112,34 +104,26 @@ attempting to connect with an insecure client will fail.
 
 To create an insecure connection, do the following when creating the client:
 
-{{%tabs %}}
+{{< tabs >}}
 
-{{% tab "Go" %}}
-``` go
+{{< tab "Go" "go" >}}
 client, err := diatheke.NewClient(serverAddr, diatheke.WithInsecure())
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "C++" %}}
-``` c++
+{{< tab "C++" "c++" >}}
 Diatheke::Client client(serverAddr, true);
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "Python" %}}
-``` python
+{{< tab "Python" "python">}}
 client = diatheke.Client(server_addres="localhost:9002",
                          insecure=True)
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "Swift/iOS" %}}
-``` swift
+{{< tab "Swift/iOS" "swift" >}}
 let client = Client(host: serverAddress, port: serverPort, useTLS: false)
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{%/tabs %}}
+{{< /tabs >}}
 
 ## Client Authentication
 
@@ -157,36 +141,29 @@ Please note that in the client-authentication mode, the client will still also
 verify the server's certificate, and therefore this setup uses mutually
 authenticated TLS. This can be done with:
 
-{{%tabs %}}
+{{< tabs >}}
 
-{{% tab "Go" %}}
-``` go
+{{< tab "Go" "go" >}}
 // certPem and keyPem are the bytes of the client certificate and key
 // provided to you.
 client, err := diatheke.NewClient(serverAddr, diatheke.WithClientCert(certPem, keyPem))
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "C++" %}}
-``` c++
+{{< tab "C++" "c++" >}}
 
 // Currently unsupported in C++.
 
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "Python" %}}
-``` python
+{{< tab "Python" "python">}}
 # cert_pem and key_pem are the contents of the client certificate and key
 # provided to you.
 client = diatheke.Client(server_address="localhost:9002",
                          client_certificate=cert_pem,
                          client_key=key_pem)
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{% tab "Swift/iOS" %}}
-``` swift
+{{< tab "Swift/iOS" "swift" >}}
 import Cubic
 import NIOSSL
 
@@ -198,7 +175,6 @@ class DiathekeConnection {
     let client = Client(host: serverAddress, port: serverPort, tlsCertificateFileName: "root", tlsCertificateFormat: .pem)
 
 }
-```
-{{% /tab %}}
+{{< /tab >}}
 
-{{%/tabs %}}
+{{< /tabs >}}
