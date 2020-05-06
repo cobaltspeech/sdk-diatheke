@@ -18,7 +18,6 @@ stream will be closed by the server when the session ends.
 {{< tabs >}}
 
 {{< tab "Go" "go" >}}
-``` go
 // Create the stream using the client and session ID
 stream, err := client.StreamAudioReplies(context.Background(), sessionID)
 
@@ -27,7 +26,6 @@ stream, err := session.StreamAudioReplies(context.Background())
 {{< /tab >}}
 
 {{< tab "C++" "c++" >}}
-``` c++
 // The stream is returned as a std::unique_ptr
 std::unique_ptr<Diatheke::AudioReplyStream> stream;
 
@@ -39,7 +37,6 @@ stream = session.streamAudioReplies();
 {{< /tab >}}
 
 {{< tab "Python" "python">}}
-``` python
 # Create the stream using the client and session ID
 stream = client.stream_audio_replies(session_id)
 
@@ -48,7 +45,6 @@ stream = session.stream_audio_replies()
 {{< /tab >}}
 
 {{< tab "Swift/iOS" "swift" >}}
-``` swift
 # Create the stream using the client and session ID
 let stream = client.streamAudioReplies(sessionID: sessionID) { (reply) in
     // Handle audio reply
@@ -82,7 +78,6 @@ saves it to a file, or some other processing of the audio data.
 {{< tabs >}}
 
 {{< tab "Go" "go" >}}
-``` go
 for {
     // Wait for replies from the server until the stream is closed,
     // which will happen when the session is closed or the stream's
@@ -121,7 +116,6 @@ for {
 {{< /tab >}}
 
 {{< tab "C++" "c++" >}}
-``` c++
 // Wait for replies until the stream is closed, which will happen when
 // the session is closed or the stream's context stops.
 cobaltspeech::diatheke::AudioReply reply;
@@ -157,7 +151,6 @@ stream->close();
 {{< /tab >}}
 
 {{< tab "Python" "python">}}
-``` python
 # Wait for replies from the server until the stream is closed, which
 # will happen when the session is closed.
 for msg in stream:
@@ -180,7 +173,6 @@ for msg in stream:
 {{< /tab >}}
 
 {{< tab "Swift/iOS" "swift" >}}
-``` swift
 // Handle replies from the server until the stream is closed, which
 // will happen when the session is closed.
 let stream = session.streamAudioReplies { (reply) in

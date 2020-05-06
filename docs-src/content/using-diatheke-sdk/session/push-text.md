@@ -12,7 +12,6 @@ on the session's [event stream](../event-stream).
 {{< tabs >}}
 
 {{< tab "Go" "go" >}}
-``` go
 // Push text using the client and sessionID
 err := client.PushText(context.Background(), sessionID, "What's the capital of Assyria?")
 
@@ -21,7 +20,6 @@ err := session.PushText(context.Background(), "What's the capital of Assyria?")
 {{< /tab >}}
 
 {{< tab "C++" "c++" >}}
-``` c++
 // Push text using the client and sessionID
 client.pushText(sessionID, "What's the capital of Assyria?");
 
@@ -30,7 +28,6 @@ session.pushText("What's the capital of Assyria?");
 {{< /tab >}}
 
 {{< tab "Python" "python">}}
-``` python
 # Push text using the client and session ID
 client.push_text(session_id, "What's the capital of Assyria?")
 
@@ -39,7 +36,6 @@ session.push_text("What's the capital of Assyria?")
 {{< /tab >}}
 
 {{< tab "Swift/iOS" "swift" >}}
-``` swift
 # Push text using the client and session ID
 client.pushText(sessionID: sessionID, text: "What's the capital of Assyria?") { (error) in
         print(error.localizedDescription)

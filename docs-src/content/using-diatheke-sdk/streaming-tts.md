@@ -29,7 +29,6 @@ is complete and the stream is closed.
 {{< tabs >}}
 
 {{< tab "Go" "go" >}}
-``` go
 // Specify the Luna model to use (not a Diatheke model)
 lunaModel := "1"
 sentence := "this is the text to synthesize"
@@ -39,7 +38,6 @@ stream, err := client.StreamTTS(context.Background(), lunaModel, sentence)
 {{< /tab >}}
 
 {{< tab "C++" "c++" >}}
-``` c++
 // Specify the Luna model to use (not a Diatheke model)
 std::string lunaModel = "1";
 std::string sentence = "this is the text to synthesize";
@@ -50,7 +48,6 @@ std::unique_ptr<Diatheke::TTSStream> stream =
 {{< /tab >}}
 
 {{< tab "Python" "python">}}
-``` python
 # Specify the Luna model to use (not a Diatheke model)
 luna_model = "1"
 sentence = "this is the text to synthesize"
@@ -60,7 +57,6 @@ stream = client.stream_tts(luna_model, sentence)
 {{< /tab >}}
 
 {{< tab "Swift/iOS" "swift" >}}
-``` swift
 // Specify the Luna model to use (not a Diatheke model)
 let lunaModel = "1"
 let sentence = "this is the text to synthesize"
@@ -88,7 +84,6 @@ of the audio data.
 {{< tabs >}}
 
 {{< tab "Go" "go" >}}
-``` go
 // Receive data from the TTS stream until it is closed, which will happen
 // when synthesis is complete, or the context used to create the stream
 // is cancelled.
@@ -115,7 +110,6 @@ fmt.Printf("Synthesis complete.\n")
 {{< /tab >}}
 
 {{< tab "C++" "c++" >}}
-``` c++
 // Receive data from the TTS stream until it is closed, which will happen
 // when synthesis is complete.
 cobaltspeech::diatheke::TTSResponse response;
@@ -131,7 +125,6 @@ std::cout << "Synthesis complete." << std::endl;
 {{< /tab >}}
 
 {{< tab "Python" "python">}}
-``` python
 # Receive data from the TTS stream until it is closed, which will happen
 # when synthesis is complete.
 for response in stream:
@@ -143,7 +136,6 @@ print("Synthesis complete.")
 {{< /tab >}}
 
 {{< tab "Swift/iOS" "swift" >}}
-``` swift
 func handleTTSResponse(_ response: Cobaltspeech_Diatheke_TTSResponse) {
     print("TTS Data size (bytes): \(response.data.count)")
 }
