@@ -559,17 +559,6 @@ mClient.commandFinished(status, new StreamObserver<DiathekeOuterClass.Empty>() {
     }
 });
 
-OR 
-
-DiathekeGrpc.DiathekeFutureStub diathekeFutureStub = DiathekeGrpc.newFutureStub(mCubicChannel);
-DiathekeOuterClass.CommandStatus status = DiathekeOuterClass.CommandStatus.newBuilder().build();
-ListenableFuture<DiathekeOuterClass.Empty> emptyListenableFuture = diathekeFutureStub.commandFinished(status);
-DiathekeOuterClass.Empty empty;
-try {
-    empty = emptyListenableFuture.get();
-} catch (InterruptedException | ExecutionException e) {
-    e.printStackTrace();
-}
 {{< /tab >}}
 
 {{< /tabs >}}

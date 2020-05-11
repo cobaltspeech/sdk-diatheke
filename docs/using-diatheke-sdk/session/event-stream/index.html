@@ -892,17 +892,6 @@ mClient.<span style="color:#bbb">commandFinished</span>(status, <span style="col
     }
 });
 
-OR 
-
-DiathekeGrpc.<span style="color:#bbb">DiathekeFutureStub</span> diathekeFutureStub = DiathekeGrpc.<span style="color:#bbb">newFutureStub</span>(mCubicChannel);
-DiathekeOuterClass.<span style="color:#bbb">CommandStatus</span> status = DiathekeOuterClass.<span style="color:#bbb">CommandStatus</span>.<span style="color:#bbb">newBuilder</span>().<span style="color:#bbb">build</span>();
-ListenableFuture&lt;DiathekeOuterClass.<span style="color:#bbb">Empty</span>&gt; emptyListenableFuture = diathekeFutureStub.<span style="color:#bbb">commandFinished</span>(status);
-DiathekeOuterClass.<span style="color:#bbb">Empty</span> empty;
-<span style="color:#6ab825;font-weight:bold">try</span> {
-    empty = emptyListenableFuture.<span style="color:#bbb">get</span>();
-} <span style="color:#6ab825;font-weight:bold">catch</span> (InterruptedException | ExecutionException e) {
-    e.<span style="color:#bbb">printStackTrace</span>();
-}
 </code></pre></div>
 </div>
 
