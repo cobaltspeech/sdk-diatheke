@@ -94,7 +94,6 @@ class DiathekeConnection {
 {{< /tab >}}
 
 {{< tab "Java/Android" "java" >}}
-```java
 	import cobaltspeech.diatheke.DiathekeGrpc;
 	String serverAddress = "localhost";
 	int serverPort = 9002;
@@ -136,6 +135,7 @@ let client = Client(host: serverAddress, port: serverPort, useTLS: false)
 {{< /tab >}}
 
 {{< tab "Java/Android" "java" >}}
+ManagedChannel mCubicChannel = ManagedChannelBuilder.forAddress(serverAddress,serverPort).build();
 DiathekeGrpc.DiathekeStub mClient = DiathekeGrpc.newStub(mCubicChannel);
 {{< /tab >}}
 
@@ -194,9 +194,12 @@ class DiathekeConnection {
 {{< /tab >}}
 
 {{< tab "Java/Android" "java" >}}
+
 ManagedChannelBuilder<?> builder = ManagedChannelBuilder
 	.forAddress(serverAddress,serverPort)
 	.useTransportSecurity(certChainFile, privateKeyFile)
+ManagedChannel mCubicChannel = builder.build();
+DiathekeGrpc.DiathekeStub mClient = DiathekeGrpc.newStub(mCubicChannel);
 {{< /tab >}}
 
 {{</tabs >}}

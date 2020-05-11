@@ -212,19 +212,23 @@ let stream = session.streamAudioReplies { (reply) in
 {{< /tab >}}
 
 {{< tab "Java/Android" "java" >}}
-@Override
+ @Override
 public void onNext(DiathekeOuterClass.AudioReply value) {
     DiathekeOuterClass.AudioReply.OutputMessageCase outputMessageCase = value.getOutputMessageCase();
     switch (outputMessageCase) {
         case DATA:
+            // Audio data is received until speech synthesis is done.
             ByteString data = value.getData();
             Log.i("DATA",String.format("Data size %d",data.size()));
             break;
         case TEXT:
+                //The text of the reply comes first for a reply from Diatheke
             String text = value.getText();
             Log.i("TEXT",String.format("Text: %s",text));
             break;
         case END:
+            //This message comes at the end of a reply, after speech synthesis
+            //is complete. It has no data.
             Log.i("END","END");
             break;
     }
