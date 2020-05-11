@@ -87,7 +87,8 @@ client.newSession(model: model, success: { (sessionID) in
 ```
 ## Android 
 
-```java diathekeStub.sessionEventStream(DiathekeOuterClass.SessionID.newBuilder().build(), new StreamObserver<DiathekeOuterClass.DiathekeEvent>() {
+```java 
+diathekeStub.sessionEventStream(DiathekeOuterClass.SessionID.newBuilder().build(), new StreamObserver<DiathekeOuterClass.DiathekeEvent>() {
             @Override
             public void onNext(DiathekeOuterClass.DiathekeEvent value) {
                 // Handle success response here
