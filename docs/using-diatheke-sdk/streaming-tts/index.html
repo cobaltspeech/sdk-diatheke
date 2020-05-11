@@ -273,7 +273,6 @@ is complete and the stream is closed.</p>
 
 <div class="tab-pane" title="Go">
   <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">
-<span style="color:#ed9d13">``</span><span style="color:#a61717;background-color:#e3d2d2">`</span> <span style="color:#6ab825;font-weight:bold">go</span>
 <span style="color:#999;font-style:italic">// Specify the Luna model to use (not a Diatheke model)
 </span><span style="color:#999;font-style:italic"></span>lunaModel := <span style="color:#ed9d13">&#34;1&#34;</span>
 sentence := <span style="color:#ed9d13">&#34;this is the text to synthesize&#34;</span>
@@ -286,7 +285,6 @@ sentence := <span style="color:#ed9d13">&#34;this is the text to synthesize&#34;
 
 <div class="tab-pane" title="C&#43;&#43;">
   <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">
-<span style="color:#a61717;background-color:#e3d2d2">```</span> c++
 <span style="color:#999;font-style:italic">// Specify the Luna model to use (not a Diatheke model)
 </span><span style="color:#999;font-style:italic"></span>std::string lunaModel = <span style="color:#ed9d13">&#34;1&#34;</span>;
 std::string sentence = <span style="color:#ed9d13">&#34;this is the text to synthesize&#34;</span>;
@@ -300,7 +298,6 @@ std::string sentence = <span style="color:#ed9d13">&#34;this is the text to synt
 
 <div class="tab-pane" title="Python">
   <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">
-<span style="color:#ed9d13">``</span><span style="color:#a61717;background-color:#e3d2d2">`</span> python
 <span style="color:#999;font-style:italic"># Specify the Luna model to use (not a Diatheke model)</span>
 luna_model = <span style="color:#ed9d13">&#34;1&#34;</span>
 sentence = <span style="color:#ed9d13">&#34;this is the text to synthesize&#34;</span>
@@ -313,7 +310,6 @@ stream = client.stream_tts(luna_model, sentence)
 
 <div class="tab-pane" title="Swift/iOS">
   <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift">
-``` swift
 <span style="color:#999;font-style:italic">// Specify the Luna model to use (not a Diatheke model)</span>
 <span style="color:#6ab825;font-weight:bold">let</span> <span style="color:#40ffff">lunaModel</span> = <span style="color:#ed9d13">&#34;1&#34;</span>
 <span style="color:#6ab825;font-weight:bold">let</span> <span style="color:#40ffff">sentence</span> = <span style="color:#ed9d13">&#34;this is the text to synthesize&#34;</span>
@@ -323,6 +319,32 @@ client.streamTTS(model: lunaModel, text: sentence) { (response) <span style="col
     <span style="color:#999;font-style:italic">// Handle TTS response</span>
     <span style="color:#6ab825;font-weight:bold">self</span>.handleTTSResponse(response)
 }
+</code></pre></div>
+</div>
+
+
+<div class="tab-pane" title="Java/Android">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">
+DiathekeOuterClass.<span style="color:#bbb">TTSRequest</span> ttsRequest = DiathekeOuterClass.<span style="color:#bbb">TTSRequest</span>.<span style="color:#bbb">newBuilder</span>()
+        .<span style="color:#bbb">setModel</span>(modelId)
+        .<span style="color:#bbb">setText</span>(text)
+        .<span style="color:#bbb">build</span>();
+mClient.<span style="color:#bbb">streamTTS</span>(ttsRequest, <span style="color:#6ab825;font-weight:bold">new</span> StreamObserver&lt;DiathekeOuterClass.<span style="color:#bbb">TTSResponse</span>&gt;() {
+    <span style="color:#ffa500">@Override</span>
+    <span style="color:#6ab825;font-weight:bold">public</span> <span style="color:#6ab825;font-weight:bold">void</span> <span style="color:#447fcf">onNext</span>(DiathekeOuterClass.<span style="color:#bbb">TTSResponse</span> value) {
+        handleTTSResponse(value);
+    }
+
+    <span style="color:#ffa500">@Override</span>
+    <span style="color:#6ab825;font-weight:bold">public</span> <span style="color:#6ab825;font-weight:bold">void</span> <span style="color:#447fcf">onError</span>(Throwable t) {
+
+    }
+
+    <span style="color:#ffa500">@Override</span>
+    <span style="color:#6ab825;font-weight:bold">public</span> <span style="color:#6ab825;font-weight:bold">void</span> <span style="color:#447fcf">onCompleted</span>() {
+
+    }
+});
 </code></pre></div>
 </div>
 
@@ -342,7 +364,6 @@ of the audio data.</p>
 
 <div class="tab-pane" title="Go">
   <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">
-<span style="color:#ed9d13">``</span><span style="color:#a61717;background-color:#e3d2d2">`</span> <span style="color:#6ab825;font-weight:bold">go</span>
 <span style="color:#999;font-style:italic">// Receive data from the TTS stream until it is closed, which will happen
 </span><span style="color:#999;font-style:italic">// when synthesis is complete, or the context used to create the stream
 </span><span style="color:#999;font-style:italic">// is cancelled.
@@ -372,7 +393,6 @@ fmt.<span style="color:#447fcf">Printf</span>(<span style="color:#ed9d13">&#34;S
 
 <div class="tab-pane" title="C&#43;&#43;">
   <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">
-<span style="color:#a61717;background-color:#e3d2d2">```</span> c++
 <span style="color:#999;font-style:italic">// Receive data from the TTS stream until it is closed, which will happen
 </span><span style="color:#999;font-style:italic">// when synthesis is complete.
 </span><span style="color:#999;font-style:italic"></span>cobaltspeech::diatheke::TTSResponse response;
@@ -391,7 +411,6 @@ std::cout &lt;&lt; <span style="color:#ed9d13">&#34;Synthesis complete.&#34;</sp
 
 <div class="tab-pane" title="Python">
   <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">
-<span style="color:#ed9d13">``</span><span style="color:#a61717;background-color:#e3d2d2">`</span> python
 <span style="color:#999;font-style:italic"># Receive data from the TTS stream until it is closed, which will happen</span>
 <span style="color:#999;font-style:italic"># when synthesis is complete.</span>
 <span style="color:#6ab825;font-weight:bold">for</span> response <span style="color:#6ab825;font-weight:bold">in</span> stream:
@@ -406,9 +425,18 @@ std::cout &lt;&lt; <span style="color:#ed9d13">&#34;Synthesis complete.&#34;</sp
 
 <div class="tab-pane" title="Swift/iOS">
   <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift">
-``` swift
 <span style="color:#6ab825;font-weight:bold">func</span> <span style="color:#447fcf">handleTTSResponse</span>(<span style="color:#6ab825;font-weight:bold">_</span> response: Cobaltspeech_Diatheke_TTSResponse) {
     print(<span style="color:#ed9d13">&#34;TTS Data size (bytes): </span><span style="color:#ed9d13">\(</span>response.data.count<span style="color:#ed9d13">)</span><span style="color:#ed9d13">&#34;</span>)
+}
+</code></pre></div>
+</div>
+
+
+<div class="tab-pane" title="Java/Android">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">
+<span style="color:#6ab825;font-weight:bold">private</span> <span style="color:#6ab825;font-weight:bold">void</span> <span style="color:#447fcf">handleTTSResponse</span>(DiathekeOuterClass.<span style="color:#bbb">TTSResponse</span> value) {
+    ByteString data = value.<span style="color:#bbb">getData</span>();
+    Log.<span style="color:#bbb">i</span>(<span style="color:#ed9d13">&#34;TTSResponse&#34;</span>,String.<span style="color:#bbb">format</span>(<span style="color:#ed9d13">&#34;TTS Data size (bytes): %d&#34;</span>, data.<span style="color:#bbb">size</span>()))
 }
 </code></pre></div>
 </div>

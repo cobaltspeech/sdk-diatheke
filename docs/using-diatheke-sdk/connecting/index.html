@@ -347,6 +347,20 @@ version = client.diatheke_version()
 </div>
 
 
+<div class="tab-pane" title="Java/Android">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">
+	<span style="color:#6ab825;font-weight:bold">import</span> <span style="color:#447fcf;text-decoration:underline">cobaltspeech.diatheke.DiathekeGrpc</span>;
+	String serverAddress = <span style="color:#ed9d13">&#34;localhost&#34;</span>;
+	<span style="color:#6ab825;font-weight:bold">int</span> serverPort = 9002;
+	ManagedChannelBuilder&lt;?&gt; builder = ManagedChannelBuilder
+			.<span style="color:#bbb">forAddress</span>(serverAddress,serverPort);
+	builder.<span style="color:#bbb">usePlaintext</span>();
+	ManagedChannel mCubicChannel = builder.<span style="color:#bbb">build</span>();
+	DiathekeGrpc.<span style="color:#bbb">DiathekeStub</span> mClient = DiathekeGrpc.<span style="color:#bbb">newStub</span>(mCubicChannel);
+</code></pre></div>
+</div>
+
+
 </div></div>
 
 <h2 id="insecure-connection">Insecure Connection</h2>
@@ -381,6 +395,14 @@ client = diatheke.Client(server_addres=<span style="color:#ed9d13">&#34;localhos
 <div class="tab-pane" title="Swift/iOS">
   <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift">
 <span style="color:#6ab825;font-weight:bold">let</span> <span style="color:#40ffff">client</span> = Client(host: serverAddress, port: serverPort, useTLS: <span style="color:#6ab825;font-weight:bold">false</span>)
+</code></pre></div>
+</div>
+
+
+<div class="tab-pane" title="Java/Android">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">
+ManagedChannel mCubicChannel = ManagedChannelBuilder.<span style="color:#bbb">forAddress</span>(serverAddress,serverPort).<span style="color:#bbb">build</span>();
+DiathekeGrpc.<span style="color:#bbb">DiathekeStub</span> mClient = DiathekeGrpc.<span style="color:#bbb">newStub</span>(mCubicChannel);
 </code></pre></div>
 </div>
 
@@ -443,6 +465,18 @@ client = diatheke.Client(server_address=<span style="color:#ed9d13">&#34;localho
     <span style="color:#6ab825;font-weight:bold">let</span> <span style="color:#40ffff">client</span> = Client(host: serverAddress, port: serverPort, tlsCertificateFileName: <span style="color:#ed9d13">&#34;root&#34;</span>, tlsCertificateFormat: .pem)
 
 }
+</code></pre></div>
+</div>
+
+
+<div class="tab-pane" title="Java/Android">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">
+
+ManagedChannelBuilder&lt;?&gt; builder = ManagedChannelBuilder
+	.<span style="color:#bbb">forAddress</span>(serverAddress,serverPort)
+	.<span style="color:#bbb">useTransportSecurity</span>(certChainFile, privateKeyFile)
+ManagedChannel mCubicChannel = builder.<span style="color:#bbb">build</span>();
+DiathekeGrpc.<span style="color:#bbb">DiathekeStub</span> mClient = DiathekeGrpc.<span style="color:#bbb">newStub</span>(mCubicChannel);
 </code></pre></div>
 </div>
 

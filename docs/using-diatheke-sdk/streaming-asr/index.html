@@ -324,6 +324,29 @@ stream = client.stream_asr(cubic_model)
 </div>
 
 
+<div class="tab-pane" title="Java/Android">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">
+StreamObserver&lt;DiathekeOuterClass.<span style="color:#bbb">ASRRequest</span>&gt; asrRequestStreamObserver = mClient.<span style="color:#bbb">streamASR</span>(<span style="color:#6ab825;font-weight:bold">new</span> StreamObserver&lt;DiathekeOuterClass.<span style="color:#bbb">ASRResponse</span>&gt;() {
+    <span style="color:#ffa500">@Override</span>
+    <span style="color:#6ab825;font-weight:bold">public</span> <span style="color:#6ab825;font-weight:bold">void</span> <span style="color:#447fcf">onNext</span>(DiathekeOuterClass.<span style="color:#bbb">ASRResponse</span> value) {
+
+    }
+
+    <span style="color:#ffa500">@Override</span>
+    <span style="color:#6ab825;font-weight:bold">public</span> <span style="color:#6ab825;font-weight:bold">void</span> <span style="color:#447fcf">onError</span>(Throwable t) {
+
+    }
+
+    <span style="color:#ffa500">@Override</span>
+    <span style="color:#6ab825;font-weight:bold">public</span> <span style="color:#6ab825;font-weight:bold">void</span> <span style="color:#447fcf">onCompleted</span>() {
+
+    }
+});
+
+</code></pre></div>
+</div>
+
+
 </div></div>
 
 <h2 id="pushing-audio">Pushing Audio</h2>
@@ -416,6 +439,15 @@ stream.finishAudio()
 </div>
 
 
+<div class="tab-pane" title="Java/Android">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">
+DiathekeOuterClass.<span style="color:#bbb">ASRRequest</span> asrRequest = DiathekeOuterClass.<span style="color:#bbb">ASRRequest</span>.<span style="color:#bbb">newBuilder</span>()
+                .<span style="color:#bbb">setAudio</span>(ByteString.<span style="color:#bbb">copyFrom</span>(bytes)).<span style="color:#bbb">build</span>();
+        asrRequestStreamObserver.<span style="color:#bbb">onNext</span>(asrRequest);
+</code></pre></div>
+</div>
+
+
 </div></div>
 
 <h2 id="receiving-transcriptions">Receiving Transcriptions</h2>
@@ -501,6 +533,16 @@ the stream is closed (e.g., by calling AudioFinished()).</p>
     print(<span style="color:#ed9d13">&#34;ASR Response:&#34;</span>)
     print(<span style="color:#ed9d13">&#34;Transcription: </span><span style="color:#ed9d13">\(</span>response.text<span style="color:#ed9d13">)</span><span style="color:#ed9d13">&#34;</span>)
     print(<span style="color:#ed9d13">&#34;Confidence Score: </span><span style="color:#ed9d13">\(</span>response.confidenceScore<span style="color:#ed9d13">)</span><span style="color:#ed9d13">&#34;</span>)
+}
+</code></pre></div>
+</div>
+
+
+<div class="tab-pane" title="Java/Android">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">
+<span style="color:#6ab825;font-weight:bold">private</span> <span style="color:#6ab825;font-weight:bold">void</span> <span style="color:#447fcf">handleASRResponse</span>(DiathekeOuterClass.<span style="color:#bbb">ASRResponse</span> value) {
+    Log.<span style="color:#bbb">i</span>(<span style="color:#ed9d13">&#34;ASRResponse&#34;</span>,String.<span style="color:#bbb">format</span>(<span style="color:#ed9d13">&#34;%d&#34;</span>,value.<span style="color:#bbb">getConfidenceScore</span>()));
+    Log.<span style="color:#bbb">i</span>(<span style="color:#ed9d13">&#34;ASRResponse&#34;</span>,String.<span style="color:#bbb">format</span>(<span style="color:#ed9d13">&#34;%d&#34;</span>,value.<span style="color:#bbb">getText</span>()));
 }
 </code></pre></div>
 </div>

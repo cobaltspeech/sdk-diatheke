@@ -269,7 +269,6 @@ stream will be closed by the server when the session ends.</p>
 
 <div class="tab-pane" title="Go">
   <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">
-<span style="color:#ed9d13">``</span><span style="color:#a61717;background-color:#e3d2d2">`</span> <span style="color:#6ab825;font-weight:bold">go</span>
 <span style="color:#999;font-style:italic">// Create the stream using the client and session ID
 </span><span style="color:#999;font-style:italic"></span>stream, err := client.<span style="color:#447fcf">StreamAudioReplies</span>(context.<span style="color:#447fcf">Background</span>(), sessionID)
 
@@ -281,7 +280,6 @@ stream will be closed by the server when the session ends.</p>
 
 <div class="tab-pane" title="C&#43;&#43;">
   <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">
-<span style="color:#a61717;background-color:#e3d2d2">```</span> c++
 <span style="color:#999;font-style:italic">// The stream is returned as a std::unique_ptr
 </span><span style="color:#999;font-style:italic"></span>std::unique_ptr&lt;Diatheke::AudioReplyStream&gt; stream;
 
@@ -296,7 +294,6 @@ stream will be closed by the server when the session ends.</p>
 
 <div class="tab-pane" title="Python">
   <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">
-<span style="color:#ed9d13">``</span><span style="color:#a61717;background-color:#e3d2d2">`</span> python
 <span style="color:#999;font-style:italic"># Create the stream using the client and session ID</span>
 stream = client.stream_audio_replies(session_id)
 
@@ -308,7 +305,6 @@ stream = session.stream_audio_replies()
 
 <div class="tab-pane" title="Swift/iOS">
   <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift">
-``` swift
 # Create the stream using the client and session ID
 <span style="color:#6ab825;font-weight:bold">let</span> <span style="color:#40ffff">stream</span> = client.streamAudioReplies(sessionID: sessionID) { (reply) <span style="color:#6ab825;font-weight:bold">in</span>
     <span style="color:#999;font-style:italic">// Handle audio reply</span>
@@ -318,6 +314,31 @@ stream = session.stream_audio_replies()
 <span style="color:#6ab825;font-weight:bold">let</span> <span style="color:#40ffff">stream</span> = session.streamAudioReplies { (reply) <span style="color:#6ab825;font-weight:bold">in</span>
     <span style="color:#999;font-style:italic">// Handle audio reply</span>
 }
+</code></pre></div>
+</div>
+
+
+<div class="tab-pane" title="Java/Android">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">
+DiathekeOuterClass.<span style="color:#bbb">SessionID</span> mSession= DiathekeOuterClass.<span style="color:#bbb">SessionID</span>.<span style="color:#bbb">newBuilder</span>()
+                .<span style="color:#bbb">setSessionId</span>(sessionId)
+                .<span style="color:#bbb">build</span>();
+mClient.<span style="color:#bbb">streamAudioReplies</span>(mSession, <span style="color:#6ab825;font-weight:bold">new</span> StreamObserver&lt;DiathekeOuterClass.<span style="color:#bbb">AudioReply</span>&gt;() {
+    <span style="color:#ffa500">@Override</span>
+    <span style="color:#6ab825;font-weight:bold">public</span> <span style="color:#6ab825;font-weight:bold">void</span> <span style="color:#447fcf">onNext</span>(DiathekeOuterClass.<span style="color:#bbb">AudioReply</span> value) {
+        
+    }
+
+    <span style="color:#ffa500">@Override</span>
+    <span style="color:#6ab825;font-weight:bold">public</span> <span style="color:#6ab825;font-weight:bold">void</span> <span style="color:#447fcf">onError</span>(Throwable t) {
+
+    }
+
+    <span style="color:#ffa500">@Override</span>
+    <span style="color:#6ab825;font-weight:bold">public</span> <span style="color:#6ab825;font-weight:bold">void</span> <span style="color:#447fcf">onCompleted</span>() {
+
+    }
+});
 </code></pre></div>
 </div>
 
@@ -342,7 +363,6 @@ saves it to a file, or some other processing of the audio data.</p>
 
 <div class="tab-pane" title="Go">
   <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">
-<span style="color:#ed9d13">``</span><span style="color:#a61717;background-color:#e3d2d2">`</span> <span style="color:#6ab825;font-weight:bold">go</span>
 <span style="color:#6ab825;font-weight:bold">for</span> {
     <span style="color:#999;font-style:italic">// Wait for replies from the server until the stream is closed,
 </span><span style="color:#999;font-style:italic"></span>    <span style="color:#999;font-style:italic">// which will happen when the session is closed or the stream&#39;s
@@ -384,7 +404,6 @@ saves it to a file, or some other processing of the audio data.</p>
 
 <div class="tab-pane" title="C&#43;&#43;">
   <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">
-<span style="color:#a61717;background-color:#e3d2d2">```</span> c++
 <span style="color:#999;font-style:italic">// Wait for replies until the stream is closed, which will happen when
 </span><span style="color:#999;font-style:italic">// the session is closed or the stream&#39;s context stops.
 </span><span style="color:#999;font-style:italic"></span>cobaltspeech::diatheke::AudioReply reply;
@@ -423,7 +442,6 @@ stream-&gt;close();
 
 <div class="tab-pane" title="Python">
   <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">
-<span style="color:#ed9d13">``</span><span style="color:#a61717;background-color:#e3d2d2">`</span> python
 <span style="color:#999;font-style:italic"># Wait for replies from the server until the stream is closed, which</span>
 <span style="color:#999;font-style:italic"># will happen when the session is closed.</span>
 <span style="color:#6ab825;font-weight:bold">for</span> msg <span style="color:#6ab825;font-weight:bold">in</span> stream:
@@ -449,7 +467,6 @@ stream-&gt;close();
 
 <div class="tab-pane" title="Swift/iOS">
   <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift">
-``` swift
 <span style="color:#999;font-style:italic">// Handle replies from the server until the stream is closed, which</span>
 <span style="color:#999;font-style:italic">// will happen when the session is closed.</span>
 <span style="color:#6ab825;font-weight:bold">let</span> <span style="color:#40ffff">stream</span> = session.streamAudioReplies { (reply) <span style="color:#6ab825;font-weight:bold">in</span>
@@ -462,6 +479,33 @@ stream-&gt;close();
         print(<span style="color:#ed9d13">&#34;Data size (bytes): </span><span style="color:#ed9d13">\(</span>audioData.count<span style="color:#ed9d13">)</span><span style="color:#ed9d13">&#34;</span>)
     <span style="color:#6ab825;font-weight:bold">case</span> .end(<span style="color:#6ab825;font-weight:bold">_</span>):
         print(<span style="color:#ed9d13">&#34;Reply complete&#34;</span>)
+    }
+}
+</code></pre></div>
+</div>
+
+
+<div class="tab-pane" title="Java/Android">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">
+ <span style="color:#ffa500">@Override</span>
+<span style="color:#6ab825;font-weight:bold">public</span> <span style="color:#6ab825;font-weight:bold">void</span> <span style="color:#447fcf">onNext</span>(DiathekeOuterClass.<span style="color:#bbb">AudioReply</span> value) {
+    DiathekeOuterClass.<span style="color:#bbb">AudioReply</span>.<span style="color:#bbb">OutputMessageCase</span> outputMessageCase = value.<span style="color:#bbb">getOutputMessageCase</span>();
+    <span style="color:#6ab825;font-weight:bold">switch</span> (outputMessageCase) {
+        <span style="color:#6ab825;font-weight:bold">case</span> DATA:
+            <span style="color:#999;font-style:italic">// Audio data is received until speech synthesis is done.
+</span><span style="color:#999;font-style:italic"></span>            ByteString data = value.<span style="color:#bbb">getData</span>();
+            Log.<span style="color:#bbb">i</span>(<span style="color:#ed9d13">&#34;DATA&#34;</span>,String.<span style="color:#bbb">format</span>(<span style="color:#ed9d13">&#34;Data size %d&#34;</span>,data.<span style="color:#bbb">size</span>()));
+            <span style="color:#6ab825;font-weight:bold">break</span>;
+        <span style="color:#6ab825;font-weight:bold">case</span> TEXT:
+                <span style="color:#999;font-style:italic">//The text of the reply comes first for a reply from Diatheke
+</span><span style="color:#999;font-style:italic"></span>            String text = value.<span style="color:#bbb">getText</span>();
+            Log.<span style="color:#bbb">i</span>(<span style="color:#ed9d13">&#34;TEXT&#34;</span>,String.<span style="color:#bbb">format</span>(<span style="color:#ed9d13">&#34;Text: %s&#34;</span>,text));
+            <span style="color:#6ab825;font-weight:bold">break</span>;
+        <span style="color:#6ab825;font-weight:bold">case</span> END:
+            <span style="color:#999;font-style:italic">//This message comes at the end of a reply, after speech synthesis
+</span><span style="color:#999;font-style:italic"></span>            <span style="color:#999;font-style:italic">//is complete. It has no data.
+</span><span style="color:#999;font-style:italic"></span>            Log.<span style="color:#bbb">i</span>(<span style="color:#ed9d13">&#34;END&#34;</span>,<span style="color:#ed9d13">&#34;END&#34;</span>);
+            <span style="color:#6ab825;font-weight:bold">break</span>;
     }
 }
 </code></pre></div>

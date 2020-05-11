@@ -322,6 +322,32 @@ client.endSession(sessionID: sessionID) { (error) <span style="color:#6ab825;fon
 </div>
 
 
+<div class="tab-pane" title="Java/Android">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">
+String modelID = <span style="color:#ed9d13">&#34;1&#34;</span>
+DiathekeOuterClass.<span style="color:#bbb">NewSessionRequest</span> request = DiathekeOuterClass.<span style="color:#bbb">NewSessionRequest</span>.<span style="color:#bbb">newBuilder</span>()
+        .<span style="color:#bbb">setModel</span>(modelId)
+        .<span style="color:#bbb">build</span>();
+mClient.<span style="color:#bbb">newSession</span>(request, <span style="color:#6ab825;font-weight:bold">new</span> StreamObserver&lt;DiathekeOuterClass.<span style="color:#bbb">SessionID</span>&gt;() {
+    <span style="color:#ffa500">@Override</span>
+    <span style="color:#6ab825;font-weight:bold">public</span> <span style="color:#6ab825;font-weight:bold">void</span> <span style="color:#447fcf">onNext</span>(DiathekeOuterClass.<span style="color:#bbb">SessionID</span> value) {
+        String sessionId = value.<span style="color:#bbb">getSessionId</span>();
+    }
+
+    <span style="color:#ffa500">@Override</span>
+    <span style="color:#6ab825;font-weight:bold">public</span> <span style="color:#6ab825;font-weight:bold">void</span> <span style="color:#447fcf">onError</span>(Throwable t) {
+
+    }
+
+    <span style="color:#ffa500">@Override</span>
+    <span style="color:#6ab825;font-weight:bold">public</span> <span style="color:#6ab825;font-weight:bold">void</span> <span style="color:#447fcf">onCompleted</span>() {
+
+    }
+});
+</code></pre></div>
+</div>
+
+
 </div></div>
 
 <p>Creating a new session will return a session ID, which is required for all
@@ -389,6 +415,32 @@ session.end_session()
 session.endSession { (error) <span style="color:#6ab825;font-weight:bold">in</span>
     print(error.localizedDescription)
 }
+</code></pre></div>
+</div>
+
+
+<div class="tab-pane" title="Java/Android">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">
+<span style="color:#999;font-style:italic">// create request
+</span><span style="color:#999;font-style:italic"></span>DiathekeOuterClass.<span style="color:#bbb">SessionID</span> session = DiathekeOuterClass.<span style="color:#bbb">SessionID</span>.<span style="color:#bbb">newBuilder</span>()
+                .<span style="color:#bbb">setSessionId</span>(sessionId)
+                .<span style="color:#bbb">build</span>();
+mClient.<span style="color:#bbb">endSession</span>(session, <span style="color:#6ab825;font-weight:bold">new</span> StreamObserver&lt;DiathekeOuterClass.<span style="color:#bbb">Empty</span>&gt;() {
+    <span style="color:#ffa500">@Override</span>
+    <span style="color:#6ab825;font-weight:bold">public</span> <span style="color:#6ab825;font-weight:bold">void</span> <span style="color:#447fcf">onNext</span>(DiathekeOuterClass.<span style="color:#bbb">Empty</span> value) {
+        
+    }
+
+    <span style="color:#ffa500">@Override</span>
+    <span style="color:#6ab825;font-weight:bold">public</span> <span style="color:#6ab825;font-weight:bold">void</span> <span style="color:#447fcf">onError</span>(Throwable t) {
+
+    }
+
+    <span style="color:#ffa500">@Override</span>
+    <span style="color:#6ab825;font-weight:bold">public</span> <span style="color:#6ab825;font-weight:bold">void</span> <span style="color:#447fcf">onCompleted</span>() {
+
+    }
+});
 </code></pre></div>
 </div>
 
