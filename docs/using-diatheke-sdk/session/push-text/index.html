@@ -260,7 +260,6 @@ on the session&rsquo;s <a href="../event-stream">event stream</a>.</p>
 
 <div class="tab-pane" title="Go">
   <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">
-<span style="color:#ed9d13">``</span><span style="color:#a61717;background-color:#e3d2d2">`</span> <span style="color:#6ab825;font-weight:bold">go</span>
 <span style="color:#999;font-style:italic">// Push text using the client and sessionID
 </span><span style="color:#999;font-style:italic"></span>err := client.<span style="color:#447fcf">PushText</span>(context.<span style="color:#447fcf">Background</span>(), sessionID, <span style="color:#ed9d13">&#34;What&#39;s the capital of Assyria?&#34;</span>)
 
@@ -272,7 +271,6 @@ on the session&rsquo;s <a href="../event-stream">event stream</a>.</p>
 
 <div class="tab-pane" title="C&#43;&#43;">
   <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">
-<span style="color:#a61717;background-color:#e3d2d2">```</span> c++
 <span style="color:#999;font-style:italic">// Push text using the client and sessionID
 </span><span style="color:#999;font-style:italic"></span>client.pushText(sessionID, <span style="color:#ed9d13">&#34;What&#39;s the capital of Assyria?&#34;</span>);
 
@@ -284,7 +282,6 @@ on the session&rsquo;s <a href="../event-stream">event stream</a>.</p>
 
 <div class="tab-pane" title="Python">
   <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">
-<span style="color:#ed9d13">``</span><span style="color:#a61717;background-color:#e3d2d2">`</span> python
 <span style="color:#999;font-style:italic"># Push text using the client and session ID</span>
 client.push_text(session_id, <span style="color:#ed9d13">&#34;What&#39;s the capital of Assyria?&#34;</span>)
 
@@ -296,7 +293,6 @@ session.push_text(<span style="color:#ed9d13">&#34;What&#39;s the capital of Ass
 
 <div class="tab-pane" title="Swift/iOS">
   <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift">
-``` swift
 # Push text using the client and session ID
 client.pushText(sessionID: sessionID, text: <span style="color:#ed9d13">&#34;What&#39;s the capital of Assyria?&#34;</span>) { (error) <span style="color:#6ab825;font-weight:bold">in</span>
         print(error.localizedDescription)
@@ -309,17 +305,37 @@ session.pushText(<span style="color:#ed9d13">&#34;What&#39;s the capital of Assy
 </code></pre></div>
 </div>
 
+<div class="tab-pane" title="Java/Android">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">
+
+DiathekeOuterClass.<span style="color:#bbb">PushTextRequest</span> pushTextRequesth = DiathekeOuterClass.<span style="color:#bbb">PushTextRequest</span>.<span style="color:#bbb">newBuilder</span>()
+        .<span style="color:#bbb">setSessionId</span>(sessionId)
+        .<span style="color:#bbb">setText</span>(text)
+        .<span style="color:#bbb">build</span>();
+mClient.<span style="color:#bbb">pushText</span>(pushTextRequesth, <span style="color:#6ab825;font-weight:bold">new</span> StreamObserver&lt;DiathekeOuterClass.<span style="color:#bbb">Empty</span>&gt;() {
+        <span style="color:#ffa500">@Override</span>
+        <span style="color:#6ab825;font-weight:bold">public</span> <span style="color:#6ab825;font-weight:bold">void</span> <span style="color:#447fcf">onNext</span>(DiathekeOuterClass.<span style="color:#bbb">Empty</span> value) {
+        
+        }
+
+        <span style="color:#ffa500">@Override</span>
+        <span style="color:#6ab825;font-weight:bold">public</span> <span style="color:#6ab825;font-weight:bold">void</span> <span style="color:#447fcf">onError</span>(Throwable t) {
+
+        }
+
+        <span style="color:#ffa500">@Override</span>
+        <span style="color:#6ab825;font-weight:bold">public</span> <span style="color:#6ab825;font-weight:bold">void</span> <span style="color:#447fcf">onCompleted</span>() {
+
+        }
+});
+</code></pre></div>
+</div>
+
 
 </div></div>
 
-<div class="panel panel-info">
-	<div class="panel-heading">Note</div>
-	<div class="panel-body">
-It is perfectly acceptable to use the `PushText` method while also
-using audio input. The choice to do so is left as a design decision
-for individual applications.
-</div>
-</div>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
 
 
     

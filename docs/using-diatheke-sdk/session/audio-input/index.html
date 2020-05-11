@@ -268,7 +268,6 @@ and close multiple audio streams over the course of a single session.</p>
 
 <div class="tab-pane" title="Go">
   <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">
-<span style="color:#ed9d13">``</span><span style="color:#a61717;background-color:#e3d2d2">`</span> <span style="color:#6ab825;font-weight:bold">go</span>
 <span style="color:#999;font-style:italic">// Create the stream using the client and session ID
 </span><span style="color:#999;font-style:italic"></span>stream, err := client.<span style="color:#447fcf">StreamAudioInput</span>(context.<span style="color:#447fcf">Background</span>(), sessionID)
 
@@ -280,7 +279,6 @@ and close multiple audio streams over the course of a single session.</p>
 
 <div class="tab-pane" title="C&#43;&#43;">
   <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">
-<span style="color:#a61717;background-color:#e3d2d2">```</span> c++
 std::unique_ptr&lt;Diatheke::AudioInputStream&gt; stream;
 
 <span style="color:#999;font-style:italic">// Create the stream using the client and session ID
@@ -294,7 +292,6 @@ std::unique_ptr&lt;Diatheke::AudioInputStream&gt; stream;
 
 <div class="tab-pane" title="Python">
   <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">
-<span style="color:#ed9d13">``</span><span style="color:#a61717;background-color:#e3d2d2">`</span> python
 <span style="color:#999;font-style:italic"># Create the stream using the client and session ID</span>
 stream = client.stream_audio_input(session_id)
 
@@ -306,7 +303,6 @@ stream = session.stream_audio_input()
 
 <div class="tab-pane" title="Swift/iOS">
   <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift">
-``` swift
 # Create the stream using the client and session ID
 <span style="color:#6ab825;font-weight:bold">let</span> <span style="color:#40ffff">stream</span> = client.streamAudioInput(sessionID: sessionID) { (error) <span style="color:#6ab825;font-weight:bold">in</span>
         print(error.localizedDescription)
@@ -316,6 +312,28 @@ stream = session.stream_audio_input()
 <span style="color:#6ab825;font-weight:bold">let</span> <span style="color:#40ffff">stream</span> = session.streamAudioInput { (error) <span style="color:#6ab825;font-weight:bold">in</span>
         print(error.localizedDescription)
 }
+</code></pre></div>
+</div>
+
+
+<div class="tab-pane" title="Java/Android">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">
+StreamObserver&lt;DiathekeOuterClass.<span style="color:#bbb">AudioInput</span>&gt; audioInputStreamObserver = mClient.<span style="color:#bbb">streamAudioInput</span>(<span style="color:#6ab825;font-weight:bold">new</span> StreamObserver&lt;DiathekeOuterClass.<span style="color:#bbb">Empty</span>&gt;() {
+            <span style="color:#ffa500">@Override</span>
+            <span style="color:#6ab825;font-weight:bold">public</span> <span style="color:#6ab825;font-weight:bold">void</span> <span style="color:#447fcf">onNext</span>(DiathekeOuterClass.<span style="color:#bbb">Empty</span> value) {
+
+            }
+
+            <span style="color:#ffa500">@Override</span>
+            <span style="color:#6ab825;font-weight:bold">public</span> <span style="color:#6ab825;font-weight:bold">void</span> <span style="color:#447fcf">onError</span>(Throwable t) {
+
+            }
+
+            <span style="color:#ffa500">@Override</span>
+            <span style="color:#6ab825;font-weight:bold">public</span> <span style="color:#6ab825;font-weight:bold">void</span> <span style="color:#447fcf">onCompleted</span>() {
+
+            }
+        });
 </code></pre></div>
 </div>
 
@@ -333,7 +351,6 @@ created previously.</p>
 
 <div class="tab-pane" title="Go">
   <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">
-<span style="color:#ed9d13">``</span><span style="color:#a61717;background-color:#e3d2d2">`</span> <span style="color:#6ab825;font-weight:bold">go</span>
 <span style="color:#999;font-style:italic">// The audio data should be formatted as an array of bytes.
 </span><span style="color:#999;font-style:italic"></span>buffer := <span style="color:#24909d">make</span>([]<span style="color:#6ab825;font-weight:bold">byte</span>, <span style="color:#3677a9">8192</span>)
 
@@ -354,7 +371,6 @@ created previously.</p>
 
 <div class="tab-pane" title="C&#43;&#43;">
   <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">
-<span style="color:#a61717;background-color:#e3d2d2">```</span> c++
 <span style="color:#999;font-style:italic">// Store audio data as a string. Think of the string as an array of chars
 </span><span style="color:#999;font-style:italic">// or bytes (a char is one byte of data).
 </span><span style="color:#999;font-style:italic"></span>std::string buffer;
@@ -376,7 +392,6 @@ created previously.</p>
 
 <div class="tab-pane" title="Python">
   <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">
-<span style="color:#ed9d13">``</span><span style="color:#a61717;background-color:#e3d2d2">`</span> python
 <span style="color:#999;font-style:italic"># Get the audio data from a source. This could be a microphone, file, or</span>
 <span style="color:#999;font-style:italic"># any other source. Here we assume the audio data was retrieved previously</span>
 <span style="color:#999;font-style:italic"># and stored in a buffer.</span>
@@ -394,7 +409,6 @@ stream.finish()
 
 <div class="tab-pane" title="Swift/iOS">
   <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift">
-``` swift
 <span style="color:#999;font-style:italic">// Get the audio data from a source. This could be a microphone, file, or</span>
 <span style="color:#999;font-style:italic">// any other source. Here we assume the audio data was retrieved previously</span>
 <span style="color:#999;font-style:italic">// and stored in a buffer.</span>
@@ -406,6 +420,18 @@ stream.pushAudio(data: data)
 <span style="color:#999;font-style:italic">// Be sure to notify Diatheke that no more audio will be coming when</span>
 <span style="color:#999;font-style:italic">// we are done writing data.</span>
 stream.finish()
+</code></pre></div>
+</div>
+
+
+<div class="tab-pane" title="Java/Android">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">
+<span style="color:#6ab825;font-weight:bold">byte</span>[] bytes = ...;
+ByteString byteString=ByteString.<span style="color:#bbb">copyFrom</span>(bytes);
+DiathekeOuterClass.<span style="color:#bbb">AudioInput</span> audioInput = DiathekeOuterClass.<span style="color:#bbb">AudioInput</span>.<span style="color:#bbb">newBuilder</span>()
+        .<span style="color:#bbb">setSessionId</span>(sessionId)
+        .<span style="color:#bbb">setData</span>(byteString).<span style="color:#bbb">build</span>();
+audioInputStreamObserver.<span style="color:#bbb">onNext</span>(audioInput);
 </code></pre></div>
 </div>
 

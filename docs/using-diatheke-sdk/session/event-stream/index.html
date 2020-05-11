@@ -453,6 +453,40 @@ that waits for the next event, then handles the event based on its type:</p>
 </div>
 
 
+<div class="tab-pane" title="Java/Android">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">
+mClient.<span style="color:#bbb">sessionEventStream</span>(session, <span style="color:#6ab825;font-weight:bold">new</span> StreamObserver&lt;DiathekeOuterClass.<span style="color:#bbb">DiathekeEvent</span>&gt;() {
+    <span style="color:#ffa500">@Override</span>
+    <span style="color:#6ab825;font-weight:bold">public</span> <span style="color:#6ab825;font-weight:bold">void</span> <span style="color:#447fcf">onNext</span>(DiathekeOuterClass.<span style="color:#bbb">DiathekeEvent</span> value) {
+        <span style="color:#6ab825;font-weight:bold">switch</span> (value.<span style="color:#bbb">getResultCase</span>()) {
+                <span style="color:#6ab825;font-weight:bold">case</span> COMMAND:
+                    DiathekeOuterClass.<span style="color:#bbb">CommandEvent</span> command = value.<span style="color:#bbb">getCommand</span>();
+                    <span style="color:#6ab825;font-weight:bold">break</span>;
+                <span style="color:#6ab825;font-weight:bold">case</span> RECOGNIZE:
+                    DiathekeOuterClass.<span style="color:#bbb">RecognizeEvent</span> recognize = value.<span style="color:#bbb">getRecognize</span>();
+                    <span style="color:#6ab825;font-weight:bold">break</span>;
+                <span style="color:#6ab825;font-weight:bold">case</span> REPLY:
+                    DiathekeOuterClass.<span style="color:#bbb">ReplyEvent</span> reply = value.<span style="color:#bbb">getReply</span>();
+                    <span style="color:#6ab825;font-weight:bold">break</span>;
+                <span style="color:#6ab825;font-weight:bold">default</span>:
+                    <span style="color:#6ab825;font-weight:bold">break</span>;
+            }
+        }
+    }
+
+    <span style="color:#ffa500">@Override</span>
+    <span style="color:#6ab825;font-weight:bold">public</span> <span style="color:#6ab825;font-weight:bold">void</span> <span style="color:#447fcf">onError</span>(Throwable t) {
+
+    }
+
+    <span style="color:#ffa500">@Override</span>
+    <span style="color:#6ab825;font-weight:bold">public</span> <span style="color:#6ab825;font-weight:bold">void</span> <span style="color:#447fcf">onCompleted</span>() {
+
+    }
+});
+</code></pre></div>
+</div>
+
 </div></div>
 
 <h3 id="recognize-event">Recognize Event</h3>
@@ -526,6 +560,21 @@ or not.</p>
 </div>
 
 
+<div class="tab-pane" title="Java/Android">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">
+<span style="color:#6ab825;font-weight:bold">private</span> <span style="color:#6ab825;font-weight:bold">void</span> <span style="color:#447fcf">handleRecognizeEvent</span>(DiathekeOuterClass.<span style="color:#bbb">RecognizeEvent</span> event) {
+    <span style="color:#999;font-style:italic">// Check if Diatheke recognized the last input as valid.
+</span><span style="color:#999;font-style:italic"></span>    <span style="color:#6ab825;font-weight:bold">if</span> (event.<span style="color:#bbb">getValidInput</span>()) {
+        Log.<span style="color:#bbb">i</span>(<span style="color:#ed9d13">&#34;RecognizeEvent&#34;</span>,String.<span style="color:#bbb">format</span>(<span style="color:#ed9d13">&#34;Valid input: %s\n&#34;</span>, event.<span style="color:#bbb">getText</span>()));
+    } <span style="color:#6ab825;font-weight:bold">else</span> {
+        Log.<span style="color:#bbb">i</span>(<span style="color:#ed9d13">&#34;RecognizeEvent&#34;</span>,String.<span style="color:#bbb">format</span>(<span style="color:#ed9d13">&#34;Invalid input: %s\n&#34;</span>,event.<span style="color:#bbb">getText</span>()));
+    }
+}
+
+</code></pre></div>
+</div>
+
+
 </div></div>
 
 <h3 id="reply-event">Reply Event</h3>
@@ -570,6 +619,15 @@ feedback to the user.</p>
   <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift">
 <span style="color:#6ab825;font-weight:bold">func</span> <span style="color:#447fcf">handleReplyEvent</span>(<span style="color:#6ab825;font-weight:bold">_</span> event: Cobaltspeech_Diatheke_ReplyEvent) {
     print(<span style="color:#ed9d13">&#34;Reply text: </span><span style="color:#ed9d13">\(</span>event.text<span style="color:#ed9d13">)</span><span style="color:#ed9d13">&#34;</span>)
+}
+</code></pre></div>
+</div>
+
+
+<div class="tab-pane" title="Java/Android">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">
+<span style="color:#6ab825;font-weight:bold">private</span> <span style="color:#6ab825;font-weight:bold">void</span> <span style="color:#447fcf">handleReplyEvent</span>(DiathekeOuterClass.<span style="color:#bbb">ReplyEvent</span> reply) {
+    Log.<span style="color:#bbb">i</span>(<span style="color:#ed9d13">&#34;ReplyEvent&#34;</span>,reply.<span style="color:#bbb">getText</span>());
 }
 </code></pre></div>
 </div>
@@ -739,6 +797,20 @@ work by executing the commands.</p>
 </div>
 
 
+<div class="tab-pane" title="Java/Android">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">
+<span style="color:#6ab825;font-weight:bold">private</span> <span style="color:#6ab825;font-weight:bold">void</span> <span style="color:#447fcf">handleCommandEvent</span>(DiathekeOuterClass.<span style="color:#bbb">CommandEvent</span> command) {
+    Log.<span style="color:#bbb">i</span>(<span style="color:#ed9d13">&#34;CommandEvent&#34;</span>,command.<span style="color:#bbb">getCommandId</span>());
+    Log.<span style="color:#bbb">i</span>(<span style="color:#ed9d13">&#34;CommandEvent&#34;</span>,command.<span style="color:#bbb">getCommandStateId</span>());
+    Map&lt;String, String&gt; parametersMap = command.<span style="color:#bbb">getParametersMap</span>();
+    <span style="color:#6ab825;font-weight:bold">for</span> (Map.<span style="color:#bbb">Entry</span>&lt;String, String&gt; entity : parametersMap.<span style="color:#bbb">entrySet</span>()) {
+        Log.<span style="color:#bbb">i</span>(<span style="color:#ed9d13">&#34;CommandEvent&#34;</span>,String.<span style="color:#bbb">format</span>(<span style="color:#ed9d13">&#34;%s=%s&#34;</span>,entity.<span style="color:#bbb">getKey</span>(),entity.<span style="color:#bbb">getValue</span>()));
+    }
+}
+</code></pre></div>
+</div>
+
+
 </div></div>
 
 <h4 id="command-finished">Command Finished</h4>
@@ -796,6 +868,41 @@ client.commandFinished(sessionID: sessionID, commandStatus: status)
 
 <span style="color:#999;font-style:italic">// OR use the Session object</span>
 session.commandFinished(commandStatus: status)
+</code></pre></div>
+</div>
+
+
+<div class="tab-pane" title="Java/Android">
+  <div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">
+DiathekeOuterClass.<span style="color:#bbb">CommandStatus</span> status = DiathekeOuterClass.<span style="color:#bbb">CommandStatus</span>.<span style="color:#bbb">newBuilder</span>().<span style="color:#bbb">build</span>();
+mClient.<span style="color:#bbb">commandFinished</span>(status, <span style="color:#6ab825;font-weight:bold">new</span> StreamObserver&lt;DiathekeOuterClass.<span style="color:#bbb">Empty</span>&gt;() {
+    <span style="color:#ffa500">@Override</span>
+    <span style="color:#6ab825;font-weight:bold">public</span> <span style="color:#6ab825;font-weight:bold">void</span> <span style="color:#447fcf">onNext</span>(DiathekeOuterClass.<span style="color:#bbb">Empty</span> value) {
+        
+    }
+
+    <span style="color:#ffa500">@Override</span>
+    <span style="color:#6ab825;font-weight:bold">public</span> <span style="color:#6ab825;font-weight:bold">void</span> <span style="color:#447fcf">onError</span>(Throwable t) {
+
+    }
+
+    <span style="color:#ffa500">@Override</span>
+    <span style="color:#6ab825;font-weight:bold">public</span> <span style="color:#6ab825;font-weight:bold">void</span> <span style="color:#447fcf">onCompleted</span>() {
+
+    }
+});
+
+OR 
+
+DiathekeGrpc.<span style="color:#bbb">DiathekeFutureStub</span> diathekeFutureStub = DiathekeGrpc.<span style="color:#bbb">newFutureStub</span>(mCubicChannel);
+DiathekeOuterClass.<span style="color:#bbb">CommandStatus</span> status = DiathekeOuterClass.<span style="color:#bbb">CommandStatus</span>.<span style="color:#bbb">newBuilder</span>().<span style="color:#bbb">build</span>();
+ListenableFuture&lt;DiathekeOuterClass.<span style="color:#bbb">Empty</span>&gt; emptyListenableFuture = diathekeFutureStub.<span style="color:#bbb">commandFinished</span>(status);
+DiathekeOuterClass.<span style="color:#bbb">Empty</span> empty;
+<span style="color:#6ab825;font-weight:bold">try</span> {
+    empty = emptyListenableFuture.<span style="color:#bbb">get</span>();
+} <span style="color:#6ab825;font-weight:bold">catch</span> (InterruptedException | ExecutionException e) {
+    e.<span style="color:#bbb">printStackTrace</span>();
+}
 </code></pre></div>
 </div>
 

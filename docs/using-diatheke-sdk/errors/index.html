@@ -234,6 +234,7 @@
     <li><a href="#go">Go</a></li>
     <li><a href="#python">Python</a></li>
     <li><a href="#swift">Swift</a></li>
+    <li><a href="#android">Android</a></li>
   </ul>
 </nav>
         </div>
@@ -310,6 +311,24 @@ For example:</p>
     <span style="color:#999;font-style:italic">// Handle the error here</span>
     print(error.localizedDescription)
 }
+</code></pre></div><h2 id="android">Android</h2>
+<div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">diathekeStub.<span style="color:#bbb">sessionEventStream</span>(DiathekeOuterClass.<span style="color:#bbb">SessionID</span>.<span style="color:#bbb">newBuilder</span>().<span style="color:#bbb">build</span>(), <span style="color:#6ab825;font-weight:bold">new</span> StreamObserver&lt;DiathekeOuterClass.<span style="color:#bbb">DiathekeEvent</span>&gt;() {
+            <span style="color:#ffa500">@Override</span>
+            <span style="color:#6ab825;font-weight:bold">public</span> <span style="color:#6ab825;font-weight:bold">void</span> <span style="color:#447fcf">onNext</span>(DiathekeOuterClass.<span style="color:#bbb">DiathekeEvent</span> value) {
+                <span style="color:#999;font-style:italic">// Handle success response here
+</span><span style="color:#999;font-style:italic"></span>            }
+
+            <span style="color:#ffa500">@Override</span>
+            <span style="color:#6ab825;font-weight:bold">public</span> <span style="color:#6ab825;font-weight:bold">void</span> <span style="color:#447fcf">onError</span>(Throwable t) {
+                <span style="color:#999;font-style:italic">// Handle the error here
+</span><span style="color:#999;font-style:italic"></span>                Log.<span style="color:#bbb">e</span>(<span style="color:#ed9d13">&#34;DIATHEKE_ERROR&#34;</span>,t.<span style="color:#bbb">getMessage</span>());
+            }
+
+            <span style="color:#ffa500">@Override</span>
+            <span style="color:#6ab825;font-weight:bold">public</span> <span style="color:#6ab825;font-weight:bold">void</span> <span style="color:#447fcf">onCompleted</span>() {
+                
+            }
+        });
 </code></pre></div>
 
     
