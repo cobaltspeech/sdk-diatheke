@@ -86,6 +86,7 @@ git checkout -b version-update-v$NEW_VERSION
 
 sed -i 's|DiathekeVersion = "[0-9.]*"|DiathekeVersion = "'$NEW_VERSION'"|g' grpc/swift-diatheke/Diatheke.swift
 sed -i 's|.upToNextMajor(from: "[0-9.]*")|.upToNextMajor(from: "'$NEW_VERSION'")|g' docs-src/content/using-diatheke-sdk/include.md
+pushd docs-src && hugo -d ../docs && popd
 
 git commit -m "Update version to v$NEW_VERSION"
 git push origin version-update-v$NEW_VERSION
