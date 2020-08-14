@@ -84,8 +84,9 @@ service Diatheke {
   rpc PushText(PushTextRequest) returns (Empty) {}
 
   // Set the current story for a running session. This function can
-  // be used to implement system intiated alerts or to change the current
-  // session state.
+  // be used to implement system initiated alerts or to change the current
+  // session state. Events for the new story will come over the session's
+  // event stream.
   rpc SetStory(StoryRequest) returns (Empty) {}
 
   // Manually run streaming ASR unrelated to any session by pushing
@@ -153,7 +154,8 @@ message DiathekeEvent {
     // the AudioReply stream (if one is open).
     ReplyEvent reply = 3;
 
-    // Indicates that Diatheke is expecting user input (text or audio).
+    // Indicates that Diatheke is expecting user input (text or audio),
+    // which is defined by input actions in the Diatheke model.
     InputRequiredEvent input_required = 4;
 
     // Indicates that Diatheke has returned to the start state of the
@@ -329,10 +331,11 @@ message StoryRequest {
 
   // If true, once the given story has finished, Diatheke will return
   // the session to the place in the model where it was when this request
-  // was received. This is useful when the change in story represents a
-  // temporary interruption. If false, Diatheke will simply continue
-  // from the given story without trying to go back to its prior state,
-  // which is useful to make a permanent state change.
+  // was received, and restore the parameters that were defined at that time.
+  // This is useful when the change in story represents a temporary
+  // interruption. If false, Diatheke will simply continue from the
+  // given story without trying to go back to its prior state, which is
+  // useful to make a permanent state change.
   bool temporary = 5;
 }
 
