@@ -58,8 +58,8 @@ service Diatheke {
   // for every subsequent message. As the audio is recognized, Diatheke
   // will respond with appropriate events on the session's event stream.
   // <p>
-  // Only one stream per session is allowed. Previous audio streams should
-  // always be closed before starting a new one.
+  // Only one stream at a time is allowed for a session. A previously
+  // created audio input stream must be closed before starting a new one.
   rpc StreamAudioInput(stream AudioInput) returns (Empty) {}
 
   // Create an audio reply stream for a session. The returned stream
@@ -68,7 +68,8 @@ service Diatheke {
   // stream will first receive the text to synthesize (defined by the model),
   // followed by one or more messages containing the synthesized audio bytes.
   // The reply will end with a message indicating that TTS for that
-  // entry is complete. Only one reply stream per session is allowed.
+  // entry is complete. Only one reply stream at a time is allowed for a
+  // session.
   // NOTE: The text in the first message of an audio reply is the same that
   //       will be received in the session's event stream.
   rpc StreamAudioReplies(SessionID) returns (stream AudioReply) {}
@@ -79,7 +80,7 @@ service Diatheke {
   // valid intent or not.
   rpc PushText(PushTextRequest) returns (Empty) {}
 
-  // Change the current story for a running session. This function can
+  // Set the current story for a running session. This function can
   // be used to implement system intiated alerts or to change the current
   // session state.
   rpc SetStory(StoryRequest) returns (Empty) {}
