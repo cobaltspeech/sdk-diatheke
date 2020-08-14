@@ -49,8 +49,11 @@ service Diatheke {
 
   // Notify Diatheke when a command has completed so that it may update
   // the dialog state. The initial command request will come as part of
-  // a DiathekeEvent. Client applications should always call this after
-  // receiving a command event, or else the session will hang.
+  // a DiathekeEvent. After sending a CommandEvent, Diatheke will wait
+  // until it receives the CommandFinished notification before continuing
+  // to the next action in the model. Client applications should therefore
+  // always call this after receiving a CommandEvent, or else the session
+  // will hang.
   rpc CommandFinished(CommandStatus) returns (Empty) {}
 
   // Begin an audio input stream for a session. The first message to
