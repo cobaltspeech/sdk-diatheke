@@ -27,7 +27,7 @@ Code generation has the following dependencies:
   - The static website generator (hugo)
 
 A few system dependencies are required:
-  - Go >= 1.12
+  - Go >= 1.14
   - git
   - python3
   - virtualenv

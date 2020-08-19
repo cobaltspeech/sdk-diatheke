@@ -140,6 +140,13 @@ func main() {
 	manager.StartEventStream()
 	manager.StartAudioReplyStream()
 
+	// With the session's streams set up, we are ready to start
+	// the session itself.
+	if err = session.Start(context.Background()); err != nil {
+		fatalErr = fmt.Errorf("failed to start session: %v", err)
+		return
+	}
+
 	// Run the CLI to toggle recording audio on and off
 	textui.RunToggleCLI(&manager)
 }

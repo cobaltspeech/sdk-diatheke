@@ -182,6 +182,19 @@ func (c *Client) NewSession(ctx context.Context, model string) (string, error) {
 	return response.SessionId, nil
 }
 
+// StartSession begins execution of the given session. The session's
+// output streams (event and audio replies) should be set up before
+// calling this function so that the calling application can respond
+// to any initialization events defined in the session's model.
+func (c *Client) StartSession(ctx context.Context, sessionID string) error {
+	request := diathekepb.SessionID{
+		SessionId: sessionID,
+	}
+
+	_, err := c.PBClient.StartSession(ctx, &request, c.CallOpts...)
+	return err
+}
+
 // EndSession ends an existing session.
 func (c *Client) EndSession(ctx context.Context, sessionID string) error {
 	request := diathekepb.SessionID{
@@ -255,6 +268,13 @@ func (c *Client) PushText(ctx context.Context, sessionID, text string) error {
 	}
 
 	_, err := c.PBClient.PushText(ctx, &req, c.CallOpts...)
+	return err
+}
+
+// SetStory changes the current story of a session to the one specified.
+// Stories are defined by the Diatheke model.
+func (c *Client) SetStory(ctx context.Context, storyRequest *diathekepb.StoryRequest) error {
+	_, err := c.PBClient.SetStory(ctx, storyRequest, c.CallOpts...)
 	return err
 }
 
