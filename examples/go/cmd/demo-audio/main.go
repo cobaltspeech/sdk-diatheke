@@ -205,8 +205,7 @@ func (manager *sessionManager) ToggleOff() {
 // StartEventStream creates a new event stream for the session being
 // managed.
 func (manager *sessionManager) StartEventStream() {
-	// Start the event stream on a separate go routine
-	go manager.handleEvents()
+	manager.handleEvents()
 }
 
 // StartAudioReply stream creates a new TTS reply stream for the session

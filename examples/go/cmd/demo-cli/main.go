@@ -120,8 +120,7 @@ func main() {
 	}
 	defer session.EndSession(context.Background())
 
-	// Start a separate go routine to handle events coming from the server
-	go handleEvents(session)
+	handleEvents(session)
 
 	// With the event stream set up, we are ready to start the session
 	if err = session.Start(context.Background()); err != nil {
@@ -161,36 +160,39 @@ func handleEvents(session diatheke.Session) {
 		return
 	}
 
-	for {
-		// Wait for the next event from the server
-		event, err := eventStream.Recv()
+	// Start a separate go routine to handle events coming from the server
+	go func() {
+		for {
+			// Wait for the next event from the server
+			event, err := eventStream.Recv()
 
-		// This indicates the stream has finished, which will happen
-		// when the session ends or the context used to create the stream
-		// closes.
-		if err == io.EOF {
-			break
+			// This indicates the stream has finished, which will happen
+			// when the session ends or the context used to create the stream
+			// closes.
+			if err == io.EOF {
+				break
+			}
+			if err != nil {
+				textui.PrintError("Event stream error: %v\n", err)
+				return
+			}
+
+			// Check the event type
+			switch e := event.Result.(type) {
+			case *diathekepb.DiathekeEvent_Recognize:
+				handleRecognizeEvent(e.Recognize)
+
+			case *diathekepb.DiathekeEvent_Reply:
+				handleReplyEvent(e.Reply)
+
+			case *diathekepb.DiathekeEvent_Command:
+				handleCommandEvent(e.Command, session)
+
+			default:
+				textui.PrintError("Error: received unknown event type from Diatheke\n")
+			}
 		}
-		if err != nil {
-			textui.PrintError("Event stream error: %v\n", err)
-			return
-		}
-
-		// Check the event type
-		switch e := event.Result.(type) {
-		case *diathekepb.DiathekeEvent_Recognize:
-			handleRecognizeEvent(e.Recognize)
-
-		case *diathekepb.DiathekeEvent_Reply:
-			handleReplyEvent(e.Reply)
-
-		case *diathekepb.DiathekeEvent_Command:
-			handleCommandEvent(e.Command, session)
-
-		default:
-			textui.PrintError("Error: received unknown event type from Diatheke\n")
-		}
-	}
+	}()
 }
 
 // Handles Recognize events from Diatheke as they come.
