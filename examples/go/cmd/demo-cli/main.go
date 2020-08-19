@@ -170,7 +170,7 @@ func handleEvents(session diatheke.Session) {
 			// when the session ends or the context used to create the stream
 			// closes.
 			if err == io.EOF {
-				break
+				return
 			}
 			if err != nil {
 				textui.PrintError("Event stream error: %v\n", err)
