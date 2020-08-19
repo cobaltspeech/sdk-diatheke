@@ -123,6 +123,12 @@ func main() {
 	// Start a separate go routine to handle events coming from the server
 	go handleEvents(session)
 
+	// With the event stream set up, we are ready to start the session
+	if err = session.Start(context.Background()); err != nil {
+		fatalErr = fmt.Errorf("failed to start session: %v", err)
+		return
+	}
+
 	// Setup the callback for the CLI. This will be called whenever the
 	// user presses Enter.
 	cb := func(userText string) {
