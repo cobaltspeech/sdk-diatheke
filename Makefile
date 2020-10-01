@@ -13,24 +13,18 @@ DEPSGO := ${TOP}/deps/go
 DEPSTMP := ${TOP}/deps/tmp
 SWIFT_GRPC_VERSION := 1.0.0-alpha.11
 
-HUGO_VERSION := 0.69.0
 $(shell mkdir -p $(DEPSBIN) $(DEPSGO) $(DEPSTMP) $(DEPSSWIFT))
 
 DEPSVENV := ${TOP}/deps/venv
 
 export PATH := ${DEPSBIN}:${DEPSGO}/bin:$(PATH)
-deps: deps-protoc deps-hugo deps-gendoc deps-gengo deps-gengateway deps-py deps-swift
+deps: deps-protoc deps-gendoc deps-gengo deps-gengateway deps-py deps-swift
 
 deps-protoc: ${DEPSBIN}/protoc
 ${DEPSBIN}/protoc:
 	cd ${DEPSBIN}/../ && wget \
 		"https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/protoc-3.7.1-linux-x86_64.zip" && \
 		-unzip protoc-3.7.1-linux-x86_64.zip && rm -f protoc-3.7.1-linux-x86_64.zip
-
-deps-hugo: ${DEPSBIN}/hugo
-${DEPSBIN}/hugo:
-	cd ${DEPSBIN} && wget \
-		"https://github.com/gohugoio/hugo/releases/download/v$(HUGO_VERSION)/hugo_$(HUGO_VERSION)_Linux-64bit.tar.gz" -O - | tar xz hugo
 
 deps-gendoc: ${DEPSBIN}/protoc-gen-doc
 ${DEPSBIN}/protoc-gen-doc:
@@ -67,7 +61,6 @@ gen: deps
 	@ source ${DEPSVENV}/bin/activate && \
 		PROTOINC=${DEPSGO}/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.0/third_party/googleapis \
 		$(MAKE) -C grpc
-	@ pushd docs-src && hugo -d ../docs && popd
 
 clean:
 	GOPATH=${DEPSGO} go clean -modcache
