@@ -25,12 +25,13 @@ methods that can be called.
 | Method Name | Request Type | Response Type | Description |
 | ----------- | ------------ | ------------- | ------------|
 {{range .Methods -}}
-  | {{.Name}} | {{.RequestLongType}} | {{.ResponseLongType}} | {{nobr .Description}} |
+ | {{.Name}} | [{{.RequestLongType}}](#{{.RequestLongType}}) | [{{.ResponseLongType}}](#{{.ResponseLongType}}) | {{nobr .Description}} |
 {{end}}
 {{end}} <!-- end services -->
 
 {{range .Messages}}
 
+<a name="{{.LongName}}"></a>
 ### Message: {{.LongName}}
 {{.Description}}
 
@@ -38,7 +39,7 @@ methods that can be called.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 {{range .Fields -}}
-  | {{.Name}} | {{.LongType}} | {{.Label}} | {{nobr .Description | p}}{{if .DefaultValue}} Default: {{.DefaultValue}}{{end}} |
+  | {{.Name}} | [{{.LongType}}](#{{.LongType}}) | {{.Label}} | {{nobr .Description | p}}{{if .DefaultValue}} Default: {{.DefaultValue}}{{end}} |
 {{end}}
 {{else}}
 This message is empty and has no fields.
@@ -48,7 +49,7 @@ This message is empty and has no fields.
 | Extension | Type | Base | Number | Description |
 | --------- | ---- | ---- | ------ | ----------- |
 {{range .Extensions -}}
-  | {{.Name}} | {{.LongType}} | {{.ContainingLongType}} | {{.Number}} | {{nobr .Description}}{{if .DefaultValue}} Default: {{.DefaultValue}}{{end}} |
+  | {{.Name}} |[{{.LongType}}](#{{.LongType}})  | {{.ContainingLongType}} | {{.Number}} | {{nobr .Description}}{{if .DefaultValue}} Default: {{.DefaultValue}}{{end}} |
 {{end}}
 {{end}}
 
@@ -56,6 +57,7 @@ This message is empty and has no fields.
 
 {{range .Enums}}
 
+<a name="{{.LongName}}"></a>
 ### Enum: {{.LongName}}
 {{.Description}}
 
@@ -79,12 +81,19 @@ This message is empty and has no fields.
 
 
 {{end}}
+## Well-Known Types
+See the protocol buffer documentation for these
+
+| .proto Type | Notes | 
+| ----------- | ----- |
+| <a name=".google.protobuf.Empty" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration">Duration</a> | Represents a signed, fixed-length span of time represented as a count of seconds and fractions of seconds at nanosecond resolution |
+| <a name=".google.protobuf.Empty" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#empty">Empty</a> | Used to indicate a method takes or returns nothing |
 
 ## Scalar Value Types
 
 | .proto Type | Notes | Go Type | Python Type | C++ Type |
 | ----------- | ----- | ------- | ----------- | -------- |
 {{range .Scalars -}}
-  | {{.ProtoType}} | {{.Notes}} | {{.GoType}} | {{.PythonType}} | {{.CppType}} |
+  | <a name="{{.ProtoType}}"> </a> {{.ProtoType}} | {{.Notes}} | {{.GoType}} | {{.PythonType}} | {{.CppType}} |
 {{end}}
 
