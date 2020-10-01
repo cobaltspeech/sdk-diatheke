@@ -31,7 +31,7 @@ home = [ "HTML", "RSS", "JSON"]
     identifier = "model"
     name = "<i class='fa fa-github'></i> <label>Model format</label>"
     url = "https://diatheke.onrender.com"
-    weight = 1000
+    weight = -100
 
 [[menu.shortcuts]]
 pre = "<h3>More</h3>"
