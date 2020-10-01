@@ -27,6 +27,12 @@ enableGitInfo = false
 [outputs]
 home = [ "HTML", "RSS", "JSON"]
 
+[[menu.main]]
+    identifier = "model"
+    name = "Model format"
+    pre = "<i class='fa fa-heart'></i>"
+    url = "https://diatheke.onrender.com"
+    weight = 1000
 
 [[menu.shortcuts]]
 pre = "<h3>More</h3>"
