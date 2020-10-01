@@ -1,4 +1,5 @@
-baseURL = "https://cobaltspeech.github.io/sdk-diatheke"
+#baseURL = "https://cobaltspeech.github.io/sdk-diatheke"
+relativeURLs = true
 
 languageCode = "en-us"
 DefaultContentLanguage = "en"

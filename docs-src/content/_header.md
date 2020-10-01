@@ -1,3 +1,3 @@
-![Cobalt's SDK Documentation](/sdk-diatheke/images/logo-white.png)
+![Cobalt's SDK Documentation](/images/logo-white.png)
 
 Diatheke SDK -- Cobalt
