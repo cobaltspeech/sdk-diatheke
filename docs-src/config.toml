@@ -28,12 +28,6 @@ enableGitInfo = false
 home = [ "HTML", "RSS", "JSON"]
 
 [[menu.shortcuts]]
-    identifier = "model"
-    name = "<i class='fa fa-cubes'></i> <label>Model format</label>"
-    url = "https://diatheke.onrender.com"
-    weight = -100
-
-[[menu.shortcuts]]
 pre = "<h3>More</h3>"
 name = "<i class='fa fa-github'></i> <label>Github repo</label>"
 identifier = "gh"
