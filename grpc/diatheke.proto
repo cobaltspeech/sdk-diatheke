@@ -15,310 +15,251 @@
 syntax = "proto3";
 
 package cobaltspeech.diatheke;
+option go_package = ".;diathekepb";
 
-option go_package = "diathekepb";
 
 // Service that implements the Cobalt Diatheke Dialog Management API.
 service Diatheke {
-  // Queries the Version of the Server.
-  rpc Version(Empty) returns (VersionResponse) {}
+    // Returns version information from the server.
+    rpc Version(Empty) returns (VersionResponse) {}
 
-  // Models will return a list of available versions.  Model values from
-  // this list may be used in NewSession calls.
-  rpc Models(Empty) returns (ModelsResponse) {}
+    // ListModels returns information about the Diatheke models
+    // the server can access.
+    rpc ListModels(Empty) returns (ListModelsResponse) {}
 
-  // Requests a new session with the given config and returns the session
-  // ID, which is required for other rpc methods.
-  rpc NewSession(NewSessionRequest) returns (SessionID) {}
+    // Create a new Diatheke session. Also returns a list of
+    // actions to take next.
+    rpc CreateSession(SessionStart) returns (SessionOutput) {}
 
-  // Terminates an existing session and closes any open session streams.
-  // It is an error if the SessionEndRequest has an invalid SessionID.
-  rpc EndSession(SessionID) returns (Empty) {}
+    // Delete the session. Behavior is undefined if the given
+    // TokenData is used again after this function is called.
+    rpc DeleteSession(TokenData) returns (Empty) {}
 
-  // Requests a new event stream for the given session. Only one stream
-  // per session is allowed.
-  rpc SessionEventStream(SessionID) returns (stream DiathekeEvent) {}
+    // Process input for a session and get an updated session with
+    // a list of actions to take next. This is the only method
+    // that modifies the Diatheke session state.
+    rpc UpdateSession(SessionInput) returns (SessionOutput) {}
 
-  // Notify Diatheke when a command has completed so that it may update
-  // the dialog state. The initial command request will come as part of
-  // a DiathekeEvent. After sending a CommandEvent, Diatheke will wait
-  // until it receives the CommandFinished notification before continuing
-  // to the next action in the model. Client applications should therefore
-  // always call this after receiving a CommandEvent, or else the session
-  // will hang.
-  rpc CommandFinished(CommandStatus) returns (Empty) {}
+    // Create an ASR stream. A result is returned when the
+    // stream is closed by the client (which forces the ASR to
+    // endpoint), or when a transcript becomes available on its
+    // own, in which case the stream is closed by the server.
+    // The ASR result may be used in the UpdateSession method.
+    rpc StreamASR(stream ASRInput) returns (ASRResult) {}
 
-  // Begin an audio input stream for a session. The first message to
-  // the server should specify the sessionID, with binary audio data pushed
-  // for every subsequent message. As the audio is recognized, Diatheke
-  // will respond with appropriate events on the session's event stream.
-  // <p>
-  // Only one stream at a time is allowed for a session. A previously
-  // created audio input stream must be closed before starting a new one.
-  rpc StreamAudioInput(stream AudioInput) returns (Empty) {}
-
-  // Create an audio reply stream for a session. The returned stream
-  // will receive replies (as defined in the Diatheke model) from the
-  // server as they occur in the conversation. For each reply, the
-  // stream will first receive the text to synthesize (defined by the model),
-  // followed by one or more messages containing the synthesized audio bytes.
-  // The reply will end with a message indicating that TTS for that
-  // entry is complete. Only one reply stream at a time is allowed for a
-  // session.
-  // NOTE: The text in the first message of an audio reply is the same that
-  //       will be received in the session's event stream.
-  rpc StreamAudioReplies(SessionID) returns (stream AudioReply) {}
-
-  // Push text to Diatheke as part of the conversation for a session.
-  // Diatheke will respond with an appropriate event on the session's
-  // event stream based on whether the given text was recognized as a
-  // valid intent or not.
-  rpc PushText(PushTextRequest) returns (Empty) {}
-
-  // Manually run streaming ASR unrelated to any session by pushing
-  // audio data to the server on the audio stream. As transcriptions
-  // become available, the server will return them on the ASRResponse
-  // stream. The transcriptions may then be used for, e.g., the PushText
-  // method. This function is provided as a convenience.
-  rpc StreamASR(stream ASRRequest) returns (stream ASRResponse) {}
-
-  // Manually run streaming TTS. The Audio stream will receive
-  // binary audio data as it is synthesized and will close automatically
-  // when synthesis is complete. This function is provided as a
-  // convenience.
-  rpc StreamTTS(TTSRequest) returns (stream TTSResponse) {}
+    // Create a TTS stream to receive audio for the given reply.
+    // The stream will close when TTS is finished. The client
+    // may also close the stream early to cancel the speech
+    // synthesis.
+    rpc StreamTTS(ReplyAction) returns (stream TTSAudio) {}
 }
 
-// The message sent by the server for the `Version` method.
+// Lists the version of Diatheke and the engines it uses.
 message VersionResponse {
-  // Server that manages all of the the other components.
-  string server = 1;
+    // Dialog management engine
+    string diatheke = 1;
+
+    // NLU engine
+    string chosun = 2;
+
+    // ASR engine
+    string cubic = 3;
+
+    // TTS engine
+    string luna = 4;
 }
 
-// The message sent by the server in response to a Models request.
-// Returns an array of model names.
-message ModelsResponse {
-  // Array of models available for use.
-  repeated string models = 1;
+// A list of models available on the Diatheke server.
+message ListModelsResponse {
+    repeated ModelInfo models = 1;
 }
 
-// Request for the NewSession call.
-message NewSessionRequest {
-  // For applications that have more than one model to use for ASR/NLU.
-  // ASR grammar can vary between models, as well as sets of commands.
-  // Some applications will only have one model.
-  string model = 1;
+// Information about a single Diatheke model.
+message ModelInfo {
+    // Diatheke model ID, which is used to create a new session.
+    string id = 1;
+
+    // Pretty model name, which may be used for display purposes.
+    string name = 2;
+
+    // Language code of the model.
+    string language = 3;
+
+    // The ASR audio sample rate, if ASR is enabled.
+    uint32 asr_sample_rate = 4;
+
+    // The TTS audio sample rate, if TTS is enabled.
+    uint32 tts_sample_rate = 5;
 }
 
-// Simple message that only contains the session ID.
-message SessionID {
-  // Session ID returned from the NewSession call.
-  string session_id = 1;
+// Used by Diatheke to update the session state.
+message SessionInput {
+    // The session token.
+    TokenData token = 1;
+
+    oneof input {
+        // Process the user supplied text.
+        TextInput text = 2;
+
+        // Process an ASR result.
+        ASRResult asr = 3;
+
+        // Process the result of a completed command.
+        CommandResult cmd = 4;
+
+        // Change the current session state.
+        SetStory story = 5;
+    }
 }
 
-// An event from Diatheke in response to either recognized audio,
-// submitted text, or some other transition in the model.
-message DiathekeEvent {
-  oneof result {
-    // Indicates Diatheke found an actionable state in the dialog,
-    // and requests the client to perform the given command.
-    //
-    // Users should always call CommandFinished after receiving
-    // this event so that Diatheke can update the dialog state when the
-    // command is complete.
-    CommandEvent command = 1;
+// A token that represents a single Diatheke session and its
+// current state.
+message TokenData {
+    bytes data = 1;
 
-    // An event indicating whether pushed text and audio was recognized by
-    // ASR and/or Diatheke.
-    RecognizeEvent recognize = 2;
+    // Session ID, useful for correlating logging between a
+    // client and the server.
+    string id = 2;
 
-    // The textual reply from Diatheke in the conversation (not to be 
-    // confused with the server concepts of request and response). For 
-    // example, this could be a question to solicit more information 
-    // from the user, a status report, or any other reply defined by 
-    // the Diatheke model. The text of this message is also provided in
-    // the AudioReply stream (if one is open).
-    ReplyEvent reply = 3;
-  }
+    // Additional data supplied by the client app, which will
+    // be logged with other session info by the server.
+    string metadata = 3;
 }
 
-// A CommandEvent occurs when Diatheke wants the client to execute the
-// given command.
-message CommandEvent {
-  // ID of the command that should be run.  i.e. "COM01" for Command #01.
-  string command_id = 1;
-
-  // A generic map of parameters (name, value). The parameters are 
-  // defined in the Diatheke model. Depending on the command, these
-  // parameters should be sent back with the CommandStatus update.
-  map<string, string> parameters = 2;
-
-  // ID to keep track of the dialog state when the command is requested.
-  // This field is required in the CommandStatus message so that Diatheke
-  // can correctly update the dialog state when CommandFinished is called.
-  string command_state_id = 3;
+// Used to create a new session.
+message SessionStart {
+    // Specifies the Diatheke model ID to use for the session.
+    string model_id = 1;
 }
 
-// A RecognizeEvent occurs if a session's audio input has a transcription
-// available, or if the PushText method was called. In both cases, the
-// event will indicate whether the text was recognized as a valid intent
-// by the Diatheke model.
-message RecognizeEvent
-{
-  // The pushed text or transcription of audio sent to Diatheke.
-  string text = 1;
-
-  // True if the submitted text or audio transcription was recognized by the
-  // Diatheke model as a valid intent or entity.
-  bool valid_input = 2;
+// User supplied text to send to Diatheke for processing.
+message TextInput {
+    string text = 1;
 }
 
-// A ReplyEvent occurs when Diatheke has a reply in the conversation (not
-// to be confused with the server concepts of request and response). These
-// correspond to replies defined in the Diatheke model. For example, it might
-// be a prompt for additional information from the user, a status update,
-// or a confirmation. ReplyEvents are not generated in response to 
-// StreamTTS calls.
-message ReplyEvent
-{
-  // Text of the reply event (defined by the Diatheke model).
-  string text = 1;
+// The result of executing a command.
+message CommandResult {
+    // The command ID, as given by the CommandAction
+    string id = 1;
 
-  // Label of the reply event (defined by the Diatheke model).
-  string label = 2;
+    // Output from the command expected by the Diatheke model.
+    // For example, this could be the result of a data query.
+    map<string, string> out_parameters = 2;
+
+    // If there was an error during execution, indicate it
+    // here with a brief message that will be logged by
+    // Diatheke.
+    string error = 3;
 }
 
-// The final status of an executed command.
-message CommandStatus {
-  // session_id should be the same as the status id returned from
-  // NewSessionResponse.
-  string session_id = 1;
+// Changes the current state of a Diatheke session to run at
+// the specified story.
+message SetStory {
+    // The ID of the story to run, as defined in the
+    // Diatheke model.
+    string story_id = 1;
 
-  // ID of the command as given in the RunCommand object.
-  string command_id = 2;
-
-  // CommandStatus are the resulting states of a command.
-  enum StatusCode {
-    // SUCCESS indicates that the command was successfully completed, and the
-    // dialog state may now move on to the next state.
-    SUCCESS = 0;
-    // FAILURE indicates that there was a fatal error running the command.
-    // The session will log an error and return to the start state of the
-    // model when this status is encountered.
-    FAILURE = 1;
-  }
-  StatusCode return_status = 3;
-
-  // Parameters to return to Diatheke. For example, the map might contain
-  // the entry "temperature", which was populated with a value of "30" 
-  // after the command finished. Expected parameters are defined by the
-  // Diatheke model.
-  map<string, string> output_parameters = 4;
-
-  // Set this field with an error message if a fatal error occured while
-  // executing the command (return_status == FAILURE).
-  string error_message_text = 5;
-
-  // State ID from the original CommandEvent. This field is required for
-  // Diatheke to correctly update the dialog state when CommandFinished 
-  // is called.
-  string command_state_id = 6;
+    // A list of parameters to set before running the given
+    // story. This will replace any parameters currently
+    // defined in the session.
+    map<string, string> parameters = 2;
 }
 
-// Provides input audio data for StreamAudioInput. The first message
-// sent must contain the session ID only. All subsequent messages
-// must contain audio data only.
-message AudioInput {
-  oneof request {
-    // Session ID returned from the NewSession call.
-    string session_id = 1;
+// The result of updating a session.
+message SessionOutput {
+    // The updated session token.
+    TokenData token = 1;
 
-    // Audio data to process. The encoding of the data should match what
-    // was specified in the Diatheke server configuration.
-    // NOTE: If the audio data is empty, the server may interpret it as
-    //       the end of the stream and stop accepting further messages.
-    bytes data = 2;
-  }
+    // The list of actions the client should take next,
+    // using the session token returned with this result.
+    repeated ActionData action_list = 2;
 }
 
-// An AudioReply is the verbal and textual reply that Diatheke returns as
-// part of a conversation (not to be confused with the server concepts of
-// request and response).
-message AudioReply {
-  // The label defined in the Diatheke model. Identifies which reply
-  // in the model this message corresponds to.
-  string label = 1;
+// Specifies an action that the client application should take.
+message ActionData {
+    oneof action {
+        // The user must provide input to Diatheke.
+        WaitForUserAction input = 1;
 
-  oneof output_message {
-    // The reply text as defined in the Diatheke model. This is the first
-    // message that will be received for an AudioReply. It contains the
-    // same text as the corresponding ReplyEvent in the session's event
-    // stream.
-    string text = 2;
+        // The client app must execute the specified command.
+        CommandAction command = 2;
 
-    // The audio data from TTS. There can be any number of these messages
-    // for an AudioReply after the first text message and before the final
-    // end message. The encoding of the data will match what was specified
-    // in the server configuration.
-    bytes data = 3;
-
-    // Indicates that TTS has finished streaming audio for the reply. This
-    // is the last message that will be received for an AudioReply.
-    Empty end = 4;
-  }
+        // The client app should provide the reply to the user.
+        ReplyAction reply = 3;
+    }
 }
 
-// Request to push text to Diatheke as part of a conversation.
-message PushTextRequest {
-  // Session ID returned from the NewSession call.
-  string session_id = 1;
+// This action indicates that Diatheke is expecting user input.
+message WaitForUserAction {
+    // True if the next user input must begin with a wake-word.
+    bool requires_wake_word = 1;
 
-  // User input. This could be a transcription from manually run ASR,
-  // text selected from a dropdown list, entered in a prompt, etc.
-  string text = 2;
+    // True if the input is required immediately (i.e., in
+    // response to a question Diatheke asked the user). When
+    // false, the client should be allowed to wait indefinitely
+    // for the user to provide input.
+    bool immediate = 2;
 }
 
-// Request for streaming ASR unrelated to a session.
-message ASRRequest {
-  oneof asr_data {
-    // The Cubic model to use for ASR. This message should always be sent
-    // before any audio data is sent.
-    string model = 1;
-
-    // Audio data to process. The encoding of the data should match what
-    // was specified in the Diatheke server configuration.
-    // NOTE: If the audio data is empty, the server may interpret it as
-    //       the end of the stream and stop accepting further messages.
-    bytes audio = 2;
-  }
+// This action indicates that the client application should
+// execute a command.
+message CommandAction {
+    // The ID of the command to execute, as defined in the
+    // Diatheke model.
+    string id = 1;
+    map<string, string> input_parameters = 2;
 }
 
-// ASRResponse contains speech recognition results.
-message ASRResponse {
-  // Text is the Cubic engine's formatted transcript of pushed audio.
-  // This field will be the 1-best alternative.
-  string text = 1;
+// This action indicates that the client application should
+// give the provided text to the user. This action may also 
+// be used to synthesize speech with the StreamTTS method.
+message ReplyAction {
+    // Text of the reply
+    string text = 1;
 
-  // The confidence score is a floating point number between 0.0 - 1.0. A
-  // score of 1.0 indicates that the ASR engine is 100% confident in the
-  // transcription.
-  double confidence_score = 2;
+    // TTS model to use with the TTSReply method
+    string luna_model = 2;
 }
 
-// Request to synthesize speech unrelated to a session.
-message TTSRequest {
-  // The Luna model to use for TTS (defined in the server config file).
-  string model = 1;
+// Data to send to the ASR stream. The first message on the
+// stream must be the session token followed by audio data.
+message ASRInput {
+    oneof data {
+        // Session data, used to determine the correct Cubic
+        // model to use for ASR, with other contextual
+        // information.
+        TokenData token = 1;
 
-  // Text to synthesize
-  string text = 2;
+        // Audio data to transcribe.
+        bytes audio = 2;
+    }
 }
 
-// Response for text-to-speech unrelated to a session.
-message TTSResponse {
-  // The synthesized audio data. The data encoding will match what was
-  // specified in the server configuration.
-  bytes data = 1;
+// The result from the ASR stream, sent after the ASR engine
+// has endpointed or the stream was closed by the client.
+message ASRResult {
+    // The transcription.
+    string text = 1;
+
+    // Confidence estimate between 0 and 1. A higher number
+    // represents a higher likelihood of the output being 
+    // correct.
+    double confidence = 2;
+
+    // True if a timeout was defined for the session's current
+    // input state in the Diatheke model, and the timeout
+    // expired before getting a transcription. This timeout
+    // refers to the amount of time a user has to verbally
+    // respond to Diatheke after the ASR stream has been
+    // created, and should not be confused with a network
+    // connection timeout.
+    bool timedOut = 3;
+}
+
+// Contains synthesized speech audio. The specific encoding
+// is defined in the server config file.
+message TTSAudio {
+    bytes audio = 1;
 }
 
 message Empty {}
