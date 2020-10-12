@@ -43,66 +43,20 @@ const (
 // of the legacy proto package is being used.
 const _ = proto.ProtoPackageIsVersion4
 
-// CommandStatus are the resulting states of a command.
-type CommandStatus_StatusCode int32
-
-const (
-	// SUCCESS indicates that the command was successfully completed, and the
-	// dialog state may now move on to the next state.
-	CommandStatus_SUCCESS CommandStatus_StatusCode = 0
-	// FAILURE indicates that there was a fatal error running the command.
-	// The session will log an error and return to the start state of the
-	// model when this status is encountered.
-	CommandStatus_FAILURE CommandStatus_StatusCode = 1
-)
-
-// Enum value maps for CommandStatus_StatusCode.
-var (
-	CommandStatus_StatusCode_name = map[int32]string{
-		0: "SUCCESS",
-		1: "FAILURE",
-	}
-	CommandStatus_StatusCode_value = map[string]int32{
-		"SUCCESS": 0,
-		"FAILURE": 1,
-	}
-)
-
-func (x CommandStatus_StatusCode) Enum() *CommandStatus_StatusCode {
-	p := new(CommandStatus_StatusCode)
-	*p = x
-	return p
-}
-
-func (x CommandStatus_StatusCode) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (CommandStatus_StatusCode) Descriptor() protoreflect.EnumDescriptor {
-	return file_diatheke_proto_enumTypes[0].Descriptor()
-}
-
-func (CommandStatus_StatusCode) Type() protoreflect.EnumType {
-	return &file_diatheke_proto_enumTypes[0]
-}
-
-func (x CommandStatus_StatusCode) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use CommandStatus_StatusCode.Descriptor instead.
-func (CommandStatus_StatusCode) EnumDescriptor() ([]byte, []int) {
-	return file_diatheke_proto_rawDescGZIP(), []int{8, 0}
-}
-
-// The message sent by the server for the `Version` method.
+// Lists the version of Diatheke and the engines it uses.
 type VersionResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// Server that manages all of the the other components.
-	Server string `protobuf:"bytes,1,opt,name=server,proto3" json:"server,omitempty"`
+	// Dialog management engine
+	Diatheke string `protobuf:"bytes,1,opt,name=diatheke,proto3" json:"diatheke,omitempty"`
+	// NLU engine
+	Chosun string `protobuf:"bytes,2,opt,name=chosun,proto3" json:"chosun,omitempty"`
+	// ASR engine
+	Cubic string `protobuf:"bytes,3,opt,name=cubic,proto3" json:"cubic,omitempty"`
+	// TTS engine
+	Luna string `protobuf:"bytes,4,opt,name=luna,proto3" json:"luna,omitempty"`
 }
 
 func (x *VersionResponse) Reset() {
@@ -137,26 +91,45 @@ func (*VersionResponse) Descriptor() ([]byte, []int) {
 	return file_diatheke_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *VersionResponse) GetServer() string {
+func (x *VersionResponse) GetDiatheke() string {
 	if x != nil {
-		return x.Server
+		return x.Diatheke
 	}
 	return ""
 }
 
-// The message sent by the server in response to a Models request.
-// Returns an array of model names.
-type ModelsResponse struct {
+func (x *VersionResponse) GetChosun() string {
+	if x != nil {
+		return x.Chosun
+	}
+	return ""
+}
+
+func (x *VersionResponse) GetCubic() string {
+	if x != nil {
+		return x.Cubic
+	}
+	return ""
+}
+
+func (x *VersionResponse) GetLuna() string {
+	if x != nil {
+		return x.Luna
+	}
+	return ""
+}
+
+// A list of models available on the Diatheke server.
+type ListModelsResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// Array of models available for use.
-	Models []string `protobuf:"bytes,1,rep,name=models,proto3" json:"models,omitempty"`
+	Models []*ModelInfo `protobuf:"bytes,1,rep,name=models,proto3" json:"models,omitempty"`
 }
 
-func (x *ModelsResponse) Reset() {
-	*x = ModelsResponse{}
+func (x *ListModelsResponse) Reset() {
+	*x = ListModelsResponse{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_diatheke_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -164,13 +137,13 @@ func (x *ModelsResponse) Reset() {
 	}
 }
 
-func (x *ModelsResponse) String() string {
+func (x *ListModelsResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ModelsResponse) ProtoMessage() {}
+func (*ListModelsResponse) ProtoMessage() {}
 
-func (x *ModelsResponse) ProtoReflect() protoreflect.Message {
+func (x *ListModelsResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_diatheke_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -182,32 +155,38 @@ func (x *ModelsResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ModelsResponse.ProtoReflect.Descriptor instead.
-func (*ModelsResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use ListModelsResponse.ProtoReflect.Descriptor instead.
+func (*ListModelsResponse) Descriptor() ([]byte, []int) {
 	return file_diatheke_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *ModelsResponse) GetModels() []string {
+func (x *ListModelsResponse) GetModels() []*ModelInfo {
 	if x != nil {
 		return x.Models
 	}
 	return nil
 }
 
-// Request for the NewSession call.
-type NewSessionRequest struct {
+// Information about a single Diatheke model.
+type ModelInfo struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// For applications that have more than one model to use for ASR/NLU.
-	// ASR grammar can vary between models, as well as sets of commands.
-	// Some applications will only have one model.
-	Model string `protobuf:"bytes,1,opt,name=model,proto3" json:"model,omitempty"`
+	// Diatheke model ID, which is used to create a new session.
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// Pretty model name, which may be used for display purposes.
+	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	// Language code of the model.
+	Language string `protobuf:"bytes,3,opt,name=language,proto3" json:"language,omitempty"`
+	// The ASR audio sample rate, if ASR is enabled.
+	AsrSampleRate uint32 `protobuf:"varint,4,opt,name=asr_sample_rate,json=asrSampleRate,proto3" json:"asr_sample_rate,omitempty"`
+	// The TTS audio sample rate, if TTS is enabled.
+	TtsSampleRate uint32 `protobuf:"varint,5,opt,name=tts_sample_rate,json=ttsSampleRate,proto3" json:"tts_sample_rate,omitempty"`
 }
 
-func (x *NewSessionRequest) Reset() {
-	*x = NewSessionRequest{}
+func (x *ModelInfo) Reset() {
+	*x = ModelInfo{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_diatheke_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -215,13 +194,13 @@ func (x *NewSessionRequest) Reset() {
 	}
 }
 
-func (x *NewSessionRequest) String() string {
+func (x *ModelInfo) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*NewSessionRequest) ProtoMessage() {}
+func (*ModelInfo) ProtoMessage() {}
 
-func (x *NewSessionRequest) ProtoReflect() protoreflect.Message {
+func (x *ModelInfo) ProtoReflect() protoreflect.Message {
 	mi := &file_diatheke_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -233,30 +212,64 @@ func (x *NewSessionRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use NewSessionRequest.ProtoReflect.Descriptor instead.
-func (*NewSessionRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use ModelInfo.ProtoReflect.Descriptor instead.
+func (*ModelInfo) Descriptor() ([]byte, []int) {
 	return file_diatheke_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *NewSessionRequest) GetModel() string {
+func (x *ModelInfo) GetId() string {
 	if x != nil {
-		return x.Model
+		return x.Id
 	}
 	return ""
 }
 
-// Simple message that only contains the session ID.
-type SessionID struct {
+func (x *ModelInfo) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *ModelInfo) GetLanguage() string {
+	if x != nil {
+		return x.Language
+	}
+	return ""
+}
+
+func (x *ModelInfo) GetAsrSampleRate() uint32 {
+	if x != nil {
+		return x.AsrSampleRate
+	}
+	return 0
+}
+
+func (x *ModelInfo) GetTtsSampleRate() uint32 {
+	if x != nil {
+		return x.TtsSampleRate
+	}
+	return 0
+}
+
+// Used by Diatheke to update the session state.
+type SessionInput struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// Session ID returned from the NewSession call.
-	SessionId string `protobuf:"bytes,1,opt,name=session_id,json=sessionId,proto3" json:"session_id,omitempty"`
+	// The session token.
+	Token *TokenData `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
+	// Types that are assignable to Input:
+	//	*SessionInput_Text
+	//	*SessionInput_Asr
+	//	*SessionInput_Cmd
+	//	*SessionInput_Story
+	Input isSessionInput_Input `protobuf_oneof:"input"`
 }
 
-func (x *SessionID) Reset() {
-	*x = SessionID{}
+func (x *SessionInput) Reset() {
+	*x = SessionInput{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_diatheke_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -264,13 +277,13 @@ func (x *SessionID) Reset() {
 	}
 }
 
-func (x *SessionID) String() string {
+func (x *SessionInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*SessionID) ProtoMessage() {}
+func (*SessionInput) ProtoMessage() {}
 
-func (x *SessionID) ProtoReflect() protoreflect.Message {
+func (x *SessionInput) ProtoReflect() protoreflect.Message {
 	mi := &file_diatheke_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -282,34 +295,100 @@ func (x *SessionID) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use SessionID.ProtoReflect.Descriptor instead.
-func (*SessionID) Descriptor() ([]byte, []int) {
+// Deprecated: Use SessionInput.ProtoReflect.Descriptor instead.
+func (*SessionInput) Descriptor() ([]byte, []int) {
 	return file_diatheke_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *SessionID) GetSessionId() string {
+func (x *SessionInput) GetToken() *TokenData {
 	if x != nil {
-		return x.SessionId
+		return x.Token
 	}
-	return ""
+	return nil
 }
 
-// An event from Diatheke in response to either recognized audio,
-// submitted text, or some other transition in the model.
-type DiathekeEvent struct {
+func (m *SessionInput) GetInput() isSessionInput_Input {
+	if m != nil {
+		return m.Input
+	}
+	return nil
+}
+
+func (x *SessionInput) GetText() *TextInput {
+	if x, ok := x.GetInput().(*SessionInput_Text); ok {
+		return x.Text
+	}
+	return nil
+}
+
+func (x *SessionInput) GetAsr() *ASRResult {
+	if x, ok := x.GetInput().(*SessionInput_Asr); ok {
+		return x.Asr
+	}
+	return nil
+}
+
+func (x *SessionInput) GetCmd() *CommandResult {
+	if x, ok := x.GetInput().(*SessionInput_Cmd); ok {
+		return x.Cmd
+	}
+	return nil
+}
+
+func (x *SessionInput) GetStory() *SetStory {
+	if x, ok := x.GetInput().(*SessionInput_Story); ok {
+		return x.Story
+	}
+	return nil
+}
+
+type isSessionInput_Input interface {
+	isSessionInput_Input()
+}
+
+type SessionInput_Text struct {
+	// Process the user supplied text.
+	Text *TextInput `protobuf:"bytes,2,opt,name=text,proto3,oneof"`
+}
+
+type SessionInput_Asr struct {
+	// Process an ASR result.
+	Asr *ASRResult `protobuf:"bytes,3,opt,name=asr,proto3,oneof"`
+}
+
+type SessionInput_Cmd struct {
+	// Process the result of a completed command.
+	Cmd *CommandResult `protobuf:"bytes,4,opt,name=cmd,proto3,oneof"`
+}
+
+type SessionInput_Story struct {
+	// Change the current session state.
+	Story *SetStory `protobuf:"bytes,5,opt,name=story,proto3,oneof"`
+}
+
+func (*SessionInput_Text) isSessionInput_Input() {}
+
+func (*SessionInput_Asr) isSessionInput_Input() {}
+
+func (*SessionInput_Cmd) isSessionInput_Input() {}
+
+func (*SessionInput_Story) isSessionInput_Input() {}
+
+// A token that represents a single Diatheke session and its
+// current state.
+type TokenData struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// Types that are assignable to Result:
-	//	*DiathekeEvent_Command
-	//	*DiathekeEvent_Recognize
-	//	*DiathekeEvent_Reply
-	Result isDiathekeEvent_Result `protobuf_oneof:"result"`
+	Data []byte `protobuf:"bytes,1,opt,name=data,proto3" json:"data,omitempty"`
+	// Session ID, useful for correlating logging between a
+	// client and the server.
+	Id string `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
 }
 
-func (x *DiathekeEvent) Reset() {
-	*x = DiathekeEvent{}
+func (x *TokenData) Reset() {
+	*x = TokenData{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_diatheke_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -317,13 +396,13 @@ func (x *DiathekeEvent) Reset() {
 	}
 }
 
-func (x *DiathekeEvent) String() string {
+func (x *TokenData) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DiathekeEvent) ProtoMessage() {}
+func (*TokenData) ProtoMessage() {}
 
-func (x *DiathekeEvent) ProtoReflect() protoreflect.Message {
+func (x *TokenData) ProtoReflect() protoreflect.Message {
 	mi := &file_diatheke_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -335,96 +414,37 @@ func (x *DiathekeEvent) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DiathekeEvent.ProtoReflect.Descriptor instead.
-func (*DiathekeEvent) Descriptor() ([]byte, []int) {
+// Deprecated: Use TokenData.ProtoReflect.Descriptor instead.
+func (*TokenData) Descriptor() ([]byte, []int) {
 	return file_diatheke_proto_rawDescGZIP(), []int{4}
 }
 
-func (m *DiathekeEvent) GetResult() isDiathekeEvent_Result {
-	if m != nil {
-		return m.Result
+func (x *TokenData) GetData() []byte {
+	if x != nil {
+		return x.Data
 	}
 	return nil
 }
 
-func (x *DiathekeEvent) GetCommand() *CommandEvent {
-	if x, ok := x.GetResult().(*DiathekeEvent_Command); ok {
-		return x.Command
+func (x *TokenData) GetId() string {
+	if x != nil {
+		return x.Id
 	}
-	return nil
+	return ""
 }
 
-func (x *DiathekeEvent) GetRecognize() *RecognizeEvent {
-	if x, ok := x.GetResult().(*DiathekeEvent_Recognize); ok {
-		return x.Recognize
-	}
-	return nil
-}
-
-func (x *DiathekeEvent) GetReply() *ReplyEvent {
-	if x, ok := x.GetResult().(*DiathekeEvent_Reply); ok {
-		return x.Reply
-	}
-	return nil
-}
-
-type isDiathekeEvent_Result interface {
-	isDiathekeEvent_Result()
-}
-
-type DiathekeEvent_Command struct {
-	// Indicates Diatheke found an actionable state in the dialog,
-	// and requests the client to perform the given command.
-	//
-	// Users should always call CommandFinished after receiving
-	// this event so that Diatheke can update the dialog state when the
-	// command is complete.
-	Command *CommandEvent `protobuf:"bytes,1,opt,name=command,proto3,oneof"`
-}
-
-type DiathekeEvent_Recognize struct {
-	// An event indicating whether pushed text and audio was recognized by
-	// ASR and/or Diatheke.
-	Recognize *RecognizeEvent `protobuf:"bytes,2,opt,name=recognize,proto3,oneof"`
-}
-
-type DiathekeEvent_Reply struct {
-	// The textual reply from Diatheke in the conversation (not to be
-	// confused with the server concepts of request and response). For
-	// example, this could be a question to solicit more information
-	// from the user, a status report, or any other reply defined by
-	// the Diatheke model. The text of this message is also provided in
-	// the AudioReply stream (if one is open).
-	Reply *ReplyEvent `protobuf:"bytes,3,opt,name=reply,proto3,oneof"`
-}
-
-func (*DiathekeEvent_Command) isDiathekeEvent_Result() {}
-
-func (*DiathekeEvent_Recognize) isDiathekeEvent_Result() {}
-
-func (*DiathekeEvent_Reply) isDiathekeEvent_Result() {}
-
-// A CommandEvent occurs when Diatheke wants the client to execute the
-// given command.
-type CommandEvent struct {
+// Used to create a new session.
+type SessionStart struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// ID of the command that should be run.  i.e. "COM01" for Command #01.
-	CommandId string `protobuf:"bytes,1,opt,name=command_id,json=commandId,proto3" json:"command_id,omitempty"`
-	// A generic map of parameters (name, value). The parameters are
-	// defined in the Diatheke model. Depending on the command, these
-	// parameters should be sent back with the CommandStatus update.
-	Parameters map[string]string `protobuf:"bytes,2,rep,name=parameters,proto3" json:"parameters,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
-	// ID to keep track of the dialog state when the command is requested.
-	// This field is required in the CommandStatus message so that Diatheke
-	// can correctly update the dialog state when CommandFinished is called.
-	CommandStateId string `protobuf:"bytes,3,opt,name=command_state_id,json=commandStateId,proto3" json:"command_state_id,omitempty"`
+	// Specifies the Diatheke model ID to use for the session.
+	ModelId string `protobuf:"bytes,1,opt,name=model_id,json=modelId,proto3" json:"model_id,omitempty"`
 }
 
-func (x *CommandEvent) Reset() {
-	*x = CommandEvent{}
+func (x *SessionStart) Reset() {
+	*x = SessionStart{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_diatheke_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -432,13 +452,13 @@ func (x *CommandEvent) Reset() {
 	}
 }
 
-func (x *CommandEvent) String() string {
+func (x *SessionStart) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CommandEvent) ProtoMessage() {}
+func (*SessionStart) ProtoMessage() {}
 
-func (x *CommandEvent) ProtoReflect() protoreflect.Message {
+func (x *SessionStart) ProtoReflect() protoreflect.Message {
 	mi := &file_diatheke_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -450,50 +470,29 @@ func (x *CommandEvent) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CommandEvent.ProtoReflect.Descriptor instead.
-func (*CommandEvent) Descriptor() ([]byte, []int) {
+// Deprecated: Use SessionStart.ProtoReflect.Descriptor instead.
+func (*SessionStart) Descriptor() ([]byte, []int) {
 	return file_diatheke_proto_rawDescGZIP(), []int{5}
 }
 
-func (x *CommandEvent) GetCommandId() string {
+func (x *SessionStart) GetModelId() string {
 	if x != nil {
-		return x.CommandId
+		return x.ModelId
 	}
 	return ""
 }
 
-func (x *CommandEvent) GetParameters() map[string]string {
-	if x != nil {
-		return x.Parameters
-	}
-	return nil
-}
-
-func (x *CommandEvent) GetCommandStateId() string {
-	if x != nil {
-		return x.CommandStateId
-	}
-	return ""
-}
-
-// A RecognizeEvent occurs if a session's audio input has a transcription
-// available, or if the PushText method was called. In both cases, the
-// event will indicate whether the text was recognized as a valid intent
-// by the Diatheke model.
-type RecognizeEvent struct {
+// User supplied text to send to Diatheke for processing.
+type TextInput struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// The pushed text or transcription of audio sent to Diatheke.
 	Text string `protobuf:"bytes,1,opt,name=text,proto3" json:"text,omitempty"`
-	// True if the submitted text or audio transcription was recognized by the
-	// Diatheke model as a valid intent or entity.
-	ValidInput bool `protobuf:"varint,2,opt,name=valid_input,json=validInput,proto3" json:"valid_input,omitempty"`
 }
 
-func (x *RecognizeEvent) Reset() {
-	*x = RecognizeEvent{}
+func (x *TextInput) Reset() {
+	*x = TextInput{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_diatheke_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -501,13 +500,13 @@ func (x *RecognizeEvent) Reset() {
 	}
 }
 
-func (x *RecognizeEvent) String() string {
+func (x *TextInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*RecognizeEvent) ProtoMessage() {}
+func (*TextInput) ProtoMessage() {}
 
-func (x *RecognizeEvent) ProtoReflect() protoreflect.Message {
+func (x *TextInput) ProtoReflect() protoreflect.Message {
 	mi := &file_diatheke_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -519,44 +518,37 @@ func (x *RecognizeEvent) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use RecognizeEvent.ProtoReflect.Descriptor instead.
-func (*RecognizeEvent) Descriptor() ([]byte, []int) {
+// Deprecated: Use TextInput.ProtoReflect.Descriptor instead.
+func (*TextInput) Descriptor() ([]byte, []int) {
 	return file_diatheke_proto_rawDescGZIP(), []int{6}
 }
 
-func (x *RecognizeEvent) GetText() string {
+func (x *TextInput) GetText() string {
 	if x != nil {
 		return x.Text
 	}
 	return ""
 }
 
-func (x *RecognizeEvent) GetValidInput() bool {
-	if x != nil {
-		return x.ValidInput
-	}
-	return false
-}
-
-// A ReplyEvent occurs when Diatheke has a reply in the conversation (not
-// to be confused with the server concepts of request and response). These
-// correspond to replies defined in the Diatheke model. For example, it might
-// be a prompt for additional information from the user, a status update,
-// or a confirmation. ReplyEvents are not generated in response to
-// StreamTTS calls.
-type ReplyEvent struct {
+// The result of executing a command.
+type CommandResult struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// Text of the reply event (defined by the Diatheke model).
-	Text string `protobuf:"bytes,1,opt,name=text,proto3" json:"text,omitempty"`
-	// Label of the reply event (defined by the Diatheke model).
-	Label string `protobuf:"bytes,2,opt,name=label,proto3" json:"label,omitempty"`
+	// The command ID, as given by the CommandAction
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// Output from the command expected by the Diatheke model.
+	// For example, this could be the result of a data query.
+	OutParameters map[string]string `protobuf:"bytes,2,rep,name=out_parameters,json=outParameters,proto3" json:"out_parameters,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	// If there was an error during execution, indicate it
+	// here with a brief message that will be logged by
+	// Diatheke.
+	Error string `protobuf:"bytes,3,opt,name=error,proto3" json:"error,omitempty"`
 }
 
-func (x *ReplyEvent) Reset() {
-	*x = ReplyEvent{}
+func (x *CommandResult) Reset() {
+	*x = CommandResult{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_diatheke_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -564,13 +556,13 @@ func (x *ReplyEvent) Reset() {
 	}
 }
 
-func (x *ReplyEvent) String() string {
+func (x *CommandResult) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ReplyEvent) ProtoMessage() {}
+func (*CommandResult) ProtoMessage() {}
 
-func (x *ReplyEvent) ProtoReflect() protoreflect.Message {
+func (x *CommandResult) ProtoReflect() protoreflect.Message {
 	mi := &file_diatheke_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -582,53 +574,50 @@ func (x *ReplyEvent) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ReplyEvent.ProtoReflect.Descriptor instead.
-func (*ReplyEvent) Descriptor() ([]byte, []int) {
+// Deprecated: Use CommandResult.ProtoReflect.Descriptor instead.
+func (*CommandResult) Descriptor() ([]byte, []int) {
 	return file_diatheke_proto_rawDescGZIP(), []int{7}
 }
 
-func (x *ReplyEvent) GetText() string {
+func (x *CommandResult) GetId() string {
 	if x != nil {
-		return x.Text
+		return x.Id
 	}
 	return ""
 }
 
-func (x *ReplyEvent) GetLabel() string {
+func (x *CommandResult) GetOutParameters() map[string]string {
 	if x != nil {
-		return x.Label
+		return x.OutParameters
+	}
+	return nil
+}
+
+func (x *CommandResult) GetError() string {
+	if x != nil {
+		return x.Error
 	}
 	return ""
 }
 
-// The final status of an executed command.
-type CommandStatus struct {
+// Changes the current state of a Diatheke session to run at
+// the specified story.
+type SetStory struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// session_id should be the same as the status id returned from
-	// NewSessionResponse.
-	SessionId string `protobuf:"bytes,1,opt,name=session_id,json=sessionId,proto3" json:"session_id,omitempty"`
-	// ID of the command as given in the RunCommand object.
-	CommandId    string                   `protobuf:"bytes,2,opt,name=command_id,json=commandId,proto3" json:"command_id,omitempty"`
-	ReturnStatus CommandStatus_StatusCode `protobuf:"varint,3,opt,name=return_status,json=returnStatus,proto3,enum=cobaltspeech.diatheke.CommandStatus_StatusCode" json:"return_status,omitempty"`
-	// Parameters to return to Diatheke. For example, the map might contain
-	// the entry "temperature", which was populated with a value of "30"
-	// after the command finished. Expected parameters are defined by the
+	// The ID of the story to run, as defined in the
 	// Diatheke model.
-	OutputParameters map[string]string `protobuf:"bytes,4,rep,name=output_parameters,json=outputParameters,proto3" json:"output_parameters,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
-	// Set this field with an error message if a fatal error occured while
-	// executing the command (return_status == FAILURE).
-	ErrorMessageText string `protobuf:"bytes,5,opt,name=error_message_text,json=errorMessageText,proto3" json:"error_message_text,omitempty"`
-	// State ID from the original CommandEvent. This field is required for
-	// Diatheke to correctly update the dialog state when CommandFinished
-	// is called.
-	CommandStateId string `protobuf:"bytes,6,opt,name=command_state_id,json=commandStateId,proto3" json:"command_state_id,omitempty"`
+	StoryId string `protobuf:"bytes,1,opt,name=story_id,json=storyId,proto3" json:"story_id,omitempty"`
+	// A list of parameters to set before running the given
+	// story. This will replace any parameters currently
+	// defined in the session.
+	Parameters map[string]string `protobuf:"bytes,2,rep,name=parameters,proto3" json:"parameters,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 }
 
-func (x *CommandStatus) Reset() {
-	*x = CommandStatus{}
+func (x *SetStory) Reset() {
+	*x = SetStory{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_diatheke_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -636,13 +625,13 @@ func (x *CommandStatus) Reset() {
 	}
 }
 
-func (x *CommandStatus) String() string {
+func (x *SetStory) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CommandStatus) ProtoMessage() {}
+func (*SetStory) ProtoMessage() {}
 
-func (x *CommandStatus) ProtoReflect() protoreflect.Message {
+func (x *SetStory) ProtoReflect() protoreflect.Message {
 	mi := &file_diatheke_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -654,69 +643,40 @@ func (x *CommandStatus) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CommandStatus.ProtoReflect.Descriptor instead.
-func (*CommandStatus) Descriptor() ([]byte, []int) {
+// Deprecated: Use SetStory.ProtoReflect.Descriptor instead.
+func (*SetStory) Descriptor() ([]byte, []int) {
 	return file_diatheke_proto_rawDescGZIP(), []int{8}
 }
 
-func (x *CommandStatus) GetSessionId() string {
+func (x *SetStory) GetStoryId() string {
 	if x != nil {
-		return x.SessionId
+		return x.StoryId
 	}
 	return ""
 }
 
-func (x *CommandStatus) GetCommandId() string {
+func (x *SetStory) GetParameters() map[string]string {
 	if x != nil {
-		return x.CommandId
-	}
-	return ""
-}
-
-func (x *CommandStatus) GetReturnStatus() CommandStatus_StatusCode {
-	if x != nil {
-		return x.ReturnStatus
-	}
-	return CommandStatus_SUCCESS
-}
-
-func (x *CommandStatus) GetOutputParameters() map[string]string {
-	if x != nil {
-		return x.OutputParameters
+		return x.Parameters
 	}
 	return nil
 }
 
-func (x *CommandStatus) GetErrorMessageText() string {
-	if x != nil {
-		return x.ErrorMessageText
-	}
-	return ""
-}
-
-func (x *CommandStatus) GetCommandStateId() string {
-	if x != nil {
-		return x.CommandStateId
-	}
-	return ""
-}
-
-// Provides input audio data for StreamAudioInput. The first message
-// sent must contain the session ID only. All subsequent messages
-// must contain audio data only.
-type AudioInput struct {
+// The result of updating a session.
+type SessionOutput struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// Types that are assignable to Request:
-	//	*AudioInput_SessionId
-	//	*AudioInput_Data
-	Request isAudioInput_Request `protobuf_oneof:"request"`
+	// The updated session token.
+	Token *TokenData `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
+	// The list of actions the client should take next,
+	// using the session token returned with this result.
+	ActionList []*ActionData `protobuf:"bytes,2,rep,name=action_list,json=actionList,proto3" json:"action_list,omitempty"`
 }
 
-func (x *AudioInput) Reset() {
-	*x = AudioInput{}
+func (x *SessionOutput) Reset() {
+	*x = SessionOutput{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_diatheke_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -724,13 +684,13 @@ func (x *AudioInput) Reset() {
 	}
 }
 
-func (x *AudioInput) String() string {
+func (x *SessionOutput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AudioInput) ProtoMessage() {}
+func (*SessionOutput) ProtoMessage() {}
 
-func (x *AudioInput) ProtoReflect() protoreflect.Message {
+func (x *SessionOutput) ProtoReflect() protoreflect.Message {
 	mi := &file_diatheke_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -742,73 +702,40 @@ func (x *AudioInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AudioInput.ProtoReflect.Descriptor instead.
-func (*AudioInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use SessionOutput.ProtoReflect.Descriptor instead.
+func (*SessionOutput) Descriptor() ([]byte, []int) {
 	return file_diatheke_proto_rawDescGZIP(), []int{9}
 }
 
-func (m *AudioInput) GetRequest() isAudioInput_Request {
-	if m != nil {
-		return m.Request
+func (x *SessionOutput) GetToken() *TokenData {
+	if x != nil {
+		return x.Token
 	}
 	return nil
 }
 
-func (x *AudioInput) GetSessionId() string {
-	if x, ok := x.GetRequest().(*AudioInput_SessionId); ok {
-		return x.SessionId
-	}
-	return ""
-}
-
-func (x *AudioInput) GetData() []byte {
-	if x, ok := x.GetRequest().(*AudioInput_Data); ok {
-		return x.Data
+func (x *SessionOutput) GetActionList() []*ActionData {
+	if x != nil {
+		return x.ActionList
 	}
 	return nil
 }
 
-type isAudioInput_Request interface {
-	isAudioInput_Request()
-}
-
-type AudioInput_SessionId struct {
-	// Session ID returned from the NewSession call.
-	SessionId string `protobuf:"bytes,1,opt,name=session_id,json=sessionId,proto3,oneof"`
-}
-
-type AudioInput_Data struct {
-	// Audio data to process. The encoding of the data should match what
-	// was specified in the Diatheke server configuration.
-	// NOTE: If the audio data is empty, the server may interpret it as
-	//       the end of the stream and stop accepting further messages.
-	Data []byte `protobuf:"bytes,2,opt,name=data,proto3,oneof"`
-}
-
-func (*AudioInput_SessionId) isAudioInput_Request() {}
-
-func (*AudioInput_Data) isAudioInput_Request() {}
-
-// An AudioReply is the verbal and textual reply that Diatheke returns as
-// part of a conversation (not to be confused with the server concepts of
-// request and response).
-type AudioReply struct {
+// Specifies an action that the client application should take.
+type ActionData struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// The label defined in the Diatheke model. Identifies which reply
-	// in the model this message corresponds to.
-	Label string `protobuf:"bytes,1,opt,name=label,proto3" json:"label,omitempty"`
-	// Types that are assignable to OutputMessage:
-	//	*AudioReply_Text
-	//	*AudioReply_Data
-	//	*AudioReply_End
-	OutputMessage isAudioReply_OutputMessage `protobuf_oneof:"output_message"`
+	// Types that are assignable to Action:
+	//	*ActionData_Input
+	//	*ActionData_Command
+	//	*ActionData_Reply
+	Action isActionData_Action `protobuf_oneof:"action"`
 }
 
-func (x *AudioReply) Reset() {
-	*x = AudioReply{}
+func (x *ActionData) Reset() {
+	*x = ActionData{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_diatheke_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -816,13 +743,13 @@ func (x *AudioReply) Reset() {
 	}
 }
 
-func (x *AudioReply) String() string {
+func (x *ActionData) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AudioReply) ProtoMessage() {}
+func (*ActionData) ProtoMessage() {}
 
-func (x *AudioReply) ProtoReflect() protoreflect.Message {
+func (x *ActionData) ProtoReflect() protoreflect.Message {
 	mi := &file_diatheke_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -834,93 +761,81 @@ func (x *AudioReply) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AudioReply.ProtoReflect.Descriptor instead.
-func (*AudioReply) Descriptor() ([]byte, []int) {
+// Deprecated: Use ActionData.ProtoReflect.Descriptor instead.
+func (*ActionData) Descriptor() ([]byte, []int) {
 	return file_diatheke_proto_rawDescGZIP(), []int{10}
 }
 
-func (x *AudioReply) GetLabel() string {
-	if x != nil {
-		return x.Label
-	}
-	return ""
-}
-
-func (m *AudioReply) GetOutputMessage() isAudioReply_OutputMessage {
+func (m *ActionData) GetAction() isActionData_Action {
 	if m != nil {
-		return m.OutputMessage
+		return m.Action
 	}
 	return nil
 }
 
-func (x *AudioReply) GetText() string {
-	if x, ok := x.GetOutputMessage().(*AudioReply_Text); ok {
-		return x.Text
-	}
-	return ""
-}
-
-func (x *AudioReply) GetData() []byte {
-	if x, ok := x.GetOutputMessage().(*AudioReply_Data); ok {
-		return x.Data
+func (x *ActionData) GetInput() *WaitForUserAction {
+	if x, ok := x.GetAction().(*ActionData_Input); ok {
+		return x.Input
 	}
 	return nil
 }
 
-func (x *AudioReply) GetEnd() *Empty {
-	if x, ok := x.GetOutputMessage().(*AudioReply_End); ok {
-		return x.End
+func (x *ActionData) GetCommand() *CommandAction {
+	if x, ok := x.GetAction().(*ActionData_Command); ok {
+		return x.Command
 	}
 	return nil
 }
 
-type isAudioReply_OutputMessage interface {
-	isAudioReply_OutputMessage()
+func (x *ActionData) GetReply() *ReplyAction {
+	if x, ok := x.GetAction().(*ActionData_Reply); ok {
+		return x.Reply
+	}
+	return nil
 }
 
-type AudioReply_Text struct {
-	// The reply text as defined in the Diatheke model. This is the first
-	// message that will be received for an AudioReply. It contains the
-	// same text as the corresponding ReplyEvent in the session's event
-	// stream.
-	Text string `protobuf:"bytes,2,opt,name=text,proto3,oneof"`
+type isActionData_Action interface {
+	isActionData_Action()
 }
 
-type AudioReply_Data struct {
-	// The audio data from TTS. There can be any number of these messages
-	// for an AudioReply after the first text message and before the final
-	// end message. The encoding of the data will match what was specified
-	// in the server configuration.
-	Data []byte `protobuf:"bytes,3,opt,name=data,proto3,oneof"`
+type ActionData_Input struct {
+	// The user must provide input to Diatheke.
+	Input *WaitForUserAction `protobuf:"bytes,1,opt,name=input,proto3,oneof"`
 }
 
-type AudioReply_End struct {
-	// Indicates that TTS has finished streaming audio for the reply. This
-	// is the last message that will be received for an AudioReply.
-	End *Empty `protobuf:"bytes,4,opt,name=end,proto3,oneof"`
+type ActionData_Command struct {
+	// The client app must execute the specified command.
+	Command *CommandAction `protobuf:"bytes,2,opt,name=command,proto3,oneof"`
 }
 
-func (*AudioReply_Text) isAudioReply_OutputMessage() {}
+type ActionData_Reply struct {
+	// The client app should provide the reply to the user.
+	Reply *ReplyAction `protobuf:"bytes,3,opt,name=reply,proto3,oneof"`
+}
 
-func (*AudioReply_Data) isAudioReply_OutputMessage() {}
+func (*ActionData_Input) isActionData_Action() {}
 
-func (*AudioReply_End) isAudioReply_OutputMessage() {}
+func (*ActionData_Command) isActionData_Action() {}
 
-// Request to push text to Diatheke as part of a conversation.
-type PushTextRequest struct {
+func (*ActionData_Reply) isActionData_Action() {}
+
+// This action indicates that Diatheke is expecting user input.
+type WaitForUserAction struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// Session ID returned from the NewSession call.
-	SessionId string `protobuf:"bytes,1,opt,name=session_id,json=sessionId,proto3" json:"session_id,omitempty"`
-	// User input. This could be a transcription from manually run ASR,
-	// text selected from a dropdown list, entered in a prompt, etc.
-	Text string `protobuf:"bytes,2,opt,name=text,proto3" json:"text,omitempty"`
+	// True if the next user input must begin with a wake-word.
+	RequiresWakeWord bool `protobuf:"varint,1,opt,name=requires_wake_word,json=requiresWakeWord,proto3" json:"requires_wake_word,omitempty"`
+	// True if the input is required immediately (i.e., in
+	// response to a question Diatheke asked the user). When
+	// false, the client should be allowed to wait indefinitely
+	// for the user to provide input.
+	Immediate bool `protobuf:"varint,2,opt,name=immediate,proto3" json:"immediate,omitempty"`
 }
 
-func (x *PushTextRequest) Reset() {
-	*x = PushTextRequest{}
+func (x *WaitForUserAction) Reset() {
+	*x = WaitForUserAction{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_diatheke_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -928,13 +843,13 @@ func (x *PushTextRequest) Reset() {
 	}
 }
 
-func (x *PushTextRequest) String() string {
+func (x *WaitForUserAction) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*PushTextRequest) ProtoMessage() {}
+func (*WaitForUserAction) ProtoMessage() {}
 
-func (x *PushTextRequest) ProtoReflect() protoreflect.Message {
+func (x *WaitForUserAction) ProtoReflect() protoreflect.Message {
 	mi := &file_diatheke_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -946,39 +861,40 @@ func (x *PushTextRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use PushTextRequest.ProtoReflect.Descriptor instead.
-func (*PushTextRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use WaitForUserAction.ProtoReflect.Descriptor instead.
+func (*WaitForUserAction) Descriptor() ([]byte, []int) {
 	return file_diatheke_proto_rawDescGZIP(), []int{11}
 }
 
-func (x *PushTextRequest) GetSessionId() string {
+func (x *WaitForUserAction) GetRequiresWakeWord() bool {
 	if x != nil {
-		return x.SessionId
+		return x.RequiresWakeWord
 	}
-	return ""
+	return false
 }
 
-func (x *PushTextRequest) GetText() string {
+func (x *WaitForUserAction) GetImmediate() bool {
 	if x != nil {
-		return x.Text
+		return x.Immediate
 	}
-	return ""
+	return false
 }
 
-// Request for streaming ASR unrelated to a session.
-type ASRRequest struct {
+// This action indicates that the client application should
+// execute a command.
+type CommandAction struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// Types that are assignable to AsrData:
-	//	*ASRRequest_Model
-	//	*ASRRequest_Audio
-	AsrData isASRRequest_AsrData `protobuf_oneof:"asr_data"`
+	// The ID of the command to execute, as defined in the
+	// Diatheke model.
+	Id              string            `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	InputParameters map[string]string `protobuf:"bytes,2,rep,name=input_parameters,json=inputParameters,proto3" json:"input_parameters,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 }
 
-func (x *ASRRequest) Reset() {
-	*x = ASRRequest{}
+func (x *CommandAction) Reset() {
+	*x = CommandAction{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_diatheke_proto_msgTypes[12]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -986,13 +902,13 @@ func (x *ASRRequest) Reset() {
 	}
 }
 
-func (x *ASRRequest) String() string {
+func (x *CommandAction) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ASRRequest) ProtoMessage() {}
+func (*CommandAction) ProtoMessage() {}
 
-func (x *ASRRequest) ProtoReflect() protoreflect.Message {
+func (x *CommandAction) ProtoReflect() protoreflect.Message {
 	mi := &file_diatheke_proto_msgTypes[12]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1004,71 +920,41 @@ func (x *ASRRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ASRRequest.ProtoReflect.Descriptor instead.
-func (*ASRRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use CommandAction.ProtoReflect.Descriptor instead.
+func (*CommandAction) Descriptor() ([]byte, []int) {
 	return file_diatheke_proto_rawDescGZIP(), []int{12}
 }
 
-func (m *ASRRequest) GetAsrData() isASRRequest_AsrData {
-	if m != nil {
-		return m.AsrData
-	}
-	return nil
-}
-
-func (x *ASRRequest) GetModel() string {
-	if x, ok := x.GetAsrData().(*ASRRequest_Model); ok {
-		return x.Model
+func (x *CommandAction) GetId() string {
+	if x != nil {
+		return x.Id
 	}
 	return ""
 }
 
-func (x *ASRRequest) GetAudio() []byte {
-	if x, ok := x.GetAsrData().(*ASRRequest_Audio); ok {
-		return x.Audio
+func (x *CommandAction) GetInputParameters() map[string]string {
+	if x != nil {
+		return x.InputParameters
 	}
 	return nil
 }
 
-type isASRRequest_AsrData interface {
-	isASRRequest_AsrData()
-}
-
-type ASRRequest_Model struct {
-	// The Cubic model to use for ASR. This message should always be sent
-	// before any audio data is sent.
-	Model string `protobuf:"bytes,1,opt,name=model,proto3,oneof"`
-}
-
-type ASRRequest_Audio struct {
-	// Audio data to process. The encoding of the data should match what
-	// was specified in the Diatheke server configuration.
-	// NOTE: If the audio data is empty, the server may interpret it as
-	//       the end of the stream and stop accepting further messages.
-	Audio []byte `protobuf:"bytes,2,opt,name=audio,proto3,oneof"`
-}
-
-func (*ASRRequest_Model) isASRRequest_AsrData() {}
-
-func (*ASRRequest_Audio) isASRRequest_AsrData() {}
-
-// ASRResponse contains speech recognition results.
-type ASRResponse struct {
+// This action indicates that the client application should
+// give the provided text to the user. This action may also
+// be used to synthesize speech with the StreamTTS method.
+type ReplyAction struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// Text is the Cubic engine's formatted transcript of pushed audio.
-	// This field will be the 1-best alternative.
+	// Text of the reply
 	Text string `protobuf:"bytes,1,opt,name=text,proto3" json:"text,omitempty"`
-	// The confidence score is a floating point number between 0.0 - 1.0. A
-	// score of 1.0 indicates that the ASR engine is 100% confident in the
-	// transcription.
-	ConfidenceScore float64 `protobuf:"fixed64,2,opt,name=confidence_score,json=confidenceScore,proto3" json:"confidence_score,omitempty"`
+	// TTS model to use with the TTSReply method
+	LunaModel string `protobuf:"bytes,2,opt,name=luna_model,json=lunaModel,proto3" json:"luna_model,omitempty"`
 }
 
-func (x *ASRResponse) Reset() {
-	*x = ASRResponse{}
+func (x *ReplyAction) Reset() {
+	*x = ReplyAction{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_diatheke_proto_msgTypes[13]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1076,13 +962,13 @@ func (x *ASRResponse) Reset() {
 	}
 }
 
-func (x *ASRResponse) String() string {
+func (x *ReplyAction) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ASRResponse) ProtoMessage() {}
+func (*ReplyAction) ProtoMessage() {}
 
-func (x *ASRResponse) ProtoReflect() protoreflect.Message {
+func (x *ReplyAction) ProtoReflect() protoreflect.Message {
 	mi := &file_diatheke_proto_msgTypes[13]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1094,39 +980,40 @@ func (x *ASRResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ASRResponse.ProtoReflect.Descriptor instead.
-func (*ASRResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use ReplyAction.ProtoReflect.Descriptor instead.
+func (*ReplyAction) Descriptor() ([]byte, []int) {
 	return file_diatheke_proto_rawDescGZIP(), []int{13}
 }
 
-func (x *ASRResponse) GetText() string {
+func (x *ReplyAction) GetText() string {
 	if x != nil {
 		return x.Text
 	}
 	return ""
 }
 
-func (x *ASRResponse) GetConfidenceScore() float64 {
+func (x *ReplyAction) GetLunaModel() string {
 	if x != nil {
-		return x.ConfidenceScore
+		return x.LunaModel
 	}
-	return 0
+	return ""
 }
 
-// Request to synthesize speech unrelated to a session.
-type TTSRequest struct {
+// Data to send to the ASR stream. The first message on the
+// stream must be the session token followed by audio data.
+type ASRInput struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// The Luna model to use for TTS (defined in the server config file).
-	Model string `protobuf:"bytes,1,opt,name=model,proto3" json:"model,omitempty"`
-	// Text to synthesize
-	Text string `protobuf:"bytes,2,opt,name=text,proto3" json:"text,omitempty"`
+	// Types that are assignable to Data:
+	//	*ASRInput_Token
+	//	*ASRInput_Audio
+	Data isASRInput_Data `protobuf_oneof:"data"`
 }
 
-func (x *TTSRequest) Reset() {
-	*x = TTSRequest{}
+func (x *ASRInput) Reset() {
+	*x = ASRInput{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_diatheke_proto_msgTypes[14]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1134,13 +1021,13 @@ func (x *TTSRequest) Reset() {
 	}
 }
 
-func (x *TTSRequest) String() string {
+func (x *ASRInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*TTSRequest) ProtoMessage() {}
+func (*ASRInput) ProtoMessage() {}
 
-func (x *TTSRequest) ProtoReflect() protoreflect.Message {
+func (x *ASRInput) ProtoReflect() protoreflect.Message {
 	mi := &file_diatheke_proto_msgTypes[14]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1152,38 +1039,77 @@ func (x *TTSRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use TTSRequest.ProtoReflect.Descriptor instead.
-func (*TTSRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use ASRInput.ProtoReflect.Descriptor instead.
+func (*ASRInput) Descriptor() ([]byte, []int) {
 	return file_diatheke_proto_rawDescGZIP(), []int{14}
 }
 
-func (x *TTSRequest) GetModel() string {
-	if x != nil {
-		return x.Model
+func (m *ASRInput) GetData() isASRInput_Data {
+	if m != nil {
+		return m.Data
 	}
-	return ""
+	return nil
 }
 
-func (x *TTSRequest) GetText() string {
-	if x != nil {
-		return x.Text
+func (x *ASRInput) GetToken() *TokenData {
+	if x, ok := x.GetData().(*ASRInput_Token); ok {
+		return x.Token
 	}
-	return ""
+	return nil
 }
 
-// Response for text-to-speech unrelated to a session.
-type TTSResponse struct {
+func (x *ASRInput) GetAudio() []byte {
+	if x, ok := x.GetData().(*ASRInput_Audio); ok {
+		return x.Audio
+	}
+	return nil
+}
+
+type isASRInput_Data interface {
+	isASRInput_Data()
+}
+
+type ASRInput_Token struct {
+	// Session data, used to determine the correct Cubic
+	// model to use for ASR, with other contextual
+	// information.
+	Token *TokenData `protobuf:"bytes,1,opt,name=token,proto3,oneof"`
+}
+
+type ASRInput_Audio struct {
+	// Audio data to transcribe.
+	Audio []byte `protobuf:"bytes,2,opt,name=audio,proto3,oneof"`
+}
+
+func (*ASRInput_Token) isASRInput_Data() {}
+
+func (*ASRInput_Audio) isASRInput_Data() {}
+
+// The result from the ASR stream, sent after the ASR engine
+// has endpointed or the stream was closed by the client.
+type ASRResult struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// The synthesized audio data. The data encoding will match what was
-	// specified in the server configuration.
-	Data []byte `protobuf:"bytes,1,opt,name=data,proto3" json:"data,omitempty"`
+	// The transcription.
+	Text string `protobuf:"bytes,1,opt,name=text,proto3" json:"text,omitempty"`
+	// Confidence estimate between 0 and 1. A higher number
+	// represents a higher likelihood of the output being
+	// correct.
+	Confidence float64 `protobuf:"fixed64,2,opt,name=confidence,proto3" json:"confidence,omitempty"`
+	// True if a timeout was defined for the session's current
+	// input state in the Diatheke model, and the timeout
+	// expired before getting a transcription. This timeout
+	// refers to the amount of time a user has to verbally
+	// respond to Diatheke after the ASR stream has been
+	// created, and should not be confused with a network
+	// connection timeout.
+	TimedOut bool `protobuf:"varint,3,opt,name=timedOut,proto3" json:"timedOut,omitempty"`
 }
 
-func (x *TTSResponse) Reset() {
-	*x = TTSResponse{}
+func (x *ASRResult) Reset() {
+	*x = ASRResult{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_diatheke_proto_msgTypes[15]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1191,13 +1117,13 @@ func (x *TTSResponse) Reset() {
 	}
 }
 
-func (x *TTSResponse) String() string {
+func (x *ASRResult) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*TTSResponse) ProtoMessage() {}
+func (*ASRResult) ProtoMessage() {}
 
-func (x *TTSResponse) ProtoReflect() protoreflect.Message {
+func (x *ASRResult) ProtoReflect() protoreflect.Message {
 	mi := &file_diatheke_proto_msgTypes[15]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1209,14 +1135,77 @@ func (x *TTSResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use TTSResponse.ProtoReflect.Descriptor instead.
-func (*TTSResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use ASRResult.ProtoReflect.Descriptor instead.
+func (*ASRResult) Descriptor() ([]byte, []int) {
 	return file_diatheke_proto_rawDescGZIP(), []int{15}
 }
 
-func (x *TTSResponse) GetData() []byte {
+func (x *ASRResult) GetText() string {
 	if x != nil {
-		return x.Data
+		return x.Text
+	}
+	return ""
+}
+
+func (x *ASRResult) GetConfidence() float64 {
+	if x != nil {
+		return x.Confidence
+	}
+	return 0
+}
+
+func (x *ASRResult) GetTimedOut() bool {
+	if x != nil {
+		return x.TimedOut
+	}
+	return false
+}
+
+// Contains synthesized speech audio. The specific encoding
+// is defined in the server config file.
+type TTSAudio struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Audio []byte `protobuf:"bytes,1,opt,name=audio,proto3" json:"audio,omitempty"`
+}
+
+func (x *TTSAudio) Reset() {
+	*x = TTSAudio{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_diatheke_proto_msgTypes[16]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *TTSAudio) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TTSAudio) ProtoMessage() {}
+
+func (x *TTSAudio) ProtoReflect() protoreflect.Message {
+	mi := &file_diatheke_proto_msgTypes[16]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TTSAudio.ProtoReflect.Descriptor instead.
+func (*TTSAudio) Descriptor() ([]byte, []int) {
+	return file_diatheke_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *TTSAudio) GetAudio() []byte {
+	if x != nil {
+		return x.Audio
 	}
 	return nil
 }
@@ -1230,7 +1219,7 @@ type Empty struct {
 func (x *Empty) Reset() {
 	*x = Empty{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_diatheke_proto_msgTypes[16]
+		mi := &file_diatheke_proto_msgTypes[17]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1243,7 +1232,7 @@ func (x *Empty) String() string {
 func (*Empty) ProtoMessage() {}
 
 func (x *Empty) ProtoReflect() protoreflect.Message {
-	mi := &file_diatheke_proto_msgTypes[16]
+	mi := &file_diatheke_proto_msgTypes[17]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1256,7 +1245,7 @@ func (x *Empty) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Empty.ProtoReflect.Descriptor instead.
 func (*Empty) Descriptor() ([]byte, []int) {
-	return file_diatheke_proto_rawDescGZIP(), []int{16}
+	return file_diatheke_proto_rawDescGZIP(), []int{17}
 }
 
 var File_diatheke_proto protoreflect.FileDescriptor
@@ -1264,180 +1253,181 @@ var File_diatheke_proto protoreflect.FileDescriptor
 var file_diatheke_proto_rawDesc = []byte{
 	0x0a, 0x0e, 0x64, 0x69, 0x61, 0x74, 0x68, 0x65, 0x6b, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
 	0x12, 0x15, 0x63, 0x6f, 0x62, 0x61, 0x6c, 0x74, 0x73, 0x70, 0x65, 0x65, 0x63, 0x68, 0x2e, 0x64,
-	0x69, 0x61, 0x74, 0x68, 0x65, 0x6b, 0x65, 0x22, 0x29, 0x0a, 0x0f, 0x56, 0x65, 0x72, 0x73, 0x69,
-	0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x73, 0x65,
-	0x72, 0x76, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x73, 0x65, 0x72, 0x76,
-	0x65, 0x72, 0x22, 0x28, 0x0a, 0x0e, 0x4d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x52, 0x65, 0x73, 0x70,
-	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x18, 0x01,
-	0x20, 0x03, 0x28, 0x09, 0x52, 0x06, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x22, 0x29, 0x0a, 0x11,
-	0x4e, 0x65, 0x77, 0x53, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
-	0x74, 0x12, 0x14, 0x0a, 0x05, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x05, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x22, 0x2a, 0x0a, 0x09, 0x53, 0x65, 0x73, 0x73, 0x69,
-	0x6f, 0x6e, 0x49, 0x44, 0x12, 0x1d, 0x0a, 0x0a, 0x73, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x5f,
-	0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x73, 0x65, 0x73, 0x73, 0x69, 0x6f,
-	0x6e, 0x49, 0x64, 0x22, 0xdc, 0x01, 0x0a, 0x0d, 0x44, 0x69, 0x61, 0x74, 0x68, 0x65, 0x6b, 0x65,
-	0x45, 0x76, 0x65, 0x6e, 0x74, 0x12, 0x3f, 0x0a, 0x07, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x23, 0x2e, 0x63, 0x6f, 0x62, 0x61, 0x6c, 0x74, 0x73,
-	0x70, 0x65, 0x65, 0x63, 0x68, 0x2e, 0x64, 0x69, 0x61, 0x74, 0x68, 0x65, 0x6b, 0x65, 0x2e, 0x43,
-	0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x48, 0x00, 0x52, 0x07, 0x63,
-	0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x12, 0x45, 0x0a, 0x09, 0x72, 0x65, 0x63, 0x6f, 0x67, 0x6e,
-	0x69, 0x7a, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x25, 0x2e, 0x63, 0x6f, 0x62, 0x61,
-	0x6c, 0x74, 0x73, 0x70, 0x65, 0x65, 0x63, 0x68, 0x2e, 0x64, 0x69, 0x61, 0x74, 0x68, 0x65, 0x6b,
-	0x65, 0x2e, 0x52, 0x65, 0x63, 0x6f, 0x67, 0x6e, 0x69, 0x7a, 0x65, 0x45, 0x76, 0x65, 0x6e, 0x74,
-	0x48, 0x00, 0x52, 0x09, 0x72, 0x65, 0x63, 0x6f, 0x67, 0x6e, 0x69, 0x7a, 0x65, 0x12, 0x39, 0x0a,
-	0x05, 0x72, 0x65, 0x70, 0x6c, 0x79, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x21, 0x2e, 0x63,
-	0x6f, 0x62, 0x61, 0x6c, 0x74, 0x73, 0x70, 0x65, 0x65, 0x63, 0x68, 0x2e, 0x64, 0x69, 0x61, 0x74,
-	0x68, 0x65, 0x6b, 0x65, 0x2e, 0x52, 0x65, 0x70, 0x6c, 0x79, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x48,
-	0x00, 0x52, 0x05, 0x72, 0x65, 0x70, 0x6c, 0x79, 0x42, 0x08, 0x0a, 0x06, 0x72, 0x65, 0x73, 0x75,
-	0x6c, 0x74, 0x22, 0xeb, 0x01, 0x0a, 0x0c, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x45, 0x76,
-	0x65, 0x6e, 0x74, 0x12, 0x1d, 0x0a, 0x0a, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x5f, 0x69,
-	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64,
-	0x49, 0x64, 0x12, 0x53, 0x0a, 0x0a, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x65, 0x74, 0x65, 0x72, 0x73,
-	0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x33, 0x2e, 0x63, 0x6f, 0x62, 0x61, 0x6c, 0x74, 0x73,
-	0x70, 0x65, 0x65, 0x63, 0x68, 0x2e, 0x64, 0x69, 0x61, 0x74, 0x68, 0x65, 0x6b, 0x65, 0x2e, 0x43,
-	0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x2e, 0x50, 0x61, 0x72, 0x61,
-	0x6d, 0x65, 0x74, 0x65, 0x72, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x0a, 0x70, 0x61, 0x72,
-	0x61, 0x6d, 0x65, 0x74, 0x65, 0x72, 0x73, 0x12, 0x28, 0x0a, 0x10, 0x63, 0x6f, 0x6d, 0x6d, 0x61,
-	0x6e, 0x64, 0x5f, 0x73, 0x74, 0x61, 0x74, 0x65, 0x5f, 0x69, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x0e, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x53, 0x74, 0x61, 0x74, 0x65, 0x49,
-	0x64, 0x1a, 0x3d, 0x0a, 0x0f, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x65, 0x74, 0x65, 0x72, 0x73, 0x45,
+	0x69, 0x61, 0x74, 0x68, 0x65, 0x6b, 0x65, 0x22, 0x6f, 0x0a, 0x0f, 0x56, 0x65, 0x72, 0x73, 0x69,
+	0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x64, 0x69,
+	0x61, 0x74, 0x68, 0x65, 0x6b, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x64, 0x69,
+	0x61, 0x74, 0x68, 0x65, 0x6b, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x63, 0x68, 0x6f, 0x73, 0x75, 0x6e,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x63, 0x68, 0x6f, 0x73, 0x75, 0x6e, 0x12, 0x14,
+	0x0a, 0x05, 0x63, 0x75, 0x62, 0x69, 0x63, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x63,
+	0x75, 0x62, 0x69, 0x63, 0x12, 0x12, 0x0a, 0x04, 0x6c, 0x75, 0x6e, 0x61, 0x18, 0x04, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x04, 0x6c, 0x75, 0x6e, 0x61, 0x22, 0x4e, 0x0a, 0x12, 0x4c, 0x69, 0x73, 0x74,
+	0x4d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x38,
+	0x0a, 0x06, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x20,
+	0x2e, 0x63, 0x6f, 0x62, 0x61, 0x6c, 0x74, 0x73, 0x70, 0x65, 0x65, 0x63, 0x68, 0x2e, 0x64, 0x69,
+	0x61, 0x74, 0x68, 0x65, 0x6b, 0x65, 0x2e, 0x4d, 0x6f, 0x64, 0x65, 0x6c, 0x49, 0x6e, 0x66, 0x6f,
+	0x52, 0x06, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x22, 0x9b, 0x01, 0x0a, 0x09, 0x4d, 0x6f, 0x64,
+	0x65, 0x6c, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x6c, 0x61,
+	0x6e, 0x67, 0x75, 0x61, 0x67, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x6c, 0x61,
+	0x6e, 0x67, 0x75, 0x61, 0x67, 0x65, 0x12, 0x26, 0x0a, 0x0f, 0x61, 0x73, 0x72, 0x5f, 0x73, 0x61,
+	0x6d, 0x70, 0x6c, 0x65, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0d, 0x52,
+	0x0d, 0x61, 0x73, 0x72, 0x53, 0x61, 0x6d, 0x70, 0x6c, 0x65, 0x52, 0x61, 0x74, 0x65, 0x12, 0x26,
+	0x0a, 0x0f, 0x74, 0x74, 0x73, 0x5f, 0x73, 0x61, 0x6d, 0x70, 0x6c, 0x65, 0x5f, 0x72, 0x61, 0x74,
+	0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x0d, 0x74, 0x74, 0x73, 0x53, 0x61, 0x6d, 0x70,
+	0x6c, 0x65, 0x52, 0x61, 0x74, 0x65, 0x22, 0xb0, 0x02, 0x0a, 0x0c, 0x53, 0x65, 0x73, 0x73, 0x69,
+	0x6f, 0x6e, 0x49, 0x6e, 0x70, 0x75, 0x74, 0x12, 0x36, 0x0a, 0x05, 0x74, 0x6f, 0x6b, 0x65, 0x6e,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x20, 0x2e, 0x63, 0x6f, 0x62, 0x61, 0x6c, 0x74, 0x73,
+	0x70, 0x65, 0x65, 0x63, 0x68, 0x2e, 0x64, 0x69, 0x61, 0x74, 0x68, 0x65, 0x6b, 0x65, 0x2e, 0x54,
+	0x6f, 0x6b, 0x65, 0x6e, 0x44, 0x61, 0x74, 0x61, 0x52, 0x05, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x12,
+	0x36, 0x0a, 0x04, 0x74, 0x65, 0x78, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x20, 0x2e,
+	0x63, 0x6f, 0x62, 0x61, 0x6c, 0x74, 0x73, 0x70, 0x65, 0x65, 0x63, 0x68, 0x2e, 0x64, 0x69, 0x61,
+	0x74, 0x68, 0x65, 0x6b, 0x65, 0x2e, 0x54, 0x65, 0x78, 0x74, 0x49, 0x6e, 0x70, 0x75, 0x74, 0x48,
+	0x00, 0x52, 0x04, 0x74, 0x65, 0x78, 0x74, 0x12, 0x34, 0x0a, 0x03, 0x61, 0x73, 0x72, 0x18, 0x03,
+	0x20, 0x01, 0x28, 0x0b, 0x32, 0x20, 0x2e, 0x63, 0x6f, 0x62, 0x61, 0x6c, 0x74, 0x73, 0x70, 0x65,
+	0x65, 0x63, 0x68, 0x2e, 0x64, 0x69, 0x61, 0x74, 0x68, 0x65, 0x6b, 0x65, 0x2e, 0x41, 0x53, 0x52,
+	0x52, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x48, 0x00, 0x52, 0x03, 0x61, 0x73, 0x72, 0x12, 0x38, 0x0a,
+	0x03, 0x63, 0x6d, 0x64, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x24, 0x2e, 0x63, 0x6f, 0x62,
+	0x61, 0x6c, 0x74, 0x73, 0x70, 0x65, 0x65, 0x63, 0x68, 0x2e, 0x64, 0x69, 0x61, 0x74, 0x68, 0x65,
+	0x6b, 0x65, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x52, 0x65, 0x73, 0x75, 0x6c, 0x74,
+	0x48, 0x00, 0x52, 0x03, 0x63, 0x6d, 0x64, 0x12, 0x37, 0x0a, 0x05, 0x73, 0x74, 0x6f, 0x72, 0x79,
+	0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1f, 0x2e, 0x63, 0x6f, 0x62, 0x61, 0x6c, 0x74, 0x73,
+	0x70, 0x65, 0x65, 0x63, 0x68, 0x2e, 0x64, 0x69, 0x61, 0x74, 0x68, 0x65, 0x6b, 0x65, 0x2e, 0x53,
+	0x65, 0x74, 0x53, 0x74, 0x6f, 0x72, 0x79, 0x48, 0x00, 0x52, 0x05, 0x73, 0x74, 0x6f, 0x72, 0x79,
+	0x42, 0x07, 0x0a, 0x05, 0x69, 0x6e, 0x70, 0x75, 0x74, 0x22, 0x2f, 0x0a, 0x09, 0x54, 0x6f, 0x6b,
+	0x65, 0x6e, 0x44, 0x61, 0x74, 0x61, 0x12, 0x12, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x61, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x0c, 0x52, 0x04, 0x64, 0x61, 0x74, 0x61, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x22, 0x29, 0x0a, 0x0c, 0x53, 0x65,
+	0x73, 0x73, 0x69, 0x6f, 0x6e, 0x53, 0x74, 0x61, 0x72, 0x74, 0x12, 0x19, 0x0a, 0x08, 0x6d, 0x6f,
+	0x64, 0x65, 0x6c, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x6f,
+	0x64, 0x65, 0x6c, 0x49, 0x64, 0x22, 0x1f, 0x0a, 0x09, 0x54, 0x65, 0x78, 0x74, 0x49, 0x6e, 0x70,
+	0x75, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x65, 0x78, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x04, 0x74, 0x65, 0x78, 0x74, 0x22, 0xd7, 0x01, 0x0a, 0x0d, 0x43, 0x6f, 0x6d, 0x6d, 0x61,
+	0x6e, 0x64, 0x52, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x5e, 0x0a, 0x0e, 0x6f, 0x75, 0x74, 0x5f,
+	0x70, 0x61, 0x72, 0x61, 0x6d, 0x65, 0x74, 0x65, 0x72, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b,
+	0x32, 0x37, 0x2e, 0x63, 0x6f, 0x62, 0x61, 0x6c, 0x74, 0x73, 0x70, 0x65, 0x65, 0x63, 0x68, 0x2e,
+	0x64, 0x69, 0x61, 0x74, 0x68, 0x65, 0x6b, 0x65, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64,
+	0x52, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x2e, 0x4f, 0x75, 0x74, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x65,
+	0x74, 0x65, 0x72, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x0d, 0x6f, 0x75, 0x74, 0x50, 0x61,
+	0x72, 0x61, 0x6d, 0x65, 0x74, 0x65, 0x72, 0x73, 0x12, 0x14, 0x0a, 0x05, 0x65, 0x72, 0x72, 0x6f,
+	0x72, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x1a, 0x40,
+	0x0a, 0x12, 0x4f, 0x75, 0x74, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x65, 0x74, 0x65, 0x72, 0x73, 0x45,
 	0x6e, 0x74, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28,
 	0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18,
 	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01,
-	0x22, 0x45, 0x0a, 0x0e, 0x52, 0x65, 0x63, 0x6f, 0x67, 0x6e, 0x69, 0x7a, 0x65, 0x45, 0x76, 0x65,
-	0x6e, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x65, 0x78, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x04, 0x74, 0x65, 0x78, 0x74, 0x12, 0x1f, 0x0a, 0x0b, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x5f,
-	0x69, 0x6e, 0x70, 0x75, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x08, 0x52, 0x0a, 0x76, 0x61, 0x6c,
-	0x69, 0x64, 0x49, 0x6e, 0x70, 0x75, 0x74, 0x22, 0x36, 0x0a, 0x0a, 0x52, 0x65, 0x70, 0x6c, 0x79,
-	0x45, 0x76, 0x65, 0x6e, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x65, 0x78, 0x74, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x04, 0x74, 0x65, 0x78, 0x74, 0x12, 0x14, 0x0a, 0x05, 0x6c, 0x61, 0x62,
-	0x65, 0x6c, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x6c, 0x61, 0x62, 0x65, 0x6c, 0x22,
-	0xd1, 0x03, 0x0a, 0x0d, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x53, 0x74, 0x61, 0x74, 0x75,
-	0x73, 0x12, 0x1d, 0x0a, 0x0a, 0x73, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x5f, 0x69, 0x64, 0x18,
-	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x73, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x49, 0x64,
-	0x12, 0x1d, 0x0a, 0x0a, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x5f, 0x69, 0x64, 0x18, 0x02,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x49, 0x64, 0x12,
-	0x54, 0x0a, 0x0d, 0x72, 0x65, 0x74, 0x75, 0x72, 0x6e, 0x5f, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73,
-	0x18, 0x03, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x2f, 0x2e, 0x63, 0x6f, 0x62, 0x61, 0x6c, 0x74, 0x73,
-	0x70, 0x65, 0x65, 0x63, 0x68, 0x2e, 0x64, 0x69, 0x61, 0x74, 0x68, 0x65, 0x6b, 0x65, 0x2e, 0x43,
-	0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x2e, 0x53, 0x74, 0x61,
-	0x74, 0x75, 0x73, 0x43, 0x6f, 0x64, 0x65, 0x52, 0x0c, 0x72, 0x65, 0x74, 0x75, 0x72, 0x6e, 0x53,
-	0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x67, 0x0a, 0x11, 0x6f, 0x75, 0x74, 0x70, 0x75, 0x74, 0x5f,
-	0x70, 0x61, 0x72, 0x61, 0x6d, 0x65, 0x74, 0x65, 0x72, 0x73, 0x18, 0x04, 0x20, 0x03, 0x28, 0x0b,
-	0x32, 0x3a, 0x2e, 0x63, 0x6f, 0x62, 0x61, 0x6c, 0x74, 0x73, 0x70, 0x65, 0x65, 0x63, 0x68, 0x2e,
-	0x64, 0x69, 0x61, 0x74, 0x68, 0x65, 0x6b, 0x65, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64,
-	0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x2e, 0x4f, 0x75, 0x74, 0x70, 0x75, 0x74, 0x50, 0x61, 0x72,
-	0x61, 0x6d, 0x65, 0x74, 0x65, 0x72, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x10, 0x6f, 0x75,
-	0x74, 0x70, 0x75, 0x74, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x65, 0x74, 0x65, 0x72, 0x73, 0x12, 0x2c,
-	0x0a, 0x12, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x5f, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x5f,
-	0x74, 0x65, 0x78, 0x74, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x10, 0x65, 0x72, 0x72, 0x6f,
-	0x72, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x54, 0x65, 0x78, 0x74, 0x12, 0x28, 0x0a, 0x10,
-	0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x5f, 0x73, 0x74, 0x61, 0x74, 0x65, 0x5f, 0x69, 0x64,
-	0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0e, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x53,
-	0x74, 0x61, 0x74, 0x65, 0x49, 0x64, 0x1a, 0x43, 0x0a, 0x15, 0x4f, 0x75, 0x74, 0x70, 0x75, 0x74,
-	0x50, 0x61, 0x72, 0x61, 0x6d, 0x65, 0x74, 0x65, 0x72, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12,
-	0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65,
-	0x79, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22, 0x26, 0x0a, 0x0a, 0x53,
-	0x74, 0x61, 0x74, 0x75, 0x73, 0x43, 0x6f, 0x64, 0x65, 0x12, 0x0b, 0x0a, 0x07, 0x53, 0x55, 0x43,
-	0x43, 0x45, 0x53, 0x53, 0x10, 0x00, 0x12, 0x0b, 0x0a, 0x07, 0x46, 0x41, 0x49, 0x4c, 0x55, 0x52,
-	0x45, 0x10, 0x01, 0x22, 0x4e, 0x0a, 0x0a, 0x41, 0x75, 0x64, 0x69, 0x6f, 0x49, 0x6e, 0x70, 0x75,
-	0x74, 0x12, 0x1f, 0x0a, 0x0a, 0x73, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x5f, 0x69, 0x64, 0x18,
-	0x01, 0x20, 0x01, 0x28, 0x09, 0x48, 0x00, 0x52, 0x09, 0x73, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e,
-	0x49, 0x64, 0x12, 0x14, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x61, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0c,
-	0x48, 0x00, 0x52, 0x04, 0x64, 0x61, 0x74, 0x61, 0x42, 0x09, 0x0a, 0x07, 0x72, 0x65, 0x71, 0x75,
-	0x65, 0x73, 0x74, 0x22, 0x92, 0x01, 0x0a, 0x0a, 0x41, 0x75, 0x64, 0x69, 0x6f, 0x52, 0x65, 0x70,
-	0x6c, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x6c, 0x61, 0x62, 0x65, 0x6c, 0x18, 0x01, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x05, 0x6c, 0x61, 0x62, 0x65, 0x6c, 0x12, 0x14, 0x0a, 0x04, 0x74, 0x65, 0x78, 0x74,
-	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x48, 0x00, 0x52, 0x04, 0x74, 0x65, 0x78, 0x74, 0x12, 0x14,
-	0x0a, 0x04, 0x64, 0x61, 0x74, 0x61, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0c, 0x48, 0x00, 0x52, 0x04,
-	0x64, 0x61, 0x74, 0x61, 0x12, 0x30, 0x0a, 0x03, 0x65, 0x6e, 0x64, 0x18, 0x04, 0x20, 0x01, 0x28,
-	0x0b, 0x32, 0x1c, 0x2e, 0x63, 0x6f, 0x62, 0x61, 0x6c, 0x74, 0x73, 0x70, 0x65, 0x65, 0x63, 0x68,
-	0x2e, 0x64, 0x69, 0x61, 0x74, 0x68, 0x65, 0x6b, 0x65, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x48,
-	0x00, 0x52, 0x03, 0x65, 0x6e, 0x64, 0x42, 0x10, 0x0a, 0x0e, 0x6f, 0x75, 0x74, 0x70, 0x75, 0x74,
-	0x5f, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x22, 0x44, 0x0a, 0x0f, 0x50, 0x75, 0x73, 0x68,
-	0x54, 0x65, 0x78, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1d, 0x0a, 0x0a, 0x73,
-	0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x09, 0x73, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x49, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x65,
-	0x78, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x74, 0x65, 0x78, 0x74, 0x22, 0x48,
-	0x0a, 0x0a, 0x41, 0x53, 0x52, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x16, 0x0a, 0x05,
-	0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x48, 0x00, 0x52, 0x05, 0x6d,
-	0x6f, 0x64, 0x65, 0x6c, 0x12, 0x16, 0x0a, 0x05, 0x61, 0x75, 0x64, 0x69, 0x6f, 0x18, 0x02, 0x20,
-	0x01, 0x28, 0x0c, 0x48, 0x00, 0x52, 0x05, 0x61, 0x75, 0x64, 0x69, 0x6f, 0x42, 0x0a, 0x0a, 0x08,
-	0x61, 0x73, 0x72, 0x5f, 0x64, 0x61, 0x74, 0x61, 0x22, 0x4c, 0x0a, 0x0b, 0x41, 0x53, 0x52, 0x52,
-	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x65, 0x78, 0x74, 0x18,
-	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x74, 0x65, 0x78, 0x74, 0x12, 0x29, 0x0a, 0x10, 0x63,
-	0x6f, 0x6e, 0x66, 0x69, 0x64, 0x65, 0x6e, 0x63, 0x65, 0x5f, 0x73, 0x63, 0x6f, 0x72, 0x65, 0x18,
-	0x02, 0x20, 0x01, 0x28, 0x01, 0x52, 0x0f, 0x63, 0x6f, 0x6e, 0x66, 0x69, 0x64, 0x65, 0x6e, 0x63,
-	0x65, 0x53, 0x63, 0x6f, 0x72, 0x65, 0x22, 0x36, 0x0a, 0x0a, 0x54, 0x54, 0x53, 0x52, 0x65, 0x71,
-	0x75, 0x65, 0x73, 0x74, 0x12, 0x14, 0x0a, 0x05, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x05, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x65,
-	0x78, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x74, 0x65, 0x78, 0x74, 0x22, 0x21,
-	0x0a, 0x0b, 0x54, 0x54, 0x53, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x12, 0x0a,
-	0x04, 0x64, 0x61, 0x74, 0x61, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x04, 0x64, 0x61, 0x74,
-	0x61, 0x22, 0x07, 0x0a, 0x05, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x32, 0xd3, 0x07, 0x0a, 0x08, 0x44,
-	0x69, 0x61, 0x74, 0x68, 0x65, 0x6b, 0x65, 0x12, 0x51, 0x0a, 0x07, 0x56, 0x65, 0x72, 0x73, 0x69,
-	0x6f, 0x6e, 0x12, 0x1c, 0x2e, 0x63, 0x6f, 0x62, 0x61, 0x6c, 0x74, 0x73, 0x70, 0x65, 0x65, 0x63,
-	0x68, 0x2e, 0x64, 0x69, 0x61, 0x74, 0x68, 0x65, 0x6b, 0x65, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79,
-	0x1a, 0x26, 0x2e, 0x63, 0x6f, 0x62, 0x61, 0x6c, 0x74, 0x73, 0x70, 0x65, 0x65, 0x63, 0x68, 0x2e,
-	0x64, 0x69, 0x61, 0x74, 0x68, 0x65, 0x6b, 0x65, 0x2e, 0x56, 0x65, 0x72, 0x73, 0x69, 0x6f, 0x6e,
-	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x4f, 0x0a, 0x06, 0x4d, 0x6f,
-	0x64, 0x65, 0x6c, 0x73, 0x12, 0x1c, 0x2e, 0x63, 0x6f, 0x62, 0x61, 0x6c, 0x74, 0x73, 0x70, 0x65,
-	0x65, 0x63, 0x68, 0x2e, 0x64, 0x69, 0x61, 0x74, 0x68, 0x65, 0x6b, 0x65, 0x2e, 0x45, 0x6d, 0x70,
-	0x74, 0x79, 0x1a, 0x25, 0x2e, 0x63, 0x6f, 0x62, 0x61, 0x6c, 0x74, 0x73, 0x70, 0x65, 0x65, 0x63,
-	0x68, 0x2e, 0x64, 0x69, 0x61, 0x74, 0x68, 0x65, 0x6b, 0x65, 0x2e, 0x4d, 0x6f, 0x64, 0x65, 0x6c,
-	0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x5a, 0x0a, 0x0a, 0x4e,
-	0x65, 0x77, 0x53, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x12, 0x28, 0x2e, 0x63, 0x6f, 0x62, 0x61,
-	0x6c, 0x74, 0x73, 0x70, 0x65, 0x65, 0x63, 0x68, 0x2e, 0x64, 0x69, 0x61, 0x74, 0x68, 0x65, 0x6b,
-	0x65, 0x2e, 0x4e, 0x65, 0x77, 0x53, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75,
-	0x65, 0x73, 0x74, 0x1a, 0x20, 0x2e, 0x63, 0x6f, 0x62, 0x61, 0x6c, 0x74, 0x73, 0x70, 0x65, 0x65,
-	0x63, 0x68, 0x2e, 0x64, 0x69, 0x61, 0x74, 0x68, 0x65, 0x6b, 0x65, 0x2e, 0x53, 0x65, 0x73, 0x73,
-	0x69, 0x6f, 0x6e, 0x49, 0x44, 0x22, 0x00, 0x12, 0x4e, 0x0a, 0x0a, 0x45, 0x6e, 0x64, 0x53, 0x65,
-	0x73, 0x73, 0x69, 0x6f, 0x6e, 0x12, 0x20, 0x2e, 0x63, 0x6f, 0x62, 0x61, 0x6c, 0x74, 0x73, 0x70,
-	0x65, 0x65, 0x63, 0x68, 0x2e, 0x64, 0x69, 0x61, 0x74, 0x68, 0x65, 0x6b, 0x65, 0x2e, 0x53, 0x65,
-	0x73, 0x73, 0x69, 0x6f, 0x6e, 0x49, 0x44, 0x1a, 0x1c, 0x2e, 0x63, 0x6f, 0x62, 0x61, 0x6c, 0x74,
-	0x73, 0x70, 0x65, 0x65, 0x63, 0x68, 0x2e, 0x64, 0x69, 0x61, 0x74, 0x68, 0x65, 0x6b, 0x65, 0x2e,
-	0x45, 0x6d, 0x70, 0x74, 0x79, 0x22, 0x00, 0x12, 0x60, 0x0a, 0x12, 0x53, 0x65, 0x73, 0x73, 0x69,
-	0x6f, 0x6e, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x53, 0x74, 0x72, 0x65, 0x61, 0x6d, 0x12, 0x20, 0x2e,
-	0x63, 0x6f, 0x62, 0x61, 0x6c, 0x74, 0x73, 0x70, 0x65, 0x65, 0x63, 0x68, 0x2e, 0x64, 0x69, 0x61,
-	0x74, 0x68, 0x65, 0x6b, 0x65, 0x2e, 0x53, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x49, 0x44, 0x1a,
-	0x24, 0x2e, 0x63, 0x6f, 0x62, 0x61, 0x6c, 0x74, 0x73, 0x70, 0x65, 0x65, 0x63, 0x68, 0x2e, 0x64,
-	0x69, 0x61, 0x74, 0x68, 0x65, 0x6b, 0x65, 0x2e, 0x44, 0x69, 0x61, 0x74, 0x68, 0x65, 0x6b, 0x65,
-	0x45, 0x76, 0x65, 0x6e, 0x74, 0x22, 0x00, 0x30, 0x01, 0x12, 0x57, 0x0a, 0x0f, 0x43, 0x6f, 0x6d,
-	0x6d, 0x61, 0x6e, 0x64, 0x46, 0x69, 0x6e, 0x69, 0x73, 0x68, 0x65, 0x64, 0x12, 0x24, 0x2e, 0x63,
+	0x22, 0xb5, 0x01, 0x0a, 0x08, 0x53, 0x65, 0x74, 0x53, 0x74, 0x6f, 0x72, 0x79, 0x12, 0x19, 0x0a,
+	0x08, 0x73, 0x74, 0x6f, 0x72, 0x79, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x07, 0x73, 0x74, 0x6f, 0x72, 0x79, 0x49, 0x64, 0x12, 0x4f, 0x0a, 0x0a, 0x70, 0x61, 0x72, 0x61,
+	0x6d, 0x65, 0x74, 0x65, 0x72, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x2f, 0x2e, 0x63,
 	0x6f, 0x62, 0x61, 0x6c, 0x74, 0x73, 0x70, 0x65, 0x65, 0x63, 0x68, 0x2e, 0x64, 0x69, 0x61, 0x74,
-	0x68, 0x65, 0x6b, 0x65, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x53, 0x74, 0x61, 0x74,
-	0x75, 0x73, 0x1a, 0x1c, 0x2e, 0x63, 0x6f, 0x62, 0x61, 0x6c, 0x74, 0x73, 0x70, 0x65, 0x65, 0x63,
-	0x68, 0x2e, 0x64, 0x69, 0x61, 0x74, 0x68, 0x65, 0x6b, 0x65, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79,
-	0x22, 0x00, 0x12, 0x57, 0x0a, 0x10, 0x53, 0x74, 0x72, 0x65, 0x61, 0x6d, 0x41, 0x75, 0x64, 0x69,
-	0x6f, 0x49, 0x6e, 0x70, 0x75, 0x74, 0x12, 0x21, 0x2e, 0x63, 0x6f, 0x62, 0x61, 0x6c, 0x74, 0x73,
-	0x70, 0x65, 0x65, 0x63, 0x68, 0x2e, 0x64, 0x69, 0x61, 0x74, 0x68, 0x65, 0x6b, 0x65, 0x2e, 0x41,
-	0x75, 0x64, 0x69, 0x6f, 0x49, 0x6e, 0x70, 0x75, 0x74, 0x1a, 0x1c, 0x2e, 0x63, 0x6f, 0x62, 0x61,
+	0x68, 0x65, 0x6b, 0x65, 0x2e, 0x53, 0x65, 0x74, 0x53, 0x74, 0x6f, 0x72, 0x79, 0x2e, 0x50, 0x61,
+	0x72, 0x61, 0x6d, 0x65, 0x74, 0x65, 0x72, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x0a, 0x70,
+	0x61, 0x72, 0x61, 0x6d, 0x65, 0x74, 0x65, 0x72, 0x73, 0x1a, 0x3d, 0x0a, 0x0f, 0x50, 0x61, 0x72,
+	0x61, 0x6d, 0x65, 0x74, 0x65, 0x72, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03,
+	0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x14,
+	0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x76,
+	0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22, 0x8b, 0x01, 0x0a, 0x0d, 0x53, 0x65, 0x73,
+	0x73, 0x69, 0x6f, 0x6e, 0x4f, 0x75, 0x74, 0x70, 0x75, 0x74, 0x12, 0x36, 0x0a, 0x05, 0x74, 0x6f,
+	0x6b, 0x65, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x20, 0x2e, 0x63, 0x6f, 0x62, 0x61,
 	0x6c, 0x74, 0x73, 0x70, 0x65, 0x65, 0x63, 0x68, 0x2e, 0x64, 0x69, 0x61, 0x74, 0x68, 0x65, 0x6b,
-	0x65, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x22, 0x00, 0x28, 0x01, 0x12, 0x5d, 0x0a, 0x12, 0x53,
-	0x74, 0x72, 0x65, 0x61, 0x6d, 0x41, 0x75, 0x64, 0x69, 0x6f, 0x52, 0x65, 0x70, 0x6c, 0x69, 0x65,
-	0x73, 0x12, 0x20, 0x2e, 0x63, 0x6f, 0x62, 0x61, 0x6c, 0x74, 0x73, 0x70, 0x65, 0x65, 0x63, 0x68,
-	0x2e, 0x64, 0x69, 0x61, 0x74, 0x68, 0x65, 0x6b, 0x65, 0x2e, 0x53, 0x65, 0x73, 0x73, 0x69, 0x6f,
-	0x6e, 0x49, 0x44, 0x1a, 0x21, 0x2e, 0x63, 0x6f, 0x62, 0x61, 0x6c, 0x74, 0x73, 0x70, 0x65, 0x65,
-	0x63, 0x68, 0x2e, 0x64, 0x69, 0x61, 0x74, 0x68, 0x65, 0x6b, 0x65, 0x2e, 0x41, 0x75, 0x64, 0x69,
-	0x6f, 0x52, 0x65, 0x70, 0x6c, 0x79, 0x22, 0x00, 0x30, 0x01, 0x12, 0x52, 0x0a, 0x08, 0x50, 0x75,
-	0x73, 0x68, 0x54, 0x65, 0x78, 0x74, 0x12, 0x26, 0x2e, 0x63, 0x6f, 0x62, 0x61, 0x6c, 0x74, 0x73,
-	0x70, 0x65, 0x65, 0x63, 0x68, 0x2e, 0x64, 0x69, 0x61, 0x74, 0x68, 0x65, 0x6b, 0x65, 0x2e, 0x50,
-	0x75, 0x73, 0x68, 0x54, 0x65, 0x78, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1c,
-	0x2e, 0x63, 0x6f, 0x62, 0x61, 0x6c, 0x74, 0x73, 0x70, 0x65, 0x65, 0x63, 0x68, 0x2e, 0x64, 0x69,
-	0x61, 0x74, 0x68, 0x65, 0x6b, 0x65, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x22, 0x00, 0x12, 0x58,
-	0x0a, 0x09, 0x53, 0x74, 0x72, 0x65, 0x61, 0x6d, 0x41, 0x53, 0x52, 0x12, 0x21, 0x2e, 0x63, 0x6f,
-	0x62, 0x61, 0x6c, 0x74, 0x73, 0x70, 0x65, 0x65, 0x63, 0x68, 0x2e, 0x64, 0x69, 0x61, 0x74, 0x68,
-	0x65, 0x6b, 0x65, 0x2e, 0x41, 0x53, 0x52, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x22,
-	0x2e, 0x63, 0x6f, 0x62, 0x61, 0x6c, 0x74, 0x73, 0x70, 0x65, 0x65, 0x63, 0x68, 0x2e, 0x64, 0x69,
-	0x61, 0x74, 0x68, 0x65, 0x6b, 0x65, 0x2e, 0x41, 0x53, 0x52, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
-	0x73, 0x65, 0x22, 0x00, 0x28, 0x01, 0x30, 0x01, 0x12, 0x56, 0x0a, 0x09, 0x53, 0x74, 0x72, 0x65,
-	0x61, 0x6d, 0x54, 0x54, 0x53, 0x12, 0x21, 0x2e, 0x63, 0x6f, 0x62, 0x61, 0x6c, 0x74, 0x73, 0x70,
-	0x65, 0x65, 0x63, 0x68, 0x2e, 0x64, 0x69, 0x61, 0x74, 0x68, 0x65, 0x6b, 0x65, 0x2e, 0x54, 0x54,
-	0x53, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x22, 0x2e, 0x63, 0x6f, 0x62, 0x61, 0x6c,
+	0x65, 0x2e, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x44, 0x61, 0x74, 0x61, 0x52, 0x05, 0x74, 0x6f, 0x6b,
+	0x65, 0x6e, 0x12, 0x42, 0x0a, 0x0b, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x6c, 0x69, 0x73,
+	0x74, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x21, 0x2e, 0x63, 0x6f, 0x62, 0x61, 0x6c, 0x74,
+	0x73, 0x70, 0x65, 0x65, 0x63, 0x68, 0x2e, 0x64, 0x69, 0x61, 0x74, 0x68, 0x65, 0x6b, 0x65, 0x2e,
+	0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x44, 0x61, 0x74, 0x61, 0x52, 0x0a, 0x61, 0x63, 0x74, 0x69,
+	0x6f, 0x6e, 0x4c, 0x69, 0x73, 0x74, 0x22, 0xd6, 0x01, 0x0a, 0x0a, 0x41, 0x63, 0x74, 0x69, 0x6f,
+	0x6e, 0x44, 0x61, 0x74, 0x61, 0x12, 0x40, 0x0a, 0x05, 0x69, 0x6e, 0x70, 0x75, 0x74, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x0b, 0x32, 0x28, 0x2e, 0x63, 0x6f, 0x62, 0x61, 0x6c, 0x74, 0x73, 0x70, 0x65,
+	0x65, 0x63, 0x68, 0x2e, 0x64, 0x69, 0x61, 0x74, 0x68, 0x65, 0x6b, 0x65, 0x2e, 0x57, 0x61, 0x69,
+	0x74, 0x46, 0x6f, 0x72, 0x55, 0x73, 0x65, 0x72, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x48, 0x00,
+	0x52, 0x05, 0x69, 0x6e, 0x70, 0x75, 0x74, 0x12, 0x40, 0x0a, 0x07, 0x63, 0x6f, 0x6d, 0x6d, 0x61,
+	0x6e, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x24, 0x2e, 0x63, 0x6f, 0x62, 0x61, 0x6c,
 	0x74, 0x73, 0x70, 0x65, 0x65, 0x63, 0x68, 0x2e, 0x64, 0x69, 0x61, 0x74, 0x68, 0x65, 0x6b, 0x65,
-	0x2e, 0x54, 0x54, 0x53, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x30, 0x01,
-	0x42, 0x0c, 0x5a, 0x0a, 0x64, 0x69, 0x61, 0x74, 0x68, 0x65, 0x6b, 0x65, 0x70, 0x62, 0x62, 0x06,
+	0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x48, 0x00,
+	0x52, 0x07, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x12, 0x3a, 0x0a, 0x05, 0x72, 0x65, 0x70,
+	0x6c, 0x79, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x22, 0x2e, 0x63, 0x6f, 0x62, 0x61, 0x6c,
+	0x74, 0x73, 0x70, 0x65, 0x65, 0x63, 0x68, 0x2e, 0x64, 0x69, 0x61, 0x74, 0x68, 0x65, 0x6b, 0x65,
+	0x2e, 0x52, 0x65, 0x70, 0x6c, 0x79, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x48, 0x00, 0x52, 0x05,
+	0x72, 0x65, 0x70, 0x6c, 0x79, 0x42, 0x08, 0x0a, 0x06, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x22,
+	0x5f, 0x0a, 0x11, 0x57, 0x61, 0x69, 0x74, 0x46, 0x6f, 0x72, 0x55, 0x73, 0x65, 0x72, 0x41, 0x63,
+	0x74, 0x69, 0x6f, 0x6e, 0x12, 0x2c, 0x0a, 0x12, 0x72, 0x65, 0x71, 0x75, 0x69, 0x72, 0x65, 0x73,
+	0x5f, 0x77, 0x61, 0x6b, 0x65, 0x5f, 0x77, 0x6f, 0x72, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08,
+	0x52, 0x10, 0x72, 0x65, 0x71, 0x75, 0x69, 0x72, 0x65, 0x73, 0x57, 0x61, 0x6b, 0x65, 0x57, 0x6f,
+	0x72, 0x64, 0x12, 0x1c, 0x0a, 0x09, 0x69, 0x6d, 0x6d, 0x65, 0x64, 0x69, 0x61, 0x74, 0x65, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x08, 0x52, 0x09, 0x69, 0x6d, 0x6d, 0x65, 0x64, 0x69, 0x61, 0x74, 0x65,
+	0x22, 0xc9, 0x01, 0x0a, 0x0d, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x41, 0x63, 0x74, 0x69,
+	0x6f, 0x6e, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02,
+	0x69, 0x64, 0x12, 0x64, 0x0a, 0x10, 0x69, 0x6e, 0x70, 0x75, 0x74, 0x5f, 0x70, 0x61, 0x72, 0x61,
+	0x6d, 0x65, 0x74, 0x65, 0x72, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x39, 0x2e, 0x63,
+	0x6f, 0x62, 0x61, 0x6c, 0x74, 0x73, 0x70, 0x65, 0x65, 0x63, 0x68, 0x2e, 0x64, 0x69, 0x61, 0x74,
+	0x68, 0x65, 0x6b, 0x65, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x41, 0x63, 0x74, 0x69,
+	0x6f, 0x6e, 0x2e, 0x49, 0x6e, 0x70, 0x75, 0x74, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x65, 0x74, 0x65,
+	0x72, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x0f, 0x69, 0x6e, 0x70, 0x75, 0x74, 0x50, 0x61,
+	0x72, 0x61, 0x6d, 0x65, 0x74, 0x65, 0x72, 0x73, 0x1a, 0x42, 0x0a, 0x14, 0x49, 0x6e, 0x70, 0x75,
+	0x74, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x65, 0x74, 0x65, 0x72, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79,
+	0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b,
+	0x65, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22, 0x40, 0x0a, 0x0b,
+	0x52, 0x65, 0x70, 0x6c, 0x79, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x12, 0x0a, 0x04, 0x74,
+	0x65, 0x78, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x74, 0x65, 0x78, 0x74, 0x12,
+	0x1d, 0x0a, 0x0a, 0x6c, 0x75, 0x6e, 0x61, 0x5f, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x09, 0x6c, 0x75, 0x6e, 0x61, 0x4d, 0x6f, 0x64, 0x65, 0x6c, 0x22, 0x64,
+	0x0a, 0x08, 0x41, 0x53, 0x52, 0x49, 0x6e, 0x70, 0x75, 0x74, 0x12, 0x38, 0x0a, 0x05, 0x74, 0x6f,
+	0x6b, 0x65, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x20, 0x2e, 0x63, 0x6f, 0x62, 0x61,
+	0x6c, 0x74, 0x73, 0x70, 0x65, 0x65, 0x63, 0x68, 0x2e, 0x64, 0x69, 0x61, 0x74, 0x68, 0x65, 0x6b,
+	0x65, 0x2e, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x44, 0x61, 0x74, 0x61, 0x48, 0x00, 0x52, 0x05, 0x74,
+	0x6f, 0x6b, 0x65, 0x6e, 0x12, 0x16, 0x0a, 0x05, 0x61, 0x75, 0x64, 0x69, 0x6f, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x0c, 0x48, 0x00, 0x52, 0x05, 0x61, 0x75, 0x64, 0x69, 0x6f, 0x42, 0x06, 0x0a, 0x04,
+	0x64, 0x61, 0x74, 0x61, 0x22, 0x5b, 0x0a, 0x09, 0x41, 0x53, 0x52, 0x52, 0x65, 0x73, 0x75, 0x6c,
+	0x74, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x65, 0x78, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x04, 0x74, 0x65, 0x78, 0x74, 0x12, 0x1e, 0x0a, 0x0a, 0x63, 0x6f, 0x6e, 0x66, 0x69, 0x64, 0x65,
+	0x6e, 0x63, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x01, 0x52, 0x0a, 0x63, 0x6f, 0x6e, 0x66, 0x69,
+	0x64, 0x65, 0x6e, 0x63, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x74, 0x69, 0x6d, 0x65, 0x64, 0x4f, 0x75,
+	0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x08, 0x52, 0x08, 0x74, 0x69, 0x6d, 0x65, 0x64, 0x4f, 0x75,
+	0x74, 0x22, 0x20, 0x0a, 0x08, 0x54, 0x54, 0x53, 0x41, 0x75, 0x64, 0x69, 0x6f, 0x12, 0x14, 0x0a,
+	0x05, 0x61, 0x75, 0x64, 0x69, 0x6f, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x05, 0x61, 0x75,
+	0x64, 0x69, 0x6f, 0x22, 0x07, 0x0a, 0x05, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x32, 0xef, 0x04, 0x0a,
+	0x08, 0x44, 0x69, 0x61, 0x74, 0x68, 0x65, 0x6b, 0x65, 0x12, 0x51, 0x0a, 0x07, 0x56, 0x65, 0x72,
+	0x73, 0x69, 0x6f, 0x6e, 0x12, 0x1c, 0x2e, 0x63, 0x6f, 0x62, 0x61, 0x6c, 0x74, 0x73, 0x70, 0x65,
+	0x65, 0x63, 0x68, 0x2e, 0x64, 0x69, 0x61, 0x74, 0x68, 0x65, 0x6b, 0x65, 0x2e, 0x45, 0x6d, 0x70,
+	0x74, 0x79, 0x1a, 0x26, 0x2e, 0x63, 0x6f, 0x62, 0x61, 0x6c, 0x74, 0x73, 0x70, 0x65, 0x65, 0x63,
+	0x68, 0x2e, 0x64, 0x69, 0x61, 0x74, 0x68, 0x65, 0x6b, 0x65, 0x2e, 0x56, 0x65, 0x72, 0x73, 0x69,
+	0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x57, 0x0a, 0x0a,
+	0x4c, 0x69, 0x73, 0x74, 0x4d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x12, 0x1c, 0x2e, 0x63, 0x6f, 0x62,
+	0x61, 0x6c, 0x74, 0x73, 0x70, 0x65, 0x65, 0x63, 0x68, 0x2e, 0x64, 0x69, 0x61, 0x74, 0x68, 0x65,
+	0x6b, 0x65, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x1a, 0x29, 0x2e, 0x63, 0x6f, 0x62, 0x61, 0x6c,
+	0x74, 0x73, 0x70, 0x65, 0x65, 0x63, 0x68, 0x2e, 0x64, 0x69, 0x61, 0x74, 0x68, 0x65, 0x6b, 0x65,
+	0x2e, 0x4c, 0x69, 0x73, 0x74, 0x4d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x5c, 0x0a, 0x0d, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x53,
+	0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x12, 0x23, 0x2e, 0x63, 0x6f, 0x62, 0x61, 0x6c, 0x74, 0x73,
+	0x70, 0x65, 0x65, 0x63, 0x68, 0x2e, 0x64, 0x69, 0x61, 0x74, 0x68, 0x65, 0x6b, 0x65, 0x2e, 0x53,
+	0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x53, 0x74, 0x61, 0x72, 0x74, 0x1a, 0x24, 0x2e, 0x63, 0x6f,
+	0x62, 0x61, 0x6c, 0x74, 0x73, 0x70, 0x65, 0x65, 0x63, 0x68, 0x2e, 0x64, 0x69, 0x61, 0x74, 0x68,
+	0x65, 0x6b, 0x65, 0x2e, 0x53, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x4f, 0x75, 0x74, 0x70, 0x75,
+	0x74, 0x22, 0x00, 0x12, 0x51, 0x0a, 0x0d, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x53, 0x65, 0x73,
+	0x73, 0x69, 0x6f, 0x6e, 0x12, 0x20, 0x2e, 0x63, 0x6f, 0x62, 0x61, 0x6c, 0x74, 0x73, 0x70, 0x65,
+	0x65, 0x63, 0x68, 0x2e, 0x64, 0x69, 0x61, 0x74, 0x68, 0x65, 0x6b, 0x65, 0x2e, 0x54, 0x6f, 0x6b,
+	0x65, 0x6e, 0x44, 0x61, 0x74, 0x61, 0x1a, 0x1c, 0x2e, 0x63, 0x6f, 0x62, 0x61, 0x6c, 0x74, 0x73,
+	0x70, 0x65, 0x65, 0x63, 0x68, 0x2e, 0x64, 0x69, 0x61, 0x74, 0x68, 0x65, 0x6b, 0x65, 0x2e, 0x45,
+	0x6d, 0x70, 0x74, 0x79, 0x22, 0x00, 0x12, 0x5c, 0x0a, 0x0d, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65,
+	0x53, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x12, 0x23, 0x2e, 0x63, 0x6f, 0x62, 0x61, 0x6c, 0x74,
+	0x73, 0x70, 0x65, 0x65, 0x63, 0x68, 0x2e, 0x64, 0x69, 0x61, 0x74, 0x68, 0x65, 0x6b, 0x65, 0x2e,
+	0x53, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x49, 0x6e, 0x70, 0x75, 0x74, 0x1a, 0x24, 0x2e, 0x63,
+	0x6f, 0x62, 0x61, 0x6c, 0x74, 0x73, 0x70, 0x65, 0x65, 0x63, 0x68, 0x2e, 0x64, 0x69, 0x61, 0x74,
+	0x68, 0x65, 0x6b, 0x65, 0x2e, 0x53, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x4f, 0x75, 0x74, 0x70,
+	0x75, 0x74, 0x22, 0x00, 0x12, 0x52, 0x0a, 0x09, 0x53, 0x74, 0x72, 0x65, 0x61, 0x6d, 0x41, 0x53,
+	0x52, 0x12, 0x1f, 0x2e, 0x63, 0x6f, 0x62, 0x61, 0x6c, 0x74, 0x73, 0x70, 0x65, 0x65, 0x63, 0x68,
+	0x2e, 0x64, 0x69, 0x61, 0x74, 0x68, 0x65, 0x6b, 0x65, 0x2e, 0x41, 0x53, 0x52, 0x49, 0x6e, 0x70,
+	0x75, 0x74, 0x1a, 0x20, 0x2e, 0x63, 0x6f, 0x62, 0x61, 0x6c, 0x74, 0x73, 0x70, 0x65, 0x65, 0x63,
+	0x68, 0x2e, 0x64, 0x69, 0x61, 0x74, 0x68, 0x65, 0x6b, 0x65, 0x2e, 0x41, 0x53, 0x52, 0x52, 0x65,
+	0x73, 0x75, 0x6c, 0x74, 0x22, 0x00, 0x28, 0x01, 0x12, 0x54, 0x0a, 0x09, 0x53, 0x74, 0x72, 0x65,
+	0x61, 0x6d, 0x54, 0x54, 0x53, 0x12, 0x22, 0x2e, 0x63, 0x6f, 0x62, 0x61, 0x6c, 0x74, 0x73, 0x70,
+	0x65, 0x65, 0x63, 0x68, 0x2e, 0x64, 0x69, 0x61, 0x74, 0x68, 0x65, 0x6b, 0x65, 0x2e, 0x52, 0x65,
+	0x70, 0x6c, 0x79, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x1a, 0x1f, 0x2e, 0x63, 0x6f, 0x62, 0x61,
+	0x6c, 0x74, 0x73, 0x70, 0x65, 0x65, 0x63, 0x68, 0x2e, 0x64, 0x69, 0x61, 0x74, 0x68, 0x65, 0x6b,
+	0x65, 0x2e, 0x54, 0x54, 0x53, 0x41, 0x75, 0x64, 0x69, 0x6f, 0x22, 0x00, 0x30, 0x01, 0x42, 0x0e,
+	0x5a, 0x0c, 0x2e, 0x3b, 0x64, 0x69, 0x61, 0x74, 0x68, 0x65, 0x6b, 0x65, 0x70, 0x62, 0x62, 0x06,
 	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
@@ -1453,65 +1443,65 @@ func file_diatheke_proto_rawDescGZIP() []byte {
 	return file_diatheke_proto_rawDescData
 }
 
-var file_diatheke_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_diatheke_proto_msgTypes = make([]protoimpl.MessageInfo, 19)
+var file_diatheke_proto_msgTypes = make([]protoimpl.MessageInfo, 21)
 var file_diatheke_proto_goTypes = []interface{}{
-	(CommandStatus_StatusCode)(0), // 0: cobaltspeech.diatheke.CommandStatus.StatusCode
-	(*VersionResponse)(nil),       // 1: cobaltspeech.diatheke.VersionResponse
-	(*ModelsResponse)(nil),        // 2: cobaltspeech.diatheke.ModelsResponse
-	(*NewSessionRequest)(nil),     // 3: cobaltspeech.diatheke.NewSessionRequest
-	(*SessionID)(nil),             // 4: cobaltspeech.diatheke.SessionID
-	(*DiathekeEvent)(nil),         // 5: cobaltspeech.diatheke.DiathekeEvent
-	(*CommandEvent)(nil),          // 6: cobaltspeech.diatheke.CommandEvent
-	(*RecognizeEvent)(nil),        // 7: cobaltspeech.diatheke.RecognizeEvent
-	(*ReplyEvent)(nil),            // 8: cobaltspeech.diatheke.ReplyEvent
-	(*CommandStatus)(nil),         // 9: cobaltspeech.diatheke.CommandStatus
-	(*AudioInput)(nil),            // 10: cobaltspeech.diatheke.AudioInput
-	(*AudioReply)(nil),            // 11: cobaltspeech.diatheke.AudioReply
-	(*PushTextRequest)(nil),       // 12: cobaltspeech.diatheke.PushTextRequest
-	(*ASRRequest)(nil),            // 13: cobaltspeech.diatheke.ASRRequest
-	(*ASRResponse)(nil),           // 14: cobaltspeech.diatheke.ASRResponse
-	(*TTSRequest)(nil),            // 15: cobaltspeech.diatheke.TTSRequest
-	(*TTSResponse)(nil),           // 16: cobaltspeech.diatheke.TTSResponse
-	(*Empty)(nil),                 // 17: cobaltspeech.diatheke.Empty
-	nil,                           // 18: cobaltspeech.diatheke.CommandEvent.ParametersEntry
-	nil,                           // 19: cobaltspeech.diatheke.CommandStatus.OutputParametersEntry
+	(*VersionResponse)(nil),    // 0: cobaltspeech.diatheke.VersionResponse
+	(*ListModelsResponse)(nil), // 1: cobaltspeech.diatheke.ListModelsResponse
+	(*ModelInfo)(nil),          // 2: cobaltspeech.diatheke.ModelInfo
+	(*SessionInput)(nil),       // 3: cobaltspeech.diatheke.SessionInput
+	(*TokenData)(nil),          // 4: cobaltspeech.diatheke.TokenData
+	(*SessionStart)(nil),       // 5: cobaltspeech.diatheke.SessionStart
+	(*TextInput)(nil),          // 6: cobaltspeech.diatheke.TextInput
+	(*CommandResult)(nil),      // 7: cobaltspeech.diatheke.CommandResult
+	(*SetStory)(nil),           // 8: cobaltspeech.diatheke.SetStory
+	(*SessionOutput)(nil),      // 9: cobaltspeech.diatheke.SessionOutput
+	(*ActionData)(nil),         // 10: cobaltspeech.diatheke.ActionData
+	(*WaitForUserAction)(nil),  // 11: cobaltspeech.diatheke.WaitForUserAction
+	(*CommandAction)(nil),      // 12: cobaltspeech.diatheke.CommandAction
+	(*ReplyAction)(nil),        // 13: cobaltspeech.diatheke.ReplyAction
+	(*ASRInput)(nil),           // 14: cobaltspeech.diatheke.ASRInput
+	(*ASRResult)(nil),          // 15: cobaltspeech.diatheke.ASRResult
+	(*TTSAudio)(nil),           // 16: cobaltspeech.diatheke.TTSAudio
+	(*Empty)(nil),              // 17: cobaltspeech.diatheke.Empty
+	nil,                        // 18: cobaltspeech.diatheke.CommandResult.OutParametersEntry
+	nil,                        // 19: cobaltspeech.diatheke.SetStory.ParametersEntry
+	nil,                        // 20: cobaltspeech.diatheke.CommandAction.InputParametersEntry
 }
 var file_diatheke_proto_depIdxs = []int32{
-	6,  // 0: cobaltspeech.diatheke.DiathekeEvent.command:type_name -> cobaltspeech.diatheke.CommandEvent
-	7,  // 1: cobaltspeech.diatheke.DiathekeEvent.recognize:type_name -> cobaltspeech.diatheke.RecognizeEvent
-	8,  // 2: cobaltspeech.diatheke.DiathekeEvent.reply:type_name -> cobaltspeech.diatheke.ReplyEvent
-	18, // 3: cobaltspeech.diatheke.CommandEvent.parameters:type_name -> cobaltspeech.diatheke.CommandEvent.ParametersEntry
-	0,  // 4: cobaltspeech.diatheke.CommandStatus.return_status:type_name -> cobaltspeech.diatheke.CommandStatus.StatusCode
-	19, // 5: cobaltspeech.diatheke.CommandStatus.output_parameters:type_name -> cobaltspeech.diatheke.CommandStatus.OutputParametersEntry
-	17, // 6: cobaltspeech.diatheke.AudioReply.end:type_name -> cobaltspeech.diatheke.Empty
-	17, // 7: cobaltspeech.diatheke.Diatheke.Version:input_type -> cobaltspeech.diatheke.Empty
-	17, // 8: cobaltspeech.diatheke.Diatheke.Models:input_type -> cobaltspeech.diatheke.Empty
-	3,  // 9: cobaltspeech.diatheke.Diatheke.NewSession:input_type -> cobaltspeech.diatheke.NewSessionRequest
-	4,  // 10: cobaltspeech.diatheke.Diatheke.EndSession:input_type -> cobaltspeech.diatheke.SessionID
-	4,  // 11: cobaltspeech.diatheke.Diatheke.SessionEventStream:input_type -> cobaltspeech.diatheke.SessionID
-	9,  // 12: cobaltspeech.diatheke.Diatheke.CommandFinished:input_type -> cobaltspeech.diatheke.CommandStatus
-	10, // 13: cobaltspeech.diatheke.Diatheke.StreamAudioInput:input_type -> cobaltspeech.diatheke.AudioInput
-	4,  // 14: cobaltspeech.diatheke.Diatheke.StreamAudioReplies:input_type -> cobaltspeech.diatheke.SessionID
-	12, // 15: cobaltspeech.diatheke.Diatheke.PushText:input_type -> cobaltspeech.diatheke.PushTextRequest
-	13, // 16: cobaltspeech.diatheke.Diatheke.StreamASR:input_type -> cobaltspeech.diatheke.ASRRequest
-	15, // 17: cobaltspeech.diatheke.Diatheke.StreamTTS:input_type -> cobaltspeech.diatheke.TTSRequest
-	1,  // 18: cobaltspeech.diatheke.Diatheke.Version:output_type -> cobaltspeech.diatheke.VersionResponse
-	2,  // 19: cobaltspeech.diatheke.Diatheke.Models:output_type -> cobaltspeech.diatheke.ModelsResponse
-	4,  // 20: cobaltspeech.diatheke.Diatheke.NewSession:output_type -> cobaltspeech.diatheke.SessionID
-	17, // 21: cobaltspeech.diatheke.Diatheke.EndSession:output_type -> cobaltspeech.diatheke.Empty
-	5,  // 22: cobaltspeech.diatheke.Diatheke.SessionEventStream:output_type -> cobaltspeech.diatheke.DiathekeEvent
-	17, // 23: cobaltspeech.diatheke.Diatheke.CommandFinished:output_type -> cobaltspeech.diatheke.Empty
-	17, // 24: cobaltspeech.diatheke.Diatheke.StreamAudioInput:output_type -> cobaltspeech.diatheke.Empty
-	11, // 25: cobaltspeech.diatheke.Diatheke.StreamAudioReplies:output_type -> cobaltspeech.diatheke.AudioReply
-	17, // 26: cobaltspeech.diatheke.Diatheke.PushText:output_type -> cobaltspeech.diatheke.Empty
-	14, // 27: cobaltspeech.diatheke.Diatheke.StreamASR:output_type -> cobaltspeech.diatheke.ASRResponse
-	16, // 28: cobaltspeech.diatheke.Diatheke.StreamTTS:output_type -> cobaltspeech.diatheke.TTSResponse
-	18, // [18:29] is the sub-list for method output_type
-	7,  // [7:18] is the sub-list for method input_type
-	7,  // [7:7] is the sub-list for extension type_name
-	7,  // [7:7] is the sub-list for extension extendee
-	0,  // [0:7] is the sub-list for field type_name
+	2,  // 0: cobaltspeech.diatheke.ListModelsResponse.models:type_name -> cobaltspeech.diatheke.ModelInfo
+	4,  // 1: cobaltspeech.diatheke.SessionInput.token:type_name -> cobaltspeech.diatheke.TokenData
+	6,  // 2: cobaltspeech.diatheke.SessionInput.text:type_name -> cobaltspeech.diatheke.TextInput
+	15, // 3: cobaltspeech.diatheke.SessionInput.asr:type_name -> cobaltspeech.diatheke.ASRResult
+	7,  // 4: cobaltspeech.diatheke.SessionInput.cmd:type_name -> cobaltspeech.diatheke.CommandResult
+	8,  // 5: cobaltspeech.diatheke.SessionInput.story:type_name -> cobaltspeech.diatheke.SetStory
+	18, // 6: cobaltspeech.diatheke.CommandResult.out_parameters:type_name -> cobaltspeech.diatheke.CommandResult.OutParametersEntry
+	19, // 7: cobaltspeech.diatheke.SetStory.parameters:type_name -> cobaltspeech.diatheke.SetStory.ParametersEntry
+	4,  // 8: cobaltspeech.diatheke.SessionOutput.token:type_name -> cobaltspeech.diatheke.TokenData
+	10, // 9: cobaltspeech.diatheke.SessionOutput.action_list:type_name -> cobaltspeech.diatheke.ActionData
+	11, // 10: cobaltspeech.diatheke.ActionData.input:type_name -> cobaltspeech.diatheke.WaitForUserAction
+	12, // 11: cobaltspeech.diatheke.ActionData.command:type_name -> cobaltspeech.diatheke.CommandAction
+	13, // 12: cobaltspeech.diatheke.ActionData.reply:type_name -> cobaltspeech.diatheke.ReplyAction
+	20, // 13: cobaltspeech.diatheke.CommandAction.input_parameters:type_name -> cobaltspeech.diatheke.CommandAction.InputParametersEntry
+	4,  // 14: cobaltspeech.diatheke.ASRInput.token:type_name -> cobaltspeech.diatheke.TokenData
+	17, // 15: cobaltspeech.diatheke.Diatheke.Version:input_type -> cobaltspeech.diatheke.Empty
+	17, // 16: cobaltspeech.diatheke.Diatheke.ListModels:input_type -> cobaltspeech.diatheke.Empty
+	5,  // 17: cobaltspeech.diatheke.Diatheke.CreateSession:input_type -> cobaltspeech.diatheke.SessionStart
+	4,  // 18: cobaltspeech.diatheke.Diatheke.DeleteSession:input_type -> cobaltspeech.diatheke.TokenData
+	3,  // 19: cobaltspeech.diatheke.Diatheke.UpdateSession:input_type -> cobaltspeech.diatheke.SessionInput
+	14, // 20: cobaltspeech.diatheke.Diatheke.StreamASR:input_type -> cobaltspeech.diatheke.ASRInput
+	13, // 21: cobaltspeech.diatheke.Diatheke.StreamTTS:input_type -> cobaltspeech.diatheke.ReplyAction
+	0,  // 22: cobaltspeech.diatheke.Diatheke.Version:output_type -> cobaltspeech.diatheke.VersionResponse
+	1,  // 23: cobaltspeech.diatheke.Diatheke.ListModels:output_type -> cobaltspeech.diatheke.ListModelsResponse
+	9,  // 24: cobaltspeech.diatheke.Diatheke.CreateSession:output_type -> cobaltspeech.diatheke.SessionOutput
+	17, // 25: cobaltspeech.diatheke.Diatheke.DeleteSession:output_type -> cobaltspeech.diatheke.Empty
+	9,  // 26: cobaltspeech.diatheke.Diatheke.UpdateSession:output_type -> cobaltspeech.diatheke.SessionOutput
+	15, // 27: cobaltspeech.diatheke.Diatheke.StreamASR:output_type -> cobaltspeech.diatheke.ASRResult
+	16, // 28: cobaltspeech.diatheke.Diatheke.StreamTTS:output_type -> cobaltspeech.diatheke.TTSAudio
+	22, // [22:29] is the sub-list for method output_type
+	15, // [15:22] is the sub-list for method input_type
+	15, // [15:15] is the sub-list for extension type_name
+	15, // [15:15] is the sub-list for extension extendee
+	0,  // [0:15] is the sub-list for field type_name
 }
 
 func init() { file_diatheke_proto_init() }
@@ -1533,7 +1523,7 @@ func file_diatheke_proto_init() {
 			}
 		}
 		file_diatheke_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ModelsResponse); i {
+			switch v := v.(*ListModelsResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1545,7 +1535,7 @@ func file_diatheke_proto_init() {
 			}
 		}
 		file_diatheke_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*NewSessionRequest); i {
+			switch v := v.(*ModelInfo); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1557,7 +1547,7 @@ func file_diatheke_proto_init() {
 			}
 		}
 		file_diatheke_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SessionID); i {
+			switch v := v.(*SessionInput); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1569,7 +1559,7 @@ func file_diatheke_proto_init() {
 			}
 		}
 		file_diatheke_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DiathekeEvent); i {
+			switch v := v.(*TokenData); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1581,7 +1571,7 @@ func file_diatheke_proto_init() {
 			}
 		}
 		file_diatheke_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CommandEvent); i {
+			switch v := v.(*SessionStart); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1593,7 +1583,7 @@ func file_diatheke_proto_init() {
 			}
 		}
 		file_diatheke_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*RecognizeEvent); i {
+			switch v := v.(*TextInput); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1605,7 +1595,7 @@ func file_diatheke_proto_init() {
 			}
 		}
 		file_diatheke_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ReplyEvent); i {
+			switch v := v.(*CommandResult); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1617,7 +1607,7 @@ func file_diatheke_proto_init() {
 			}
 		}
 		file_diatheke_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CommandStatus); i {
+			switch v := v.(*SetStory); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1629,7 +1619,7 @@ func file_diatheke_proto_init() {
 			}
 		}
 		file_diatheke_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AudioInput); i {
+			switch v := v.(*SessionOutput); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1641,7 +1631,7 @@ func file_diatheke_proto_init() {
 			}
 		}
 		file_diatheke_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AudioReply); i {
+			switch v := v.(*ActionData); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1653,7 +1643,7 @@ func file_diatheke_proto_init() {
 			}
 		}
 		file_diatheke_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*PushTextRequest); i {
+			switch v := v.(*WaitForUserAction); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1665,7 +1655,7 @@ func file_diatheke_proto_init() {
 			}
 		}
 		file_diatheke_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ASRRequest); i {
+			switch v := v.(*CommandAction); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1677,7 +1667,7 @@ func file_diatheke_proto_init() {
 			}
 		}
 		file_diatheke_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ASRResponse); i {
+			switch v := v.(*ReplyAction); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1689,7 +1679,7 @@ func file_diatheke_proto_init() {
 			}
 		}
 		file_diatheke_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TTSRequest); i {
+			switch v := v.(*ASRInput); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1701,7 +1691,7 @@ func file_diatheke_proto_init() {
 			}
 		}
 		file_diatheke_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TTSResponse); i {
+			switch v := v.(*ASRResult); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1713,6 +1703,18 @@ func file_diatheke_proto_init() {
 			}
 		}
 		file_diatheke_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*TTSAudio); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_diatheke_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Empty); i {
 			case 0:
 				return &v.state
@@ -1725,37 +1727,33 @@ func file_diatheke_proto_init() {
 			}
 		}
 	}
-	file_diatheke_proto_msgTypes[4].OneofWrappers = []interface{}{
-		(*DiathekeEvent_Command)(nil),
-		(*DiathekeEvent_Recognize)(nil),
-		(*DiathekeEvent_Reply)(nil),
-	}
-	file_diatheke_proto_msgTypes[9].OneofWrappers = []interface{}{
-		(*AudioInput_SessionId)(nil),
-		(*AudioInput_Data)(nil),
+	file_diatheke_proto_msgTypes[3].OneofWrappers = []interface{}{
+		(*SessionInput_Text)(nil),
+		(*SessionInput_Asr)(nil),
+		(*SessionInput_Cmd)(nil),
+		(*SessionInput_Story)(nil),
 	}
 	file_diatheke_proto_msgTypes[10].OneofWrappers = []interface{}{
-		(*AudioReply_Text)(nil),
-		(*AudioReply_Data)(nil),
-		(*AudioReply_End)(nil),
+		(*ActionData_Input)(nil),
+		(*ActionData_Command)(nil),
+		(*ActionData_Reply)(nil),
 	}
-	file_diatheke_proto_msgTypes[12].OneofWrappers = []interface{}{
-		(*ASRRequest_Model)(nil),
-		(*ASRRequest_Audio)(nil),
+	file_diatheke_proto_msgTypes[14].OneofWrappers = []interface{}{
+		(*ASRInput_Token)(nil),
+		(*ASRInput_Audio)(nil),
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_diatheke_proto_rawDesc,
-			NumEnums:      1,
-			NumMessages:   19,
+			NumEnums:      0,
+			NumMessages:   21,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
 		GoTypes:           file_diatheke_proto_goTypes,
 		DependencyIndexes: file_diatheke_proto_depIdxs,
-		EnumInfos:         file_diatheke_proto_enumTypes,
 		MessageInfos:      file_diatheke_proto_msgTypes,
 	}.Build()
 	File_diatheke_proto = out.File
@@ -1776,63 +1774,32 @@ const _ = grpc.SupportPackageIsVersion6
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type DiathekeClient interface {
-	// Queries the Version of the Server.
+	// Returns version information from the server.
 	Version(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*VersionResponse, error)
-	// Models will return a list of available versions.  Model values from
-	// this list may be used in NewSession calls.
-	Models(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*ModelsResponse, error)
-	// Requests a new session with the given config and returns the session
-	// ID, which is required for other rpc methods.
-	NewSession(ctx context.Context, in *NewSessionRequest, opts ...grpc.CallOption) (*SessionID, error)
-	// Terminates an existing session and closes any open session streams.
-	// It is an error if the SessionEndRequest has an invalid SessionID.
-	EndSession(ctx context.Context, in *SessionID, opts ...grpc.CallOption) (*Empty, error)
-	// Requests a new event stream for the given session. Only one stream
-	// per session is allowed.
-	SessionEventStream(ctx context.Context, in *SessionID, opts ...grpc.CallOption) (Diatheke_SessionEventStreamClient, error)
-	// Notify Diatheke when a command has completed so that it may update
-	// the dialog state. The initial command request will come as part of
-	// a DiathekeEvent. After sending a CommandEvent, Diatheke will wait
-	// until it receives the CommandFinished notification before continuing
-	// to the next action in the model. Client applications should therefore
-	// always call this after receiving a CommandEvent, or else the session
-	// will hang.
-	CommandFinished(ctx context.Context, in *CommandStatus, opts ...grpc.CallOption) (*Empty, error)
-	// Begin an audio input stream for a session. The first message to
-	// the server should specify the sessionID, with binary audio data pushed
-	// for every subsequent message. As the audio is recognized, Diatheke
-	// will respond with appropriate events on the session's event stream.
-	// <p>
-	// Only one stream at a time is allowed for a session. A previously
-	// created audio input stream must be closed before starting a new one.
-	StreamAudioInput(ctx context.Context, opts ...grpc.CallOption) (Diatheke_StreamAudioInputClient, error)
-	// Create an audio reply stream for a session. The returned stream
-	// will receive replies (as defined in the Diatheke model) from the
-	// server as they occur in the conversation. For each reply, the
-	// stream will first receive the text to synthesize (defined by the model),
-	// followed by one or more messages containing the synthesized audio bytes.
-	// The reply will end with a message indicating that TTS for that
-	// entry is complete. Only one reply stream at a time is allowed for a
-	// session.
-	// NOTE: The text in the first message of an audio reply is the same that
-	//       will be received in the session's event stream.
-	StreamAudioReplies(ctx context.Context, in *SessionID, opts ...grpc.CallOption) (Diatheke_StreamAudioRepliesClient, error)
-	// Push text to Diatheke as part of the conversation for a session.
-	// Diatheke will respond with an appropriate event on the session's
-	// event stream based on whether the given text was recognized as a
-	// valid intent or not.
-	PushText(ctx context.Context, in *PushTextRequest, opts ...grpc.CallOption) (*Empty, error)
-	// Manually run streaming ASR unrelated to any session by pushing
-	// audio data to the server on the audio stream. As transcriptions
-	// become available, the server will return them on the ASRResponse
-	// stream. The transcriptions may then be used for, e.g., the PushText
-	// method. This function is provided as a convenience.
+	// ListModels returns information about the Diatheke models
+	// the server can access.
+	ListModels(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*ListModelsResponse, error)
+	// Create a new Diatheke session. Also returns a list of
+	// actions to take next.
+	CreateSession(ctx context.Context, in *SessionStart, opts ...grpc.CallOption) (*SessionOutput, error)
+	// Delete the session. Behavior is undefined if the given
+	// TokenData is used again after this function is called.
+	DeleteSession(ctx context.Context, in *TokenData, opts ...grpc.CallOption) (*Empty, error)
+	// Process input for a session and get an updated session with
+	// a list of actions to take next. This is the only method
+	// that modifies the Diatheke session state.
+	UpdateSession(ctx context.Context, in *SessionInput, opts ...grpc.CallOption) (*SessionOutput, error)
+	// Create an ASR stream. A result is returned when the
+	// stream is closed by the client (which forces the ASR to
+	// endpoint), or when a transcript becomes available on its
+	// own, in which case the stream is closed by the server.
+	// The ASR result may be used in the UpdateSession method.
 	StreamASR(ctx context.Context, opts ...grpc.CallOption) (Diatheke_StreamASRClient, error)
-	// Manually run streaming TTS. The Audio stream will receive
-	// binary audio data as it is synthesized and will close automatically
-	// when synthesis is complete. This function is provided as a
-	// convenience.
-	StreamTTS(ctx context.Context, in *TTSRequest, opts ...grpc.CallOption) (Diatheke_StreamTTSClient, error)
+	// Create a TTS stream to receive audio for the given reply.
+	// The stream will close when TTS is finished. The client
+	// may also close the stream early to cancel the speech
+	// synthesis.
+	StreamTTS(ctx context.Context, in *ReplyAction, opts ...grpc.CallOption) (Diatheke_StreamTTSClient, error)
 }
 
 type diathekeClient struct {
@@ -1852,143 +1819,36 @@ func (c *diathekeClient) Version(ctx context.Context, in *Empty, opts ...grpc.Ca
 	return out, nil
 }
 
-func (c *diathekeClient) Models(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*ModelsResponse, error) {
-	out := new(ModelsResponse)
-	err := c.cc.Invoke(ctx, "/cobaltspeech.diatheke.Diatheke/Models", in, out, opts...)
+func (c *diathekeClient) ListModels(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*ListModelsResponse, error) {
+	out := new(ListModelsResponse)
+	err := c.cc.Invoke(ctx, "/cobaltspeech.diatheke.Diatheke/ListModels", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *diathekeClient) NewSession(ctx context.Context, in *NewSessionRequest, opts ...grpc.CallOption) (*SessionID, error) {
-	out := new(SessionID)
-	err := c.cc.Invoke(ctx, "/cobaltspeech.diatheke.Diatheke/NewSession", in, out, opts...)
+func (c *diathekeClient) CreateSession(ctx context.Context, in *SessionStart, opts ...grpc.CallOption) (*SessionOutput, error) {
+	out := new(SessionOutput)
+	err := c.cc.Invoke(ctx, "/cobaltspeech.diatheke.Diatheke/CreateSession", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *diathekeClient) EndSession(ctx context.Context, in *SessionID, opts ...grpc.CallOption) (*Empty, error) {
+func (c *diathekeClient) DeleteSession(ctx context.Context, in *TokenData, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
-	err := c.cc.Invoke(ctx, "/cobaltspeech.diatheke.Diatheke/EndSession", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/cobaltspeech.diatheke.Diatheke/DeleteSession", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *diathekeClient) SessionEventStream(ctx context.Context, in *SessionID, opts ...grpc.CallOption) (Diatheke_SessionEventStreamClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_Diatheke_serviceDesc.Streams[0], "/cobaltspeech.diatheke.Diatheke/SessionEventStream", opts...)
-	if err != nil {
-		return nil, err
-	}
-	x := &diathekeSessionEventStreamClient{stream}
-	if err := x.ClientStream.SendMsg(in); err != nil {
-		return nil, err
-	}
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	return x, nil
-}
-
-type Diatheke_SessionEventStreamClient interface {
-	Recv() (*DiathekeEvent, error)
-	grpc.ClientStream
-}
-
-type diathekeSessionEventStreamClient struct {
-	grpc.ClientStream
-}
-
-func (x *diathekeSessionEventStreamClient) Recv() (*DiathekeEvent, error) {
-	m := new(DiathekeEvent)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
-}
-
-func (c *diathekeClient) CommandFinished(ctx context.Context, in *CommandStatus, opts ...grpc.CallOption) (*Empty, error) {
-	out := new(Empty)
-	err := c.cc.Invoke(ctx, "/cobaltspeech.diatheke.Diatheke/CommandFinished", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *diathekeClient) StreamAudioInput(ctx context.Context, opts ...grpc.CallOption) (Diatheke_StreamAudioInputClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_Diatheke_serviceDesc.Streams[1], "/cobaltspeech.diatheke.Diatheke/StreamAudioInput", opts...)
-	if err != nil {
-		return nil, err
-	}
-	x := &diathekeStreamAudioInputClient{stream}
-	return x, nil
-}
-
-type Diatheke_StreamAudioInputClient interface {
-	Send(*AudioInput) error
-	CloseAndRecv() (*Empty, error)
-	grpc.ClientStream
-}
-
-type diathekeStreamAudioInputClient struct {
-	grpc.ClientStream
-}
-
-func (x *diathekeStreamAudioInputClient) Send(m *AudioInput) error {
-	return x.ClientStream.SendMsg(m)
-}
-
-func (x *diathekeStreamAudioInputClient) CloseAndRecv() (*Empty, error) {
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	m := new(Empty)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
-}
-
-func (c *diathekeClient) StreamAudioReplies(ctx context.Context, in *SessionID, opts ...grpc.CallOption) (Diatheke_StreamAudioRepliesClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_Diatheke_serviceDesc.Streams[2], "/cobaltspeech.diatheke.Diatheke/StreamAudioReplies", opts...)
-	if err != nil {
-		return nil, err
-	}
-	x := &diathekeStreamAudioRepliesClient{stream}
-	if err := x.ClientStream.SendMsg(in); err != nil {
-		return nil, err
-	}
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	return x, nil
-}
-
-type Diatheke_StreamAudioRepliesClient interface {
-	Recv() (*AudioReply, error)
-	grpc.ClientStream
-}
-
-type diathekeStreamAudioRepliesClient struct {
-	grpc.ClientStream
-}
-
-func (x *diathekeStreamAudioRepliesClient) Recv() (*AudioReply, error) {
-	m := new(AudioReply)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
-}
-
-func (c *diathekeClient) PushText(ctx context.Context, in *PushTextRequest, opts ...grpc.CallOption) (*Empty, error) {
-	out := new(Empty)
-	err := c.cc.Invoke(ctx, "/cobaltspeech.diatheke.Diatheke/PushText", in, out, opts...)
+func (c *diathekeClient) UpdateSession(ctx context.Context, in *SessionInput, opts ...grpc.CallOption) (*SessionOutput, error) {
+	out := new(SessionOutput)
+	err := c.cc.Invoke(ctx, "/cobaltspeech.diatheke.Diatheke/UpdateSession", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1996,7 +1856,7 @@ func (c *diathekeClient) PushText(ctx context.Context, in *PushTextRequest, opts
 }
 
 func (c *diathekeClient) StreamASR(ctx context.Context, opts ...grpc.CallOption) (Diatheke_StreamASRClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_Diatheke_serviceDesc.Streams[3], "/cobaltspeech.diatheke.Diatheke/StreamASR", opts...)
+	stream, err := c.cc.NewStream(ctx, &_Diatheke_serviceDesc.Streams[0], "/cobaltspeech.diatheke.Diatheke/StreamASR", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -2005,8 +1865,8 @@ func (c *diathekeClient) StreamASR(ctx context.Context, opts ...grpc.CallOption)
 }
 
 type Diatheke_StreamASRClient interface {
-	Send(*ASRRequest) error
-	Recv() (*ASRResponse, error)
+	Send(*ASRInput) error
+	CloseAndRecv() (*ASRResult, error)
 	grpc.ClientStream
 }
 
@@ -2014,20 +1874,23 @@ type diathekeStreamASRClient struct {
 	grpc.ClientStream
 }
 
-func (x *diathekeStreamASRClient) Send(m *ASRRequest) error {
+func (x *diathekeStreamASRClient) Send(m *ASRInput) error {
 	return x.ClientStream.SendMsg(m)
 }
 
-func (x *diathekeStreamASRClient) Recv() (*ASRResponse, error) {
-	m := new(ASRResponse)
+func (x *diathekeStreamASRClient) CloseAndRecv() (*ASRResult, error) {
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	m := new(ASRResult)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
 	return m, nil
 }
 
-func (c *diathekeClient) StreamTTS(ctx context.Context, in *TTSRequest, opts ...grpc.CallOption) (Diatheke_StreamTTSClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_Diatheke_serviceDesc.Streams[4], "/cobaltspeech.diatheke.Diatheke/StreamTTS", opts...)
+func (c *diathekeClient) StreamTTS(ctx context.Context, in *ReplyAction, opts ...grpc.CallOption) (Diatheke_StreamTTSClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_Diatheke_serviceDesc.Streams[1], "/cobaltspeech.diatheke.Diatheke/StreamTTS", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -2042,7 +1905,7 @@ func (c *diathekeClient) StreamTTS(ctx context.Context, in *TTSRequest, opts ...
 }
 
 type Diatheke_StreamTTSClient interface {
-	Recv() (*TTSResponse, error)
+	Recv() (*TTSAudio, error)
 	grpc.ClientStream
 }
 
@@ -2050,8 +1913,8 @@ type diathekeStreamTTSClient struct {
 	grpc.ClientStream
 }
 
-func (x *diathekeStreamTTSClient) Recv() (*TTSResponse, error) {
-	m := new(TTSResponse)
+func (x *diathekeStreamTTSClient) Recv() (*TTSAudio, error) {
+	m := new(TTSAudio)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -2060,63 +1923,32 @@ func (x *diathekeStreamTTSClient) Recv() (*TTSResponse, error) {
 
 // DiathekeServer is the server API for Diatheke service.
 type DiathekeServer interface {
-	// Queries the Version of the Server.
+	// Returns version information from the server.
 	Version(context.Context, *Empty) (*VersionResponse, error)
-	// Models will return a list of available versions.  Model values from
-	// this list may be used in NewSession calls.
-	Models(context.Context, *Empty) (*ModelsResponse, error)
-	// Requests a new session with the given config and returns the session
-	// ID, which is required for other rpc methods.
-	NewSession(context.Context, *NewSessionRequest) (*SessionID, error)
-	// Terminates an existing session and closes any open session streams.
-	// It is an error if the SessionEndRequest has an invalid SessionID.
-	EndSession(context.Context, *SessionID) (*Empty, error)
-	// Requests a new event stream for the given session. Only one stream
-	// per session is allowed.
-	SessionEventStream(*SessionID, Diatheke_SessionEventStreamServer) error
-	// Notify Diatheke when a command has completed so that it may update
-	// the dialog state. The initial command request will come as part of
-	// a DiathekeEvent. After sending a CommandEvent, Diatheke will wait
-	// until it receives the CommandFinished notification before continuing
-	// to the next action in the model. Client applications should therefore
-	// always call this after receiving a CommandEvent, or else the session
-	// will hang.
-	CommandFinished(context.Context, *CommandStatus) (*Empty, error)
-	// Begin an audio input stream for a session. The first message to
-	// the server should specify the sessionID, with binary audio data pushed
-	// for every subsequent message. As the audio is recognized, Diatheke
-	// will respond with appropriate events on the session's event stream.
-	// <p>
-	// Only one stream at a time is allowed for a session. A previously
-	// created audio input stream must be closed before starting a new one.
-	StreamAudioInput(Diatheke_StreamAudioInputServer) error
-	// Create an audio reply stream for a session. The returned stream
-	// will receive replies (as defined in the Diatheke model) from the
-	// server as they occur in the conversation. For each reply, the
-	// stream will first receive the text to synthesize (defined by the model),
-	// followed by one or more messages containing the synthesized audio bytes.
-	// The reply will end with a message indicating that TTS for that
-	// entry is complete. Only one reply stream at a time is allowed for a
-	// session.
-	// NOTE: The text in the first message of an audio reply is the same that
-	//       will be received in the session's event stream.
-	StreamAudioReplies(*SessionID, Diatheke_StreamAudioRepliesServer) error
-	// Push text to Diatheke as part of the conversation for a session.
-	// Diatheke will respond with an appropriate event on the session's
-	// event stream based on whether the given text was recognized as a
-	// valid intent or not.
-	PushText(context.Context, *PushTextRequest) (*Empty, error)
-	// Manually run streaming ASR unrelated to any session by pushing
-	// audio data to the server on the audio stream. As transcriptions
-	// become available, the server will return them on the ASRResponse
-	// stream. The transcriptions may then be used for, e.g., the PushText
-	// method. This function is provided as a convenience.
+	// ListModels returns information about the Diatheke models
+	// the server can access.
+	ListModels(context.Context, *Empty) (*ListModelsResponse, error)
+	// Create a new Diatheke session. Also returns a list of
+	// actions to take next.
+	CreateSession(context.Context, *SessionStart) (*SessionOutput, error)
+	// Delete the session. Behavior is undefined if the given
+	// TokenData is used again after this function is called.
+	DeleteSession(context.Context, *TokenData) (*Empty, error)
+	// Process input for a session and get an updated session with
+	// a list of actions to take next. This is the only method
+	// that modifies the Diatheke session state.
+	UpdateSession(context.Context, *SessionInput) (*SessionOutput, error)
+	// Create an ASR stream. A result is returned when the
+	// stream is closed by the client (which forces the ASR to
+	// endpoint), or when a transcript becomes available on its
+	// own, in which case the stream is closed by the server.
+	// The ASR result may be used in the UpdateSession method.
 	StreamASR(Diatheke_StreamASRServer) error
-	// Manually run streaming TTS. The Audio stream will receive
-	// binary audio data as it is synthesized and will close automatically
-	// when synthesis is complete. This function is provided as a
-	// convenience.
-	StreamTTS(*TTSRequest, Diatheke_StreamTTSServer) error
+	// Create a TTS stream to receive audio for the given reply.
+	// The stream will close when TTS is finished. The client
+	// may also close the stream early to cancel the speech
+	// synthesis.
+	StreamTTS(*ReplyAction, Diatheke_StreamTTSServer) error
 }
 
 // UnimplementedDiathekeServer can be embedded to have forward compatible implementations.
@@ -2126,34 +1958,22 @@ type UnimplementedDiathekeServer struct {
 func (*UnimplementedDiathekeServer) Version(context.Context, *Empty) (*VersionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Version not implemented")
 }
-func (*UnimplementedDiathekeServer) Models(context.Context, *Empty) (*ModelsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Models not implemented")
+func (*UnimplementedDiathekeServer) ListModels(context.Context, *Empty) (*ListModelsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListModels not implemented")
 }
-func (*UnimplementedDiathekeServer) NewSession(context.Context, *NewSessionRequest) (*SessionID, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method NewSession not implemented")
+func (*UnimplementedDiathekeServer) CreateSession(context.Context, *SessionStart) (*SessionOutput, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateSession not implemented")
 }
-func (*UnimplementedDiathekeServer) EndSession(context.Context, *SessionID) (*Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method EndSession not implemented")
+func (*UnimplementedDiathekeServer) DeleteSession(context.Context, *TokenData) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteSession not implemented")
 }
-func (*UnimplementedDiathekeServer) SessionEventStream(*SessionID, Diatheke_SessionEventStreamServer) error {
-	return status.Errorf(codes.Unimplemented, "method SessionEventStream not implemented")
-}
-func (*UnimplementedDiathekeServer) CommandFinished(context.Context, *CommandStatus) (*Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CommandFinished not implemented")
-}
-func (*UnimplementedDiathekeServer) StreamAudioInput(Diatheke_StreamAudioInputServer) error {
-	return status.Errorf(codes.Unimplemented, "method StreamAudioInput not implemented")
-}
-func (*UnimplementedDiathekeServer) StreamAudioReplies(*SessionID, Diatheke_StreamAudioRepliesServer) error {
-	return status.Errorf(codes.Unimplemented, "method StreamAudioReplies not implemented")
-}
-func (*UnimplementedDiathekeServer) PushText(context.Context, *PushTextRequest) (*Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PushText not implemented")
+func (*UnimplementedDiathekeServer) UpdateSession(context.Context, *SessionInput) (*SessionOutput, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateSession not implemented")
 }
 func (*UnimplementedDiathekeServer) StreamASR(Diatheke_StreamASRServer) error {
 	return status.Errorf(codes.Unimplemented, "method StreamASR not implemented")
 }
-func (*UnimplementedDiathekeServer) StreamTTS(*TTSRequest, Diatheke_StreamTTSServer) error {
+func (*UnimplementedDiathekeServer) StreamTTS(*ReplyAction, Diatheke_StreamTTSServer) error {
 	return status.Errorf(codes.Unimplemented, "method StreamTTS not implemented")
 }
 
@@ -2179,160 +1999,74 @@ func _Diatheke_Version_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Diatheke_Models_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Diatheke_ListModels_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Empty)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DiathekeServer).Models(ctx, in)
+		return srv.(DiathekeServer).ListModels(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/cobaltspeech.diatheke.Diatheke/Models",
+		FullMethod: "/cobaltspeech.diatheke.Diatheke/ListModels",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DiathekeServer).Models(ctx, req.(*Empty))
+		return srv.(DiathekeServer).ListModels(ctx, req.(*Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Diatheke_NewSession_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(NewSessionRequest)
+func _Diatheke_CreateSession_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SessionStart)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DiathekeServer).NewSession(ctx, in)
+		return srv.(DiathekeServer).CreateSession(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/cobaltspeech.diatheke.Diatheke/NewSession",
+		FullMethod: "/cobaltspeech.diatheke.Diatheke/CreateSession",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DiathekeServer).NewSession(ctx, req.(*NewSessionRequest))
+		return srv.(DiathekeServer).CreateSession(ctx, req.(*SessionStart))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Diatheke_EndSession_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SessionID)
+func _Diatheke_DeleteSession_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TokenData)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DiathekeServer).EndSession(ctx, in)
+		return srv.(DiathekeServer).DeleteSession(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/cobaltspeech.diatheke.Diatheke/EndSession",
+		FullMethod: "/cobaltspeech.diatheke.Diatheke/DeleteSession",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DiathekeServer).EndSession(ctx, req.(*SessionID))
+		return srv.(DiathekeServer).DeleteSession(ctx, req.(*TokenData))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Diatheke_SessionEventStream_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(SessionID)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
-	}
-	return srv.(DiathekeServer).SessionEventStream(m, &diathekeSessionEventStreamServer{stream})
-}
-
-type Diatheke_SessionEventStreamServer interface {
-	Send(*DiathekeEvent) error
-	grpc.ServerStream
-}
-
-type diathekeSessionEventStreamServer struct {
-	grpc.ServerStream
-}
-
-func (x *diathekeSessionEventStreamServer) Send(m *DiathekeEvent) error {
-	return x.ServerStream.SendMsg(m)
-}
-
-func _Diatheke_CommandFinished_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CommandStatus)
+func _Diatheke_UpdateSession_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SessionInput)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DiathekeServer).CommandFinished(ctx, in)
+		return srv.(DiathekeServer).UpdateSession(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/cobaltspeech.diatheke.Diatheke/CommandFinished",
+		FullMethod: "/cobaltspeech.diatheke.Diatheke/UpdateSession",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DiathekeServer).CommandFinished(ctx, req.(*CommandStatus))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Diatheke_StreamAudioInput_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(DiathekeServer).StreamAudioInput(&diathekeStreamAudioInputServer{stream})
-}
-
-type Diatheke_StreamAudioInputServer interface {
-	SendAndClose(*Empty) error
-	Recv() (*AudioInput, error)
-	grpc.ServerStream
-}
-
-type diathekeStreamAudioInputServer struct {
-	grpc.ServerStream
-}
-
-func (x *diathekeStreamAudioInputServer) SendAndClose(m *Empty) error {
-	return x.ServerStream.SendMsg(m)
-}
-
-func (x *diathekeStreamAudioInputServer) Recv() (*AudioInput, error) {
-	m := new(AudioInput)
-	if err := x.ServerStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
-}
-
-func _Diatheke_StreamAudioReplies_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(SessionID)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
-	}
-	return srv.(DiathekeServer).StreamAudioReplies(m, &diathekeStreamAudioRepliesServer{stream})
-}
-
-type Diatheke_StreamAudioRepliesServer interface {
-	Send(*AudioReply) error
-	grpc.ServerStream
-}
-
-type diathekeStreamAudioRepliesServer struct {
-	grpc.ServerStream
-}
-
-func (x *diathekeStreamAudioRepliesServer) Send(m *AudioReply) error {
-	return x.ServerStream.SendMsg(m)
-}
-
-func _Diatheke_PushText_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PushTextRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DiathekeServer).PushText(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/cobaltspeech.diatheke.Diatheke/PushText",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DiathekeServer).PushText(ctx, req.(*PushTextRequest))
+		return srv.(DiathekeServer).UpdateSession(ctx, req.(*SessionInput))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2342,8 +2076,8 @@ func _Diatheke_StreamASR_Handler(srv interface{}, stream grpc.ServerStream) erro
 }
 
 type Diatheke_StreamASRServer interface {
-	Send(*ASRResponse) error
-	Recv() (*ASRRequest, error)
+	SendAndClose(*ASRResult) error
+	Recv() (*ASRInput, error)
 	grpc.ServerStream
 }
 
@@ -2351,12 +2085,12 @@ type diathekeStreamASRServer struct {
 	grpc.ServerStream
 }
 
-func (x *diathekeStreamASRServer) Send(m *ASRResponse) error {
+func (x *diathekeStreamASRServer) SendAndClose(m *ASRResult) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func (x *diathekeStreamASRServer) Recv() (*ASRRequest, error) {
-	m := new(ASRRequest)
+func (x *diathekeStreamASRServer) Recv() (*ASRInput, error) {
+	m := new(ASRInput)
 	if err := x.ServerStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -2364,7 +2098,7 @@ func (x *diathekeStreamASRServer) Recv() (*ASRRequest, error) {
 }
 
 func _Diatheke_StreamTTS_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(TTSRequest)
+	m := new(ReplyAction)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
@@ -2372,7 +2106,7 @@ func _Diatheke_StreamTTS_Handler(srv interface{}, stream grpc.ServerStream) erro
 }
 
 type Diatheke_StreamTTSServer interface {
-	Send(*TTSResponse) error
+	Send(*TTSAudio) error
 	grpc.ServerStream
 }
 
@@ -2380,7 +2114,7 @@ type diathekeStreamTTSServer struct {
 	grpc.ServerStream
 }
 
-func (x *diathekeStreamTTSServer) Send(m *TTSResponse) error {
+func (x *diathekeStreamTTSServer) Send(m *TTSAudio) error {
 	return x.ServerStream.SendMsg(m)
 }
 
@@ -2393,46 +2127,26 @@ var _Diatheke_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Diatheke_Version_Handler,
 		},
 		{
-			MethodName: "Models",
-			Handler:    _Diatheke_Models_Handler,
+			MethodName: "ListModels",
+			Handler:    _Diatheke_ListModels_Handler,
 		},
 		{
-			MethodName: "NewSession",
-			Handler:    _Diatheke_NewSession_Handler,
+			MethodName: "CreateSession",
+			Handler:    _Diatheke_CreateSession_Handler,
 		},
 		{
-			MethodName: "EndSession",
-			Handler:    _Diatheke_EndSession_Handler,
+			MethodName: "DeleteSession",
+			Handler:    _Diatheke_DeleteSession_Handler,
 		},
 		{
-			MethodName: "CommandFinished",
-			Handler:    _Diatheke_CommandFinished_Handler,
-		},
-		{
-			MethodName: "PushText",
-			Handler:    _Diatheke_PushText_Handler,
+			MethodName: "UpdateSession",
+			Handler:    _Diatheke_UpdateSession_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
 		{
-			StreamName:    "SessionEventStream",
-			Handler:       _Diatheke_SessionEventStream_Handler,
-			ServerStreams: true,
-		},
-		{
-			StreamName:    "StreamAudioInput",
-			Handler:       _Diatheke_StreamAudioInput_Handler,
-			ClientStreams: true,
-		},
-		{
-			StreamName:    "StreamAudioReplies",
-			Handler:       _Diatheke_StreamAudioReplies_Handler,
-			ServerStreams: true,
-		},
-		{
 			StreamName:    "StreamASR",
 			Handler:       _Diatheke_StreamASR_Handler,
-			ServerStreams: true,
 			ClientStreams: true,
 		},
 		{
