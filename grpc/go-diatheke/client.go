@@ -1,4 +1,4 @@
-// Copyright (2019) Cobalt Speech and Language Inc.
+// Copyright (2020) Cobalt Speech and Language Inc.
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -147,177 +147,141 @@ func (c *Client) AppendCallOptions(opts ...grpc.CallOption) {
 	}
 }
 
-// DiathekeVersion queries the Diatheke server for its version.
-func (c *Client) DiathekeVersion(ctx context.Context) (string, error) {
-	response, err := c.PBClient.Version(ctx, &diathekepb.Empty{}, c.CallOpts...)
-	if err != nil {
-		return "", err
-	}
-
-	return response.Server, nil
+// Version returns version information from the server.
+func (c *Client) Version(ctx context.Context) (*diathekepb.VersionResponse, error) {
+	return c.PBClient.Version(ctx, &diathekepb.Empty{}, c.CallOpts...)
 }
 
-// ListModels queries the server for the list of currently loaded
-// Diatheke models.
-func (c *Client) ListModels(ctx context.Context) ([]string, error) {
-	response, err := c.PBClient.Models(ctx, &diathekepb.Empty{}, c.CallOpts...)
-	if err != nil {
-		return nil, err
-	}
-
-	return response.Models, nil
+// ListModels returns a list of Diatheke models available
+// to the server.
+func (c *Client) ListModels(ctx context.Context) (*diathekepb.ListModelsResponse, error) {
+	return c.PBClient.ListModels(ctx, &diathekepb.Empty{}, c.CallOpts...)
 }
 
-// NewSession creates a new session and returns the session id.
-func (c *Client) NewSession(ctx context.Context, model string) (string, error) {
-	request := diathekepb.NewSessionRequest{
-		Model: model,
+// CreateSession creates a new Diatheke session using the specified model.
+func (c *Client) CreateSession(
+	ctx context.Context, model string) (*diathekepb.SessionOutput, error) {
+	req := diathekepb.SessionStart{
+		ModelId: model,
 	}
 
-	response, err := c.PBClient.NewSession(ctx, &request, c.CallOpts...)
-	if err != nil {
-		return "", err
-	}
-
-	return response.SessionId, nil
+	return c.PBClient.CreateSession(ctx, &req, c.CallOpts...)
 }
 
-// StartSession begins execution of the given session. The session's
-// output streams (event and audio replies) should be set up before
-// calling this function so that the calling application can respond
-// to any initialization events defined in the session's model.
-func (c *Client) StartSession(ctx context.Context, sessionID string) error {
-	request := diathekepb.SessionID{
-		SessionId: sessionID,
-	}
-
-	_, err := c.PBClient.StartSession(ctx, &request, c.CallOpts...)
+// DeleteSession cleans up the given token. Behavior is undefined
+// if the given token is used again after calling this function.
+func (c *Client) DeleteSession(
+	ctx context.Context, token *diathekepb.TokenData) error {
+	_, err := c.PBClient.DeleteSession(ctx, token, c.CallOpts...)
 	return err
 }
 
-// EndSession ends an existing session.
-func (c *Client) EndSession(ctx context.Context, sessionID string) error {
-	request := diathekepb.SessionID{
-		SessionId: sessionID,
-	}
-	_, err := c.PBClient.EndSession(ctx, &request, c.CallOpts...)
-	return err
-}
-
-// SessionEventStream returns a new event stream for the given session ID.
-func (c *Client) SessionEventStream(ctx context.Context, sessionID string) (diathekepb.Diatheke_SessionEventStreamClient, error) {
-	request := diathekepb.SessionID{
-		SessionId: sessionID,
-	}
-
-	return c.PBClient.SessionEventStream(ctx, &request, c.CallOpts...)
-}
-
-// CommandFinished notifies the server that a command has completed. This
-// should be called after receiving a command event in the session's
-// event stream, as required by the Diatheke model.
-func (c *Client) CommandFinished(ctx context.Context, commandStatus *diathekepb.CommandStatus) error {
-	_, err := c.PBClient.CommandFinished(ctx, commandStatus, c.CallOpts...)
-	return err
-}
-
-// StreamAudioInput returns a stream object that may be used to push audio
-// data to the Diatheke server for the given session. Only one stream per
-// session should be running concurrently.
-func (c *Client) StreamAudioInput(ctx context.Context, sessionID string) (*AudioInputStream, error) {
-	// First create the stream
-	stream, err := c.PBClient.StreamAudioInput(ctx, c.CallOpts...)
-	if err != nil {
-		return nil, err
-	}
-
-	// Make sure the session ID is sent first
-	idMessage := diathekepb.AudioInput{
-		Request: &diathekepb.AudioInput_SessionId{
-			SessionId: sessionID,
+// ProcessText sends the given text to Diatheke and returns an updated
+// session token.
+func (c *Client) ProcessText(
+	ctx context.Context, token *diathekepb.TokenData, text string,
+) (*diathekepb.SessionOutput, error) {
+	req := diathekepb.SessionInput{
+		Token: token,
+		Input: &diathekepb.SessionInput_Text{
+			Text: &diathekepb.TextInput{
+				Text: text,
+			},
 		},
 	}
 
-	if err := stream.Send(&idMessage); err != nil {
-		return nil, err
-	}
-
-	// Return the stream in a wrapper, which is now ready to push audio data.
-	return &AudioInputStream{stream}, nil
+	return c.PBClient.UpdateSession(ctx, &req, c.CallOpts...)
 }
 
-// StreamAudioReplies returns a stream object that receives output audio from
-// Diatheke specifically for the given session. The stream will include start
-// and end messages to indicate when a section of audio for a group of text
-// begins and ends.
-func (c *Client) StreamAudioReplies(ctx context.Context, sessionID string) (diathekepb.Diatheke_StreamAudioRepliesClient, error) {
+// ProcessASRResult sends the given ASR result to Diatheke and returns an
+// updated session token.
+func (c *Client) ProcessASRResult(
+	ctx context.Context,
+	token *diathekepb.TokenData,
+	result *diathekepb.ASRResult,
+) (*diathekepb.SessionOutput, error) {
+	req := diathekepb.SessionInput{
+		Token: token,
+		Input: &diathekepb.SessionInput_Asr{
+			Asr: result,
+		},
+	}
+
+	return c.PBClient.UpdateSession(ctx, &req, c.CallOpts...)
+}
+
+// ProcessCommandResult sends the given command result to Diatheke and
+// returns an updated session token. This function should be called in
+// response to a command action Diatheke sent previously.
+func (c *Client) ProcessCommandResult(
+	ctx context.Context,
+	token *diathekepb.TokenData,
+	result *diathekepb.CommandResult,
+) (*diathekepb.SessionOutput, error) {
+	req := diathekepb.SessionInput{
+		Token: token,
+		Input: &diathekepb.SessionInput_Cmd{
+			Cmd: result,
+		},
+	}
+
+	return c.PBClient.UpdateSession(ctx, &req, c.CallOpts...)
+}
+
+// SetStory changes the current story for a Diatheke session. Returns
+// and updated session token.
+func (c *Client) SetStory(
+	ctx context.Context,
+	token *diathekepb.TokenData,
+	storyID string,
+	params map[string]string,
+) (*diathekepb.SessionOutput, error) {
+	req := diathekepb.SessionInput{
+		Token: token,
+		Input: &diathekepb.SessionInput_Story{
+			Story: &diathekepb.SetStory{
+				StoryId:    storyID,
+				Parameters: params,
+			},
+		},
+	}
+
+	return c.PBClient.UpdateSession(ctx, &req, c.CallOpts...)
+}
+
+// NewSessionASRStream creates a new stream to transcribe audio
+// for the given session Token.
+func (c *Client) NewSessionASRStream(
+	ctx context.Context,
+	token *diathekepb.TokenData,
+) (*ASRStream, error) {
 	// Create the stream
-	req := diathekepb.SessionID{
-		SessionId: sessionID,
-	}
-	return c.PBClient.StreamAudioReplies(ctx, &req, c.CallOpts...)
-}
-
-// PushText sends the given text to Diatheke as part of a conversation for
-// the given session.
-func (c *Client) PushText(ctx context.Context, sessionID, text string) error {
-	// Create the request and send it
-	req := diathekepb.PushTextRequest{
-		SessionId: sessionID,
-		Text:      text,
-	}
-
-	_, err := c.PBClient.PushText(ctx, &req, c.CallOpts...)
-	return err
-}
-
-// SetStory changes the current story of a session to the one specified.
-// Stories are defined by the Diatheke model.
-func (c *Client) SetStory(ctx context.Context, storyRequest *diathekepb.StoryRequest) error {
-	_, err := c.PBClient.SetStory(ctx, storyRequest, c.CallOpts...)
-	return err
-}
-
-// StreamASR runs streaming speech recognition unrelated to a session, using
-// the specified ASR model.
-func (c *Client) StreamASR(ctx context.Context, model string) (*ASRStream, error) {
-	// Create the stream.
-	stream, err := c.PBClient.StreamASR(ctx, c.CallOpts...)
+	pbStream, err := c.PBClient.StreamASR(ctx, c.CallOpts...)
 	if err != nil {
 		return nil, err
 	}
 
-	// Send the first message, which contains the model ID
-	req := diathekepb.ASRRequest{
-		AsrData: &diathekepb.ASRRequest_Model{
-			Model: model,
-		},
+	// Wrap it in our class and send the token.
+	stream := ASRStream{
+		PBStream: pbStream,
 	}
+	return &stream, stream.SendToken(token)
+}
 
-	if err := stream.Send(&req); err != nil {
+// NewTTSStream creates a new stream to receive TTS audio from Diatheke
+// based on the given ReplyAction.
+func (c *Client) NewTTSStream(
+	ctx context.Context,
+	reply *diathekepb.ReplyAction,
+) (*TTSStream, error) {
+	// Create the stream
+	pbStream, err := c.PBClient.StreamTTS(ctx, reply, c.CallOpts...)
+	if err != nil {
 		return nil, err
 	}
 
-	wrapper := &ASRStream{
-		PBStream: stream,
-	}
-
-	return wrapper, nil
-}
-
-// StreamTTS runs streaming text-to-speech unrelated to a session. It
-// synthesizes speech for the given text, using the specified TTS model.
-// To create a stream that can be cancelled by the client, use the
-// context.WithCancel() function to create a new context and
-// context.CancelFunc. Pass the new context to this function, and the
-// stream will end when the corresponding CancelFunc is called.
-func (c *Client) StreamTTS(ctx context.Context, model, text string) (diathekepb.Diatheke_StreamTTSClient, error) {
-	// Setup the TTS request
-	req := diathekepb.TTSRequest{
-		Model: model,
-		Text:  text,
-	}
-
-	// Create the stream
-	return c.PBClient.StreamTTS(ctx, &req, c.CallOpts...)
+	// Wrap it in our class
+	return &TTSStream{
+		PBStream: pbStream,
+	}, err
 }
