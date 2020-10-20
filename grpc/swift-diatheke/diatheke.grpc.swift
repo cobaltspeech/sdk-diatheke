@@ -20,29 +20,188 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-import Foundation
 import GRPC
 import NIO
-import NIOHTTP1
 import SwiftProtobuf
 
 
 /// Usage: instantiate Cobaltspeech_Diatheke_DiathekeClient, then call methods of this protocol to make API calls.
-public protocol Cobaltspeech_Diatheke_DiathekeClientProtocol {
-  func version(_ request: Cobaltspeech_Diatheke_Empty, callOptions: CallOptions?) -> UnaryCall<Cobaltspeech_Diatheke_Empty, Cobaltspeech_Diatheke_VersionResponse>
-  func models(_ request: Cobaltspeech_Diatheke_Empty, callOptions: CallOptions?) -> UnaryCall<Cobaltspeech_Diatheke_Empty, Cobaltspeech_Diatheke_ModelsResponse>
-  func newSession(_ request: Cobaltspeech_Diatheke_NewSessionRequest, callOptions: CallOptions?) -> UnaryCall<Cobaltspeech_Diatheke_NewSessionRequest, Cobaltspeech_Diatheke_SessionID>
-  func endSession(_ request: Cobaltspeech_Diatheke_SessionID, callOptions: CallOptions?) -> UnaryCall<Cobaltspeech_Diatheke_SessionID, Cobaltspeech_Diatheke_Empty>
-  func sessionEventStream(_ request: Cobaltspeech_Diatheke_SessionID, callOptions: CallOptions?, handler: @escaping (Cobaltspeech_Diatheke_DiathekeEvent) -> Void) -> ServerStreamingCall<Cobaltspeech_Diatheke_SessionID, Cobaltspeech_Diatheke_DiathekeEvent>
-  func commandFinished(_ request: Cobaltspeech_Diatheke_CommandStatus, callOptions: CallOptions?) -> UnaryCall<Cobaltspeech_Diatheke_CommandStatus, Cobaltspeech_Diatheke_Empty>
-  func streamAudioInput(callOptions: CallOptions?) -> ClientStreamingCall<Cobaltspeech_Diatheke_AudioInput, Cobaltspeech_Diatheke_Empty>
-  func streamAudioReplies(_ request: Cobaltspeech_Diatheke_SessionID, callOptions: CallOptions?, handler: @escaping (Cobaltspeech_Diatheke_AudioReply) -> Void) -> ServerStreamingCall<Cobaltspeech_Diatheke_SessionID, Cobaltspeech_Diatheke_AudioReply>
-  func pushText(_ request: Cobaltspeech_Diatheke_PushTextRequest, callOptions: CallOptions?) -> UnaryCall<Cobaltspeech_Diatheke_PushTextRequest, Cobaltspeech_Diatheke_Empty>
-  func streamASR(callOptions: CallOptions?, handler: @escaping (Cobaltspeech_Diatheke_ASRResponse) -> Void) -> BidirectionalStreamingCall<Cobaltspeech_Diatheke_ASRRequest, Cobaltspeech_Diatheke_ASRResponse>
-  func streamTTS(_ request: Cobaltspeech_Diatheke_TTSRequest, callOptions: CallOptions?, handler: @escaping (Cobaltspeech_Diatheke_TTSResponse) -> Void) -> ServerStreamingCall<Cobaltspeech_Diatheke_TTSRequest, Cobaltspeech_Diatheke_TTSResponse>
+public protocol Cobaltspeech_Diatheke_DiathekeClientProtocol: GRPCClient {
+  func version(
+    _ request: Cobaltspeech_Diatheke_Empty,
+    callOptions: CallOptions?
+  ) -> UnaryCall<Cobaltspeech_Diatheke_Empty, Cobaltspeech_Diatheke_VersionResponse>
+
+  func listModels(
+    _ request: Cobaltspeech_Diatheke_Empty,
+    callOptions: CallOptions?
+  ) -> UnaryCall<Cobaltspeech_Diatheke_Empty, Cobaltspeech_Diatheke_ListModelsResponse>
+
+  func createSession(
+    _ request: Cobaltspeech_Diatheke_SessionStart,
+    callOptions: CallOptions?
+  ) -> UnaryCall<Cobaltspeech_Diatheke_SessionStart, Cobaltspeech_Diatheke_SessionOutput>
+
+  func deleteSession(
+    _ request: Cobaltspeech_Diatheke_TokenData,
+    callOptions: CallOptions?
+  ) -> UnaryCall<Cobaltspeech_Diatheke_TokenData, Cobaltspeech_Diatheke_Empty>
+
+  func updateSession(
+    _ request: Cobaltspeech_Diatheke_SessionInput,
+    callOptions: CallOptions?
+  ) -> UnaryCall<Cobaltspeech_Diatheke_SessionInput, Cobaltspeech_Diatheke_SessionOutput>
+
+  func streamASR(
+    callOptions: CallOptions?
+  ) -> ClientStreamingCall<Cobaltspeech_Diatheke_ASRInput, Cobaltspeech_Diatheke_ASRResult>
+
+  func streamTTS(
+    _ request: Cobaltspeech_Diatheke_ReplyAction,
+    callOptions: CallOptions?,
+    handler: @escaping (Cobaltspeech_Diatheke_TTSAudio) -> Void
+  ) -> ServerStreamingCall<Cobaltspeech_Diatheke_ReplyAction, Cobaltspeech_Diatheke_TTSAudio>
+
 }
 
-public final class Cobaltspeech_Diatheke_DiathekeClient: GRPCClient, Cobaltspeech_Diatheke_DiathekeClientProtocol {
+extension Cobaltspeech_Diatheke_DiathekeClientProtocol {
+
+  /// Returns version information from the server.
+  ///
+  /// - Parameters:
+  ///   - request: Request to send to Version.
+  ///   - callOptions: Call options.
+  /// - Returns: A `UnaryCall` with futures for the metadata, status and response.
+  public func version(
+    _ request: Cobaltspeech_Diatheke_Empty,
+    callOptions: CallOptions? = nil
+  ) -> UnaryCall<Cobaltspeech_Diatheke_Empty, Cobaltspeech_Diatheke_VersionResponse> {
+    return self.makeUnaryCall(
+      path: "/cobaltspeech.diatheke.Diatheke/Version",
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions
+    )
+  }
+
+  /// ListModels returns information about the Diatheke models
+  /// the server can access.
+  ///
+  /// - Parameters:
+  ///   - request: Request to send to ListModels.
+  ///   - callOptions: Call options.
+  /// - Returns: A `UnaryCall` with futures for the metadata, status and response.
+  public func listModels(
+    _ request: Cobaltspeech_Diatheke_Empty,
+    callOptions: CallOptions? = nil
+  ) -> UnaryCall<Cobaltspeech_Diatheke_Empty, Cobaltspeech_Diatheke_ListModelsResponse> {
+    return self.makeUnaryCall(
+      path: "/cobaltspeech.diatheke.Diatheke/ListModels",
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions
+    )
+  }
+
+  /// Create a new Diatheke session. Also returns a list of
+  /// actions to take next.
+  ///
+  /// - Parameters:
+  ///   - request: Request to send to CreateSession.
+  ///   - callOptions: Call options.
+  /// - Returns: A `UnaryCall` with futures for the metadata, status and response.
+  public func createSession(
+    _ request: Cobaltspeech_Diatheke_SessionStart,
+    callOptions: CallOptions? = nil
+  ) -> UnaryCall<Cobaltspeech_Diatheke_SessionStart, Cobaltspeech_Diatheke_SessionOutput> {
+    return self.makeUnaryCall(
+      path: "/cobaltspeech.diatheke.Diatheke/CreateSession",
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions
+    )
+  }
+
+  /// Delete the session. Behavior is undefined if the given
+  /// TokenData is used again after this function is called.
+  ///
+  /// - Parameters:
+  ///   - request: Request to send to DeleteSession.
+  ///   - callOptions: Call options.
+  /// - Returns: A `UnaryCall` with futures for the metadata, status and response.
+  public func deleteSession(
+    _ request: Cobaltspeech_Diatheke_TokenData,
+    callOptions: CallOptions? = nil
+  ) -> UnaryCall<Cobaltspeech_Diatheke_TokenData, Cobaltspeech_Diatheke_Empty> {
+    return self.makeUnaryCall(
+      path: "/cobaltspeech.diatheke.Diatheke/DeleteSession",
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions
+    )
+  }
+
+  /// Process input for a session and get an updated session with
+  /// a list of actions to take next. This is the only method
+  /// that modifies the Diatheke session state.
+  ///
+  /// - Parameters:
+  ///   - request: Request to send to UpdateSession.
+  ///   - callOptions: Call options.
+  /// - Returns: A `UnaryCall` with futures for the metadata, status and response.
+  public func updateSession(
+    _ request: Cobaltspeech_Diatheke_SessionInput,
+    callOptions: CallOptions? = nil
+  ) -> UnaryCall<Cobaltspeech_Diatheke_SessionInput, Cobaltspeech_Diatheke_SessionOutput> {
+    return self.makeUnaryCall(
+      path: "/cobaltspeech.diatheke.Diatheke/UpdateSession",
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions
+    )
+  }
+
+  /// Create an ASR stream. A result is returned when the
+  /// stream is closed by the client (which forces the ASR to
+  /// endpoint), or when a transcript becomes available on its
+  /// own, in which case the stream is closed by the server.
+  /// The ASR result may be used in the UpdateSession method.
+  ///
+  /// Callers should use the `send` method on the returned object to send messages
+  /// to the server. The caller should send an `.end` after the final message has been sent.
+  ///
+  /// - Parameters:
+  ///   - callOptions: Call options.
+  /// - Returns: A `ClientStreamingCall` with futures for the metadata, status and response.
+  public func streamASR(
+    callOptions: CallOptions? = nil
+  ) -> ClientStreamingCall<Cobaltspeech_Diatheke_ASRInput, Cobaltspeech_Diatheke_ASRResult> {
+    return self.makeClientStreamingCall(
+      path: "/cobaltspeech.diatheke.Diatheke/StreamASR",
+      callOptions: callOptions ?? self.defaultCallOptions
+    )
+  }
+
+  /// Create a TTS stream to receive audio for the given reply.
+  /// The stream will close when TTS is finished. The client
+  /// may also close the stream early to cancel the speech
+  /// synthesis.
+  ///
+  /// - Parameters:
+  ///   - request: Request to send to StreamTTS.
+  ///   - callOptions: Call options.
+  ///   - handler: A closure called when each response is received from the server.
+  /// - Returns: A `ServerStreamingCall` with futures for the metadata and status.
+  public func streamTTS(
+    _ request: Cobaltspeech_Diatheke_ReplyAction,
+    callOptions: CallOptions? = nil,
+    handler: @escaping (Cobaltspeech_Diatheke_TTSAudio) -> Void
+  ) -> ServerStreamingCall<Cobaltspeech_Diatheke_ReplyAction, Cobaltspeech_Diatheke_TTSAudio> {
+    return self.makeServerStreamingCall(
+      path: "/cobaltspeech.diatheke.Diatheke/StreamTTS",
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      handler: handler
+    )
+  }
+}
+
+public final class Cobaltspeech_Diatheke_DiathekeClient: Cobaltspeech_Diatheke_DiathekeClientProtocol {
   public let channel: GRPCChannel
   public var defaultCallOptions: CallOptions
 
@@ -55,201 +214,5 @@ public final class Cobaltspeech_Diatheke_DiathekeClient: GRPCClient, Cobaltspeec
     self.channel = channel
     self.defaultCallOptions = defaultCallOptions
   }
-
-  /// Queries the Version of the Server.
-  ///
-  /// - Parameters:
-  ///   - request: Request to send to Version.
-  ///   - callOptions: Call options; `self.defaultCallOptions` is used if `nil`.
-  /// - Returns: A `UnaryCall` with futures for the metadata, status and response.
-  public func version(_ request: Cobaltspeech_Diatheke_Empty, callOptions: CallOptions? = nil) -> UnaryCall<Cobaltspeech_Diatheke_Empty, Cobaltspeech_Diatheke_VersionResponse> {
-    return self.makeUnaryCall(path: "/cobaltspeech.diatheke.Diatheke/Version",
-                              request: request,
-                              callOptions: callOptions ?? self.defaultCallOptions)
-  }
-
-  /// Models will return a list of available versions.  Model values from
-  /// this list may be used in NewSession calls.
-  ///
-  /// - Parameters:
-  ///   - request: Request to send to Models.
-  ///   - callOptions: Call options; `self.defaultCallOptions` is used if `nil`.
-  /// - Returns: A `UnaryCall` with futures for the metadata, status and response.
-  public func models(_ request: Cobaltspeech_Diatheke_Empty, callOptions: CallOptions? = nil) -> UnaryCall<Cobaltspeech_Diatheke_Empty, Cobaltspeech_Diatheke_ModelsResponse> {
-    return self.makeUnaryCall(path: "/cobaltspeech.diatheke.Diatheke/Models",
-                              request: request,
-                              callOptions: callOptions ?? self.defaultCallOptions)
-  }
-
-  /// Requests a new session with the given config and returns the session
-  /// ID, which is required for other rpc methods.
-  ///
-  /// - Parameters:
-  ///   - request: Request to send to NewSession.
-  ///   - callOptions: Call options; `self.defaultCallOptions` is used if `nil`.
-  /// - Returns: A `UnaryCall` with futures for the metadata, status and response.
-  public func newSession(_ request: Cobaltspeech_Diatheke_NewSessionRequest, callOptions: CallOptions? = nil) -> UnaryCall<Cobaltspeech_Diatheke_NewSessionRequest, Cobaltspeech_Diatheke_SessionID> {
-    return self.makeUnaryCall(path: "/cobaltspeech.diatheke.Diatheke/NewSession",
-                              request: request,
-                              callOptions: callOptions ?? self.defaultCallOptions)
-  }
-
-  /// Terminates an existing session and closes any open event streams.
-  /// It is an error if the SessionEndRequest has an invalid SessionID.
-  ///
-  /// - Parameters:
-  ///   - request: Request to send to EndSession.
-  ///   - callOptions: Call options; `self.defaultCallOptions` is used if `nil`.
-  /// - Returns: A `UnaryCall` with futures for the metadata, status and response.
-  public func endSession(_ request: Cobaltspeech_Diatheke_SessionID, callOptions: CallOptions? = nil) -> UnaryCall<Cobaltspeech_Diatheke_SessionID, Cobaltspeech_Diatheke_Empty> {
-    return self.makeUnaryCall(path: "/cobaltspeech.diatheke.Diatheke/EndSession",
-                              request: request,
-                              callOptions: callOptions ?? self.defaultCallOptions)
-  }
-
-  /// Requests a new event stream for the given session.
-  ///
-  /// - Parameters:
-  ///   - request: Request to send to SessionEventStream.
-  ///   - callOptions: Call options; `self.defaultCallOptions` is used if `nil`.
-  ///   - handler: A closure called when each response is received from the server.
-  /// - Returns: A `ServerStreamingCall` with futures for the metadata and status.
-  public func sessionEventStream(_ request: Cobaltspeech_Diatheke_SessionID, callOptions: CallOptions? = nil, handler: @escaping (Cobaltspeech_Diatheke_DiathekeEvent) -> Void) -> ServerStreamingCall<Cobaltspeech_Diatheke_SessionID, Cobaltspeech_Diatheke_DiathekeEvent> {
-    return self.makeServerStreamingCall(path: "/cobaltspeech.diatheke.Diatheke/SessionEventStream",
-                                        request: request,
-                                        callOptions: callOptions ?? self.defaultCallOptions,
-                                        handler: handler)
-  }
-
-  /// Notify Diatheke when a command has completed so that it may update
-  /// the dialog state. The initial command request will come as part of
-  /// a DiathekeEvent. While not strictly required (depeding on the model
-  /// and command), it is best practice to always call this method when a
-  /// command is complete. Cases where it is required include when the 
-  /// command has output parameters, or when the command is followed by 
-  /// another action in the Diatheke model.
-  ///
-  /// - Parameters:
-  ///   - request: Request to send to CommandFinished.
-  ///   - callOptions: Call options; `self.defaultCallOptions` is used if `nil`.
-  /// - Returns: A `UnaryCall` with futures for the metadata, status and response.
-  public func commandFinished(_ request: Cobaltspeech_Diatheke_CommandStatus, callOptions: CallOptions? = nil) -> UnaryCall<Cobaltspeech_Diatheke_CommandStatus, Cobaltspeech_Diatheke_Empty> {
-    return self.makeUnaryCall(path: "/cobaltspeech.diatheke.Diatheke/CommandFinished",
-                              request: request,
-                              callOptions: callOptions ?? self.defaultCallOptions)
-  }
-
-  /// Begin an audio input stream for a session. The first message to
-  /// the server should specify the sessionID, with binary audio data pushed
-  /// for every subsequent message. As the audio is recognized, Diatheke
-  /// will respond with appropriate events on the session's event stream.
-  /// <p>
-  /// While it is allowed to call this multiple times during a single session,
-  /// clients should never have multiple audio input streams running concurrently
-  /// for the same session (the audio may mix and result in unpredictable
-  /// behavior). Previous audio streams should always be closed before starting
-  /// a new one.
-  ///
-  /// Callers should use the `send` method on the returned object to send messages
-  /// to the server. The caller should send an `.end` after the final message has been sent.
-  ///
-  /// - Parameters:
-  ///   - callOptions: Call options; `self.defaultCallOptions` is used if `nil`.
-  /// - Returns: A `ClientStreamingCall` with futures for the metadata, status and response.
-  public func streamAudioInput(callOptions: CallOptions? = nil) -> ClientStreamingCall<Cobaltspeech_Diatheke_AudioInput, Cobaltspeech_Diatheke_Empty> {
-    return self.makeClientStreamingCall(path: "/cobaltspeech.diatheke.Diatheke/StreamAudioInput",
-                                        callOptions: callOptions ?? self.defaultCallOptions)
-  }
-
-  /// Create an audio reply stream for a session. The returned stream 
-  /// will receive replies ("say" entries in the Diatheke model) from the
-  /// server as they occur in the conversation. For each "say" entry, the 
-  /// stream will first receive the text to synthesize (defined by the model),
-  /// followed by one or more messages containing the synthesized audio bytes. 
-  /// The "say" entry will end with a message indicating that TTS for that 
-  /// entry is complete.
-  /// NOTE: The text in the first message of an audio reply is the same that
-  ///       will be received in the session's event stream.
-  ///
-  /// - Parameters:
-  ///   - request: Request to send to StreamAudioReplies.
-  ///   - callOptions: Call options; `self.defaultCallOptions` is used if `nil`.
-  ///   - handler: A closure called when each response is received from the server.
-  /// - Returns: A `ServerStreamingCall` with futures for the metadata and status.
-  public func streamAudioReplies(_ request: Cobaltspeech_Diatheke_SessionID, callOptions: CallOptions? = nil, handler: @escaping (Cobaltspeech_Diatheke_AudioReply) -> Void) -> ServerStreamingCall<Cobaltspeech_Diatheke_SessionID, Cobaltspeech_Diatheke_AudioReply> {
-    return self.makeServerStreamingCall(path: "/cobaltspeech.diatheke.Diatheke/StreamAudioReplies",
-                                        request: request,
-                                        callOptions: callOptions ?? self.defaultCallOptions,
-                                        handler: handler)
-  }
-
-  /// Push text to Diatheke as part of the conversation for a session.
-  /// Diatheke will respond with an appropriate event on the session's
-  /// event stream based on whether the given text was recognized as a
-  /// valid intent or not.
-  ///
-  /// - Parameters:
-  ///   - request: Request to send to PushText.
-  ///   - callOptions: Call options; `self.defaultCallOptions` is used if `nil`.
-  /// - Returns: A `UnaryCall` with futures for the metadata, status and response.
-  public func pushText(_ request: Cobaltspeech_Diatheke_PushTextRequest, callOptions: CallOptions? = nil) -> UnaryCall<Cobaltspeech_Diatheke_PushTextRequest, Cobaltspeech_Diatheke_Empty> {
-    return self.makeUnaryCall(path: "/cobaltspeech.diatheke.Diatheke/PushText",
-                              request: request,
-                              callOptions: callOptions ?? self.defaultCallOptions)
-  }
-
-  /// Manually run streaming ASR unrelated to any session by pushing
-  /// audio data to the server on the audio stream. As transcriptions
-  /// become available, the server will return them on the ASRResponse
-  /// stream. The transcriptions may then be used for, e.g., the PushText
-  /// method. This function is provided as a convenience.
-  ///
-  /// Callers should use the `send` method on the returned object to send messages
-  /// to the server. The caller should send an `.end` after the final message has been sent.
-  ///
-  /// - Parameters:
-  ///   - callOptions: Call options; `self.defaultCallOptions` is used if `nil`.
-  ///   - handler: A closure called when each response is received from the server.
-  /// - Returns: A `ClientStreamingCall` with futures for the metadata and status.
-  public func streamASR(callOptions: CallOptions? = nil, handler: @escaping (Cobaltspeech_Diatheke_ASRResponse) -> Void) -> BidirectionalStreamingCall<Cobaltspeech_Diatheke_ASRRequest, Cobaltspeech_Diatheke_ASRResponse> {
-    return self.makeBidirectionalStreamingCall(path: "/cobaltspeech.diatheke.Diatheke/StreamASR",
-                                               callOptions: callOptions ?? self.defaultCallOptions,
-                                               handler: handler)
-  }
-
-  /// Manually run streaming TTS. The Audio stream will receive
-  /// binary audio data as it is synthesized and will close automatically
-  /// when synthesis is complete. This function is provided as a
-  /// convenience.
-  ///
-  /// - Parameters:
-  ///   - request: Request to send to StreamTTS.
-  ///   - callOptions: Call options; `self.defaultCallOptions` is used if `nil`.
-  ///   - handler: A closure called when each response is received from the server.
-  /// - Returns: A `ServerStreamingCall` with futures for the metadata and status.
-  public func streamTTS(_ request: Cobaltspeech_Diatheke_TTSRequest, callOptions: CallOptions? = nil, handler: @escaping (Cobaltspeech_Diatheke_TTSResponse) -> Void) -> ServerStreamingCall<Cobaltspeech_Diatheke_TTSRequest, Cobaltspeech_Diatheke_TTSResponse> {
-    return self.makeServerStreamingCall(path: "/cobaltspeech.diatheke.Diatheke/StreamTTS",
-                                        request: request,
-                                        callOptions: callOptions ?? self.defaultCallOptions,
-                                        handler: handler)
-  }
-
 }
-
-
-// Provides conformance to `GRPCPayload` for request and response messages
-extension Cobaltspeech_Diatheke_Empty: GRPCProtobufPayload {}
-extension Cobaltspeech_Diatheke_VersionResponse: GRPCProtobufPayload {}
-extension Cobaltspeech_Diatheke_ModelsResponse: GRPCProtobufPayload {}
-extension Cobaltspeech_Diatheke_NewSessionRequest: GRPCProtobufPayload {}
-extension Cobaltspeech_Diatheke_SessionID: GRPCProtobufPayload {}
-extension Cobaltspeech_Diatheke_DiathekeEvent: GRPCProtobufPayload {}
-extension Cobaltspeech_Diatheke_CommandStatus: GRPCProtobufPayload {}
-extension Cobaltspeech_Diatheke_AudioInput: GRPCProtobufPayload {}
-extension Cobaltspeech_Diatheke_AudioReply: GRPCProtobufPayload {}
-extension Cobaltspeech_Diatheke_PushTextRequest: GRPCProtobufPayload {}
-extension Cobaltspeech_Diatheke_ASRRequest: GRPCProtobufPayload {}
-extension Cobaltspeech_Diatheke_ASRResponse: GRPCProtobufPayload {}
-extension Cobaltspeech_Diatheke_TTSRequest: GRPCProtobufPayload {}
-extension Cobaltspeech_Diatheke_TTSResponse: GRPCProtobufPayload {}
 

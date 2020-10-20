@@ -1,3 +1,5 @@
+//  TTSStream represents a stream of audio data from Diatheke to the
+//  client containing synthesized speech.
 //
 //  TTSStream.swift
 //  DiathekeSDKExample
@@ -22,9 +24,9 @@ import GRPC
 
 public class TTSStream {
     
-    private let stream: ServerStreamingCall<Cobaltspeech_Diatheke_TTSRequest, Cobaltspeech_Diatheke_TTSResponse>
+    private let stream: ServerStreamingCall<Cobaltspeech_Diatheke_ReplyAction, Cobaltspeech_Diatheke_TTSAudio>
     
-    public init(stream: ServerStreamingCall<Cobaltspeech_Diatheke_TTSRequest, Cobaltspeech_Diatheke_TTSResponse>) {
+    public init(stream: ServerStreamingCall<Cobaltspeech_Diatheke_ReplyAction, Cobaltspeech_Diatheke_TTSAudio>) {
         self.stream = stream
     }
     
