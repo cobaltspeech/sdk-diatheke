@@ -1,0 +1,3 @@
+rootProject.name = 'java-diatheke-sdk'
+include 'lib'
+include 'liblite'
