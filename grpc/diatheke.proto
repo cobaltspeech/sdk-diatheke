@@ -16,6 +16,7 @@ syntax = "proto3";
 
 package cobaltspeech.diatheke;
 option go_package = ".;diathekepb";
+option java_package = "com.cobaltspeech.diatheke";
 
 
 // Service that implements the Cobalt Diatheke Dialog Management API.

@@ -1,0 +1,73 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish' // Lets us push packages up to GitHub Packages
+    id 'net.linguica.maven-settings' version '0.5' // lets us pull maven settings from ~/.m2/
+    id 'com.google.protobuf'
+}
+
+group = 'com.cobaltspeech.diatheke'
+version = '2.0.0'
+
+java {
+    toolchain {
+        // Use JDK 8, since that's what most Android projects seem to use.
+        languageVersion = JavaLanguageVersion.of(8)
+    }
+}
+
+protobuf {
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.13.0'
+    }
+    plugins {
+        grpc {
+            artifact = 'io.grpc:protoc-gen-grpc-java:1.33.0'
+        }
+    }
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                java {
+                    option 'lite'
+                }
+            }
+            task.plugins {
+                grpc {
+                    option 'lite'
+                }
+            }
+        }
+    }
+}
+
+dependencies {
+    protobuf files('../../diatheke.proto') // Include the {sdk-diatheke root}/grpc/diatheke.proto file
+    // Note, we do get a compiler warning on :liblite:extractProto, suggesting to do `files('path/to/directory')`
+    // But this is not what we want to do.  We only want to include diatheke.proto, and
+    // we do want to flatten the directory structure in this case.
+
+    implementation 'javax.annotation:javax.annotation-api:1.3.2'
+    implementation 'com.squareup.okhttp:okhttp:2.7.5'
+    implementation 'io.grpc:grpc-core:1.33.0'
+    implementation 'io.grpc:grpc-stub:1.33.0'
+    implementation 'io.grpc:grpc-okhttp:1.33.0'
+    implementation('io.grpc:grpc-protobuf-lite:1.33.0') {
+        exclude module: 'protobuf-lite'
+    }
+}
+
+publishing {
+    publications {
+        lib(MavenPublication) {
+            artifactId = 'sdk-diatheke-lite'
+            from components.java
+        }
+    }
+
+    repositories {
+        maven {
+            name = 'github' // Pulls credentials from ~/.m2/settings.xml file (via net.linguica.maven-settings plugin)
+            url = uri('https://maven.pkg.github.com/cobaltspeech/sdk-diatheke')
+        }
+    }
+}
