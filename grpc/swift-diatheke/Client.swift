@@ -66,185 +66,203 @@ public extension Cobaltspeech_Diatheke_DiathekeClient {
         self.init(channel: connection)
     }
     
-    func diathekeVersion(success: @escaping (_ version: String) -> (), failure: DiathekeFailureCallback?) {
+    // Version returns version information from the server.
+    func version(success: @escaping (_ versionResponse: Cobaltspeech_Diatheke_VersionResponse) -> (),
+                 failure: @escaping DiathekeFailureCallback) {
         version(Cobaltspeech_Diatheke_Empty()).response.whenComplete { (result) in
             switch result {
-            case .success(let response):
-                success(response.server)
+            case .success(let versionResponse):
+                success(versionResponse)
             case .failure(let error):
-                failure?(error)
+                failure(error)
             }
         }
     }
     
-    func listModels(success: @escaping (_ models: [String]) -> (), failure: DiathekeFailureCallback?) {
-        models(Cobaltspeech_Diatheke_Empty()).response.whenComplete { (result) in
+    // ListModels returns a list of Diatheke models available to the server.
+    func listModels(success: @escaping (_ models: [Cobaltspeech_Diatheke_ModelInfo]) -> (),
+                    failure: @escaping DiathekeFailureCallback) {
+        listModels(Cobaltspeech_Diatheke_Empty()).response.whenComplete { (result) in
             switch result {
             case .success(let response):
                 success(response.models)
             case .failure(let error):
-                failure?(error)
+                failure(error)
             }
         }
     }
     
-    func newSession(model: String,
-                    success: @escaping (_ sessionID: String) -> (),
-                    failure: DiathekeFailureCallback?) {
-        var request = Cobaltspeech_Diatheke_NewSessionRequest()
-        request.model = model
-        
-        newSession(request).response.whenComplete { (result) in
-            switch result {
-            case .success(let sessionID):
-                success(sessionID.sessionID)
-            case .failure(let error):
-                failure?(error)
-            }
-        }
-    }
-    
-    func endSession(sessionID: String,
-                    success: (() -> ())? = nil,
-                    failure: DiathekeFailureCallback?) {
-        var request = Cobaltspeech_Diatheke_SessionID()
-        request.sessionID = sessionID
-        
-        endSession(request).response.whenComplete { (result) in
-            switch result {
-            case .success(_):
-                success?()
-            case .failure(let error):
-                failure?(error)
-            }
-        }
-        
-    }
-    
-    @discardableResult
-    func sessionEventStream(sessionID: String, handler: @escaping (Cobaltspeech_Diatheke_DiathekeEvent) -> ()) -> ServerStreamingCall<Cobaltspeech_Diatheke_SessionID, Cobaltspeech_Diatheke_DiathekeEvent> {
-        var request = Cobaltspeech_Diatheke_SessionID()
-        request.sessionID = sessionID
-        
-        return sessionEventStream(request) { (diathekeEvent) in
-            handler(diathekeEvent)
-        }
-    }
-    
-    func commandFinished(sessionID: String,
-                         commandStatus: CommandStatus,
-                         success: (() -> ())? = nil,
-                         failure: DiathekeFailureCallback? = nil) {
-        var request = Cobaltspeech_Diatheke_CommandStatus()
-        request.sessionID = sessionID
-        request.commandID = commandStatus.commandID
-        
-        switch commandStatus.statusCode {
-        case .success:
-            request.returnStatus = .success
-        case .failure:
-            request.returnStatus = .failure
-        }
+    // CreateSession creates a new Diatheke session using the specified model.
+    func createSession(modelID: String,
+                       success: @escaping (Cobaltspeech_Diatheke_SessionOutput) -> (),
+                       failure: @escaping DiathekeFailureCallback) {
+        var request = Cobaltspeech_Diatheke_SessionStart()
+        request.modelID = modelID
 
-        request.outputParameters = commandStatus.params
-        request.errorMessageText = commandStatus.errorMesage
-        request.commandStateID = commandStatus.stateID
-        
-        commandFinished(request).response.whenComplete { (result) in
+        createSession(request).response.whenComplete { (result) in
+            switch result {
+            case .success(let sessionOutput):
+                success(sessionOutput)
+            case .failure(let error):
+                failure(error)
+            }
+        }
+    }
+    
+    // DeleteSession cleans up the given token. Behavior is undefined
+    // if the given token is used again after calling this function.
+    func deleteSession(tokenData: Cobaltspeech_Diatheke_TokenData,
+                       success: (() -> ())? = nil,
+                       failure: @escaping DiathekeFailureCallback) {
+        deleteSession(tokenData).response.whenComplete { (result) in
             switch result {
             case .success(_):
                 success?()
             case .failure(let error):
-                failure?(error)
+                failure(error)
             }
         }
     }
     
-    func streamAudioInput(sessionID: String, success: (() -> ())? = nil, failure: DiathekeFailureCallback?) -> AudioInputStream {
-        let stream = streamAudioInput()
-        var request = Cobaltspeech_Diatheke_AudioInput()
-        request.sessionID = sessionID
-        
-        stream.sendMessage(request).whenComplete { (result) in
-            switch result {
-            case .success():
-                success?()
-            case .failure(let error):
-                failure?(error)
-            }
-        }
-        
-        let audioInputStream = AudioInputStream(stream: stream)
-    
-        return audioInputStream
-    }
-    
+    // ProcessText sends the given text to Diatheke and returns an updated session token.
     @discardableResult
-    func streamAudioReplies(sessionID: String, handler: @escaping (Cobaltspeech_Diatheke_AudioReply) -> ()) -> ServerStreamingCall<Cobaltspeech_Diatheke_SessionID, Cobaltspeech_Diatheke_AudioReply> {
-        var request = Cobaltspeech_Diatheke_SessionID()
-        request.sessionID = sessionID
+    func processText(token: Cobaltspeech_Diatheke_TokenData,
+                     text: String,
+                     success: @escaping (Cobaltspeech_Diatheke_SessionOutput) -> (),
+                     failure: @escaping DiathekeFailureCallback) -> UnaryCall<Cobaltspeech_Diatheke_SessionInput, Cobaltspeech_Diatheke_SessionOutput> {
+        var sessionInput = Cobaltspeech_Diatheke_SessionInput()
+        sessionInput.token = token
+        var textInput = Cobaltspeech_Diatheke_TextInput()
+        textInput.text = text
+        sessionInput.text = textInput
         
-        let reply = streamAudioReplies(request) { (reply) in
-            handler(reply)
-        }
-        
-        return reply
-    }
-    
-    func pushText(sessionID: String,
-                  text: String,
-                  success: (() -> ())? = nil,
-                  failure: DiathekeFailureCallback?) {
-        var request = Cobaltspeech_Diatheke_PushTextRequest()
-        request.sessionID = sessionID
-        request.text = text
-        
-        pushText(request).response.whenComplete { (result) in
+        let call = updateSession(sessionInput)
+        call.response.whenComplete { (result) in
             switch result {
-            case .success(_):
-                success?()
+            case .success(let sessionOutput):
+                success(sessionOutput)
             case .failure(let error):
-                failure?(error)
-            }
-        }
-    }
-    
-    func streamASR(model: String,
-                   success: (() -> ())? = nil,
-                   failure: DiathekeFailureCallback? = nil,
-                   handler: @escaping (Cobaltspeech_Diatheke_ASRResponse) -> ()) -> ASRStream {
-        var asrRequest = Cobaltspeech_Diatheke_ASRRequest()
-        asrRequest.model = model
-        
-        let stream = streamASR { (response) in
-            handler(response)
-        }
-        
-        stream.sendMessage(asrRequest).whenComplete { (result) in
-            switch result {
-            case .success():
-                success?()
-            case .failure(let error):
-                failure?(error)
+                failure(error)
             }
         }
         
-        return ASRStream(stream: stream)
+        return call
     }
     
+    // ProcessASRResult sends the given ASR result to Diatheke and returns an
+    // updated session token.
     @discardableResult
-    func streamTTS(model: String,
-                   text: String,
-                   handler: @escaping (Cobaltspeech_Diatheke_TTSResponse) -> ()) -> ServerStreamingCall<Cobaltspeech_Diatheke_TTSRequest, Cobaltspeech_Diatheke_TTSResponse> {
-        var request = Cobaltspeech_Diatheke_TTSRequest()
-        request.model = model
-        request.text = text
+    func processASRResult(token: Cobaltspeech_Diatheke_TokenData,
+                          asrResult: Cobaltspeech_Diatheke_ASRResult,
+                          success: @escaping (Cobaltspeech_Diatheke_SessionOutput) -> (),
+                          failure: @escaping DiathekeFailureCallback) -> UnaryCall<Cobaltspeech_Diatheke_SessionInput, Cobaltspeech_Diatheke_SessionOutput> {
+        var sessionInput = Cobaltspeech_Diatheke_SessionInput()
+        sessionInput.token = token
+        sessionInput.asr = asrResult
         
-        let response = streamTTS(request) { (response) in
-            handler(response)
+        let call = updateSession(sessionInput)
+        call.response.whenComplete { (result) in
+            switch result {
+            case .success(let sessionOutput):
+                success(sessionOutput)
+            case .failure(let error):
+                failure(error)
+            }
         }
+        
+        return call
+    }
     
-        return response
+    // ProcessCommandResult sends the given command result to Diatheke and
+    // returns an updated session token. This function should be called in
+    // response to a command action Diatheke sent previously.
+    @discardableResult
+    func processCommandResult(token: Cobaltspeech_Diatheke_TokenData,
+                              commandResult: Cobaltspeech_Diatheke_CommandResult,
+                              success: @escaping (Cobaltspeech_Diatheke_SessionOutput) -> (),
+                              failure: @escaping DiathekeFailureCallback) -> UnaryCall<Cobaltspeech_Diatheke_SessionInput, Cobaltspeech_Diatheke_SessionOutput> {
+        var sessionInput = Cobaltspeech_Diatheke_SessionInput()
+        sessionInput.token = token
+        sessionInput.cmd = commandResult
+        
+        let call = updateSession(sessionInput)
+        call.response.whenComplete { (result) in
+            switch result {
+            case .success(let sessionOutput):
+                success(sessionOutput)
+            case .failure(let error):
+                failure(error)
+            }
+        }
+        
+        return call
+    }
+    
+    // SetStory changes the current story for a Diatheke session. Returns
+    // and updated session token.
+    @discardableResult
+    func setStory(token: Cobaltspeech_Diatheke_TokenData,
+                  storyID: String,
+                  params: [String : String],
+                  success: @escaping (Cobaltspeech_Diatheke_SessionOutput) -> (),
+                  failure: @escaping DiathekeFailureCallback) -> UnaryCall<Cobaltspeech_Diatheke_SessionInput, Cobaltspeech_Diatheke_SessionOutput> {
+        var sessionInput = Cobaltspeech_Diatheke_SessionInput()
+        sessionInput.token = token
+       
+        var setStory = Cobaltspeech_Diatheke_SetStory()
+        setStory.storyID = storyID
+        setStory.parameters = params
+        sessionInput.story = setStory
+        
+        let call = updateSession(sessionInput)
+        call.response.whenComplete { (result) in
+            switch result {
+            case .success(let sessionOutput):
+                success(sessionOutput)
+            case .failure(let error):
+                failure(error)
+            }
+        }
+        
+        return call
+    }
+    
+    // NewSessionASRStream creates a new stream to transcribe audio
+    // for the given session Token.
+    func newSessionASRStream(token: Cobaltspeech_Diatheke_TokenData,
+                             asrResultHandler: @escaping (Result<Cobaltspeech_Diatheke_ASRResult, Error>) -> (),
+                             completion: @escaping (Error?) -> ()) -> ASRStream {
+        let stream = streamASR()
+        stream.response.whenComplete { (result) in
+            asrResultHandler(result)
+        }
+        let asrStream = ASRStream(stream: stream)
+        asrStream.sendToken(tokenData: token) { (error) in
+            completion(error)
+        }
+        return asrStream
+    }
+    
+    // NewTTSStream creates a new stream to receive TTS audio from Diatheke
+    // based on the given ReplyAction.
+    func newTTSStream(replyAction: Cobaltspeech_Diatheke_ReplyAction,
+                      dataChunkHandler: @escaping ((Cobaltspeech_Diatheke_TTSAudio) -> ()),
+                      completion: @escaping (Error?) -> ()) -> TTSStream {
+        let stream = streamTTS(replyAction, handler: dataChunkHandler)
+        stream.status.whenComplete { (result) in
+            switch result {
+            case .success(let status):
+                if status.isOk {
+                    completion(nil)
+                } else {
+                    completion(status)
+                }
+            case .failure(let error):
+                completion(error)
+            }
+        }
+        let ttsStream = TTSStream(stream: stream)
+        return ttsStream
     }
     
 }
