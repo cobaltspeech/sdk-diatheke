@@ -4,7 +4,6 @@ relativeURLs = true
 languageCode = "en-us"
 DefaultContentLanguage = "en"
 title = "Diatheke SDK -- Cobalt"
-theme = "docdock"
 pygmentsCodeFences = true
 pygmentsStyle = "native"
 
@@ -42,3 +41,8 @@ weight = 20
 
 [markup.goldmark.renderer]
 unsafe= true
+
+[module]
+[[module.imports]]
+    path = "github.com/cobaltspeech/docdock"
+    # Project theme
