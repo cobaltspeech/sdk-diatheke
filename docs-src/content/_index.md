@@ -1,8 +1,6 @@
 ---
-title: "Diatheke SDK Documentation"
+title: "Diatheke (Dialogue) Documentation"
 ---
-
-# Diatheke API Overview
 
 Diatheke is Cobalt's dialog management engine. It uses a combination of
 speech technologies and artificial intelligence to allow users to interact
