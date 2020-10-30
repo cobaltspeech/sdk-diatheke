@@ -28,16 +28,8 @@ service Diatheke {
   rpc Models(Empty) returns (ModelsResponse) {}
 
   // Requests a new session with the given config and returns the session
-  // ID, which is required for other rpc methods. After the session is
-  // created, StartSession() must be called to begin executing the Diatheke
-  // model.
+  // ID, which is required for other rpc methods.
   rpc NewSession(NewSessionRequest) returns (SessionID) {}
-
-  // Begin execution of the model for the given session ID. The session's
-  // event stream should be set up prior to calling this function so that
-  // the client application can respond to any initialization events that
-  // are defined in the session's model.
-  rpc StartSession(SessionID) returns (Empty) {}
 
   // Terminates an existing session and closes any open session streams.
   // It is an error if the SessionEndRequest has an invalid SessionID.
@@ -82,12 +74,6 @@ service Diatheke {
   // event stream based on whether the given text was recognized as a
   // valid intent or not.
   rpc PushText(PushTextRequest) returns (Empty) {}
-
-  // Set the current story for a running session. This function can
-  // be used to implement system initiated alerts or to change the current
-  // session state. Events for the new story will come over the session's
-  // event stream.
-  rpc SetStory(StoryRequest) returns (Empty) {}
 
   // Manually run streaming ASR unrelated to any session by pushing
   // audio data to the server on the audio stream. As transcriptions
@@ -153,14 +139,6 @@ message DiathekeEvent {
     // the Diatheke model. The text of this message is also provided in
     // the AudioReply stream (if one is open).
     ReplyEvent reply = 3;
-
-    // Indicates that Diatheke is expecting user input (text or audio),
-    // which is defined by input actions in the Diatheke model.
-    InputRequiredEvent input_required = 4;
-
-    // Indicates that Diatheke has returned to the start state of the
-    // model.
-    AtStartEvent at_start = 5;
   }
 }
 
@@ -209,14 +187,6 @@ message ReplyEvent
   // Label of the reply event (defined by the Diatheke model).
   string label = 2;
 }
-
-// An InputRequiredEvent occurs when Diatheke is expecting input from
-// the user (text or audio).
-message InputRequiredEvent {}
-
-// The AtStartEvent is sent when a Diatheke session returns back the
-// start state of the model.
-message AtStartEvent {}
 
 // The final status of an executed command.
 message CommandStatus {
@@ -306,37 +276,6 @@ message PushTextRequest {
   // User input. This could be a transcription from manually run ASR,
   // text selected from a dropdown list, entered in a prompt, etc.
   string text = 2;
-}
-
-// Request to change the current story of a session.
-message StoryRequest {
-  // ID of the session that will have its story changed.
-  string session_id = 1;
-
-  // ID of the story to switch to. This ID is defined by the model
-  // used to create the session.
-  string story_id = 2;
-
-  // Parameters to set in session memory before executing the specified
-  // story. Some stories in the model may make assumptions about which
-  // parameters have already been defined, so it is important to be
-  // familiar with the model requirements for any given story.
-  map<string, string> parameters = 3;
-
-  // If true, the given story will not be executed until the session
-  // completes the current stories and returns back to the main story.
-  // If false, the current story in the session will be immediately
-  // interrupted to execute the specified story.
-  bool wait_for_start = 4;
-
-  // If true, once the given story has finished, Diatheke will return
-  // the session to the place in the model where it was when this request
-  // was received, and restore the parameters that were defined at that time.
-  // This is useful when the change in story represents a temporary
-  // interruption. If false, Diatheke will simply continue from the
-  // given story without trying to go back to its prior state, which is
-  // useful to make a permanent state change.
-  bool temporary = 5;
 }
 
 // Request for streaming ASR unrelated to a session.

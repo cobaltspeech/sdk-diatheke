@@ -28,12 +28,6 @@ type Session struct {
 	Parent *Client
 }
 
-// Start tells Diatheke to begin executing the model associated
-// with this session.
-func (sess *Session) Start(ctx context.Context) error {
-	return sess.Parent.StartSession(ctx, sess.ID)
-}
-
 // EndSession ends this session.
 func (sess *Session) EndSession(ctx context.Context) error {
 	return sess.Parent.EndSession(ctx, sess.ID)
@@ -75,15 +69,4 @@ func (sess *Session) StreamAudioReplies(ctx context.Context) (diathekepb.Diathek
 // this session.
 func (sess *Session) PushText(ctx context.Context, text string) error {
 	return sess.Parent.PushText(ctx, sess.ID, text)
-}
-
-// SetStory changes the current story of a session to the one specified.
-// Stories are defined by the Diatheke model.
-func (sess *Session) SetStory(ctx context.Context, storyRequest *diathekepb.StoryRequest) error {
-	// Ensure the session ID matches the one for this session.
-	if storyRequest != nil {
-		storyRequest.SessionId = sess.ID
-	}
-
-	return sess.Parent.SetStory(ctx, storyRequest)
 }
