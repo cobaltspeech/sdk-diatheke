@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright(2019) Cobalt Speech and Language Inc.
+# Copyright(2020) Cobalt Speech and Language Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License")
 # you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@
 import grpc
 
 from diatheke_pb2_grpc import DiathekeStub
-from diatheke_pb2 import Empty, NewSessionRequest, SessionID, PushTextRequest, TTSRequest
-from streams import AudioInputStream, ASRStream
+from diatheke_pb2 import Empty, SessionStart, TokenData, SessionInput, TextInput, SetStory
+from streams import ASRStream
 
 
 class Client(object):
@@ -31,16 +31,16 @@ class Client(object):
             server_address: host:port of where Diatheke server is running (string)
             insecure: If set to true, an insecure grpc channel is used.
                       Otherwise, a channel with transport security is used.
-            server_certificate:  PEM certificate as byte string which is used as a  
-                                 root certificate that can validate the certificate 
-                                 presented by the server we are connecting to. Use this 
-                                 when connecting to an instance of cubic server that is 
+            server_certificate:  PEM certificate as byte string which is used as a
+                                 root certificate that can validate the certificate
+                                 presented by the server we are connecting to. Use this
+                                 when connecting to an instance of cubic server that is
                                  using a self-signed certificate.
             client_certificate:  PEM certificate as bytes string presented by this Client when
-                                 connecting to a server. Use this when setting up mutually 
+                                 connecting to a server. Use this when setting up mutually
                                  authenticated TLS. The clientKey must also be provided.
             client_key:  PEM key as byte string presented by this Client when
-                         connecting to a server. Use this when setting up mutually 
+                         connecting to a server. Use this when setting up mutually
                          authenticated TLS. The clientCertificate must also be provided.
         """
         self.server_address = server_address
@@ -63,85 +63,68 @@ class Client(object):
 
         self._client = DiathekeStub(self._channel)
 
-    def diatheke_version(self):
-        """Returns the version of the connected server."""
-        return self._client.Version(Empty()).server
+    def __del__(self):
+        """ Closes and cleans up the client. """
+        try:
+            self._channel.close()
+        except AttributeError:
+            # client wasn't fully instantiated, no channel to close
+            pass
+
+    def version(self):
+        """Returns the version information of the connected server."""
+        return self._client.Version(Empty())
 
     def list_models(self):
         """Lists the models available to the Diatheke server, as specified in
         the server's config file."""
-        return self._client.Models(Empty()).models
+        return self._client.ListModels(Empty()).models
 
-    def new_session(self, model):
-        """Creates a new session and returns its ID."""
-        return self._client.NewSession(NewSessionRequest(model=model)).session_id
+    def create_session(self, model):
+        """Creates a new session using the specified model ID and return
+        the session token and actions."""
+        return self._client.CreateSession(SessionStart(model_id=model))
 
-    def end_session(self, session_id):
-        """Ends the specified session."""
-        self._client.EndSession(SessionID(session_id=session_id))
+    def delete_session(self, token):
+        """Cleans up the given token. Behavior is undefined if the given
+        token is used again after calling this function."""
+        self._client.DeleteSession(token)
 
-    def session_event_stream(self, session_id):
-        """Returns a new event stream for the given session."""
-        return self._client.SessionEventStream(SessionID(session_id=session_id))
+    def process_text(self, token, text):
+        """Sends the given text to Diatheke and returns an updated session
+        token."""
+        req = SessionInput(token=token, text=TextInput(text=text))
+        return self._client.UpdateSession(req)
 
-    def command_finished(self, command_status):
-        """ Notifies Diatheke when a command has completed.
+    def process_asr_result(self, token, result):
+        """Sends the given ASR result to Diatheke and returns an updated
+        session token."""
+        req = SessionInput(token=token, asr=result)
+        return self._client.UpdateSession(req)
 
-        The initial command request will come as part of a DiathekeEvent on the
-        session's event stream. This method should always be called after
-        receiving a command event when the command is completed (even if it is
-        a long running command).
-        """
-        self._client.CommandFinished(command_status)
+    def process_command_result(self, token, result):
+        """Sends the given command result to Diatheke and returns an updated
+        session token. This function should be called in response to a command
+        action Diatheke sent previously."""
+        req = SessionInput(token=token, cmd=result)
+        return self._client.UpdateSession(req)
 
-    def stream_audio_input(self, session_id):
-        """Begin an audio input stream for the given session. As the audio is
-        recognized, Diatheke will respond with RecognizeEvents that include
-        the transcription on the session's event stream. Transcriptions are not
-        returned on this stream, but are automatically processed by Diatheke.
+    def set_story(self, token, story_id, params):
+        """Changes the current story for a Diatheke session. Returns an
+        updated session token."""
+        story = SetStory(story_id=story_id, parameters=params)
+        req = SessionInput(token=token, story=story)
+        return self._client.UpdateSession(req)
 
-        Only one audio input stream per session should be running at a time to
-        avoid confusing the speech recognition with multiple audio sources.
-        """
-        return AudioInputStream(self._client, session_id)
+    def new_session_asr_stream(self, token):
+        """Creates a new stream to transcribe audio for the given
+        session token."""
+        # Create the ASR stream object and send the session token
+        stream = ASRStream(client_stub=self._client)
+        stream.send_token(token)
+        return stream
 
-    def stream_audio_replies(self, session_id):
-        """Create a stream to receive output audio from Diatheke specifically
-        for the given session. The stream will use include start and end
-        messages to indicate when a section of audio for a group of text
-        begins and ends. Only one stream per session should be created.
-        """
-        return self._client.StreamAudioReplies(SessionID(session_id=session_id))
-
-    def push_text(self, session_id, text):
-        """Push text to Diatheke as part of a conversation for the given session.
-
-        This function may be used alone or in addition to an audio input
-        stream to drive the conversation with Diatheke. On the server side,
-        the audio input stream essentially calls this function automatically as
-        transcriptions are available.
-        """
-        request = PushTextRequest(session_id=session_id,
-                                  text=text)
-        self._client.PushText(request)
-
-    def stream_asr(self, model):
-        """Creates a speech recognition stream unrelated to a session using the
-        specified Cubic model.
-
-        This will create a bidirectional stream. The client sends audio to the
-        server and receives transcriptions as they become available from the
-        receiving half of the stream.
-        """
-        return ASRStream(self._client, model)
-
-    def stream_tts(self, model, text):
-        """Creates a text to speech synthesis stream unrelated to a session using
-        the specified Luna model and text to synthesize.
-
-        Synthesized audio is returned by the stream until synthesis is complete,
-        at which point the stream will close.
-        """
-        request = TTSRequest(model=model,
-                             text=text)
-        return self._client.StreamTTS(request)
+    def new_tts_stream(self, reply):
+        """Creates a new stream to receive TTS audio from Diatheke based
+        on the given reply action."""
+        return self._client.StreamTTS(reply)

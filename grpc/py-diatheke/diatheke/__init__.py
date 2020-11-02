@@ -23,5 +23,5 @@ import sys
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__))))
 
 from .client import Client
-from .session import Session
-from .diatheke_pb2 import CommandStatus
+from .streams import read_ASR_audio, write_TTS_audio
+from .diatheke_pb2 import CommandResult
