@@ -5,248 +5,274 @@ import diatheke_pb2 as diatheke__pb2
 
 
 class DiathekeStub(object):
-  """Service that implements the Cobalt Diatheke Dialog Management API.
-  """
-
-  def __init__(self, channel):
-    """Constructor.
-
-    Args:
-      channel: A grpc.Channel.
+    """Service that implements the Cobalt Diatheke Dialog Management API.
     """
-    self.Version = channel.unary_unary(
-        '/cobaltspeech.diatheke.Diatheke/Version',
-        request_serializer=diatheke__pb2.Empty.SerializeToString,
-        response_deserializer=diatheke__pb2.VersionResponse.FromString,
-        )
-    self.Models = channel.unary_unary(
-        '/cobaltspeech.diatheke.Diatheke/Models',
-        request_serializer=diatheke__pb2.Empty.SerializeToString,
-        response_deserializer=diatheke__pb2.ModelsResponse.FromString,
-        )
-    self.NewSession = channel.unary_unary(
-        '/cobaltspeech.diatheke.Diatheke/NewSession',
-        request_serializer=diatheke__pb2.NewSessionRequest.SerializeToString,
-        response_deserializer=diatheke__pb2.SessionID.FromString,
-        )
-    self.EndSession = channel.unary_unary(
-        '/cobaltspeech.diatheke.Diatheke/EndSession',
-        request_serializer=diatheke__pb2.SessionID.SerializeToString,
-        response_deserializer=diatheke__pb2.Empty.FromString,
-        )
-    self.SessionEventStream = channel.unary_stream(
-        '/cobaltspeech.diatheke.Diatheke/SessionEventStream',
-        request_serializer=diatheke__pb2.SessionID.SerializeToString,
-        response_deserializer=diatheke__pb2.DiathekeEvent.FromString,
-        )
-    self.CommandFinished = channel.unary_unary(
-        '/cobaltspeech.diatheke.Diatheke/CommandFinished',
-        request_serializer=diatheke__pb2.CommandStatus.SerializeToString,
-        response_deserializer=diatheke__pb2.Empty.FromString,
-        )
-    self.StreamAudioInput = channel.stream_unary(
-        '/cobaltspeech.diatheke.Diatheke/StreamAudioInput',
-        request_serializer=diatheke__pb2.AudioInput.SerializeToString,
-        response_deserializer=diatheke__pb2.Empty.FromString,
-        )
-    self.StreamAudioReplies = channel.unary_stream(
-        '/cobaltspeech.diatheke.Diatheke/StreamAudioReplies',
-        request_serializer=diatheke__pb2.SessionID.SerializeToString,
-        response_deserializer=diatheke__pb2.AudioReply.FromString,
-        )
-    self.PushText = channel.unary_unary(
-        '/cobaltspeech.diatheke.Diatheke/PushText',
-        request_serializer=diatheke__pb2.PushTextRequest.SerializeToString,
-        response_deserializer=diatheke__pb2.Empty.FromString,
-        )
-    self.StreamASR = channel.stream_stream(
-        '/cobaltspeech.diatheke.Diatheke/StreamASR',
-        request_serializer=diatheke__pb2.ASRRequest.SerializeToString,
-        response_deserializer=diatheke__pb2.ASRResponse.FromString,
-        )
-    self.StreamTTS = channel.unary_stream(
-        '/cobaltspeech.diatheke.Diatheke/StreamTTS',
-        request_serializer=diatheke__pb2.TTSRequest.SerializeToString,
-        response_deserializer=diatheke__pb2.TTSResponse.FromString,
-        )
+
+    def __init__(self, channel):
+        """Constructor.
+
+        Args:
+            channel: A grpc.Channel.
+        """
+        self.Version = channel.unary_unary(
+                '/cobaltspeech.diatheke.Diatheke/Version',
+                request_serializer=diatheke__pb2.Empty.SerializeToString,
+                response_deserializer=diatheke__pb2.VersionResponse.FromString,
+                )
+        self.ListModels = channel.unary_unary(
+                '/cobaltspeech.diatheke.Diatheke/ListModels',
+                request_serializer=diatheke__pb2.Empty.SerializeToString,
+                response_deserializer=diatheke__pb2.ListModelsResponse.FromString,
+                )
+        self.CreateSession = channel.unary_unary(
+                '/cobaltspeech.diatheke.Diatheke/CreateSession',
+                request_serializer=diatheke__pb2.SessionStart.SerializeToString,
+                response_deserializer=diatheke__pb2.SessionOutput.FromString,
+                )
+        self.DeleteSession = channel.unary_unary(
+                '/cobaltspeech.diatheke.Diatheke/DeleteSession',
+                request_serializer=diatheke__pb2.TokenData.SerializeToString,
+                response_deserializer=diatheke__pb2.Empty.FromString,
+                )
+        self.UpdateSession = channel.unary_unary(
+                '/cobaltspeech.diatheke.Diatheke/UpdateSession',
+                request_serializer=diatheke__pb2.SessionInput.SerializeToString,
+                response_deserializer=diatheke__pb2.SessionOutput.FromString,
+                )
+        self.StreamASR = channel.stream_unary(
+                '/cobaltspeech.diatheke.Diatheke/StreamASR',
+                request_serializer=diatheke__pb2.ASRInput.SerializeToString,
+                response_deserializer=diatheke__pb2.ASRResult.FromString,
+                )
+        self.StreamTTS = channel.unary_stream(
+                '/cobaltspeech.diatheke.Diatheke/StreamTTS',
+                request_serializer=diatheke__pb2.ReplyAction.SerializeToString,
+                response_deserializer=diatheke__pb2.TTSAudio.FromString,
+                )
 
 
 class DiathekeServicer(object):
-  """Service that implements the Cobalt Diatheke Dialog Management API.
-  """
-
-  def Version(self, request, context):
-    """Queries the Version of the Server.
+    """Service that implements the Cobalt Diatheke Dialog Management API.
     """
-    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-    context.set_details('Method not implemented!')
-    raise NotImplementedError('Method not implemented!')
 
-  def Models(self, request, context):
-    """Models will return a list of available versions.  Model values from
-    this list may be used in NewSession calls.
-    """
-    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-    context.set_details('Method not implemented!')
-    raise NotImplementedError('Method not implemented!')
+    def Version(self, request, context):
+        """Returns version information from the server.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
 
-  def NewSession(self, request, context):
-    """Requests a new session with the given config and returns the session
-    ID, which is required for other rpc methods.
-    """
-    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-    context.set_details('Method not implemented!')
-    raise NotImplementedError('Method not implemented!')
+    def ListModels(self, request, context):
+        """ListModels returns information about the Diatheke models
+        the server can access.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
 
-  def EndSession(self, request, context):
-    """Terminates an existing session and closes any open event streams.
-    It is an error if the SessionEndRequest has an invalid SessionID.
-    """
-    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-    context.set_details('Method not implemented!')
-    raise NotImplementedError('Method not implemented!')
+    def CreateSession(self, request, context):
+        """Create a new Diatheke session. Also returns a list of
+        actions to take next.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
 
-  def SessionEventStream(self, request, context):
-    """Requests a new event stream for the given session.
-    """
-    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-    context.set_details('Method not implemented!')
-    raise NotImplementedError('Method not implemented!')
+    def DeleteSession(self, request, context):
+        """Delete the session. Behavior is undefined if the given
+        TokenData is used again after this function is called.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
 
-  def CommandFinished(self, request, context):
-    """Notify Diatheke when a command has completed so that it may update
-    the dialog state. The initial command request will come as part of
-    a DiathekeEvent. While not strictly required (depeding on the model
-    and command), it is best practice to always call this method when a
-    command is complete. Cases where it is required include when the 
-    command has output parameters, or when the command is followed by 
-    another action in the Diatheke model.
-    """
-    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-    context.set_details('Method not implemented!')
-    raise NotImplementedError('Method not implemented!')
+    def UpdateSession(self, request, context):
+        """Process input for a session and get an updated session with
+        a list of actions to take next. This is the only method
+        that modifies the Diatheke session state.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
 
-  def StreamAudioInput(self, request_iterator, context):
-    """Begin an audio input stream for a session. The first message to
-    the server should specify the sessionID, with binary audio data pushed
-    for every subsequent message. As the audio is recognized, Diatheke
-    will respond with appropriate events on the session's event stream.
-    <p>
-    While it is allowed to call this multiple times during a single session,
-    clients should never have multiple audio input streams running concurrently
-    for the same session (the audio may mix and result in unpredictable
-    behavior). Previous audio streams should always be closed before starting
-    a new one.
-    """
-    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-    context.set_details('Method not implemented!')
-    raise NotImplementedError('Method not implemented!')
+    def StreamASR(self, request_iterator, context):
+        """Create an ASR stream. A result is returned when the
+        stream is closed by the client (which forces the ASR to
+        endpoint), or when a transcript becomes available on its
+        own, in which case the stream is closed by the server.
+        The ASR result may be used in the UpdateSession method.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
 
-  def StreamAudioReplies(self, request, context):
-    """Create an audio reply stream for a session. The returned stream 
-    will receive replies ("say" entries in the Diatheke model) from the
-    server as they occur in the conversation. For each "say" entry, the 
-    stream will first receive the text to synthesize (defined by the model),
-    followed by one or more messages containing the synthesized audio bytes. 
-    The "say" entry will end with a message indicating that TTS for that 
-    entry is complete.
-    NOTE: The text in the first message of an audio reply is the same that
-    will be received in the session's event stream.
-    """
-    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-    context.set_details('Method not implemented!')
-    raise NotImplementedError('Method not implemented!')
-
-  def PushText(self, request, context):
-    """Push text to Diatheke as part of the conversation for a session.
-    Diatheke will respond with an appropriate event on the session's
-    event stream based on whether the given text was recognized as a
-    valid intent or not.
-    """
-    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-    context.set_details('Method not implemented!')
-    raise NotImplementedError('Method not implemented!')
-
-  def StreamASR(self, request_iterator, context):
-    """Manually run streaming ASR unrelated to any session by pushing
-    audio data to the server on the audio stream. As transcriptions
-    become available, the server will return them on the ASRResponse
-    stream. The transcriptions may then be used for, e.g., the PushText
-    method. This function is provided as a convenience.
-    """
-    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-    context.set_details('Method not implemented!')
-    raise NotImplementedError('Method not implemented!')
-
-  def StreamTTS(self, request, context):
-    """Manually run streaming TTS. The Audio stream will receive
-    binary audio data as it is synthesized and will close automatically
-    when synthesis is complete. This function is provided as a
-    convenience.
-    """
-    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-    context.set_details('Method not implemented!')
-    raise NotImplementedError('Method not implemented!')
+    def StreamTTS(self, request, context):
+        """Create a TTS stream to receive audio for the given reply.
+        The stream will close when TTS is finished. The client
+        may also close the stream early to cancel the speech
+        synthesis.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
 
 
 def add_DiathekeServicer_to_server(servicer, server):
-  rpc_method_handlers = {
-      'Version': grpc.unary_unary_rpc_method_handler(
-          servicer.Version,
-          request_deserializer=diatheke__pb2.Empty.FromString,
-          response_serializer=diatheke__pb2.VersionResponse.SerializeToString,
-      ),
-      'Models': grpc.unary_unary_rpc_method_handler(
-          servicer.Models,
-          request_deserializer=diatheke__pb2.Empty.FromString,
-          response_serializer=diatheke__pb2.ModelsResponse.SerializeToString,
-      ),
-      'NewSession': grpc.unary_unary_rpc_method_handler(
-          servicer.NewSession,
-          request_deserializer=diatheke__pb2.NewSessionRequest.FromString,
-          response_serializer=diatheke__pb2.SessionID.SerializeToString,
-      ),
-      'EndSession': grpc.unary_unary_rpc_method_handler(
-          servicer.EndSession,
-          request_deserializer=diatheke__pb2.SessionID.FromString,
-          response_serializer=diatheke__pb2.Empty.SerializeToString,
-      ),
-      'SessionEventStream': grpc.unary_stream_rpc_method_handler(
-          servicer.SessionEventStream,
-          request_deserializer=diatheke__pb2.SessionID.FromString,
-          response_serializer=diatheke__pb2.DiathekeEvent.SerializeToString,
-      ),
-      'CommandFinished': grpc.unary_unary_rpc_method_handler(
-          servicer.CommandFinished,
-          request_deserializer=diatheke__pb2.CommandStatus.FromString,
-          response_serializer=diatheke__pb2.Empty.SerializeToString,
-      ),
-      'StreamAudioInput': grpc.stream_unary_rpc_method_handler(
-          servicer.StreamAudioInput,
-          request_deserializer=diatheke__pb2.AudioInput.FromString,
-          response_serializer=diatheke__pb2.Empty.SerializeToString,
-      ),
-      'StreamAudioReplies': grpc.unary_stream_rpc_method_handler(
-          servicer.StreamAudioReplies,
-          request_deserializer=diatheke__pb2.SessionID.FromString,
-          response_serializer=diatheke__pb2.AudioReply.SerializeToString,
-      ),
-      'PushText': grpc.unary_unary_rpc_method_handler(
-          servicer.PushText,
-          request_deserializer=diatheke__pb2.PushTextRequest.FromString,
-          response_serializer=diatheke__pb2.Empty.SerializeToString,
-      ),
-      'StreamASR': grpc.stream_stream_rpc_method_handler(
-          servicer.StreamASR,
-          request_deserializer=diatheke__pb2.ASRRequest.FromString,
-          response_serializer=diatheke__pb2.ASRResponse.SerializeToString,
-      ),
-      'StreamTTS': grpc.unary_stream_rpc_method_handler(
-          servicer.StreamTTS,
-          request_deserializer=diatheke__pb2.TTSRequest.FromString,
-          response_serializer=diatheke__pb2.TTSResponse.SerializeToString,
-      ),
-  }
-  generic_handler = grpc.method_handlers_generic_handler(
-      'cobaltspeech.diatheke.Diatheke', rpc_method_handlers)
-  server.add_generic_rpc_handlers((generic_handler,))
+    rpc_method_handlers = {
+            'Version': grpc.unary_unary_rpc_method_handler(
+                    servicer.Version,
+                    request_deserializer=diatheke__pb2.Empty.FromString,
+                    response_serializer=diatheke__pb2.VersionResponse.SerializeToString,
+            ),
+            'ListModels': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListModels,
+                    request_deserializer=diatheke__pb2.Empty.FromString,
+                    response_serializer=diatheke__pb2.ListModelsResponse.SerializeToString,
+            ),
+            'CreateSession': grpc.unary_unary_rpc_method_handler(
+                    servicer.CreateSession,
+                    request_deserializer=diatheke__pb2.SessionStart.FromString,
+                    response_serializer=diatheke__pb2.SessionOutput.SerializeToString,
+            ),
+            'DeleteSession': grpc.unary_unary_rpc_method_handler(
+                    servicer.DeleteSession,
+                    request_deserializer=diatheke__pb2.TokenData.FromString,
+                    response_serializer=diatheke__pb2.Empty.SerializeToString,
+            ),
+            'UpdateSession': grpc.unary_unary_rpc_method_handler(
+                    servicer.UpdateSession,
+                    request_deserializer=diatheke__pb2.SessionInput.FromString,
+                    response_serializer=diatheke__pb2.SessionOutput.SerializeToString,
+            ),
+            'StreamASR': grpc.stream_unary_rpc_method_handler(
+                    servicer.StreamASR,
+                    request_deserializer=diatheke__pb2.ASRInput.FromString,
+                    response_serializer=diatheke__pb2.ASRResult.SerializeToString,
+            ),
+            'StreamTTS': grpc.unary_stream_rpc_method_handler(
+                    servicer.StreamTTS,
+                    request_deserializer=diatheke__pb2.ReplyAction.FromString,
+                    response_serializer=diatheke__pb2.TTSAudio.SerializeToString,
+            ),
+    }
+    generic_handler = grpc.method_handlers_generic_handler(
+            'cobaltspeech.diatheke.Diatheke', rpc_method_handlers)
+    server.add_generic_rpc_handlers((generic_handler,))
+
+
+ # This class is part of an EXPERIMENTAL API.
+class Diatheke(object):
+    """Service that implements the Cobalt Diatheke Dialog Management API.
+    """
+
+    @staticmethod
+    def Version(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/cobaltspeech.diatheke.Diatheke/Version',
+            diatheke__pb2.Empty.SerializeToString,
+            diatheke__pb2.VersionResponse.FromString,
+            options, channel_credentials,
+            call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def ListModels(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/cobaltspeech.diatheke.Diatheke/ListModels',
+            diatheke__pb2.Empty.SerializeToString,
+            diatheke__pb2.ListModelsResponse.FromString,
+            options, channel_credentials,
+            call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def CreateSession(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/cobaltspeech.diatheke.Diatheke/CreateSession',
+            diatheke__pb2.SessionStart.SerializeToString,
+            diatheke__pb2.SessionOutput.FromString,
+            options, channel_credentials,
+            call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def DeleteSession(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/cobaltspeech.diatheke.Diatheke/DeleteSession',
+            diatheke__pb2.TokenData.SerializeToString,
+            diatheke__pb2.Empty.FromString,
+            options, channel_credentials,
+            call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def UpdateSession(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/cobaltspeech.diatheke.Diatheke/UpdateSession',
+            diatheke__pb2.SessionInput.SerializeToString,
+            diatheke__pb2.SessionOutput.FromString,
+            options, channel_credentials,
+            call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def StreamASR(request_iterator,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.stream_unary(request_iterator, target, '/cobaltspeech.diatheke.Diatheke/StreamASR',
+            diatheke__pb2.ASRInput.SerializeToString,
+            diatheke__pb2.ASRResult.FromString,
+            options, channel_credentials,
+            call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def StreamTTS(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_stream(request, target, '/cobaltspeech.diatheke.Diatheke/StreamTTS',
+            diatheke__pb2.ReplyAction.SerializeToString,
+            diatheke__pb2.TTSAudio.FromString,
+            options, channel_credentials,
+            call_credentials, compression, wait_for_ready, timeout, metadata)
