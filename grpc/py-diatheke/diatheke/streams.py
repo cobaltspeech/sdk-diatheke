@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright(2019) Cobalt Speech and Language Inc.
+# Copyright(2020) Cobalt Speech and Language Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License")
 # you may not use this file except in compliance with the License.
@@ -14,22 +14,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from diatheke_pb2 import AudioInput, ASRRequest
+from diatheke_pb2 import ASRInput
 from queue import Queue
 import threading
+import io
 
 
-class AudioInputStream(object):
-    """AudioInputStream represents an ASR stream for a session. Clients use
-    this stream to push audio to the server for recognition.
-    """
+class ASRStream(object):
+    """ASRStream represents a stream of audio data sent from the client
+    to Diatheke for the purpose of speech recognition."""
 
-    def __init__(self, client_stub, session_id):
-        """Creates a new stream using the given gRPC client stub and session ID.
-        Most users do not need to call this constructor directly, and should
-        instead use the client's stream_audio_input method to create this stream.
-        """
-
+    def __init__(self, client_stub):
         # The Python implementation of gRPC is a little different from other
         # languages. Rather than having send and receive methods for the stream,
         # request streams in Python take an iterator or generator function. This
@@ -39,19 +34,22 @@ class AudioInputStream(object):
 
         # Set up a queue to transfer data from the write function to the
         # __next__ function.
-        self.data_queue = Queue(maxsize=1)
-        self.session_id = session_id
-        self._id_sent = False
-        self._is_finished = False
+        self._data_queue = Queue(maxsize=1)
+
+        # Set up a lock and variable to handle checking whether a result is
+        # available or not.
+        self._lock = threading.Lock()
+        self._result = None
 
         # They way client gRPC streaming works in Python is that the streaming
         # method accepts an iterator to send many messages to the server until
         # it is done, at which point the server returns a single response. The
         # function call blocks until this happens. To avoid blocking, we set
-        # up a thread to run the StreamAudioInput function with this class
+        # up a thread to run the StreamASR function with this class
         # as the iterator argument to that function.
-        self._stream_thread = threading.Thread(target=client_stub.StreamAudioInput,
-                                               args=(self,))
+        self._stream_thread = threading.Thread(target=self._run_stream,
+                                               args=(client_stub,),
+                                               daemon=True)
         self._stream_thread.start()
 
     def __iter__(self):
@@ -61,131 +59,117 @@ class AudioInputStream(object):
         # Note this function is being called from the thread that the actual
         # stream is running on (i.e., from self._stream_thread).
 
-        # Create a new request object to be sent
-        request = AudioInput()
-
-        if self._id_sent:
-            # Wait for audio data from the queue. The queue will block until
-            # data is available.
-            audio_data = self.data_queue.get()
-            if audio_data is None:
-                # This is our sentinel to indicate the iterator should finish,
-                # which is done by raising the StopIteration exception. A side
-                # effect of this is that if a user sends 'None' to the write
-                # function, it will also end the stream.
-                raise StopIteration
-
-            # Add the data to the request.
-            request.data = audio_data
-
-        else:
-            # Send the session id. The API requires the session id be sent
-            # on the stream first, which is why _id_sent is set to false in
-            # the constructor.
-            request.session_id = self.session_id
-            self._id_sent = True
+        # Wait for data from the queue. The queue will block until
+        # data is available.
+        request = self._data_queue.get()
+        if request is None:
+            # This is our sentinel to indicate the iterator should finish,
+            # which is done by raising the StopIteration exception. A side
+            # effect of this is that if a user sends 'None' to one of the
+            # send functions, it will also end the stream.
+            raise StopIteration
 
         return request
 
-    def write(self, audio_data):
-        """Sends the given audio data to the Diatheke server over the gRPC stream."""
+    def _run_stream(self, client_stub):
+        # Give the stream as the iterable the gRPC function requires.
+        result = client_stub.StreamASR(self)
+        self._set_result(result)
 
-        # Check if the stream is already done
-        if self._is_finished:
-            raise RuntimeError("Attempted write on closed AudioInputStream.")
+    def _has_result(self):
+        with self._lock:
+            return self._result != None
 
-        # Write the data to the queue to be consumed by the gRPC stream as it is
-        # ready (happens in the __next__ function). This will block if the queue
-        # is already full.
-        self.data_queue.put(audio_data)
+    def _set_result(self, result):
+        with self._lock:
+            self._result = result
 
-    def finish(self):
-        """Notify the server that no more data will be sent, which effectively
-        ends the stream. Calls to write() will fail after calling this method.
-        """
-        if self._is_finished:
-            # Ignore if we already called this function.
-            return
+    def send_audio(self, audio_bytes):
+        """Send the given audio bytes to Diatheke for transcription.
 
-        self._is_finished = True
+        If this function returns False, the server has closed the stream
+        and result() should be called to get the final ASR result."""
+        # Check if there is a result yet
+        if self._has_result():
+            return False
 
-        # Push a None value so the __next__ function will know we are done.
-        self.data_queue.put(None)
+        # Send the request
+        req = ASRInput(audio=audio_bytes)
+        self._data_queue.put(req)
+        return True
+
+    def send_token(self, token):
+        """Send the given session token to Diatheke to update the
+        speech recognition context. The session token must first be
+        sent on the ASR stream before any audio will be recognized.
+        If the stream was created using client.new_session_asr_stream(),
+        the first token was already sent.
+
+        If this function returns False, the server has closed the stream
+        and result() should be called to get the final ASR result."""
+        # Check if there is a result yet
+        if self._has_result():
+            return False
+
+        # Send the request
+        req = ASRInput(token=token)
+        self._data_queue.put(req)
+        return True
+
+    def result(self):
+        """Returns the result of speech recognition. This function may
+        be called to end the audio stream early, which will force a
+        transcription based on the audio received until this point, or
+        in response to receiving False from send_audio() or send_token()."""
+        # Check if the stream has already returned a result. If not,
+        # force it to stop by sending our sentinel iterator value.
+        if not self._has_result():
+            self._data_queue.put(None)
+
+        # Wait for the streaming thread to finish and return the result.
+        self._stream_thread.join()
+        return self._result
 
 
-class ASRStream(object):
-    """ASRStream represents a speech recognition stream unrelated to a session."""
+def read_ASR_audio(stream, reader, buffSize):
+    """Convenience function to send audio from the given reader
+    to the stream until a result is returned. Data is sent in
+    chunks defined by buffSize."""
+    # Check if we have a text reader
+    if isinstance(reader, io.TextIOBase):
+        is_text = True
+    else:
+        # Otherwise we assume we have a byte reader
+        is_text = False
 
-    def __init__(self, client_stub, cubic_model_id):
-        """Creates a new stream using the given gRPC client stub and cubic model ID.
-        Most users do not need to call this constructor directly, and should
-        instead use the client's stream_asr method to create this stream.
-        """
+    while True:
+        # Read the next chunk of data
+        data = reader.read(buffSize)
+        if (is_text and data == '') or (not is_text and data == b''):
+            # Reached the EOF
+            break
 
-        # Set up a queue to transer data from the write function to the
-        # __next__ function.
-        self.data_queue = Queue(maxsize=1)
-        self.model_id = cubic_model_id
-        self._id_sent = False
-        self._is_finished = False
+        # Send the audio
+        if not stream.send_audio(data):
+            break
 
-        # Fortunately, unlike the AudioInputStream which has a client-stream,
-        # creating a bidirectional gRPC stream in python does not block, so
-        # we don't need to call it on a separate thread.
-        self.result_stream = client_stub.StreamASR(self)
+    return stream.result()
 
-    def __iter__(self):
-        return self
 
-    def __next__(self):
+def write_TTS_audio(stream, writer):
+    """Convenience function to receive audio from the given
+    TTS stream and send it to the writer until there is no
+    more audio to receive."""
+    # Check if we have a text writer
+    if isinstance(writer, io.TextIOBase):
+        is_text = True
+    else:
+        # Otherwise we assume we have a byte writer
+        is_text = False
 
-        # Create a new request object to be sent
-        request = ASRRequest()
-
-        if self._id_sent:
-            # Wait for audio data from the queue. The queue will block until
-            # data is available
-            audio_data = self.data_queue.get()
-            if audio_data is None:
-                # This is our sentinel to indicate the iterator should finish,
-                # which is done by raising the StopIteration exception. A side
-                # effect of this is that if a user sends 'None' to the write
-                # function, it will also end the stream.
-                raise StopIteration
-
-            # Add the data to the request
-            request.audio = audio_data
-
+    for data in stream:
+        if is_text:
+            # Convert the text to a string before writing.
+            writer.write(str(data.audio))
         else:
-            # Send the cubic model id. The API requires the model id to be
-            # sent on the stream first, which is why _id_sent is set to false
-            # in the constructor.
-            request.model = self.model_id
-            self._id_sent = True
-
-        return request
-
-    def write(self, audio_data):
-        """Sends the given audio data to the Diatheke server over the gRPC stream."""
-
-        # Check if the stream is already done
-        if self._is_finished:
-            raise RuntimeError("Attempted write on closed AudioInputStream.")
-
-        # Write the data to the queue to be consumed by the gRPC stream as it is
-        # ready (happens in the __next__ function). This will block if the queue
-        # is already full.
-        self.data_queue.put(audio_data)
-
-    def audio_finished(self):
-        """Notify the server that no more data will be sent, which effectively
-        ends the stream. Calls to write() will fail after calling this method.
-        """
-        if self._is_finished:
-            # Ignore if we already called this function.
-            return
-
-        self._is_finished = True
-
-        # Push a None value so the __next__ function will know we are done.
-        self.data_queue.put(None)
+            writer.write(data.audio)

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Copyright (2019) Cobalt Speech and Language Inc.
+# Copyright (2020) Cobalt Speech and Language Inc.
 
 from setuptools import setup
 
