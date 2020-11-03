@@ -44,7 +44,7 @@ ${DEPSGO}/bin/protoc-gen-grpc-gateway:
 deps-py: ${DEPSVENV}/.done
 ${DEPSVENV}/.done:
 	virtualenv -p python3 ${DEPSVENV}
-	source ${DEPSVENV}/bin/activate && pip install grpcio-tools==1.20.0 googleapis-common-protos==1.5.9 && deactivate
+	source ${DEPSVENV}/bin/activate && pip install grpcio-tools==1.33.1 googleapis-common-protos==1.52.0 && deactivate
 	touch $@
 	
 deps-swift:
