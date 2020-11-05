@@ -10,7 +10,7 @@ endif
 
 GO_OUTDIR=go-diatheke/diathekepb
 PY_OUTDIR=py-diatheke/diatheke
-DOCS_OUTDIR=../docs-src/content/protobuf
+DOCS_OUTDIR=../docs-src/v2/content/protobuf
 SWIFTDIR=../deps/swift/bin
 
 go: ${GO_OUTDIR}/diatheke.pb.go

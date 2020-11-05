@@ -1,4 +1,4 @@
-module github.com/cobaltspeech/sdk-diatheke/docs-src
+module github.com/cobaltspeech/sdk-diatheke/docs-src/v1
 
 go 1.15
 
