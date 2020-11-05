@@ -1,12 +1,12 @@
 ---
 title: "Error Handling"
 description: "Describes how errors from the SDK are reported."
-weight: 22
+weight: 300
 ---
 
 For the sake of clarity, most examples in the documentation do not fully
 demonstrate how to handle errors, preferring instead to focus on the topic
-at hand. However, the Diatheke SDK does report errors, and client
+at hand. However, the Diatheke SDK does report errors, and calling
 applications should be prepared to handle them.
 
 A description of how errors are handled for each language is given below.
@@ -75,12 +75,13 @@ finally:
 
 ## Swift
 
-In the Swift SDK Every method that can thow an error has `DiathekeFailureCallback` completion handler to report errors. For example:
+In the Swift SDK every method that can throw an error has
+`DiathekeFailureCallback` completion handler to report errors. For example:
 
 ```swift
-client.newSession(model: model, success: { (sessionID) in
+client.createSession(modelID: model.id) { (sessionOutput) in
     // Handle success response here
-}) { (error) in
+} failure: { (error) in
     // Handle the error here
     print(error.localizedDescription)
 }

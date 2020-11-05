@@ -1,10 +1,10 @@
 ---
 title: "Connecting to the Server"
 description: "Describes how to connect to a running Diatheke server instance."
-weight: 23
+weight: 400
 ---
 
-Once you have the Diatheke server [up and running](../../getting-started),
+Once you have the Diatheke server [up and running](../server),
 you are ready to create a client connection.
 
 <!--more-->
@@ -15,8 +15,9 @@ these can be replaced with your server address in actual code.
 
 ## Default Connection
 
-The following code snippet connects to the server and queries its version.  It uses our recommended 
-default setup, expecting the server to be listening on a TLS encrypted connection.
+The following code snippet connects to the server and queries its version.
+It uses our recommended default setup, expecting the server to be
+listening on a TLS encrypted connection.
 
 {{< tabs >}}
 
@@ -41,13 +42,6 @@ func main() {
 
 	// Be sure to close the client when we are done with it.
 	defer client.Close()
-
-	version, err := client.DiathekeVersion(context.Background())
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Println(version)
 }
 {{< /tab >}}
 
@@ -64,8 +58,6 @@ const char* serverAddr = "127.0.0.1:9002";
 int main(int argc, char *argv[])
 {
 	Diatheke::Client client(serverAddr);
-	std::string version = client.diathekeVersion();
-	std::cout << "Diatheke version: " << version << std::endl;
 
 	return 0;
 }
@@ -76,8 +68,6 @@ int main(int argc, char *argv[])
 import diatheke
 
 client = diatheke.Client(server_address="localhost:9002")
-version = client.diatheke_version()
-print("Diatheke version {}".format(version))
 {{< /tab >}}
 
 {{< tab "Swift/iOS" "swift" >}}
@@ -109,7 +99,7 @@ class DiathekeConnection {
 
 ## Insecure Connection
 
-It is sometimes required to connect to Diatheke server without TLS enabled 
+It is sometimes required to connect to Diatheke server without TLS enabled
 (during debugging, for example). Note that if the server has TLS enabled,
 attempting to connect with an insecure client will fail.
 
@@ -188,7 +178,10 @@ class DiathekeConnection {
     let serverAddress = "localhost"
     let serverPort = 9002
 
-    let client = Client(host: serverAddress, port: serverPort, tlsCertificateFileName: "root", tlsCertificateFormat: .pem)
+    let client = Client(host: serverAddress, 
+                        port: serverPort,
+                        tlsCertificateFileName: "root",
+                        tlsCertificateFormat: .pem)
 
 }
 {{< /tab >}}
@@ -203,3 +196,116 @@ DiathekeGrpc.DiathekeStub mClient = DiathekeGrpc.newStub(mCubicChannel);
 {{< /tab >}}
 
 {{</tabs >}}
+
+
+## Server Information
+The client provides two methods to get information about the server -
+Version and ListModels.
+
+### Version
+The Version method provides information about the version of the Diatheke
+server the client is connected to, as well as information about other
+relevant services and packages the server uses.
+
+{{< tabs >}}
+
+{{< tab "Go" "go" >}}
+// Request the server version info
+ver, err := client.Version(context.Background())
+fmt.Printf("Server Version\n")
+fmt.Printf("  Diatheke: %v\n", ver.Diatheke)
+fmt.Printf("  Chosun (NLU): %v\n", ver.Chosun)
+fmt.Printf("  Cubic (ASR): %v\n", ver.Cubic)
+fmt.Printf("  Luna (TTS): %v\n", ver.Luna)
+{{< /tab >}}
+
+{{< tab "Python" "python" >}}
+# Request the server version info
+ver = client.version()
+print("Server Version")
+print("  Diatheke:", ver.diatheke)
+print("  Chosun (NLU):", ver.chosun)
+print("  Cubic (ASR):", ver.cubic)
+print("  Luna (TTS):", ver.luna)
+{{< /tab >}}
+
+{{< tab "C++" "c++" >}}
+// Example coming soon!
+{{< /tab >}}
+
+{{< tab "Swift/iOS" "swift" >}}
+// Request the server version info
+client.version { (response) in
+	print("Server Version")
+	print("Diatheke: \(response.diatheke)")
+	print("Chosun (NLU): \(response.chosun)")
+	print("Cubic (ASR): \(response.cubic)")
+	print("Luna (TTS): \(response.luna)")
+} failure: { (error) in
+	print(error.localizedDescription)
+}
+{{< /tab >}}
+
+{{< tab "Java/Android" "java" >}}
+// Example coming soon!
+{{< /tab >}}
+
+{{< /tabs >}}
+
+### List Models
+The ListModels method fetches a list of models available to the Diatheke
+server. On the server side, the models are specified as part of the
+server's config file.
+
+{{< tabs >}}
+
+{{< tab "Go" "go" >}}
+// Request the list of models
+modelList, err := client.ListModels(bctx)
+fmt.Printf("Available Models:\n")
+for _, mdl := range modelList.Models {
+	fmt.Printf("  ID: %v\n", mdl.Id)
+	fmt.Printf("    Name: %v\n", mdl.Name)
+	fmt.Printf("    Language: %v\n", mdl.Language)
+	fmt.Printf("    ASR Sample Rate: %v\n", mdl.AsrSampleRate)
+	fmt.Printf("    TTS Sample Rate: %v\n\n", mdl.TtsSampleRate)
+}
+{{< /tab >}}
+
+{{< tab "Python" "python" >}}
+# Request the list of models
+model_list = client.list_models()
+print("Available Models:")
+for mdl in model_list:
+    print("  ID:", mdl.id)
+    print("    Name:", mdl.name)
+    print("    Language:", mdl.language)
+    print("    ASR Sample Rate:", mdl.asr_sample_rate)
+    print("    TTS Sample Rate:", mdl.tts_sample_rate)
+{{< /tab >}}
+
+{{< tab "C++" "c++" >}}
+// Example coming soon!
+{{< /tab >}}
+
+{{< tab "Swift/iOS" "swift" >}}
+// Request the list of models
+client.listModels { (models) in
+	print("Available Models:")
+	for model in models {
+		print("ID: \(model.id)")
+		print("Name: \(model.name)")
+		print("Language: \(model.language)")
+		print("ASR Sample Rate: \(model.asrSampleRate)")
+		print("TTS Sample Rate: \(model.ttsSampleRate)")
+	}
+} failure: { (error) in
+	print(error.localizedDescription)
+}
+{{< /tab >}}
+
+{{< tab "Java/Android" "java" >}}
+// Example coming soon!
+{{< /tab >}}
+
+{{< /tabs >}}

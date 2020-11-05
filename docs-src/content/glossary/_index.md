@@ -109,6 +109,14 @@ possible states being defined by a Diatheke model.
 See [Entity](#entity)
 
 
+### Story
+In a Diatheke model, a story groups together several related [actions](#action)
+that help accomplish a particular goal. This is where the desired dialog
+flow is defined as sequences of actions, such as waiting for user input,
+executing commands, and sending the user replies. A Diatheke model includes
+at least a "main" story that defines where a [session](#session) begins,
+and can have any number of additional stories that are used during a session.
+
 ### TTS
 [Text To Speech](https://en.wikipedia.org/wiki/Speech_synthesis) (TTS) synthesizes 
 audio that replicates human speech from written text.

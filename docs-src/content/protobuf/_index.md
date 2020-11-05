@@ -24,33 +24,28 @@ Service that implements the Cobalt Diatheke Dialog Management API.
 
 | Method Name | Request Type | Response Type | Description |
 | ----------- | ------------ | ------------- | ------------|
-| Version | [Empty](#Empty) | [VersionResponse](#VersionResponse) | Queries the Version of the Server. |
-| Models | [Empty](#Empty) | [ModelsResponse](#ModelsResponse) | Models will return a list of available versions. Model values from this list may be used in NewSession calls. |
-| NewSession | [NewSessionRequest](#NewSessionRequest) | [SessionID](#SessionID) | Requests a new session with the given config and returns the session ID, which is required for other rpc methods. After the session is created, StartSession() must be called to begin executing the Diatheke model. |
-| StartSession | [SessionID](#SessionID) | [Empty](#Empty) | Begin execution of the model for the given session ID. The session's event stream should be set up prior to calling this function so that the client application can respond to any initialization events that are defined in the session's model. |
-| EndSession | [SessionID](#SessionID) | [Empty](#Empty) | Terminates an existing session and closes any open session streams. It is an error if the SessionEndRequest has an invalid SessionID. |
-| SessionEventStream | [SessionID](#SessionID) | [DiathekeEvent](#DiathekeEvent) | Requests a new event stream for the given session. Only one stream per session is allowed. |
-| CommandFinished | [CommandStatus](#CommandStatus) | [Empty](#Empty) | Notify Diatheke when a command has completed so that it may update the dialog state. The initial command request will come as part of a DiathekeEvent. After sending a CommandEvent, Diatheke will wait until it receives the CommandFinished notification before continuing to the next action in the model. Client applications should therefore always call this after receiving a CommandEvent, or else the session will hang. |
-| StreamAudioInput | [AudioInput](#AudioInput) | [Empty](#Empty) | Begin an audio input stream for a session. The first message to the server should specify the sessionID, with binary audio data pushed for every subsequent message. As the audio is recognized, Diatheke will respond with appropriate events on the session's event stream. <p> Only one stream at a time is allowed for a session. A previously created audio input stream must be closed before starting a new one. |
-| StreamAudioReplies | [SessionID](#SessionID) | [AudioReply](#AudioReply) | Create an audio reply stream for a session. The returned stream will receive replies (as defined in the Diatheke model) from the server as they occur in the conversation. For each reply, the stream will first receive the text to synthesize (defined by the model), followed by one or more messages containing the synthesized audio bytes. The reply will end with a message indicating that TTS for that entry is complete. Only one reply stream at a time is allowed for a session. NOTE: The text in the first message of an audio reply is the same that will be received in the session's event stream. |
-| PushText | [PushTextRequest](#PushTextRequest) | [Empty](#Empty) | Push text to Diatheke as part of the conversation for a session. Diatheke will respond with an appropriate event on the session's event stream based on whether the given text was recognized as a valid intent or not. |
-| SetStory | [StoryRequest](#StoryRequest) | [Empty](#Empty) | Set the current story for a running session. This function can be used to implement system initiated alerts or to change the current session state. Events for the new story will come over the session's event stream. |
-| StreamASR | [ASRRequest](#ASRRequest) | [ASRResponse](#ASRResponse) | Manually run streaming ASR unrelated to any session by pushing audio data to the server on the audio stream. As transcriptions become available, the server will return them on the ASRResponse stream. The transcriptions may then be used for, e.g., the PushText method. This function is provided as a convenience. |
-| StreamTTS | [TTSRequest](#TTSRequest) | [TTSResponse](#TTSResponse) | Manually run streaming TTS. The Audio stream will receive binary audio data as it is synthesized and will close automatically when synthesis is complete. This function is provided as a convenience. |
+| Version | [Empty](#Empty) | [VersionResponse](#VersionResponse) | Returns version information from the server. |
+| ListModels | [Empty](#Empty) | [ListModelsResponse](#ListModelsResponse) | ListModels returns information about the Diatheke models the server can access. |
+| CreateSession | [SessionStart](#SessionStart) | [SessionOutput](#SessionOutput) | Create a new Diatheke session. Also returns a list of actions to take next. |
+| DeleteSession | [TokenData](#TokenData) | [Empty](#Empty) | Delete the session. Behavior is undefined if the given TokenData is used again after this function is called. |
+| UpdateSession | [SessionInput](#SessionInput) | [SessionOutput](#SessionOutput) | Process input for a session and get an updated session with a list of actions to take next. This is the only method that modifies the Diatheke session state. |
+| StreamASR | [ASRInput](#ASRInput) | [ASRResult](#ASRResult) | Create an ASR stream. A result is returned when the stream is closed by the client (which forces the ASR to endpoint), or when a transcript becomes available on its own, in which case the stream is closed by the server. The ASR result may be used in the UpdateSession method. |
+| StreamTTS | [ReplyAction](#ReplyAction) | [TTSAudio](#TTSAudio) | Create a TTS stream to receive audio for the given reply. The stream will close when TTS is finished. The client may also close the stream early to cancel the speech synthesis. |
 
  <!-- end services -->
 
 
 
-<a name="ASRRequest"></a>
-### Message: ASRRequest
-Request for streaming ASR unrelated to a session.
+<a name="ASRInput"></a>
+### Message: ASRInput
+Data to send to the ASR stream. The first message on the
+stream must be the session token followed by audio data.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| model | [string](#string) |  | <p>The Cubic model to use for ASR. This message should always be sent before any audio data is sent.</p> |
-| audio | [bytes](#bytes) |  | <p>Audio data to process. The encoding of the data should match what was specified in the Diatheke server configuration. NOTE: If the audio data is empty, the server may interpret it as the end of the stream and stop accepting further messages.</p> |
+| token | [TokenData](#TokenData) |  | <p>Session data, used to determine the correct Cubic model to use for ASR, with other contextual information.</p> |
+| audio | [bytes](#bytes) |  | <p>Audio data to transcribe.</p> |
 
 
 
@@ -58,46 +53,17 @@ Request for streaming ASR unrelated to a session.
 
 
 
-<a name="ASRResponse"></a>
-### Message: ASRResponse
-ASRResponse contains speech recognition results.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| text | [string](#string) |  | <p>Text is the Cubic engine's formatted transcript of pushed audio. This field will be the 1-best alternative.</p> |
-| confidence_score | [double](#double) |  | <p>The confidence score is a floating point number between 0.0 - 1.0. A score of 1.0 indicates that the ASR engine is 100% confident in the transcription.</p> |
-
-
-
-
-
-
-
-<a name="AtStartEvent"></a>
-### Message: AtStartEvent
-The AtStartEvent is sent when a Diatheke session returns back the
-start state of the model.
-
-
-This message is empty and has no fields.
-
-
-
-
-
-
-<a name="AudioInput"></a>
-### Message: AudioInput
-Provides input audio data for StreamAudioInput. The first message
-sent must contain the session ID only. All subsequent messages
-must contain audio data only.
+<a name="ASRResult"></a>
+### Message: ASRResult
+The result from the ASR stream, sent after the ASR engine
+has endpointed or the stream was closed by the client.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| session_id | [string](#string) |  | <p>Session ID returned from the NewSession call.</p> |
-| data | [bytes](#bytes) |  | <p>Audio data to process. The encoding of the data should match what was specified in the Diatheke server configuration. NOTE: If the audio data is empty, the server may interpret it as the end of the stream and stop accepting further messages.</p> |
+| text | [string](#string) |  | <p>The transcription.</p> |
+| confidence | [double](#double) |  | <p>Confidence estimate between 0 and 1. A higher number represents a higher likelihood of the output being correct.</p> |
+| timedOut | [bool](#bool) |  | <p>True if a timeout was defined for the session's current input state in the Diatheke model, and the timeout expired before getting a transcription. This timeout refers to the amount of time a user has to verbally respond to Diatheke after the ASR stream has been created, and should not be confused with a network connection timeout.</p> |
 
 
 
@@ -105,37 +71,16 @@ must contain audio data only.
 
 
 
-<a name="AudioReply"></a>
-### Message: AudioReply
-An AudioReply is the verbal and textual reply that Diatheke returns as
-part of a conversation (not to be confused with the server concepts of
-request and response).
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| label | [string](#string) |  | <p>The label defined in the Diatheke model. Identifies which reply in the model this message corresponds to.</p> |
-| text | [string](#string) |  | <p>The reply text as defined in the Diatheke model. This is the first message that will be received for an AudioReply. It contains the same text as the corresponding ReplyEvent in the session's event stream.</p> |
-| data | [bytes](#bytes) |  | <p>The audio data from TTS. There can be any number of these messages for an AudioReply after the first text message and before the final end message. The encoding of the data will match what was specified in the server configuration.</p> |
-| end | [Empty](#Empty) |  | <p>Indicates that TTS has finished streaming audio for the reply. This is the last message that will be received for an AudioReply.</p> |
-
-
-
-
-
-
-
-<a name="CommandEvent"></a>
-### Message: CommandEvent
-A CommandEvent occurs when Diatheke wants the client to execute the
-given command.
+<a name="ActionData"></a>
+### Message: ActionData
+Specifies an action that the client application should take.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| command_id | [string](#string) |  | <p>ID of the command that should be run. i.e. "COM01" for Command #01.</p> |
-| parameters | [CommandEvent.ParametersEntry](#CommandEvent.ParametersEntry) | repeated | <p>A generic map of parameters (name, value). The parameters are defined in the Diatheke model. Depending on the command, these parameters should be sent back with the CommandStatus update.</p> |
-| command_state_id | [string](#string) |  | <p>ID to keep track of the dialog state when the command is requested. This field is required in the CommandStatus message so that Diatheke can correctly update the dialog state when CommandFinished is called.</p> |
+| input | [WaitForUserAction](#WaitForUserAction) |  | <p>The user must provide input to Diatheke.</p> |
+| command | [CommandAction](#CommandAction) |  | <p>The client app must execute the specified command.</p> |
+| reply | [ReplyAction](#ReplyAction) |  | <p>The client app should provide the reply to the user.</p> |
 
 
 
@@ -143,8 +88,25 @@ given command.
 
 
 
-<a name="CommandEvent.ParametersEntry"></a>
-### Message: CommandEvent.ParametersEntry
+<a name="CommandAction"></a>
+### Message: CommandAction
+This action indicates that the client application should
+execute a command.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| id | [string](#string) |  | <p>The ID of the command to execute, as defined in the Diatheke model.</p> |
+| input_parameters | [CommandAction.InputParametersEntry](#CommandAction.InputParametersEntry) | repeated | <p></p> |
+
+
+
+
+
+
+
+<a name="CommandAction.InputParametersEntry"></a>
+### Message: CommandAction.InputParametersEntry
 
 
 
@@ -159,19 +121,16 @@ given command.
 
 
 
-<a name="CommandStatus"></a>
-### Message: CommandStatus
-The final status of an executed command.
+<a name="CommandResult"></a>
+### Message: CommandResult
+The result of executing a command.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| session_id | [string](#string) |  | <p>session_id should be the same as the status id returned from NewSessionResponse.</p> |
-| command_id | [string](#string) |  | <p>ID of the command as given in the RunCommand object.</p> |
-| return_status | [CommandStatus.StatusCode](#CommandStatus.StatusCode) |  | <p></p> |
-| output_parameters | [CommandStatus.OutputParametersEntry](#CommandStatus.OutputParametersEntry) | repeated | <p>Parameters to return to Diatheke. For example, the map might contain the entry "temperature", which was populated with a value of "30" after the command finished. Expected parameters are defined by the Diatheke model.</p> |
-| error_message_text | [string](#string) |  | <p>Set this field with an error message if a fatal error occured while executing the command (return_status == FAILURE).</p> |
-| command_state_id | [string](#string) |  | <p>State ID from the original CommandEvent. This field is required for Diatheke to correctly update the dialog state when CommandFinished is called.</p> |
+| id | [string](#string) |  | <p>The command ID, as given by the CommandAction</p> |
+| out_parameters | [CommandResult.OutParametersEntry](#CommandResult.OutParametersEntry) | repeated | <p>Output from the command expected by the Diatheke model. For example, this could be the result of a data query.</p> |
+| error | [string](#string) |  | <p>If there was an error during execution, indicate it here with a brief message that will be logged by Diatheke.</p> |
 
 
 
@@ -179,8 +138,8 @@ The final status of an executed command.
 
 
 
-<a name="CommandStatus.OutputParametersEntry"></a>
-### Message: CommandStatus.OutputParametersEntry
+<a name="CommandResult.OutParametersEntry"></a>
+### Message: CommandResult.OutParametersEntry
 
 
 
@@ -188,26 +147,6 @@ The final status of an executed command.
 | ----- | ---- | ----- | ----------- |
 | key | [string](#string) |  | <p></p> |
 | value | [string](#string) |  | <p></p> |
-
-
-
-
-
-
-
-<a name="DiathekeEvent"></a>
-### Message: DiathekeEvent
-An event from Diatheke in response to either recognized audio,
-submitted text, or some other transition in the model.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| command | [CommandEvent](#CommandEvent) |  | <p>Indicates Diatheke found an actionable state in the dialog, and requests the client to perform the given command.</p><p>Users should always call CommandFinished after receiving this event so that Diatheke can update the dialog state when the command is complete.</p> |
-| recognize | [RecognizeEvent](#RecognizeEvent) |  | <p>An event indicating whether pushed text and audio was recognized by ASR and/or Diatheke.</p> |
-| reply | [ReplyEvent](#ReplyEvent) |  | <p>The textual reply from Diatheke in the conversation (not to be confused with the server concepts of request and response). For example, this could be a question to solicit more information from the user, a status report, or any other reply defined by the Diatheke model. The text of this message is also provided in the AudioReply stream (if one is open).</p> |
-| input_required | [InputRequiredEvent](#InputRequiredEvent) |  | <p>Indicates that Diatheke is expecting user input (text or audio), which is defined by input actions in the Diatheke model.</p> |
-| at_start | [AtStartEvent](#AtStartEvent) |  | <p>Indicates that Diatheke has returned to the start state of the model.</p> |
 
 
 
@@ -227,28 +166,14 @@ This message is empty and has no fields.
 
 
 
-<a name="InputRequiredEvent"></a>
-### Message: InputRequiredEvent
-An InputRequiredEvent occurs when Diatheke is expecting input from
-the user (text or audio).
-
-
-This message is empty and has no fields.
-
-
-
-
-
-
-<a name="ModelsResponse"></a>
-### Message: ModelsResponse
-The message sent by the server in response to a Models request.
-Returns an array of model names.
+<a name="ListModelsResponse"></a>
+### Message: ListModelsResponse
+A list of models available on the Diatheke server.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| models | [string](#string) | repeated | <p>Array of models available for use.</p> |
+| models | [ModelInfo](#ModelInfo) | repeated | <p></p> |
 
 
 
@@ -256,30 +181,18 @@ Returns an array of model names.
 
 
 
-<a name="NewSessionRequest"></a>
-### Message: NewSessionRequest
-Request for the NewSession call.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| model | [string](#string) |  | <p>For applications that have more than one model to use for ASR/NLU. ASR grammar can vary between models, as well as sets of commands. Some applications will only have one model.</p> |
-
-
-
-
-
-
-
-<a name="PushTextRequest"></a>
-### Message: PushTextRequest
-Request to push text to Diatheke as part of a conversation.
+<a name="ModelInfo"></a>
+### Message: ModelInfo
+Information about a single Diatheke model.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| session_id | [string](#string) |  | <p>Session ID returned from the NewSession call.</p> |
-| text | [string](#string) |  | <p>User input. This could be a transcription from manually run ASR, text selected from a dropdown list, entered in a prompt, etc.</p> |
+| id | [string](#string) |  | <p>Diatheke model ID, which is used to create a new session.</p> |
+| name | [string](#string) |  | <p>Pretty model name, which may be used for display purposes.</p> |
+| language | [string](#string) |  | <p>Language code of the model.</p> |
+| asr_sample_rate | [uint32](#uint32) |  | <p>The ASR audio sample rate, if ASR is enabled.</p> |
+| tts_sample_rate | [uint32](#uint32) |  | <p>The TTS audio sample rate, if TTS is enabled.</p> |
 
 
 
@@ -287,39 +200,17 @@ Request to push text to Diatheke as part of a conversation.
 
 
 
-<a name="RecognizeEvent"></a>
-### Message: RecognizeEvent
-A RecognizeEvent occurs if a session's audio input has a transcription
-available, or if the PushText method was called. In both cases, the
-event will indicate whether the text was recognized as a valid intent
-by the Diatheke model.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| text | [string](#string) |  | <p>The pushed text or transcription of audio sent to Diatheke.</p> |
-| valid_input | [bool](#bool) |  | <p>True if the submitted text or audio transcription was recognized by the Diatheke model as a valid intent or entity.</p> |
-
-
-
-
-
-
-
-<a name="ReplyEvent"></a>
-### Message: ReplyEvent
-A ReplyEvent occurs when Diatheke has a reply in the conversation (not
-to be confused with the server concepts of request and response). These
-correspond to replies defined in the Diatheke model. For example, it might
-be a prompt for additional information from the user, a status update,
-or a confirmation. ReplyEvents are not generated in response to 
-StreamTTS calls.
+<a name="ReplyAction"></a>
+### Message: ReplyAction
+This action indicates that the client application should
+give the provided text to the user. This action may also 
+be used to synthesize speech with the StreamTTS method.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| text | [string](#string) |  | <p>Text of the reply event (defined by the Diatheke model).</p> |
-| label | [string](#string) |  | <p>Label of the reply event (defined by the Diatheke model).</p> |
+| text | [string](#string) |  | <p>Text of the reply</p> |
+| luna_model | [string](#string) |  | <p>TTS model to use with the TTSReply method</p> |
 
 
 
@@ -327,33 +218,18 @@ StreamTTS calls.
 
 
 
-<a name="SessionID"></a>
-### Message: SessionID
-Simple message that only contains the session ID.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| session_id | [string](#string) |  | <p>Session ID returned from the NewSession call.</p> |
-
-
-
-
-
-
-
-<a name="StoryRequest"></a>
-### Message: StoryRequest
-Request to change the current story of a session.
+<a name="SessionInput"></a>
+### Message: SessionInput
+Used by Diatheke to update the session state.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| session_id | [string](#string) |  | <p>ID of the session that will have its story changed.</p> |
-| story_id | [string](#string) |  | <p>ID of the story to switch to. This ID is defined by the model used to create the session.</p> |
-| parameters | [StoryRequest.ParametersEntry](#StoryRequest.ParametersEntry) | repeated | <p>Parameters to set in session memory before executing the specified story. Some stories in the model may make assumptions about which parameters have already been defined, so it is important to be familiar with the model requirements for any given story.</p> |
-| wait_for_start | [bool](#bool) |  | <p>If true, the given story will not be executed until the session completes the current stories and returns back to the main story. If false, the current story in the session will be immediately interrupted to execute the specified story.</p> |
-| temporary | [bool](#bool) |  | <p>If true, once the given story has finished, Diatheke will return the session to the place in the model where it was when this request was received, and restore the parameters that were defined at that time. This is useful when the change in story represents a temporary interruption. If false, Diatheke will simply continue from the given story without trying to go back to its prior state, which is useful to make a permanent state change.</p> |
+| token | [TokenData](#TokenData) |  | <p>The session token.</p> |
+| text | [TextInput](#TextInput) |  | <p>Process the user supplied text.</p> |
+| asr | [ASRResult](#ASRResult) |  | <p>Process an ASR result.</p> |
+| cmd | [CommandResult](#CommandResult) |  | <p>Process the result of a completed command.</p> |
+| story | [SetStory](#SetStory) |  | <p>Change the current session state.</p> |
 
 
 
@@ -361,8 +237,56 @@ Request to change the current story of a session.
 
 
 
-<a name="StoryRequest.ParametersEntry"></a>
-### Message: StoryRequest.ParametersEntry
+<a name="SessionOutput"></a>
+### Message: SessionOutput
+The result of updating a session.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| token | [TokenData](#TokenData) |  | <p>The updated session token.</p> |
+| action_list | [ActionData](#ActionData) | repeated | <p>The list of actions the client should take next, using the session token returned with this result.</p> |
+
+
+
+
+
+
+
+<a name="SessionStart"></a>
+### Message: SessionStart
+Used to create a new session.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| model_id | [string](#string) |  | <p>Specifies the Diatheke model ID to use for the session.</p> |
+
+
+
+
+
+
+
+<a name="SetStory"></a>
+### Message: SetStory
+Changes the current state of a Diatheke session to run at
+the specified story.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| story_id | [string](#string) |  | <p>The ID of the story to run, as defined in the Diatheke model.</p> |
+| parameters | [SetStory.ParametersEntry](#SetStory.ParametersEntry) | repeated | <p>A list of parameters to set before running the given story. This will replace any parameters currently defined in the session.</p> |
+
+
+
+
+
+
+
+<a name="SetStory.ParametersEntry"></a>
+### Message: SetStory.ParametersEntry
 
 
 
@@ -377,15 +301,15 @@ Request to change the current story of a session.
 
 
 
-<a name="TTSRequest"></a>
-### Message: TTSRequest
-Request to synthesize speech unrelated to a session.
+<a name="TTSAudio"></a>
+### Message: TTSAudio
+Contains synthesized speech audio. The specific encoding
+is defined in the server config file.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| model | [string](#string) |  | <p>The Luna model to use for TTS (defined in the server config file).</p> |
-| text | [string](#string) |  | <p>Text to synthesize</p> |
+| audio | [bytes](#bytes) |  | <p></p> |
 
 
 
@@ -393,14 +317,32 @@ Request to synthesize speech unrelated to a session.
 
 
 
-<a name="TTSResponse"></a>
-### Message: TTSResponse
-Response for text-to-speech unrelated to a session.
+<a name="TextInput"></a>
+### Message: TextInput
+User supplied text to send to Diatheke for processing.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| data | [bytes](#bytes) |  | <p>The synthesized audio data. The data encoding will match what was specified in the server configuration.</p> |
+| text | [string](#string) |  | <p></p> |
+
+
+
+
+
+
+
+<a name="TokenData"></a>
+### Message: TokenData
+A token that represents a single Diatheke session and its
+current state.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| data | [bytes](#bytes) |  | <p></p> |
+| id | [string](#string) |  | <p>Session ID, useful for correlating logging between a client and the server.</p> |
+| metadata | [string](#string) |  | <p>Additional data supplied by the client app, which will be logged with other session info by the server.</p> |
 
 
 
@@ -410,30 +352,37 @@ Response for text-to-speech unrelated to a session.
 
 <a name="VersionResponse"></a>
 ### Message: VersionResponse
-The message sent by the server for the `Version` method.
+Lists the version of Diatheke and the engines it uses.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| server | [string](#string) |  | <p>Server that manages all of the the other components.</p> |
+| diatheke | [string](#string) |  | <p>Dialog management engine</p> |
+| chosun | [string](#string) |  | <p>NLU engine</p> |
+| cubic | [string](#string) |  | <p>ASR engine</p> |
+| luna | [string](#string) |  | <p>TTS engine</p> |
+
+
+
+
+
+
+
+<a name="WaitForUserAction"></a>
+### Message: WaitForUserAction
+This action indicates that Diatheke is expecting user input.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| requires_wake_word | [bool](#bool) |  | <p>True if the next user input must begin with a wake-word.</p> |
+| immediate | [bool](#bool) |  | <p>True if the input is required immediately (i.e., in response to a question Diatheke asked the user). When false, the client should be allowed to wait indefinitely for the user to provide input.</p> |
 
 
 
 
 
  <!-- end messages -->
-
-
-
-<a name="CommandStatus.StatusCode"></a>
-### Enum: CommandStatus.StatusCode
-CommandStatus are the resulting states of a command.
-
-| Name | Number | Description |
-| ---- | ------ | ----------- |
-| SUCCESS | 0 | SUCCESS indicates that the command was successfully completed, and the dialog state may now move on to the next state. |
-| FAILURE | 1 | FAILURE indicates that there was a fatal error running the command. The session will log an error and return to the start state of the model when this status is encountered. |
-
 
  <!-- end enums -->
 

@@ -1,6 +1,6 @@
 ---
-title: "Getting Started"
-weight: 1
+title: "Server Setup"
+weight: 100
 ---
 
 
@@ -63,15 +63,3 @@ the `diathekesvr` binary and model files.
   - Luna: /data/models/luna
   - Diatheke: /data/models/diatheke
 
-
-## Installing the Diatheke SDK
-To install the Diatheke SDK, use git to clone the
-[sdk-diatheke repository](https://github.com/cobaltspeech/sdk-diatheke):
-```bash
-git clone https://github.com/cobaltspeech/sdk-diatheke.git
-```
-
-### Examples
-The sdk-diatheke repo contains [example code](https://github.com/cobaltspeech/sdk-diatheke/tree/master/examples)
-with subdirectories for various languages to build demo client applications. Simply follow the README instructions for each language to build and run the
-sample applications.
