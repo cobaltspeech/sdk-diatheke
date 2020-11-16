@@ -1,5 +1,5 @@
 /*
- * Copyright (2019) Cobalt Speech and Language, Inc.
+ * Copyright (2020) Cobalt Speech and Language, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,25 +20,57 @@
 
 namespace Diatheke
 {
-TTSStream::TTSStream(const std::shared_ptr<Reader> &stream,
-                     const std::shared_ptr<grpc::ClientContext> &ctx)
-    : mStream(stream), mContext(ctx)
+TTSStream::TTSStream(const std::shared_ptr<grpc::ClientContext> &ctx,
+                     const std::shared_ptr<GRPCReader> &stream)
+    : mClosed(false), mContext(ctx), mStream(stream)
 {
 }
 
 TTSStream::~TTSStream() {}
 
-bool TTSStream::waitForAudio(cobaltspeech::diatheke::TTSResponse *response)
+bool TTSStream::receiveAudio(std::string &buffer)
 {
-    return mStream->Read(response);
+    cobaltspeech::diatheke::TTSAudio response;
+    if (mStream->Read(&response))
+    {
+        buffer = response.audio();
+        return true;
+    }
+
+    if (!mClosed)
+    {
+        mClosed = true;
+
+        // Close the stream and get the gRPC status. This is
+        // one of the nuances of C++ that we don't have to do
+        // in other languages.
+        grpc::Status status = mStream->Finish();
+        if (!status.ok())
+        {
+            throw ClientError(status);
+        }
+    }
+
+    return false;
 }
 
-void TTSStream::close()
+TTSStream::GRPCReader *TTSStream::getStream() { return mStream.get(); }
+
+AudioWriter::AudioWriter() {}
+AudioWriter::~AudioWriter() {}
+
+void WriteTTSAudio(TTSStream &stream, AudioWriter *writer)
 {
-    grpc::Status status = mStream->Finish();
-    if (!status.ok())
+    // Wait for the next audio chunk
+    std::string buffer;
+    while (stream.receiveAudio(buffer))
     {
-        throw ClientError(status);
+        // Write the audio chunk
+        size_t bytesWritten = writer->writeAudio(buffer.data(), buffer.size());
+        if (bytesWritten != buffer.size())
+        {
+            throw ClientError("AudioWriter did not write all data");
+        }
     }
 }
 

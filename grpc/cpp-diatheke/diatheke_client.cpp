@@ -1,5 +1,5 @@
 /*
- * Copyright (2019) Cobalt Speech and Language, Inc.
+ * Copyright (2020) Cobalt Speech and Language, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,9 +54,9 @@ Client::Client(const std::string &url, bool insecure) : mTimeout(30000)
 
 Client::~Client() {}
 
-std::string Client::diathekeVersion()
+cobaltspeech::diatheke::VersionResponse Client::version()
 {
-    // Setup the request
+    // Set up the request
     cobaltspeech::diatheke::Empty request;
     cobaltspeech::diatheke::VersionResponse response;
 
@@ -67,213 +67,125 @@ std::string Client::diathekeVersion()
     grpc::Status status = mStub->Version(&ctx, request, &response);
     if (!status.ok())
     {
-        throw Diatheke::ClientError(status);
+        throw ClientError(status);
     }
 
-    return response.server();
+    return response;
 }
 
-std::vector<std::string> Client::listModels()
+cobaltspeech::diatheke::ListModelsResponse Client::listModels()
 {
-    // Setup the request
+    // Set up the request
     cobaltspeech::diatheke::Empty request;
-    cobaltspeech::diatheke::ModelsResponse response;
+    cobaltspeech::diatheke::ListModelsResponse response;
 
     grpc::ClientContext ctx;
     setContextDeadline(ctx);
 
     // Get the list of models from the server
-    grpc::Status status = mStub->Models(&ctx, request, &response);
+    grpc::Status status = mStub->ListModels(&ctx, request, &response);
     if (!status.ok())
     {
-        throw Diatheke::ClientError(status);
+        throw ClientError(status);
     }
 
-    // Package the models nicely in a vector
-    std::vector<std::string> models;
-    for (int i = 0; i < response.models_size(); i++)
-    {
-        models.push_back(response.models(i));
-    }
-
-    return models;
+    return response;
 }
 
-std::string Client::newSession(const std::string &model)
+cobaltspeech::diatheke::SessionOutput
+Client::createSession(const std::string &modelID)
 {
-    // Setup the server request
-    cobaltspeech::diatheke::NewSessionRequest request;
-    request.set_model(model);
-
-    cobaltspeech::diatheke::SessionID response;
+    // Set up the server request
+    cobaltspeech::diatheke::SessionStart request;
+    request.set_model_id(modelID);
 
     grpc::ClientContext ctx;
     setContextDeadline(ctx);
 
-    // Get the session ID from the server
-    grpc::Status status = mStub->NewSession(&ctx, request, &response);
+    // Send and get a response
+    cobaltspeech::diatheke::SessionOutput response;
+    grpc::Status status = mStub->CreateSession(&ctx, request, &response);
     if (!status.ok())
     {
-        throw Diatheke::ClientError(status);
+        throw ClientError(status);
     }
 
-    return response.session_id();
+    return response;
 }
 
-void Client::endSession(const std::string &sessionID)
+void Client::deleteSession(const cobaltspeech::diatheke::TokenData &token)
 {
-    // Setup the server request
-    cobaltspeech::diatheke::SessionID request;
-    request.set_session_id(sessionID);
-
-    cobaltspeech::diatheke::Empty response;
-
-    grpc::ClientContext ctx;
-    setContextDeadline(ctx);
-
-    // Send the request
-    grpc::Status status = mStub->EndSession(&ctx, request, &response);
-    if (!status.ok())
-    {
-        throw Diatheke::ClientError(status);
-    }
-}
-
-std::unique_ptr<EventStream>
-Client::sessionEventStream(const std::string &sessionID)
-{
-    // Setup the server request
-    cobaltspeech::diatheke::SessionID request;
-    request.set_session_id(sessionID);
-
-    // We don't set a deadline on this context because we expect
-    // this to be a long-lived stream.
-    std::shared_ptr<grpc::ClientContext> ctx(new grpc::ClientContext);
-
-    // Create the stream reader
-    std::shared_ptr<grpc::ClientReader<cobaltspeech::diatheke::DiathekeEvent>>
-        reader(mStub->SessionEventStream(ctx.get(), request));
-
-    // Return the event stream object
-    return std::unique_ptr<EventStream>(
-        new EventStream(reader, ctx, sessionID, this));
-}
-
-void Client::commandFinished(const std::string &sessionID,
-                             const CommandStatus &result)
-{
-    // Setup the server request
-    cobaltspeech::diatheke::CommandStatus request;
-    request.set_session_id(sessionID);
-    request.set_command_id(result.commandID());
-
-    // Convert the status code
-    switch (result.statusCode())
-    {
-    case CommandStatus::SUCCESS:
-        request.set_return_status(
-            cobaltspeech::diatheke::CommandStatus::SUCCESS);
-        break;
-
-    default:
-    case CommandStatus::FAILURE:
-        request.set_return_status(
-            cobaltspeech::diatheke::CommandStatus::FAILURE);
-        break;
-    }
-
-    // Add the output parameters
-    CommandStatus::ParamMap::const_iterator iter;
-    for (iter = result.params().begin(); iter != result.params().end(); iter++)
-    {
-        (*request.mutable_output_parameters())[iter->first] = iter->second;
-    }
-
-    // Set the error message
-    request.set_error_message_text(result.errorMessage());
-
-    // Don't forget the internal data
-    request.set_command_state_id(result.stateID());
-
-    // Now setup the response and context
+    // Set up the server request
     cobaltspeech::diatheke::Empty response;
     grpc::ClientContext ctx;
     setContextDeadline(ctx);
 
-    // Send the request
-    grpc::Status status = mStub->CommandFinished(&ctx, request, &response);
+    grpc::Status status = mStub->DeleteSession(&ctx, token, &response);
     if (!status.ok())
     {
         throw ClientError(status);
     }
 }
 
-std::unique_ptr<AudioInputStream>
-Client::streamAudioInput(const std::string &sessionID)
+cobaltspeech::diatheke::SessionOutput
+Client::processText(const cobaltspeech::diatheke::TokenData &token,
+                    const std::string &text)
 {
-    // Prepare the response and context objects. We expect this to be a
-    // long lived stream, so we don't set a deadline on the context.
-    cobaltspeech::diatheke::Empty response;
-    std::shared_ptr<grpc::ClientContext> ctx(new grpc::ClientContext);
+    // Set up the server request
+    cobaltspeech::diatheke::SessionInput request;
+    *(request.mutable_token()) = token;
+    request.mutable_text()->set_text(text);
 
-    // Create the stream
-    std::shared_ptr<grpc::ClientWriter<cobaltspeech::diatheke::AudioInput>>
-        writer(mStub->StreamAudioInput(ctx.get(), &response));
+    return this->updateSession(request);
+}
 
-    // Send the first message with the session ID
-    cobaltspeech::diatheke::AudioInput idMessage;
-    idMessage.set_session_id(sessionID);
-    if (!writer->Write(idMessage))
+cobaltspeech::diatheke::SessionOutput
+Client::processASRResult(const cobaltspeech::diatheke::TokenData &token,
+                         const cobaltspeech::diatheke::ASRResult &result)
+{
+    // Set up the server request
+    cobaltspeech::diatheke::SessionInput request;
+    *(request.mutable_token()) = token;
+    *(request.mutable_asr()) = result;
+
+    return this->updateSession(request);
+}
+
+cobaltspeech::diatheke::SessionOutput Client::processCommandResult(
+    const cobaltspeech::diatheke::TokenData &token,
+    const cobaltspeech::diatheke::CommandResult &result)
+{
+    // Set up the server request
+    cobaltspeech::diatheke::SessionInput request;
+    *(request.mutable_token()) = token;
+    *(request.mutable_cmd()) = result;
+
+    return this->updateSession(request);
+}
+
+cobaltspeech::diatheke::SessionOutput
+Client::setStory(const cobaltspeech::diatheke::TokenData &token,
+                 const std::string &storyID,
+                 const std::map<std::string, std::string> &params)
+{
+    // Set up the server request
+    cobaltspeech::diatheke::SessionInput request;
+    *(request.mutable_token()) = token;
+    auto story = request.mutable_story();
+    story->set_story_id(storyID);
+
+    // Set parameters
+    auto outputParams = story->mutable_parameters();
+    for (auto iter = params.begin(); iter != params.end(); iter++)
     {
-        throw ClientError("could not start audio input stream for session " +
-                          sessionID);
+        (*outputParams)[iter->first] = iter->second;
     }
 
-    // Return the audio input stream object
-    return std::unique_ptr<AudioInputStream>(
-        new AudioInputStream(writer, ctx, sessionID));
+    return this->updateSession(request);
 }
 
-std::unique_ptr<AudioReplyStream>
-Client::streamAudioReplies(const std::string &sessionID)
-{
-    // Setup the server request
-    cobaltspeech::diatheke::SessionID request;
-    request.set_session_id(sessionID);
-
-    // We don't set a deadline on this context because we expect
-    // this to be a long-lived stream.
-    std::shared_ptr<grpc::ClientContext> ctx(new grpc::ClientContext);
-
-    // Create the stream reader
-    std::shared_ptr<grpc::ClientReader<cobaltspeech::diatheke::AudioReply>>
-        reader(mStub->StreamAudioReplies(ctx.get(), request));
-
-    // Return the AudioReplyStream object
-    return std::unique_ptr<AudioReplyStream>(
-        new AudioReplyStream(reader, ctx, sessionID));
-}
-
-void Client::pushText(const std::string &sessionID, const std::string &text)
-{
-    // Setup the server request
-    cobaltspeech::diatheke::PushTextRequest request;
-    request.set_session_id(sessionID);
-    request.set_text(text);
-
-    cobaltspeech::diatheke::Empty response;
-    grpc::ClientContext ctx;
-    setContextDeadline(ctx);
-
-    // Send the request
-    grpc::Status status = mStub->PushText(&ctx, request, &response);
-    if (!status.ok())
-    {
-        throw ClientError(status);
-    }
-}
-
-std::unique_ptr<ASRStream> Client::streamASR(const std::string &model)
+ASRStream
+Client::newSessionASRStream(const cobaltspeech::diatheke::TokenData &token)
 {
     /*
      * Create the context. We need it to exist for the lifetime of the
@@ -283,26 +195,27 @@ std::unique_ptr<ASRStream> Client::streamASR(const std::string &model)
      */
     std::shared_ptr<grpc::ClientContext> ctx(new grpc::ClientContext);
 
-    // Create the stream
-    std::shared_ptr<
-        grpc::ClientReaderWriter<cobaltspeech::diatheke::ASRRequest,
-                                 cobaltspeech::diatheke::ASRResponse>>
-        stream(mStub->StreamASR(ctx.get()));
+    // Create a managed pointer to store the final result.
+    std::shared_ptr<cobaltspeech::diatheke::ASRResult> result(
+        new cobaltspeech::diatheke::ASRResult);
 
-    // Send the first message (the model) to the server
-    cobaltspeech::diatheke::ASRRequest request;
-    request.set_model(model);
-    if (!stream->Write(request))
+    // Create the gRPC stream
+    std::shared_ptr<ASRStream::GRPCWriter> writer(
+        mStub->StreamASR(ctx.get(), result.get()));
+
+    // Store the pointers in our ASRStream object, then send the session
+    // token.
+    ASRStream stream(ctx, result, writer);
+    if (!stream.sendToken(token))
     {
-        throw ClientError("could not start streaming ASR");
+        throw ClientError(
+            "failed to create ASR stream - could not send session token");
     }
 
-    // Return the ASRStream object
-    return std::unique_ptr<ASRStream>(new ASRStream(stream, ctx));
+    return stream;
 }
 
-std::unique_ptr<TTSStream> Client::streamTTS(const std::string &model,
-                                             const std::string &text)
+TTSStream Client::newTTSStream(const cobaltspeech::diatheke::ReplyAction &reply)
 {
     /*
      * Create the context. We need it to exist for the lifetime of the
@@ -312,17 +225,12 @@ std::unique_ptr<TTSStream> Client::streamTTS(const std::string &model,
      */
     std::shared_ptr<grpc::ClientContext> ctx(new grpc::ClientContext);
 
-    // Setup the request
-    cobaltspeech::diatheke::TTSRequest request;
-    request.set_model(model);
-    request.set_text(text);
+    // Create the gRPC stream
+    std::shared_ptr<TTSStream::GRPCReader> reader(
+        mStub->StreamTTS(ctx.get(), reply));
 
-    // Create the stream
-    std::shared_ptr<grpc::ClientReader<cobaltspeech::diatheke::TTSResponse>>
-        reader(mStub->StreamTTS(ctx.get(), request));
-
-    // Return the TTSStream object
-    return std::unique_ptr<TTSStream>(new TTSStream(reader, ctx));
+    // Store the pointers in our TTSStream object.
+    return TTSStream(ctx, reader);
 }
 
 void Client::setRequestTimeout(unsigned int milliseconds)
@@ -340,6 +248,24 @@ void Client::setContextDeadline(grpc::ClientContext &ctx)
     std::chrono::system_clock::time_point deadline =
         std::chrono::system_clock::now() + std::chrono::milliseconds(mTimeout);
     ctx.set_deadline(deadline);
+}
+
+cobaltspeech::diatheke::SessionOutput
+Client::updateSession(const cobaltspeech::diatheke::SessionInput &request)
+{
+    // Create the context
+    grpc::ClientContext ctx;
+    setContextDeadline(ctx);
+
+    // Send and get a response
+    cobaltspeech::diatheke::SessionOutput response;
+    grpc::Status status = mStub->UpdateSession(&ctx, request, &response);
+    if (!status.ok())
+    {
+        throw ClientError(status);
+    }
+
+    return response;
 }
 
 } // namespace Diatheke

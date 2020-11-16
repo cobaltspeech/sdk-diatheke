@@ -1,5 +1,5 @@
 /*
- * Copyright (2019) Cobalt Speech and Language, Inc.
+ * Copyright (2020) Cobalt Speech and Language, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,35 +27,61 @@ namespace Diatheke
 class TTSStream
 {
 public:
-    using Reader = grpc::ClientReader<cobaltspeech::diatheke::TTSResponse>;
+    using GRPCReader = grpc::ClientReader<cobaltspeech::diatheke::TTSAudio>;
 
     /*
-     * Wrap the given Reader and context in a new TTSStream object.
-     * Most users will not need to call this constructor directly, but should
-     * instead use Diatheke::Client::streamTTS().
+     * Create a new TTSStream object using the given gRPC objects.
+     * Most callers should use Client::newTTSStream() instead of
+     * creating the stream directly.
      */
-    TTSStream(const std::shared_ptr<Reader> &stream,
-              const std::shared_ptr<grpc::ClientContext> &ctx);
+    TTSStream(const std::shared_ptr<grpc::ClientContext> &ctx,
+              const std::shared_ptr<GRPCReader> &stream);
 
     ~TTSStream();
 
     /*
-     * Wait for the next ASR result from the server to become available.
-     * Returns false when there are no more results to receive. It is thread-
-     * safe to call this method while also calling pushAudio().
+     * Wait for the next chunk of audio data from the server,
+     * and stores the audio data in the given buffer. Returns
+     * false when there is no more audio to receive.
      */
-    bool waitForAudio(cobaltspeech::diatheke::TTSResponse *response);
+    bool receiveAudio(std::string &buffer);
 
     /*
-     * Close the TTS stream. This should be done after waitForAudio is
-     * finished (i.e., returned false).
+     * Provides access to the underlying gRPC stream without
+     * transferring ownership of the stream.
      */
-    void close();
+    GRPCReader *getStream();
 
 private:
-    std::shared_ptr<Reader> mStream;
+    bool mClosed;
     std::shared_ptr<grpc::ClientContext> mContext;
+    std::shared_ptr<GRPCReader> mStream;
 };
+
+/*
+ * AudioWriter defines an interface for writing audio data that may
+ * be subclassed and used with the WriteTTSAudio() method. It is
+ * provided as a convenience.
+ */
+class AudioWriter
+{
+public:
+    AudioWriter();
+    virtual ~AudioWriter();
+
+    /*
+     * Write audio data from the given buffer. Returns the number
+     * of bytes written.
+     */
+    virtual size_t writeAudio(const char *buffer, size_t sizeInBytes) = 0;
+};
+
+/*
+ * WriteTTSAudio is a convenience function to receive audio
+ * from the given TTSStream and send it to the writer until
+ * there is no more audio to receive.
+ */
+void WriteTTSAudio(TTSStream &stream, AudioWriter *writer);
 
 } // namespace Diatheke
 

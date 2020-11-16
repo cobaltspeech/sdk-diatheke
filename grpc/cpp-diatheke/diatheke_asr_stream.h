@@ -1,5 +1,5 @@
 /*
- * Copyright (2019) Cobalt Speech and Language, Inc.
+ * Copyright (2020) Cobalt Speech and Language, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@
 #include "diatheke.grpc.pb.h"
 
 #include <memory>
+#include <string>
 
 namespace Diatheke
 {
@@ -27,52 +28,85 @@ namespace Diatheke
 class ASRStream
 {
 public:
-    using ReaderWriter =
-        grpc::ClientReaderWriter<cobaltspeech::diatheke::ASRRequest,
-                                 cobaltspeech::diatheke::ASRResponse>;
+    using GRPCWriter = grpc::ClientWriter<cobaltspeech::diatheke::ASRInput>;
 
     /*
-     * Wrap the given Reader/Writer and context in a new ASRStream object.
-     * Most users will not need to call this constructor directly, but should
-     * instead use Diatheke::Client::streamASR().
+     * Create a new ASR stream object using the given gRPC objects.
+     * Most callers should use Client::newSessionASRStream() instead
+     * of creating a new stream directly.
      */
-    ASRStream(const std::shared_ptr<ReaderWriter> &stream,
-              const std::shared_ptr<grpc::ClientContext> &ctx);
-
+    ASRStream(const std::shared_ptr<grpc::ClientContext> &ctx,
+              const std::shared_ptr<cobaltspeech::diatheke::ASRResult> &result,
+              const std::shared_ptr<GRPCWriter> &stream);
     ~ASRStream();
 
     /*
-     * Push the given audio data to the Diatheke server. The audio format
-     * should match what is specified in the Diatheke server configuration.
-     * If there is no audio data (i.e., sizeInBytes equals zero), the server
-     * will treat this as EOF and end the stream. Subsequent calls to
-     * pushAudio will fail.
+     * Send the given audio data to Diatheke for transcription.
+     *
+     * If this function returns False, the server has closed the stream
+     * and result() should be called to get the final ASR result.
      */
-    void pushAudio(const char *audio, size_t sizeInBytes);
+    bool sendAudio(const std::string &data);
 
     /*
-     * Notify Diathake that no more audio is coming from the client. It is
-     * an error to call pushAudio() after calling this method.
+     * Send the given session token to Diatheke to update  the speech
+     * recognition context. The session token must first be sent on the
+     * ASR stream before any audio will be recognized. If the stream was
+     * created using Client::newSessionASRStream(), the first token was
+     * already sent.
+     *
+     * If this function returs false, the server has closed the stream
+     * and result() should be called to get the final ASR result.
      */
-    void finishAudio();
+    bool sendToken(const cobaltspeech::diatheke::TokenData &token);
 
     /*
-     * Wait for the next ASR result from the server to become available.
-     * Returns false when there are no more results to receive. It is thread-
-     * safe to call this method while also calling pushAudio().
+     * Returns the result of speech recognition. This function may be
+     * called to end the audio stream early, which will force a
+     * transcription based on the audio received until this point. This
+     * may also be called in response to receiving false from sendAudio()
+     * or sendToken(), in which case the server already has a transcription
+     * ready.
+     *
+     * Once this method is called, data can no longer be sent over the
+     * stream.
      */
-    bool waitForResult(cobaltspeech::diatheke::ASRResponse *result);
+    cobaltspeech::diatheke::ASRResult result();
 
     /*
-     * Close the ASR stream. This should be done after both pushAudio and
-     * waitForResult are finished.
+     * Provides access to the underlying gRPC stream without
+     * transferring ownership of the stream.
      */
-    void close();
+    GRPCWriter *getStream();
 
 private:
-    std::shared_ptr<ReaderWriter> mStream;
     std::shared_ptr<grpc::ClientContext> mContext;
+    std::shared_ptr<cobaltspeech::diatheke::ASRResult> mResult;
+    std::shared_ptr<GRPCWriter> mStream;
 };
+
+/*
+ * AudioReader defines an interface for reading audio that may be
+ * subclassed and used with the ReadASRAudio() method. It is provided
+ * as a convenience.
+ */
+class AudioReader
+{
+public:
+    AudioReader();
+    virtual ~AudioReader();
+
+    /*
+     * Read audio data and store it in the given buffer. Returns the number
+     * of bytes read, or zero if there is no more data to read.
+     */
+    virtual size_t readAudio(char *buffer, size_t buffSize) = 0;
+};
+
+// ReadASRAudio is a convenience function to send audio from the given
+// reader to the stream in buffSize chunks until a result is returned.
+cobaltspeech::diatheke::ASRResult
+ReadASRAudio(ASRStream &stream, AudioReader *reader, size_t buffSize);
 
 } // namespace Diatheke
 

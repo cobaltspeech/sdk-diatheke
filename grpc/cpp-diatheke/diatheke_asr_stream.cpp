@@ -1,5 +1,5 @@
 /*
- * Copyright (2019) Cobalt Speech and Language, Inc.
+ * Copyright (2020) Cobalt Speech and Language, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,46 +20,82 @@
 
 namespace Diatheke
 {
-ASRStream::ASRStream(const std::shared_ptr<ReaderWriter> &stream,
-                     const std::shared_ptr<grpc::ClientContext> &ctx)
-    : mStream(stream), mContext(ctx)
+ASRStream::ASRStream(
+    const std::shared_ptr<grpc::ClientContext> &ctx,
+    const std::shared_ptr<cobaltspeech::diatheke::ASRResult> &result,
+    const std::shared_ptr<GRPCWriter> &stream)
+    : mContext(ctx), mResult(result), mStream(stream)
 {
 }
 
 ASRStream::~ASRStream() {}
 
-void ASRStream::pushAudio(const char *audio, size_t sizeInBytes)
+bool ASRStream::sendAudio(const std::string &data)
 {
-    // Setup the request and write to the input stream
-    cobaltspeech::diatheke::ASRRequest request;
-    request.set_audio(audio, sizeInBytes);
+    // Set up the request and write to the input stream
+    cobaltspeech::diatheke::ASRInput request;
+    request.set_audio(data);
     if (!mStream->Write(request))
     {
-        throw ClientError(
-            "could not push audio in ASRStream - input stream closed");
+        return false;
     }
+
+    return true;
 }
 
-void ASRStream::finishAudio()
+bool ASRStream::sendToken(const cobaltspeech::diatheke::TokenData &token)
 {
-    if (!mStream->WritesDone())
+    // Set up the request and write to the input stream
+    cobaltspeech::diatheke::ASRInput request;
+    *(request.mutable_token()) = token;
+    if (!mStream->Write(request))
     {
-        throw ClientError("unsuccessful writing audio data");
+        return false;
     }
+
+    return true;
 }
 
-bool ASRStream::waitForResult(cobaltspeech::diatheke::ASRResponse *result)
+cobaltspeech::diatheke::ASRResult ASRStream::result()
 {
-    return mStream->Read(result);
-}
-
-void ASRStream::close()
-{
+    mStream->WritesDone();
     grpc::Status status = mStream->Finish();
     if (!status.ok())
     {
-        throw ClientError(status);
+        throw Diatheke::ClientError(status);
     }
+
+    return *mResult;
+}
+
+ASRStream::GRPCWriter *ASRStream::getStream() { return mStream.get(); }
+
+AudioReader::AudioReader() {}
+AudioReader::~AudioReader() {}
+
+cobaltspeech::diatheke::ASRResult
+ReadASRAudio(ASRStream &stream, AudioReader *reader, size_t buffSize)
+{
+    std::string buffer;
+    buffer.resize(buffSize);
+    while (true)
+    {
+        // Pull audio data from the reader
+        size_t bytesRead = reader->readAudio(&buffer[0], buffer.size());
+        if (bytesRead == 0)
+        {
+            break;
+        }
+
+        // Send the audio to the stream
+        if (!stream.sendAudio(buffer.substr(0, bytesRead)))
+        {
+            break;
+        }
+    }
+
+    // Return the result
+    return stream.result();
 }
 
 } // namespace Diatheke
