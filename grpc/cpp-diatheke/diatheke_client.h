@@ -1,5 +1,5 @@
 /*
- * Copyright (2019) Cobalt Speech and Language, Inc.
+ * Copyright (2020) Cobalt Speech and Language, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,20 +17,21 @@
 #ifndef DIATHEKE_CLIENT_H
 #define DIATHEKE_CLIENT_H
 
+#include "diatheke.grpc.pb.h"
 #include "diatheke_asr_stream.h"
-#include "diatheke_audio_input_stream.h"
-#include "diatheke_audio_reply_stream.h"
-#include "diatheke_command_status.h"
-#include "diatheke_event_stream.h"
 #include "diatheke_tts_stream.h"
 
+#include <map>
 #include <memory>
 #include <string>
-#include <vector>
 
 namespace Diatheke
 {
 
+/*
+ * Client is an object used to interact with the Diatheke
+ * gRPC API.
+ */
 class Client
 {
 public:
@@ -45,77 +46,73 @@ public:
     Client(const std::string &url, bool insecure = false);
     ~Client();
 
-    // Return the version of the Diatheke server.
-    std::string diathekeVersion();
+    // Returns version information from the server.
+    cobaltspeech::diatheke::VersionResponse version();
 
-    // List the models availabe on the Diatheke server.
-    std::vector<std::string> listModels();
-
-    // Requests a new session for the given model and returns the session ID.
-    std::string newSession(const std::string &model);
+    // List the models available to the Diatheke server.
+    cobaltspeech::diatheke::ListModelsResponse listModels();
 
     /*
-     * End the given session on the server. This will free up the resources
-     * associated with the session and end any associated event streams.
+     * Create a new Diatheke session using the specified
+     * model ID.
      */
-    void endSession(const std::string &sessionID);
-
-    // Create a new event stream for the given session.
-    std::unique_ptr<EventStream>
-    sessionEventStream(const std::string &sessionID);
+    cobaltspeech::diatheke::SessionOutput
+    createSession(const std::string &modelID);
 
     /*
-     * Notify Diatheke when a command has completed. The initial command
-     * request will come as part of a DiathekeEvent in a session's event stream.
-     * This method should always be called after receiving a command event when
-     * the command is completed (even if it is a long running command).
+     * Clean up the given session token. Behavior is undefined
+     * if the given token is used again after calling this
+     * function.
      */
-    void commandFinished(const std::string &sessionID,
-                         const CommandStatus &result);
+    void deleteSession(const cobaltspeech::diatheke::TokenData &token);
 
     /*
-     * Begin an audio input stream for the given session. As the audio is
-     * recognized, Diatheke will respond with RecognizeEvents that include
-     * the transcription on the session's event stream. Transcriptions are not
-     * returned on this stream, but are automatically processed by Diatheke.
-     *
-     * Only one audio input stream per session should be running at a time to
-     * avoid confusing the speech recognition with multiple audio sources.
+     * Send the given text to Diatheke and return an updated
+     * session token.
      */
-    std::unique_ptr<AudioInputStream>
-    streamAudioInput(const std::string &sessionID);
+    cobaltspeech::diatheke::SessionOutput
+    processText(const cobaltspeech::diatheke::TokenData &token,
+                const std::string &text);
 
     /*
-     * Create a stream to receive output audio from Diatheke specifically
-     * for the given session. The stream will use include start and end
-     * messages to indicate when a section of audio for a group of text
-     * begins and ends. Only one stream per session should be created.
+     * Send the given ASR result to Diatheke and return an
+     * updated session token.
      */
-    std::unique_ptr<AudioReplyStream>
-    streamAudioReplies(const std::string &sessionID);
+    cobaltspeech::diatheke::SessionOutput
+    processASRResult(const cobaltspeech::diatheke::TokenData &token,
+                     const cobaltspeech::diatheke::ASRResult &result);
 
     /*
-     * Push text to Diatheke as part of a conversation for the given session.
-     *
-     * This function may be used alone or in addition to an audio input
-     * stream to drive the conversation with Diatheke. On the server side,
-     * the audio input stream essentially calls this function automatically as
-     * transcriptions are available.
+     * Send the given command result to Diatheke and return
+     * an updated session token. This function should be
+     * called in response to a command action Diatheke sent
+     * previously.
      */
-    void pushText(const std::string &sessionID, const std::string &text);
+    cobaltspeech::diatheke::SessionOutput
+    processCommandResult(const cobaltspeech::diatheke::TokenData &token,
+                         const cobaltspeech::diatheke::CommandResult &result);
 
     /*
-     * Run streaming speech recognition unrelated to a session using the
-     * given model.
+     * Change the current story for a Diatheke session.
+     * Returns an updated session token.
      */
-    std::unique_ptr<ASRStream> streamASR(const std::string &model);
+    cobaltspeech::diatheke::SessionOutput
+    setStory(const cobaltspeech::diatheke::TokenData &token,
+             const std::string &storyID,
+             const std::map<std::string, std::string> &params);
 
     /*
-     * Run streaming text-to-speech unrelated to a session for the given
-     * text, using the specified model.
+     * Create a new stream to transcribe audio for the given
+     * session token.
      */
-    std::unique_ptr<TTSStream> streamTTS(const std::string &model,
-                                         const std::string &text);
+    ASRStream
+    newSessionASRStream(const cobaltspeech::diatheke::TokenData &token);
+
+    /*
+     * Create a new stream to receive TTS audio from Diatheke
+     * based on the given ReplyAction.
+     */
+    TTSStream newTTSStream(const cobaltspeech::diatheke::ReplyAction &reply);
 
     /*
      * Set a timeout for server requests in milliseconds. A timeout value of
@@ -131,6 +128,9 @@ private:
 
     // Convenience functions
     void setContextDeadline(grpc::ClientContext &ctx);
+
+    cobaltspeech::diatheke::SessionOutput
+    updateSession(const cobaltspeech::diatheke::SessionInput &request);
 };
 
 } // namespace Diatheke
