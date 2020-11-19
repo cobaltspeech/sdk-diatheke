@@ -40,7 +40,7 @@ public:
     ~TTSStream();
 
     /*
-     * Wait for the next chunk of audio data from the server,
+     * Waits for the next chunk of audio data from the server,
      * and stores the audio data in the given buffer. Returns
      * false when there is no more audio to receive.
      */
