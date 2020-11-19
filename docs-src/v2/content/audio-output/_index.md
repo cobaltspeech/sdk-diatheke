@@ -33,7 +33,12 @@ stream = client.new_tts_stream(reply)
 {{< /tab >}}
 
 {{< tab "Swift/iOS" "swift" >}}
-// Example coming soon!
+self.ttsStream = self.client.newTTSStream(replyAction: replyAction, dataChunkHandler: { (ttsAudio) in
+	// Add code here to read audio data from the stream and send it to the
+	// playback device.
+}, completion: { (error) in
+	// Add code here to handle TTS errors and TTS streaming completion
+})
 {{< /tab >}}
 
 {{< tab "Java/Android" "java" >}}
@@ -71,10 +76,6 @@ diatheke.write_TTS_audio(stream, audioOut)
 {{< /tab >}}
 
 {{< tab "C++" "c++" >}}
-// Example coming soon!
-{{< /tab >}}
-
-{{< tab "Swift/iOS" "swift" >}}
 // Example coming soon!
 {{< /tab >}}
 
@@ -118,7 +119,26 @@ for data in stream:
 {{< /tab >}}
 
 {{< tab "Swift/iOS" "swift" >}}
-// Example coming soon!
+// audioData can be used for gathering incoming TTS data chunks into one
+// object to save it to file system or playback using AVFoundation.
+var audioData: Data?
+
+// Pull messages from the stream as they come
+func handleReply(_ replyAction: Cobaltspeech_Diatheke_ReplyAction) {
+	self.audioData = Data()
+	self.ttsStream = self.client.newTTSStream(replyAction: replyAction, dataChunkHandler: { (ttsAudio) in
+		if !ttsAudio.audio.isEmpty {
+			self.audioData?.append(ttsAudio.audio)
+		}
+	}, completion: { (error) in
+		if let error = error {
+			print("TTS error received: \(error)")
+		} else if let audioData = self.audioData {
+			// Play the full audio data using AVFoundation or other ways
+			self.playAudio(data: audioData)
+		}
+	})
+}
 {{< /tab >}}
 
 {{< tab "Java/Android" "java" >}}

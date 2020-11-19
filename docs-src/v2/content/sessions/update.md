@@ -32,7 +32,13 @@ session = client.process_asr_result(session.token, result)
 {{< /tab >}}
 
 {{< tab "Swift/iOS" "swift" >}}
-// Example coming soon!
+// Update the session with an ASR result returned previously.
+client.processASRResult(token: token, asrResult: asrResult) { (sessionOutput) in
+	self.token = sessionOutput.token
+	self.actionList = sessionOutput.actionList
+} failure: { (error) in
+	print(error.localizedDescription)
+}
 {{< /tab >}}
 
 {{< tab "Java/Android" "java" >}}
@@ -64,7 +70,14 @@ session = client.process_text(session.token, text)
 {{< /tab >}}
 
 {{< tab "Swift/iOS" "swift" >}}
-// Example coming soon!
+// Update the session with text.
+let text = "what's the weather forecast for today"
+client.processText(token: token, text: text) { (sessionOutput) in
+	self.token = sessionOutput.token
+	self.actionList = sessionOutput.actionList
+} failure: { (error) in
+	print(error.localizedDescription)
+}
 {{< /tab >}}
 
 {{< tab "Java/Android" "java" >}}
@@ -114,7 +127,24 @@ session = client.process_command_result(session.token, result)
 {{< /tab >}}
 
 {{< tab "Swift/iOS" "swift" >}}
-// Example coming soon!
+// Always use the original command ID in the result
+var commandResult = Cobaltspeech_Diatheke_CommandResult()
+commandResult.id = commandAction.id
+
+// If there are any output parameters expected by the model,
+// add them to the result.
+commandResult.outParameters["key"] = "val"
+
+// If there was a fatal error, set the error message in the result.
+commandResult.error = "I died"
+
+// Update the session with the result
+self.client.processCommandResult(token: token, commandResult: commandResult) { (sessionOutput) in
+	self.token = sessionOutput.token
+	self.actionList = sessionOutput.actionList
+} failure: { (error) in
+	print(error.localizedDescription)
+}
 {{< /tab >}}
 
 {{< tab "Java/Android" "java" >}}
@@ -163,7 +193,20 @@ session = client.set_story(session.token, story_id, params)
 {{< /tab >}}
 
 {{< tab "Swift/iOS" "swift" >}}
-// Example coming soon!
+// The story ID is defined in the Diatheke model
+let storyID = "alertStory"
+
+// Set parameters in the updates session's memory (leave empty to
+// clear memory)
+let params = ["key" : "val"]
+
+// Update the session
+client.setStory(token: token, storyID: storyID, params: params) { (sessionOutput) in
+	self.token = sessionOutput.token
+	self.actionList = sessionOutput.actionList
+} failure: { (error) in
+	print(error.localizedDescription)
+}
 {{< /tab >}}
 
 {{< tab "Java/Android" "java" >}}

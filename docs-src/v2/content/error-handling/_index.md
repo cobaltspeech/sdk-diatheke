@@ -75,13 +75,13 @@ finally:
 
 ## Swift
 
-In the Swift SDK Every method that can thow an error has
+In the Swift SDK Every method that can throw an error has
 `DiathekeFailureCallback` completion handler to report errors. For example:
 
 ```swift
-client.newSession(model: model, success: { (sessionID) in
+client.createSession(modelID: model.id) { (sessionOutput) in
     // Handle success response here
-}) { (error) in
+} failure: { (error) in
     // Handle the error here
     print(error.localizedDescription)
 }

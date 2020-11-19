@@ -178,7 +178,10 @@ class DiathekeConnection {
     let serverAddress = "localhost"
     let serverPort = 9002
 
-    let client = Client(host: serverAddress, port: serverPort, tlsCertificateFileName: "root", tlsCertificateFormat: .pem)
+    let client = Client(host: serverAddress, 
+                        port: serverPort,
+                        tlsCertificateFileName: "root",
+                        tlsCertificateFormat: .pem)
 
 }
 {{< /tab >}}
@@ -231,7 +234,16 @@ print("  Luna (TTS):", ver.luna)
 {{< /tab >}}
 
 {{< tab "Swift/iOS" "swift" >}}
-// Example coming soon!
+// Request the server version info
+client.version { (response) in
+	print("Server Version")
+	print("Diatheke: \(response.diatheke)")
+	print("Chosun (NLU): \(response.chosun)")
+	print("Cubic (ASR): \(response.cubic)")
+	print("Luna (TTS): \(response.luna)")
+} failure: { (error) in
+	print(error.localizedDescription)
+}
 {{< /tab >}}
 
 {{< tab "Java/Android" "java" >}}
@@ -277,7 +289,19 @@ for mdl in model_list:
 {{< /tab >}}
 
 {{< tab "Swift/iOS" "swift" >}}
-// Example coming soon!
+// Request the list of models
+client.listModels { (models) in
+	print("Available Models:")
+	for model in models {
+		print("ID: \(model.id)")
+		print("Name: \(model.name)")
+		print("Language: \(model.language)")
+		print("ASR Sample Rate: \(model.asrSampleRate)")
+		print("TTS Sample Rate: \(model.ttsSampleRate)")
+	}
+} failure: { (error) in
+	print(error.localizedDescription)
+}
 {{< /tab >}}
 
 {{< tab "Java/Android" "java" >}}

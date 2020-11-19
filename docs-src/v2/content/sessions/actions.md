@@ -74,7 +74,24 @@ def process_actions(client, session):
 {{< /tab >}}
 
 {{< tab "Swift/iOS" "swift" >}}
-// Example coming soon!
+// processActions executes the actions for the given session.
+func processActions(sessionOutput: Cobaltspeech_Diatheke_SessionOutput) {
+	self.token = sessionOutput.token
+	for actionData in sessionOutput.actionList {
+		guard let action = actionData.action else { continue }
+		switch action {
+		case .input(let waitForUserAction):
+			// The WaitForuserAction will involve a session update.
+			self.waitForInput(waitForUserAction)
+		case .reply(let replyAction):
+			// Replies do not require a session update.
+			self.handleReply(replyAction)
+		case .command(let commandAction):
+			// The CommandAction will involve a session update
+			self.handleCommand(commandAction
+		}
+	}
+}
 {{< /tab >}}
 
 {{< tab "Java/Android" "java" >}}
@@ -132,7 +149,17 @@ def wait_for_input(client, session, input_action):
 {{< /tab >}}
 
 {{< tab "Swift/iOS" "swift" >}}
-// Example coming soon!
+func waitForInput(_ action: Cobaltspeech_Diatheke_WaitForUserAction) {
+	// In a real application `waitForInput` function may be used as the result handler
+	// for `UITextField`'s text change or for other user input ways.
+	let text = "some text input"
+	// Update the session with the text
+	client.processText(token: token, text: text) { (sessionOutput) in
+		self.processActions(sessionOutput: sessionOutput)
+	} failure: { (error) in
+ 		print(error.localizedDescription)
+	}
+}
 {{< /tab >}}
 
 {{< tab "Java/Android" "java" >}}
@@ -164,7 +191,7 @@ func waitForInput(
 		// reply immediately. If this flag is false, the app may wait
 		// as long as it wants before processing user input (such as
 		// waiting for a wake-word below).
-	}
+        }
 
 	if inputAction.RequiresWakeWord {
 		// This action requires the wake-word to be spoken before
@@ -218,7 +245,39 @@ def wait_for_input(client, session, input_action):
 {{< /tab >}}
 
 {{< tab "Swift/iOS" "swift" >}}
-// Example coming soon!
+func waitForInput(_ action: Cobaltspeech_Diatheke_WaitForUserAction) {
+	/* Creates a new ASR stream and records audio from the user.
+	   The audio is sent to Diatheke until an ASR result is returned,
+	   which is used to return an updated session. */
+	
+	// The given input action has a couple of flags to help the app
+	// decide when to begin recording audio.
+	if action.immediate {
+		// This action is likely waiting for user input in response to
+		// a question Diatheke asked, in which case the user should
+		// reply immediately. If this flag is false, the app may wait
+		// as long as it wants before processing user input (such as
+		// waiting for a wake-word below).
+	}
+
+	if action.requiresWakeWord {
+		// This action requires the wake-word to be spoken before
+		// any other audio will be processed. Use a wake-word detector
+		// and wait for it to trigger.
+	}
+        
+	var asrResult = Cobaltspeech_Diatheke_ASRResult()
+	// The app should add code here to record audio and get a
+	// result from an ASRStream.
+	print("ASRResult: \(asrResult)")
+        
+	// Update the session with the result
+	client.processASRResult(token: token, asrResult: asrResult) { (sessionOutput) in
+		self.processActions(sessionOutput: sessionOutput)
+	} failure: { (error) in
+		print(error.localizedDescription)
+	}
+}
 {{< /tab >}}
 
 {{< tab "Java/Android" "java" >}}
@@ -267,7 +326,19 @@ def handle_reply(client, reply):
 {{< /tab >}}
 
 {{< tab "Swift/iOS" "swift" >}}
-// Example coming soon!
+func handleReply(_ replyAction: Cobaltspeech_Diatheke_ReplyAction) {
+	// If the app is using audio, it should use the given reply to
+	// create a TTS stream
+	self.ttsStream = self.client.newTTSStream(replyAction: replyAction, dataChunkHandler: { (ttsAudio) in
+		// Add code here to read audio data from the stream and send it to the
+		// playback device.
+	}, completion: { (error) in
+		// Add code here to handle TTS errors and TTS streaming completion
+		if let error = error {
+			print("TTS error received: \(error)")
+		}
+	})
+}
 {{< /tab >}}
 
 {{< tab "Java/Android" "java" >}}
@@ -342,7 +413,24 @@ def handle_command(client, session, cmd):
 {{< /tab >}}
 
 {{< tab "Swift/iOS" "swift" >}}
-// Example coming soon!
+// Executes the task specified by the given command
+func handleCommand(_ commandAction: Cobaltspeech_Diatheke_CommandAction) {
+	print("Command:")
+	// The command ID indicates which task to execute
+	print("  ID: \(commandAction.id)")
+	// The input parameters are extracted from prior session input and
+	// give information relevant to the command.
+	print("  Params: \(commandAction.inputParameters)")
+
+	// Update the session with the command result
+	var commandResult = Cobaltspeech_Diatheke_CommandResult()
+	commandResult.id = commandAction.id
+	client.processCommandResult(token: token, commandResult: commandResult) { (sessionOutput) in
+		self.processActions(sessionOutput: sessionOutput)
+	} failure: { (error) in
+		print(error.localizedDescription)
+	}
+}
 {{< /tab >}}
 
 {{< tab "Java/Android" "java" >}}

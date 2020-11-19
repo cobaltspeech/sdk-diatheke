@@ -26,7 +26,14 @@ client.delete_session(session.token)
 {{< /tab >}}
 
 {{< tab "Swift/iOS" "swift" >}}
-// Example coming soon!
+client.deleteSession(token).response.whenComplete { (result) in
+	switch result {
+	case .success(_):
+		self.token = nil
+	case .failure(let error):
+		print(error.localizedDescription)
+	}
+}
 {{< /tab >}}
 
 {{< tab "Java/Android" "java" >}}

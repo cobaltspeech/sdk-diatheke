@@ -84,7 +84,7 @@ dependency is as easy as adding it to the `dependencies` value of your
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/cobaltspeech/sdk-diatheke.git", .upToNextMajor(from: "1.0"))
+    .package(url: "https://github.com/cobaltspeech/sdk-diatheke.git", .upToNextMajor(from: "2.0"))
 ]
 ```
 

@@ -40,7 +40,25 @@ stream = client.new_session_asr_stream(session.token)
 {{< /tab >}}
 
 {{< tab "Swift/iOS" "swift" >}}
-// Example coming soon!
+// Create the ASR stream. This automatically sends the session
+// token first on the new stream.
+self.asrStream = client.newSessionASRStream(token: token, asrResultHandler: { (result) in
+	switch result {
+	case .success(let asrResult):
+		// Update the session with the ASR Result
+		self.client.processASRResult(token: self.token, asrResult: asrResult) { (sessionOutput) in
+			self.processActions(sessionOutput: sessionOutput)
+		} failure: { (error) in
+			print(error.localizedDescription)
+		}
+	case .failure(let error):
+		print("ASR result error received: \(error)")
+	}
+}, completion: { (error) in
+	if let error = error {
+		print(error.localizedDescription)
+	}
+})
 {{< /tab >}}
 
 {{< tab "Java/Android" "java" >}}
@@ -123,6 +141,15 @@ while haveAudioData:
 // Example coming soon!
 {{< /tab >}}
 
+{{< tab "Swift/iOS" "swift" >}}
+// Send the audio bytes
+asrStream.sendAudio(data: data, completion: { (error) in
+	if let error = error {
+        	print(error.localizedDescription)
+	}
+})
+{{< /tab >}}
+
 {{< /tabs >}}
 
 
@@ -164,6 +191,36 @@ print("confidence:", result.confidence)
 
 {{< tab "C++" "c++" >}}
 // Example coming soon!
+{{< /tab >}}
+
+{{< tab "Swift/iOS" "swift" >}}
+// When there is no more audio data to send
+// (i.e. when the app needs to stop recording audio)
+// call ASRStream's result() method to close the ASR stream
+self.asrStream?.result(completion: { (error) in
+	if let error = error {
+		print(error.localizedDescription)
+	}
+})
+
+// ASR Results come to asrResultHandler block on creating ASRStream
+self.asrStream = client.newSessionASRStream(token: token, asrResultHandler: { (result) in
+	switch result {
+	case .success(let asrResult):
+		// The transcript
+		print("Transcript: \(asrResult.text)")
+		// The confidence the ASR system has in the given transcript,
+		// given as a value between 0 and 1.0, with 1.0 being the most
+		// confident in the result.
+		print("Confidence: \(asrResult.confidence)")
+	case .failure(let error):
+		print("ASR result error received: \(error)")
+	}
+}, completion: { (error) in
+	if let error = error {
+		print(error.localizedDescription)
+	}
+})
 {{< /tab >}}
 
 {{< /tabs >}}

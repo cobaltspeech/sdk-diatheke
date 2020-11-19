@@ -40,7 +40,16 @@ action_list = session.action_list
 {{< /tab >}}
 
 {{< tab "Swift/iOS" "swift" >}}
-// Example coming soon!
+// The specific model ID is defined by the Diatheke server.
+let modelID = "someID"
+client.createSession(modelID: modelID) { (sessionOutput) in
+	// Access the session token
+	self.token = sessionOutput.token
+	// Access the action list
+	self.actionList = sessionOutput.actionList
+} failure: { (error) in
+	print(error.localizedDescription)
+}
 {{< /tab >}}
 
 {{< tab "Java/Android" "java" >}}
