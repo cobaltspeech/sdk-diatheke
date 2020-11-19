@@ -194,15 +194,6 @@ print("confidence:", result.confidence)
 {{< /tab >}}
 
 {{< tab "Swift/iOS" "swift" >}}
-// When there is no more audio data to send
-// (i.e. when the app needs to stop recording audio)
-// call ASRStream's result() method to close the ASR stream
-self.asrStream?.result(completion: { (error) in
-	if let error = error {
-		print(error.localizedDescription)
-	}
-})
-
 // ASR Results come to asrResultHandler block on creating ASRStream
 self.asrStream = client.newSessionASRStream(token: token, asrResultHandler: { (result) in
 	switch result {
@@ -217,6 +208,15 @@ self.asrStream = client.newSessionASRStream(token: token, asrResultHandler: { (r
 		print("ASR result error received: \(error)")
 	}
 }, completion: { (error) in
+	if let error = error {
+		print(error.localizedDescription)
+	}
+})
+
+// When there is no more audio data to send
+// (i.e. when the app needs to stop recording audio)
+// call ASRStream's result() method to close the ASR stream
+self.asrStream.result(completion: { (error) in
 	if let error = error {
 		print(error.localizedDescription)
 	}
