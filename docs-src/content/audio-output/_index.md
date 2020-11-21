@@ -29,7 +29,8 @@ stream = client.new_tts_stream(reply)
 {{< /tab >}}
 
 {{< tab "C++" "c++" >}}
-// Example coming soon!
+// Create the TTS stream
+Diatheke::TTSStream stream = client.newTTSStream(reply);
 {{< /tab >}}
 
 {{< tab "Swift/iOS" "swift" >}}
@@ -76,7 +77,11 @@ diatheke.write_TTS_audio(stream, audioOut)
 {{< /tab >}}
 
 {{< tab "C++" "c++" >}}
-// Example coming soon!
+// Set up the audio output as a subclass of Diatheke::AudioWriter.
+Diatheke::AudioWriter* audioOut;
+
+// Play the reply uninterrupted
+Diatheke::WriteTTSAudio(stream, audioOut);
 {{< /tab >}}
 
 {{< tab "Java/Android" "java" >}}
@@ -118,7 +123,12 @@ for data in stream:
 {{< /tab >}}
 
 {{< tab "C++" "c++" >}}
-// Example coming soon!
+// Wait for the next audio chunk
+std::string buffer;
+while (stream.receiveAudio(buffer)) {
+    // Play back the audio data.
+    playAudio(buffer);
+}
 {{< /tab >}}
 
 {{< tab "Swift/iOS" "swift" >}}

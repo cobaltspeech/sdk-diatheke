@@ -36,7 +36,9 @@ stream = client.new_session_asr_stream(session.token)
 {{< /tab >}}
 
 {{< tab "C++" "c++" >}}
-// Example coming soon!
+// Create the ASR stream. This automatically sends the session
+// token first on the new stream.
+Diatheke::ASRStream stream = client.newSessionASRStream(session.token());
 {{< /tab >}}
 
 {{< tab "Swift/iOS" "swift" >}}
@@ -105,6 +107,20 @@ result = diatheke.read_ASR_audio(stream, audioSource, buffSize)
 print("transcript:", result.text)
 {{< /tab >}}
 
+{{< tab "C++" "c++" >}}
+// The audio source should inherit from the Diatheke::AudioReader class.
+Diatheke::AudioReader* audioSource;
+
+// Send 8kB chunks at a time
+size_t buffSize = 8192;
+
+// Process audio until we get a result or the number of bytes read
+// (as returned by the Diatheke::AudioReader) is zero.
+cobaltspeech::diatheke::ASRResult result =
+    Diatheke::ReadASRAudio(stream, audioSource, buffSize);
+std::cout << "transcript: " << result.text() << std::endl;
+{{< /tab >}}
+
 {{< /tabs >}}
 
 
@@ -138,7 +154,15 @@ while haveAudioData:
 {{< /tab >}}
 
 {{< tab "C++" "c++" >}}
-// Example coming soon!
+while(haveAudioData) {
+    std::string audioData = getFromSource();
+
+    // Send the audio bytes
+    if(!stream.sendAudio(audioData)) {
+        // The stream has been closed, and a result is available
+        break;
+    }
+}
 {{< /tab >}}
 
 {{< tab "Swift/iOS" "swift" >}}
@@ -190,7 +214,17 @@ print("confidence:", result.confidence)
 {{< /tab >}}
 
 {{< tab "C++" "c++" >}}
-// Example coming soon!
+// Get the result from the stream. If the stream has not already
+// been closed by the server, this will close it.
+auto result = stream.result();
+
+// The transcript
+std::cout << "transcript: " << result.text() << std::endl;
+
+// The confidence the ASR system has in the given transcript,
+// given as a value between 0 and 1.0, with 1.0 being the most
+// confident in the result.
+std::cout << "confidence: " << result.confidence() << std::endl;
 {{< /tab >}}
 
 {{< tab "Swift/iOS" "swift" >}}

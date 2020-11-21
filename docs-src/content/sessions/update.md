@@ -29,7 +29,8 @@ session = client.process_asr_result(session.token, result)
 {{< /tab >}}
 
 {{< tab "C++" "c++" >}}
-// Example coming soon!
+// Update the session with an ASR result returned previously.
+session = client.processASRResult(session.token(), result);
 {{< /tab >}}
 
 {{< tab "Swift/iOS" "swift" >}}
@@ -67,7 +68,9 @@ session = client.process_text(session.token, text)
 {{< /tab >}}
 
 {{< tab "C++" "c++" >}}
-// Example coming soon!
+// Update the session with text.
+std::string text = "what's the weather forecast for today";
+session = client.processText(session.token(), text);
 {{< /tab >}}
 
 {{< tab "Swift/iOS" "swift" >}}
@@ -125,7 +128,19 @@ session = client.process_command_result(session.token, result)
 {{< /tab >}}
 
 {{< tab "C++" "c++" >}}
-// Example coming soon!
+// Always use the original command ID in the result
+cobaltspeech::diatheke::CommandResult result;
+result.set_id(cmd.id());
+
+// If there are any output parameters expected by the model,
+// add them to the result.
+(*result.mutable_out_parameters())["key"] = "val";
+
+// If there was a fatal error, set the error message in the result.
+result.set_error("I died");
+
+// Update the session with the result
+session = client.processCommandResult(session.token(), result);
 {{< /tab >}}
 
 {{< tab "Swift/iOS" "swift" >}}
@@ -182,7 +197,7 @@ session, err = client.SetStory(context.Background(), session.Token, storyID, par
 # The story ID is defined in the Diatheke model
 story_id = "alertStory"
 
-# Set parameters in the updates session's memory (leave empty to
+# Set parameters in the updated session's memory (leave empty to
 # clear memory)
 params = {"key": "val"}
 
@@ -191,7 +206,16 @@ session = client.set_story(session.token, story_id, params)
 {{< /tab >}}
 
 {{< tab "C++" "c++" >}}
-// Example coming soon!
+// The story ID is defined in the Diatheke model
+std::string storyID = "alertStory";
+
+// Set parameters in the updated session's memory (leave empty to
+// clear memory)
+std::map<std::string, std::string> params;
+params["key"] = "val";
+
+// Update the session
+session = client.setStory(session.token(), storyID, params);
 {{< /tab >}}
 
 {{< tab "Swift/iOS" "swift" >}}

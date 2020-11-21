@@ -230,7 +230,13 @@ print("  Luna (TTS):", ver.luna)
 {{< /tab >}}
 
 {{< tab "C++" "c++" >}}
-// Example coming soon!
+// Request the server version info
+auto ver = client.version();
+std::cout << "Server Version" << std::endl;
+std::cout << "  Diatheke: " << ver.diatheke() << std::endl;
+std::cout << "  Chosun (NLU): " << ver.chosun() << std::endl;
+std::cout << "  Cubic (ASR): " << ver.cubic() << std::endl;
+std::cout << "  Luna (TTS): " << ver.luna() << std::endl;
 {{< /tab >}}
 
 {{< tab "Swift/iOS" "swift" >}}
@@ -285,7 +291,16 @@ for mdl in model_list:
 {{< /tab >}}
 
 {{< tab "C++" "c++" >}}
-// Example coming soon!
+// Request the list of available models
+auto modelList = client.listModels();
+std::cout << "\nAvailable Models:" << std::endl;
+for (auto &mdl : modelList.models()) {
+    std::cout << "  ID: " << mdl.id() << std::endl;
+    std::cout << "    Name: " << mdl.name() << std::endl;
+    std::cout << "    Language: " << mdl.language() << std::endl;
+    std::cout << "    ASR Sample Rate: " << mdl.asr_sample_rate() << std::endl;
+    std::cout << "    TTS Sample Rate: " << mdl.tts_sample_rate() << std::endl;
+}
 {{< /tab >}}
 
 {{< tab "Swift/iOS" "swift" >}}

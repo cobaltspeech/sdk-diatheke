@@ -37,7 +37,15 @@ action_list = session.action_list
 {{< /tab >}}
 
 {{< tab "C++" "c++" >}}
-// Example coming soon!
+// The specific model ID is defined by the Diatheke server.
+std::string modelID = "someID";
+auto session = client.createSession(modelID);
+
+// Access the session token
+auto token = session.token();
+
+// Access the action list
+auto actionList = session.action_list();
 {{< /tab >}}
 
 {{< tab "Swift/iOS" "swift" >}}
