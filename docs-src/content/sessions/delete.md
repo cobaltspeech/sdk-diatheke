@@ -30,7 +30,7 @@ client.delete_session(session.token)
 {{< /tab >}}
 
 {{< tab "C++" "c++" >}}
-// Example coming soon!
+client.deleteSession(session.token());
 {{< /tab >}}
 
 {{< tab "Swift/iOS" "swift" >}}

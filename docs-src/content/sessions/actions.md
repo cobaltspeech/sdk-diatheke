@@ -70,7 +70,29 @@ def process_actions(client, session):
 {{< /tab >}}
 
 {{< tab "C++" "c++" >}}
-// Example coming soon!
+// Executes the actions for the given session and returns
+// an updated session.
+cobaltspeech::diatheke::SessionOutput processActions(
+    Diatheke::Client *client,
+    const cobaltspeech::diatheke::SessionOutput &session) {
+    // Iterate through each action in the list and determine its type.
+    for (auto action : session.action_list()) {
+        if (action.has_input()) {
+            // The WaitForUserAction will involve a session update.
+            return waitForInput(client, session, action.input());
+        } else if (action.has_reply()) {
+            // Replies do not require a session update.
+            handleReply(action.reply());
+        } else if (action.has_command()) {
+            // The CommandAction will involve a session update.
+            return handleCommand(client, session, action.command());
+        } else {
+            throw std::runtime_error("received unknown action type");
+        }
+    }
+
+    throw std::runtime_error("action list ended without session update");
+}
 {{< /tab >}}
 
 {{< tab "Swift/iOS" "swift" >}}
@@ -145,7 +167,21 @@ def wait_for_input(client, session, input_action):
 {{< /tab >}}
 
 {{< tab "C++" "c++" >}}
-// Example coming soon!
+// Prompts the user for text input, then returns an updated
+// session based on the user-supplied text.
+cobaltspeech::diatheke::SessionOutput waitForInput(
+    Diatheke::Client *client,
+    const cobaltspeech::diatheke::SessionOutput &session,
+    const cobaltspeech::diatheke::WaitForUserAction &inputAction) {
+    std::cout << std::endl << "\nDiatheke> " << std::flush;
+
+    // Wait for user input
+    std::string text;
+    std::getline(std::cin, text);
+
+    // Update the session with the text.
+    return client->processText(session.token(), text);
+}
 {{< /tab >}}
 
 {{< tab "Swift/iOS" "swift" >}}
@@ -241,7 +277,49 @@ def wait_for_input(client, session, input_action):
 {{< /tab >}}
 
 {{< tab "C++" "c++" >}}
-// Example coming soon!
+/*
+ * Prompts the user for text input, then returns an updated
+ * session based on the user-supplied text.
+ */
+cobaltspeech::diatheke::SessionOutput waitForInput(
+    Diatheke::Client *client,
+    const cobaltspeech::diatheke::SessionOutput &session,
+    const cobaltspeech::diatheke::WaitForUserAction &inputAction) {
+    /*
+     * The given input action has a couple of flags to help
+     * the app decide when to begin recording audio.
+     */
+    if (inputAction.immediate()) {
+        /*
+         * This action is likely waiting for user input in response
+         * to a question Diatheke asked, in which case the user's audio
+         * should be streamed back to Diatheke immediately. If this flag
+         * is false, the app may wait as long as it wants before processing
+         * user input (such as waiting for a wake-word below).
+         */
+    }
+
+    if (inputAction.requires_wake_word()) {
+        /*
+         * This action requires the wake-word to be spoken before
+         * the user input will be accepted. Use a wake-word detector
+         * and wait for it to trigger.
+         */
+    }
+
+    cobaltspeech::diatheke::ASRResult result;
+    /*
+     * The application should add code here to record audio and get a
+     * result from an ASR stream.
+     */
+  
+    // Update the session with the result
+    std::cout << "\n  ASRResult:" << std::endl;
+    std::cout << "    Text: " << result.text() << std::endl;
+    std::cout << "    Confidence: " << result.confidence() << std::endl;
+
+    return client->processASRResult(session.token(), result);
+}
 {{< /tab >}}
 
 {{< tab "Swift/iOS" "swift" >}}
@@ -291,9 +369,11 @@ An Immediate WaitForUserAction is appropriate for input required to fulfill or
 continue a specific interaction and is usually in response to a prompt from Diatheke.
 For example, if the user's previous input was ambiguous or missing a required 
 parameter, Diatheke will prompt for clarification:
+```
 > User: I want to reserve a table for 2 on Friday.
 > Diatheke: What time do you want the reservation?
 > User: 7 p.m.
+```
 
 If the action does not have the Immediate flag set, the specific interaction is
 complete and the system is waiting for whatever the user may next request, similar
@@ -339,7 +419,20 @@ def handle_reply(client, reply):
 {{< /tab >}}
 
 {{< tab "C++" "c++" >}}
-// Example coming soon!
+// Prints the text of the given reply to stdout.
+void handleReply(const cobaltspeech::diatheke::ReplyAction &reply) {
+    std::cout << "\n  Reply:" << reply.text() << std::endl;
+
+    /*
+     * If the application is using audio, it should use the given reply to
+     * create a TTS stream.
+     */
+    Diatheke::TTSStream stream = client->newTTSStream(reply);
+
+    /* Add code here to read audio data from the stream and send it to the
+     * playback device.
+     */
+}
 {{< /tab >}}
 
 {{< tab "Swift/iOS" "swift" >}}
@@ -435,7 +528,37 @@ def handle_command(client, session, cmd):
 {{< /tab >}}
 
 {{< tab "C++" "c++" >}}
-// Example coming soon!
+/*
+ * Executes the task specified by the given command and
+ * returns an updated session based on the command result.
+ */
+cobaltspeech::diatheke::SessionOutput handleCommand(
+    Diatheke::Client *client,
+    const cobaltspeech::diatheke::SessionOutput &session,
+    const cobaltspeech::diatheke::CommandAction &cmd) {
+    std::cout << "\n  Command:" << std::endl;
+
+    // The command ID indicates which task to execute
+    std::cout << "    ID:" << cmd.id() << std::endl;
+    std::cout << "    Input params:" << std::endl;
+
+    /*
+     * The input parameters are extracted from prior session input and
+     * give information relevant to the command. In C++ the data structure
+     * is similar to a std::map.
+     */
+    auto params = cmd.input_parameters();
+    for (auto iter = params.begin(); iter != params.end(); iter++) {
+      std::cout << "      " << iter->first << " = " << iter->second << std::endl;
+    }
+
+    // Add application-specific code to execute the command.
+
+    // Update the session with the command result
+    cobaltspeech::diatheke::CommandResult result;
+    result.set_id(cmd.id());
+    return client->processCommandResult(session.token(), result);
+}
 {{< /tab >}}
 
 {{< tab "Swift/iOS" "swift" >}}
