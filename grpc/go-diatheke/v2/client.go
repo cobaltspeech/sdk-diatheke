@@ -22,7 +22,7 @@ import (
 	"crypto/x509"
 	"fmt"
 
-	"github.com/cobaltspeech/sdk-diatheke/grpc/go-diatheke/diathekepb"
+	"github.com/cobaltspeech/sdk-diatheke/grpc/go-diatheke/v2/diathekepb"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 )

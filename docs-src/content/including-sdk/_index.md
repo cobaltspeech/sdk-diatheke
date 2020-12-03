@@ -26,10 +26,11 @@ described in detail in [this README file](https://github.com/cobaltspeech/sdk-di
 
 ## Go
 The Go SDK supports Go modules and requires Go 1.14 or later. To use the
-SDK, import this package into your application:
+SDK, import this package into your application. For v2 of the SDK and later,
+be sure to include the version prefix in the import path (e.g., v2, v3, etc.).
 
 ``` go
-import "github.com/cobaltspeech/sdk-diatheke/grpc/go-diatheke"
+import "github.com/cobaltspeech/sdk-diatheke/grpc/go-diatheke/v2"
 ```
 
 {{% panel theme="info" header="Note" %}}

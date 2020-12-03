@@ -17,7 +17,7 @@ package diatheke
 import (
 	"io"
 
-	"github.com/cobaltspeech/sdk-diatheke/grpc/go-diatheke/diathekepb"
+	"github.com/cobaltspeech/sdk-diatheke/grpc/go-diatheke/v2/diathekepb"
 )
 
 // ASRStream represents a stream of data sent from the client to
