@@ -1,4 +1,4 @@
-module github.com/cobaltspeech/sdk-diatheke/grpc/go-diatheke
+module github.com/cobaltspeech/sdk-diatheke/grpc/go-diatheke/v2
 
 go 1.14
 

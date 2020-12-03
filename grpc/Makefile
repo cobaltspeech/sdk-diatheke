@@ -8,7 +8,7 @@ ifeq ($(PROTOINC),)
 $(error "env variable PROTOINC must be defined to the location of googleapis proto files")
 endif
 
-GO_OUTDIR=go-diatheke/diathekepb
+GO_OUTDIR=go-diatheke/v2/diathekepb
 PY_OUTDIR=py-diatheke/diatheke
 DOCS_OUTDIR=../docs-src/content/protobuf
 SWIFTDIR=../deps/swift/bin
