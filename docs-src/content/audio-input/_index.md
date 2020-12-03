@@ -154,11 +154,11 @@ while haveAudioData:
 {{< /tab >}}
 
 {{< tab "C++" "c++" >}}
-while(haveAudioData) {
+while (haveAudioData) {
     std::string audioData = getFromSource();
 
     // Send the audio bytes
-    if(!stream.sendAudio(audioData)) {
+    if (!stream.sendAudio(audioData)) {
         // The stream has been closed, and a result is available
         break;
     }
