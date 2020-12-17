@@ -73,6 +73,7 @@ This step should always pass without errors before publishing.
 
 To publish to GitHub Packages, simply run `./gradlew publish`.
 If you are building locally, you can use `./gradlew publishToMavenLocal` to publish to your `~/.m2/repositories/` at `com/cobaltspeech/diatheke/sdk-diatheke[-lite]`.
+This is helpful for debugging changes without the need of publishing to GitHub Packages.  Published versions can not be deleted.
 Please note:  Currently, the version is a variable set in the `lib/build.gradle`.  This should probably be refactored at some point.
 
 ### Cleaning

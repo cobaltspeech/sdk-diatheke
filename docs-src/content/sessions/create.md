@@ -62,7 +62,14 @@ client.createSession(modelID: modelID) { (sessionOutput) in
 {{< /tab >}}
 
 {{< tab "Java/Android" "java" >}}
-// Example coming soon!
+// The specific model ID is defined by the Diatheke server.
+String modelID = "someID";
+SessionStart req = SessionStart.newBuilder().setModelId(modelId).build();
+
+SessionOutput resp = mDiathekeBlockingService.createSession(req);
+
+TokenData token = resp.getToken();
+List<ActionData> actionList = resp.getActionListList();
 {{< /tab >}}
 
 {{< /tabs >}}

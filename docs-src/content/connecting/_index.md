@@ -84,14 +84,35 @@ class DiathekeConnection {
 {{< /tab >}}
 
 {{< tab "Java/Android" "java" >}}
-	import cobaltspeech.diatheke.DiathekeGrpc;
-	String serverAddress = "localhost";
-	int serverPort = 9002;
-	ManagedChannelBuilder<?> builder = ManagedChannelBuilder
-			.forAddress(serverAddress,serverPort);
-	builder.usePlaintext();
-	ManagedChannel mCubicChannel = builder.build();
-	DiathekeGrpc.DiathekeStub mClient = DiathekeGrpc.newStub(mCubicChannel);
+import cobaltspeech.diatheke.DiathekeGrpc;
+
+public class DiathekeClient {
+    private ManagedChannel mDiathekeChannel;
+    private DiathekeGrpc.DiathekeStub mDiathekeService;
+    private DiathekeGrpc.DiathekeBlockingStub mDiathekeBlockingService;
+
+    public DiathekeClient() { }
+
+    public void connect(String host, boolean isSecure) {
+        ManagedChannelBuilder<?> builder = ManagedChannelBuilder
+                .forTarget(host);
+        if (!isSecure) {
+            builder.usePlaintext();
+        }
+
+        mDiathekeChannel = builder.build();
+        mDiathekeService = DiathekeGrpc.newStub(mDiathekeChannel);
+        mDiathekeBlockingService = DiathekeGrpc.newBlockingStub(mDiathekeChannel);
+    }
+
+    public void disconnect() {
+        if (mDiathekeChannel != null && !mDiathekeChannel.isShutdown()) {
+            mDiathekeChannel.shutdownNow();
+            mDiathekeChannel = null;
+        }
+        mDiathekeService = null;
+        mDiathekeBlockingService = null;
+    }
 {{< /tab >}}
 
 {{</tabs >}}
@@ -187,10 +208,9 @@ class DiathekeConnection {
 {{< /tab >}}
 
 {{< tab "Java/Android" "java" >}}
-
 ManagedChannelBuilder<?> builder = ManagedChannelBuilder
-	.forAddress(serverAddress,serverPort)
-	.useTransportSecurity(certChainFile, privateKeyFile)
+    .forAddress(serverAddress,serverPort)
+    .useTransportSecurity(certChainFile, privateKeyFile)
 ManagedChannel mCubicChannel = builder.build();
 DiathekeGrpc.DiathekeStub mClient = DiathekeGrpc.newStub(mCubicChannel);
 {{< /tab >}}
@@ -253,7 +273,13 @@ client.version { (response) in
 {{< /tab >}}
 
 {{< tab "Java/Android" "java" >}}
-// Example coming soon!
+Empty e = Empty.newBuilder().build();
+VersionResponse ver = mDiathekeBlockingService.version(e);
+Log.i("Server Version");
+Log.i("Diatheke: " + ver.getDiatheke());
+Log.i("Chosun (NLU): " + ver.getChosun());
+Log.i("Cubic (ASR): " + ver.getCubic());
+Log.i("Luna (TTS): " + ver.getLuna());
 {{< /tab >}}
 
 {{< /tabs >}}
@@ -320,7 +346,16 @@ client.listModels { (models) in
 {{< /tab >}}
 
 {{< tab "Java/Android" "java" >}}
-// Example coming soon!
+Empty e = Empty.newBuilder().build();
+ListModelsResponse resp = mDiathekeBlockingService.listModels(e);
+Log.i(TAG, "Available Models:");
+for (ModelInfo model: resp.getModelsList()) {
+    Log.i(TAG, "  ID:" + model.getId());
+    Log.i(TAG, "    Name:" + model.getName());
+    Log.i(TAG, "    Language:" + model.getLanguage());
+    Log.i(TAG, "    ASR Sample Rate:" + model.getAsrSampleRate());
+    Log.i(TAG, "    TTS Sample Rate:" + model.getTtsSampleRate());
+}
 {{< /tab >}}
 
 {{< /tabs >}}
