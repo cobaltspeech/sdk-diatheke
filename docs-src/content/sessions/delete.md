@@ -45,7 +45,7 @@ client.deleteSession(token).response.whenComplete { (result) in
 {{< /tab >}}
 
 {{< tab "Java/Android" "java" >}}
-// Example coming soon!
+Empty e = mDiathekeBlockingService.deleteSession(mToken);
 {{< /tab >}}
 
 {{< /tabs >}}

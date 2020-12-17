@@ -43,7 +43,7 @@ self.ttsStream = self.client.newTTSStream(replyAction: replyAction, dataChunkHan
 {{< /tab >}}
 
 {{< tab "Java/Android" "java" >}}
-// Example coming soon!
+Iterator<TTSAudio> ttsResp = mDiathekeBlockingService.streamTTS(reply);
 {{< /tab >}}
 
 {{< /tabs >}}
@@ -82,10 +82,6 @@ Diatheke::AudioWriter* audioOut;
 
 // Play the reply uninterrupted
 Diatheke::WriteTTSAudio(stream, audioOut);
-{{< /tab >}}
-
-{{< tab "Java/Android" "java" >}}
-// Example coming soon!
 {{< /tab >}}
 
 {{< /tabs >}}
@@ -155,7 +151,18 @@ func handleReply(_ replyAction: Cobaltspeech_Diatheke_ReplyAction) {
 {{< /tab >}}
 
 {{< tab "Java/Android" "java" >}}
-// Example coming soon!
+private void requestAudio(ReplyAction reply) ByteArrayOutputStream {
+	// Make a request to the server for TTS audio
+	Iterator<TTSAudio> ttsResp = mDiathekeBlockingService.streamTTS(reply);
+
+	// Collect the audio into a single array
+	ByteArrayOutputStream os = new ByteArrayOutputStream();
+	while (ttsResp.hasNext()) {
+		os.write(ttsResp.next().getAudio().toByteArray());
+	}
+
+	return os;
+}
 {{< /tab >}}
 
 {{< /tabs >}}

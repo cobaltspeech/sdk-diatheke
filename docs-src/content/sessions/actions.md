@@ -110,14 +110,38 @@ func processActions(sessionOutput: Cobaltspeech_Diatheke_SessionOutput) {
 			self.handleReply(replyAction)
 		case .command(let commandAction):
 			// The CommandAction will involve a session update
-			self.handleCommand(commandAction
+			self.handleCommand(commandAction)
 		}
 	}
 }
 {{< /tab >}}
 
 {{< tab "Java/Android" "java" >}}
-// Example coming soon!
+private void executeActions(SessionOutput resp) {
+    List<ActionData> actionsToExecute = resp.getActionListList();
+
+    for (ActionData action : actions) {
+        switch (action.getActionCase()) {
+            case INPUT:
+                WaitForUserAction input = action.getInput();
+                break;
+
+            case COMMAND:
+                CommandAction cmd = action.getCommand();
+                handleCommandRequest(cmd);
+                break;
+
+            case REPLY:
+                ReplyAction reply = action.getReply();
+                handleReplyAction(reply);
+                break;
+
+            case ACTION_NOT_SET:
+                Log.i(TAG, "ACTION_NOT_SET Response :/");
+                break;
+        }
+    }
+}
 {{< /tab >}}
 
 {{< /tabs >}}
@@ -199,7 +223,19 @@ func waitForInput(_ action: Cobaltspeech_Diatheke_WaitForUserAction) {
 {{< /tab >}}
 
 {{< tab "Java/Android" "java" >}}
-// Example coming soon!
+public List<ActionData> waitForInput() throws StatusRuntimeException {
+    // In a real application `waitForInput` function may be called from a button or editText listener.
+    String text = "some text input"
+    TextInput txtMsg = TextInput.newBuilder()
+            .setText(text)
+            .build();
+    SessionInput input = SessionInput.newBuilder()
+            .setToken(mToken)
+            .setText(txtMsg)
+            .build();
+    SessionOutput resp = mDiathekeBlockingService.updateSession(input);
+    executeActions(resp);
+}
 {{< /tab >}}
 
 {{< /tabs >}}
@@ -359,7 +395,40 @@ func waitForInput(_ action: Cobaltspeech_Diatheke_WaitForUserAction) {
 {{< /tab >}}
 
 {{< tab "Java/Android" "java" >}}
-// Example coming soon!
+private void waitForInput(_ action: Cobaltspeech_Diatheke_WaitForUserAction) {
+	/* Creates a new ASR stream and records audio from the user.
+	   The audio is sent to Diatheke until an ASR result is returned,
+	   which is used to return an updated session. */
+	
+	// The given input action has a couple of flags to help the app
+	// decide when to begin recording audio.
+	if (action.immediate) {
+		// This action is likely waiting for user input in response to
+		// a question Diatheke asked, in which case the user's audio should
+		// be streamed back to Diatheke immediately. If this flag is false,
+		// the application may wait as long as it wants before processing
+		// user input (such as waiting for a wake-word below).
+	}
+
+	if (action.requiresWakeWord) {
+		// This action requires the wake-word to be spoken before
+		// any other audio will be processed. Use a wake-word detector
+		// and wait for it to trigger.
+	}
+
+	ASRResult asrResult = new ASRResult();
+	var asrResult = Cobaltspeech_Diatheke_ASRResult()
+	// The app should add code here to record audio and get a
+	// result from an ASRStream.
+	Log.v(TAG, "ASRResult: " + asrResult);
+
+	// Update the session with the result
+	SessionInput input = SessionInput.newBuilder()
+		.setToken(mToken)
+		.setAsr(asrResult)
+		.build();
+	SessionOutput resp = mDiathekeBlockingService.updateSession(input);
+}
 {{< /tab >}}
 
 {{< /tabs >}}
@@ -452,7 +521,25 @@ func handleReply(_ replyAction: Cobaltspeech_Diatheke_ReplyAction) {
 {{< /tab >}}
 
 {{< tab "Java/Android" "java" >}}
-// Example coming soon!
+private void handleReplyAction(ReplyAction reply) {
+	// Request a call to TTS.
+	try {
+		Iterator<TTSAudio> ttsResp = mDiathekeBlockingService.streamTTS(reply);
+
+		// Collect the audio into a single array
+		ByteArrayOutputStream bb = new ByteArrayOutputStream();
+		while (ttsResp.hasNext()) {
+			bb.write(ttsResp.next().getAudio().toByteArray());
+		}
+
+        // Add code here to handle the full audio, add a wave header, save to a temp file, play via MediaPlayer, etc.
+
+	} catch (Exceptoin e) {
+        // Handle errors here.
+    }
+}
+
+
 {{< /tab >}}
 
 {{< /tabs >}}
@@ -583,7 +670,28 @@ func handleCommand(_ commandAction: Cobaltspeech_Diatheke_CommandAction) {
 {{< /tab >}}
 
 {{< tab "Java/Android" "java" >}}
-// Example coming soon!
+private void handleCommandRequest(CommandAction cmd) {
+    // Log the incoming command and parameters.
+    Log.i(TAG, String.format(Locale.US, "Command ID: %s", cmd.getId()));
+    for (Map.Entry<String, String> entry : cmd.getInputParametersMap().entrySet()) {
+        Log.i(TAG, String.format(Locale.US, "{%s: %s}", entry.getKey(), entry.getValue()));
+    }
+
+    // Each command should have a result sent.  We will just do a hardcoded that response.
+    CommandResult cmdResult = CommandResult.newBuilder()
+            .putOutParameters("Param1", "Value1")
+            .putOutParameters("Param2", "Value2")
+            .setId(cmd.getId())
+            .setError("")
+            .build();
+
+    Log.i(TAG, "Sending command results now");        SessionInput input = SessionInput.newBuilder()
+            .setToken(mToken)
+            .setCmd(commandResult)
+            .build();
+    SessionOutput resp = mDiathekeBlockingService.updateSession(input);
+    executeActions(resp.getActionListList());
+}
 {{< /tab >}}
 
 {{< /tabs >}}

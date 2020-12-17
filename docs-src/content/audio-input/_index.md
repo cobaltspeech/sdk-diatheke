@@ -64,7 +64,8 @@ self.asrStream = client.newSessionASRStream(token: token, asrResultHandler: { (r
 {{< /tab >}}
 
 {{< tab "Java/Android" "java" >}}
-// Example coming soon!
+// Example coming!
+// For now, please see https://grpc.io/docs/platforms/android/java/basics/#client-side-streaming-rpc
 {{< /tab >}}
 
 {{< /tabs >}}

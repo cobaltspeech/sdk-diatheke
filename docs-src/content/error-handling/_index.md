@@ -86,24 +86,42 @@ client.createSession(modelID: model.id) { (sessionOutput) in
     print(error.localizedDescription)
 }
 ```
-## Android 
+## Android
 
-```java 
-diathekeStub.sessionEventStream(DiathekeOuterClass.SessionID.newBuilder().build(), new StreamObserver<DiathekeOuterClass.DiathekeEvent>() {
-            @Override
-            public void onNext(DiathekeOuterClass.DiathekeEvent value) {
-                // Handle success response here
-            }
+For synchronous calls, Java Exceptions are thrown by the generated gRPC calls, allowing the use of Try Catch blocks.
 
-            @Override
-            public void onError(Throwable t) {
-                // Handle the error here
-                Log.e("DIATHEKE_ERROR",t.getMessage());
-            }
+```java
+try {
+    SessionStart req = SessionStart.newBuilder().setModelId(modelId).build();
+    SessionOutput resp = mDiathekeBlockingService.createSession(req);
+} catch (StatusRuntimeException e) {
+    // Handle errors here
+}
+```
 
-            @Override
-            public void onCompleted() {
-                
-            }
-        });
+For asynchronous calls, the StreamObservers will include an onError callback method.
+
+```java
+// Create the callback observer
+StreamObserver<ASRResult> responseObserver = new StreamObserver<ASRResult>() {
+    @Override
+    public void onNext(ASRResult result) {
+    }
+
+    @Override
+    public void onError(Throwable t) {
+        // Handle errors here
+    }
+
+    @Override
+    public void onCompleted() {
+    }
+};
+
+// Create stream
+StreamObserver<ASRInput> requestObserver = mDiathekeService.streamASR(responseObserver);
+
+// Send data
+requestObserver.onNext(cfg);
+requestObserver.onNext(audio);
 ```

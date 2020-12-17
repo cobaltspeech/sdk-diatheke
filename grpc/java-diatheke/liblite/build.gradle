@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'com.cobaltspeech.diatheke'
-version = '2.0.0'
+version = '2.0.0-rc1'
 
 java {
     toolchain {

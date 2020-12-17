@@ -44,7 +44,11 @@ client.processASRResult(token: token, asrResult: asrResult) { (sessionOutput) in
 {{< /tab >}}
 
 {{< tab "Java/Android" "java" >}}
-// Example coming soon!
+SessionInput input = SessionInput.newBuilder()
+		.setToken(mToken)
+		.setAsr(asrResult)
+		.build();
+SessionOutput resp = mDiathekeBlockingService.updateSession(input);
 {{< /tab >}}
 
 {{< /tabs >}}
@@ -85,7 +89,15 @@ client.processText(token: token, text: text) { (sessionOutput) in
 {{< /tab >}}
 
 {{< tab "Java/Android" "java" >}}
-// Example coming soon!
+String text = "what's the weather forcast for today";
+TextInput txtMsg = TextInput.newBuilder()
+		.setText(text)
+		.build();
+SessionInput input = SessionInput.newBuilder()
+		.setToken(mToken)
+		.setText(txtMsg)
+		.build();
+SessionOutput resp = mDiathekeBlockingService.updateSession(input);
 {{< /tab >}}
 
 {{< /tabs >}}
@@ -165,7 +177,24 @@ self.client.processCommandResult(token: token, commandResult: commandResult) { (
 {{< /tab >}}
 
 {{< tab "Java/Android" "java" >}}
-// Example coming soon!
+CommandResult.Builder commandResult = CommandResult.newBuilder();
+
+// Always use the original command ID in the result
+commandResult.setId(commandAction.getId());
+
+// If there are any output parameters expected by the model,
+// add them to the result.
+commandResult.putOutParameters("key", "val");
+
+// If there was a fatal error, set the error message in the result.
+commandResult.setError("I died");
+
+// Update the session with the result
+SessionInput input = SessionInput.newBuilder()
+		.setToken(mToken)
+		.setCmd(commandResult.build())
+		.build();
+SessionOutput resp = mDiathekeBlockingService.updateSession(input);
 {{< /tab >}}
 
 {{< /tabs >}}
@@ -236,7 +265,19 @@ client.setStory(token: token, storyID: storyID, params: params) { (sessionOutput
 {{< /tab >}}
 
 {{< tab "Java/Android" "java" >}}
-// Example coming soon!
+String storyId = "alertStory"
+Map<String, String> h = new HashMap<String, String>();
+params.put("key","val");
+
+SetStory story = SetStory.newBuilder()
+		.setStoryId(storyId)
+		.putAllParameters(params)
+		.build();
+SessionInput input = SessionInput.newBuilder()
+		.setToken(mToken)
+		.setStory(story)
+		.build();
+SessionOutput resp = mDiathekeBlockingService.updateSession(input);
 {{< /tab >}}
 
 {{< /tabs >}}
