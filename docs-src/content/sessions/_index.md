@@ -28,7 +28,7 @@ should process. This cycle of processing actions and updating the session
 continues until the application decides it is done with the session, at which
 point it is deleted.
 
-![Session Overview](/img/session_overview.png)
+![Session Overview](../img/session_overview.png)
 
 ## Example Workflows
 Below are a couple of examples showing how an application may interact with a
@@ -60,7 +60,7 @@ back to the user. Once playback is complete, the next action (another
 WaitForUserAction) is handled, and the process continues for the lifetime
 of the session.
 
-![Voice Workflow](/img/voice_workflow.png)
+![Voice Workflow](../img/voice_workflow.png)
 
 ### Text I/O
 In this example, only text interactions are defined between the user and
@@ -83,7 +83,7 @@ Diatheke's reply that the application should display to the user using an
 appropriate method. The next action (another WaitForUserAction) is then
 handled, and the process continues for the lifetime of the session.
 
-![Text Workflow](/img/text_workflow.png)
+![Text Workflow](../img/text_workflow.png)
 
 ### Mixed I/O
 Applications are allowed to combine voice and text I/O in whatever ways
