@@ -23,25 +23,37 @@ session token.
 
 {{< tabs >}}
 
-{{< tab "Go" "go" >}}
+{{< tab "Go" >}}
+
+```go
 // Create the ASR stream. This automatically sends the session
 // token first on the new stream.
 stream, err := client.NewSessionASRStream(context.Background(), session.Token)
+```
+
 {{< /tab >}}
 
-{{< tab "Python" "python">}}
+{{< tab "Python" }}
+
+```python
 # Create the ASR stream. This automatically sends the session
 # token first on the new stream.
 stream = client.new_session_asr_stream(session.token)
+```
+
 {{< /tab >}}
 
 {{< tab "C++" "c++" >}}
+```c++
 // Create the ASR stream. This automatically sends the session
 // token first on the new stream.
 Diatheke::ASRStream stream = client.newSessionASRStream(session.token());
+```
+
 {{< /tab >}}
 
-{{< tab "Swift/iOS" "swift" >}}
+{{< tab "Swift/iOS" >}}
+```swift
 // Create the ASR stream. This automatically sends the session
 // token first on the new stream.
 self.asrStream = client.newSessionASRStream(token: token, asrResultHandler: { (result) in
@@ -61,10 +73,15 @@ self.asrStream = client.newSessionASRStream(token: token, asrResultHandler: { (r
 		print(error.localizedDescription)
 	}
 })
+```
 {{< /tab >}}
 
-{{< tab "Java/Android" "java" >}}
+{{< tab "Java/Android">}}
+
+```java
 // Example coming soon!
+```
+
 {{< /tab >}}
 
 {{< /tabs >}}
@@ -80,7 +97,8 @@ meet their needs.
 
 {{< tabs >}}
 
-{{< tab "Go" "go" >}}
+{{< tab "Go" >}}
+```go
 // Set up the audio source as an io.Reader
 var audioSource io.Reader
 
@@ -91,9 +109,11 @@ buffSize := 8192
 // io.EOF, whichever comes first.
 result, err := diatheke.ReadASRAudio(stream, audioSource, buffSize)
 fmt.Printf("transcript: %v\n", result.Text)
+```
 {{< /tab >}}
 
-{{< tab "Python" "python">}}
+{{< tab "Python" >}}
+```python
 # The audio source should implement a read(size) function, such as
 # a file object or process pipe.
 audioSource = getAudioSource()
@@ -105,9 +125,11 @@ buffSize = 8192
 # bytes (EOF), whichever comes first.
 result = diatheke.read_ASR_audio(stream, audioSource, buffSize)
 print("transcript:", result.text)
+```
 {{< /tab >}}
 
-{{< tab "C++" "c++" >}}
+{{< tab "C++" >}}
+```c++
 // The audio source should inherit from the Diatheke::AudioReader class.
 Diatheke::AudioReader* audioSource;
 
@@ -119,6 +141,7 @@ size_t buffSize = 8192;
 cobaltspeech::diatheke::ASRResult result =
     Diatheke::ReadASRAudio(stream, audioSource, buffSize);
 std::cout << "transcript: " << result.text() << std::endl;
+```
 {{< /tab >}}
 
 {{< /tabs >}}
@@ -130,7 +153,8 @@ stream until the stream is closed or there is no more audio to send.
 
 {{< tabs >}}
 
-{{< tab "Go" "go" >}}
+{{< tab "Go" >}}
+```go
 var audioData []byte
 for haveAudioData {
 	audioData = getFromSource()
@@ -141,9 +165,11 @@ for haveAudioData {
 		break
 	}
 }
+```
 {{< /tab >}}
 
-{{< tab "Python" "python">}}
+{{< tab "Python">}}
+```python
 while haveAudioData:
     audioData = getFromSource()
 
@@ -151,9 +177,11 @@ while haveAudioData:
     if not stream.send_audio(audioData):
         # The stream has been closed, and a result is available
         break
+```
 {{< /tab >}}
 
-{{< tab "C++" "c++" >}}
+{{< tab "C++" >}}
+```c++
 while (haveAudioData) {
     std::string audioData = getFromSource();
 
@@ -163,15 +191,18 @@ while (haveAudioData) {
         break;
     }
 }
+```
 {{< /tab >}}
 
-{{< tab "Swift/iOS" "swift" >}}
+{{< tab "Swift/iOS" >}}
+```swift
 // Send the audio bytes
 asrStream.sendAudio(data: data, completion: { (error) in
 	if let error = error {
         	print(error.localizedDescription)
 	}
 })
+```
 {{< /tab >}}
 
 {{< /tabs >}}
@@ -185,7 +216,8 @@ includes a transcript of what was spoken. This result may be used to
 
 {{< tabs >}}
 
-{{< tab "Go" "go" >}}
+{{< tab "Go" >}}
+```go
 // Get the result from the stream. If the stream has not already
 // been closed by the server, this will close it.
 result, err := stream.Result()
@@ -197,9 +229,11 @@ fmt.Printf("transcript: %v\n", result.Text)
 // given as a value between 0 and 1.0, with 1.0 being the most
 // confident in the result.
 fmt.Printf("confidence: %v\n", result.Confidence)
+```
 {{< /tab >}}
 
-{{< tab "Python" "python">}}
+{{< tab "Python">}}
+```python
 # Get the result from the stream. If the stream has not already
 # been closed by the server, this will close it.
 result = stream.result()
@@ -211,9 +245,11 @@ print("transcript:", result.text)
 # given as a value between 0 and 1.0, with 1.0 being the most
 # confident in the result.
 print("confidence:", result.confidence)
+```
 {{< /tab >}}
 
-{{< tab "C++" "c++" >}}
+{{< tab "C++" >}}
+```c++
 // Get the result from the stream. If the stream has not already
 // been closed by the server, this will close it.
 auto result = stream.result();
@@ -225,9 +261,11 @@ std::cout << "transcript: " << result.text() << std::endl;
 // given as a value between 0 and 1.0, with 1.0 being the most
 // confident in the result.
 std::cout << "confidence: " << result.confidence() << std::endl;
+```
 {{< /tab >}}
 
-{{< tab "Swift/iOS" "swift" >}}
+{{< tab "Swift/iOS" >}}
+```swift
 // ASR Results come to asrResultHandler block on creating ASRStream
 self.asrStream = client.newSessionASRStream(token: token, asrResultHandler: { (result) in
 	switch result {
@@ -255,6 +293,7 @@ self.asrStream.result(completion: { (error) in
 		print(error.localizedDescription)
 	}
 })
+```
 {{< /tab >}}
 
 {{< /tabs >}}
