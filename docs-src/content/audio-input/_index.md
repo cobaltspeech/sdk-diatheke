@@ -4,7 +4,7 @@ description: "Describes how to provide audio-based user input to a session."
 weight: 600
 ---
 
-To process a user's speech, the calling application may create an 
+To process a user's speech, the calling application may create an
 [ASR](../glossary/#asr) stream. Bytes of audio data are sent to the
 stream until the stream is closed and an ASR result, which includes
 a transcript of the speech, is returned. The audio data encoding must
@@ -12,8 +12,8 @@ match what is expected by the server. The sample rate for any given
 model is provided with the model information returned by the
 [ListModels](../connecting/#list-models) method.
 
-
 ## Creating the ASR Stream
+
 Use the session token to create the ASR stream.
 
 Developers who are creating their own bindings for the
@@ -44,6 +44,7 @@ stream = client.new_session_asr_stream(session.token)
 {{< /tab >}}
 
 {{< tab "C++" "c++" >}}
+
 ```c++
 // Create the ASR stream. This automatically sends the session
 // token first on the new stream.
@@ -53,6 +54,7 @@ Diatheke::ASRStream stream = client.newSessionASRStream(session.token());
 {{< /tab >}}
 
 {{< tab "Swift/iOS" >}}
+
 ```swift
 // Create the ASR stream. This automatically sends the session
 // token first on the new stream.
@@ -74,6 +76,7 @@ self.asrStream = client.newSessionASRStream(token: token, asrResultHandler: { (r
 	}
 })
 ```
+
 {{< /tab >}}
 
 {{< tab "Java/Android">}}
@@ -86,8 +89,8 @@ self.asrStream = client.newSessionASRStream(token: token, asrResultHandler: { (r
 
 {{< /tabs >}}
 
-
 ## Convenience Functions
+
 The SDK includes some convenience functions to make it easier to send
 audio data to Diatheke and get a result. These typically use a reader
 type with the ASR stream created earlier. Applications are more than welcome
@@ -98,6 +101,7 @@ meet their needs.
 {{< tabs >}}
 
 {{< tab "Go" >}}
+
 ```go
 // Set up the audio source as an io.Reader
 var audioSource io.Reader
@@ -110,9 +114,11 @@ buffSize := 8192
 result, err := diatheke.ReadASRAudio(stream, audioSource, buffSize)
 fmt.Printf("transcript: %v\n", result.Text)
 ```
+
 {{< /tab >}}
 
 {{< tab "Python" >}}
+
 ```python
 # The audio source should implement a read(size) function, such as
 # a file object or process pipe.
@@ -126,9 +132,11 @@ buffSize = 8192
 result = diatheke.read_ASR_audio(stream, audioSource, buffSize)
 print("transcript:", result.text)
 ```
+
 {{< /tab >}}
 
 {{< tab "C++" >}}
+
 ```c++
 // The audio source should inherit from the Diatheke::AudioReader class.
 Diatheke::AudioReader* audioSource;
@@ -142,18 +150,20 @@ cobaltspeech::diatheke::ASRResult result =
     Diatheke::ReadASRAudio(stream, audioSource, buffSize);
 std::cout << "transcript: " << result.text() << std::endl;
 ```
+
 {{< /tab >}}
 
 {{< /tabs >}}
 
-
 ## Sending Audio
+
 After the stream is created, audio data is sent repeatedly over the
 stream until the stream is closed or there is no more audio to send.
 
 {{< tabs >}}
 
 {{< tab "Go" >}}
+
 ```go
 var audioData []byte
 for haveAudioData {
@@ -166,9 +176,11 @@ for haveAudioData {
 	}
 }
 ```
+
 {{< /tab >}}
 
 {{< tab "Python">}}
+
 ```python
 while haveAudioData:
     audioData = getFromSource()
@@ -178,9 +190,11 @@ while haveAudioData:
         # The stream has been closed, and a result is available
         break
 ```
+
 {{< /tab >}}
 
 {{< tab "C++" >}}
+
 ```c++
 while (haveAudioData) {
     std::string audioData = getFromSource();
@@ -192,9 +206,11 @@ while (haveAudioData) {
     }
 }
 ```
+
 {{< /tab >}}
 
 {{< tab "Swift/iOS" >}}
+
 ```swift
 // Send the audio bytes
 asrStream.sendAudio(data: data, completion: { (error) in
@@ -203,12 +219,13 @@ asrStream.sendAudio(data: data, completion: { (error) in
 	}
 })
 ```
+
 {{< /tab >}}
 
 {{< /tabs >}}
 
-
 ## ASR Result
+
 When there is no more audio data to send, or if the ASR stream was
 closed by the server, the application may retrieve the ASR result, which
 includes a transcript of what was spoken. This result may be used to
@@ -217,6 +234,7 @@ includes a transcript of what was spoken. This result may be used to
 {{< tabs >}}
 
 {{< tab "Go" >}}
+
 ```go
 // Get the result from the stream. If the stream has not already
 // been closed by the server, this will close it.
@@ -230,9 +248,11 @@ fmt.Printf("transcript: %v\n", result.Text)
 // confident in the result.
 fmt.Printf("confidence: %v\n", result.Confidence)
 ```
+
 {{< /tab >}}
 
 {{< tab "Python">}}
+
 ```python
 # Get the result from the stream. If the stream has not already
 # been closed by the server, this will close it.
@@ -246,9 +266,11 @@ print("transcript:", result.text)
 # confident in the result.
 print("confidence:", result.confidence)
 ```
+
 {{< /tab >}}
 
 {{< tab "C++" >}}
+
 ```c++
 // Get the result from the stream. If the stream has not already
 // been closed by the server, this will close it.
@@ -262,9 +284,11 @@ std::cout << "transcript: " << result.text() << std::endl;
 // confident in the result.
 std::cout << "confidence: " << result.confidence() << std::endl;
 ```
+
 {{< /tab >}}
 
 {{< tab "Swift/iOS" >}}
+
 ```swift
 // ASR Results come to asrResultHandler block on creating ASRStream
 self.asrStream = client.newSessionASRStream(token: token, asrResultHandler: { (result) in
@@ -294,16 +318,18 @@ self.asrStream.result(completion: { (error) in
 	}
 })
 ```
+
 {{< /tab >}}
 
 {{< /tabs >}}
 
-
 ## Recording Strategies
+
 An application may use any mechanism it wants to start and stop recording
 user audio. A couple of common methods are described below.
 
 ### Wake Word
+
 In this strategy, the application uses a preselected word or short phrase that
 a user must say to indicate they are talking to the computer (e.g.,
 "Ok, Cobalt"). Often an application using this strategy will first send audio
@@ -313,6 +339,7 @@ the stream returns a result. After the result is processed, audio is
 once again sent to the wake word detector.
 
 ### Push-to-Talk
+
 Systems using a push-to-talk strategy wait for a user to physically
 push a button on a device or click a button in the UI to trigger
 recording audio. There are two variants to this approach - one where
