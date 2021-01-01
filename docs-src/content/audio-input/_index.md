@@ -33,7 +33,7 @@ stream, err := client.NewSessionASRStream(context.Background(), session.Token)
 
 {{< /tab >}}
 
-{{< tab "Python" }}
+{{< tab "Python" >}}
 
 ```python
 # Create the ASR stream. This automatically sends the session
