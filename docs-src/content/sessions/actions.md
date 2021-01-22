@@ -13,12 +13,12 @@ to do next, and may be one of the following types:
 
 ## Processing the Action List
 There are currently two ways an application will receive an action list - when
-[creating a session](../create), and when [updating a session](../update).
+[creating a session](../create/), and when [updating a session](../update/).
 These action lists will always end with an action that requires a session
 update (such as a WaitForUserAction or a CommandAction), which will then
 return a new action list. This cycle of handling the session actions then
 updating the session repeats indefinitely, until the application decides it is
-time to [delete the session](../delete).
+time to [delete the session](../delete/).
 
 Here is an example showing how to process a typical action list:
 
@@ -242,7 +242,7 @@ public List<ActionData> waitForInput() throws StatusRuntimeException {
 
 
 Here is an example showing the application waiting for speech input from the user
-(see also [Audio Input](../../audio-input)).
+(see also [Audio Input](../../audio-input/)).
 
 {{< tabs >}}
 
@@ -455,7 +455,7 @@ wake word has been triggered, audio should again be sent to Diatheke.
 ## Reply Action
 The ReplyAction indicates that the calling application should give the information
 provided in the reply's text to the user. For applications using audio, see also
-[Audio Output](../../audio-output).
+[Audio Output](../../audio-output/).
 
 {{< tabs >}}
 

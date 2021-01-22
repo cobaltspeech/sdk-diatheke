@@ -8,7 +8,7 @@ To create a new session, the calling application must call the
 `CreateSession` method with the desired model ID as specified in the
 server configuration. To get a list of available models, see
 [here](../../connecting/#models). A new session token will be returned
-along with a list of [actions](../actions).
+along with a list of [actions](../actions/).
 
 {{< tabs >}}
 

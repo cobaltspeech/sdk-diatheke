@@ -4,16 +4,16 @@ description: "How to update the state of a session using one of the allowed inpu
 weight: 530
 ---
 
-In the underlying [gRPC API](../../protobuf), the `UpdateSession` method
+In the underlying [gRPC API](../../protobuf/), the `UpdateSession` method
 is called using one of several data types to update the session. For the
 sake of convenience, the SDK provides several functions to handle each
 type of session update. Updating the session always requires the current
-session token and will return an updated token with a new [action list](../actions).
+session token and will return an updated token with a new [action list](../actions/).
 
 ## Process ASR Result
-When an [ASR stream](../../audio-input) returns a result, it may be used
+When an [ASR stream](../../audio-input/) returns a result, it may be used
 directly to update the session. This is usually called in response to a
-[Wait For User Action](../actions/#wait-for-user-action). It is the audio
+[Wait For User Action](../actions/#wait-for-user-action/). It is the audio
 equivalent of [Process Text](#process-text).
 
 {{< tabs >}}
@@ -201,7 +201,7 @@ SessionOutput resp = mDiathekeBlockingService.updateSession(input);
 
 ## Set Story
 The `SetStory` method of the API may be used to update a session to begin
-running from a specified [story](../../glossary#story) in the model. This method is particularly
+running from a specified [story](../../glossary/#story) in the model. This method is particularly
 useful for implementing system initiated alerts, or to update a session in
 a mixed UI environment (GUI + voice).
 
