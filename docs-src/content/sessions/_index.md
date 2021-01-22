@@ -21,7 +21,7 @@ expected paths a dialog may take, including what the user and the
 application are allowed to do during the dialog. A session is typically
 created when the calling application wants to start a new dialog from the beginning,
 with nothing saved in memory. At the time of session creation, Diatheke will also
-return a list of [actions](./actions) the application should take. While
+return a list of [actions](./actions/) the application should take. While
 processing these actions, the application will periodically need to update the
 session, at which point Diatheke will return additional actions the application
 should process. This cycle of processing actions and updating the session
@@ -37,10 +37,10 @@ session to respond to user's request to get the weather forecast.
 ### Voice I/O
 In this example, only voice interactions are defined between the user and
 the system (i.e., input is speech audio and output is synthesized speech
-audio). As shown below, the application starts by [creating a session](./create),
+audio). As shown below, the application starts by [creating a session](./create/),
 which returns a session token and a
 [WaitForUserAction](./actions/#wait-for-user-action). To get user input,
-the application then creates a new [ASR Stream](../audio-input) and starts
+the application then creates a new [ASR Stream](../audio-input/) and starts
 streaming audio data (e.g., from a microphone) to Diatheke.
 
 Eventually Diatheke will return an ASR result that includes a transcript
@@ -55,7 +55,7 @@ The relevant weather data is then used to update the session again via the
 [Process Command Result method](./update/#process-command-result), which
 in this example returns two actions the application should take. The first is a
 [ReplyAction](./actions/#reply-action), which should be used to create a
-new [TTS Stream](../audio-output). Audio from the TTS stream is played
+new [TTS Stream](../audio-output/). Audio from the TTS stream is played
 back to the user. Once playback is complete, the next action (another
 WaitForUserAction) is handled, and the process continues for the lifetime
 of the session.
@@ -64,7 +64,7 @@ of the session.
 
 ### Text I/O
 In this example, only text interactions are defined between the user and
-the system. As shown below, the application starts by [creating a session](./create),
+the system. As shown below, the application starts by [creating a session](./create/),
 which returns a session token and a
 [WaitForUserAction](./actions/#wait-for-user-action). In response to this
 action, the application uses an appropriate method to get input text from the

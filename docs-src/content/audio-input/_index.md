@@ -17,7 +17,7 @@ model is provided with the model information returned by the
 Use the session token to create the ASR stream.
 
 Developers who are creating their own bindings for the
-[gRPC interface](../protobuf) should note that the first message sent
+[gRPC interface](../protobuf/) should note that the first message sent
 on the stream returned by the `StreamASR` method should always be the
 session token.
 
