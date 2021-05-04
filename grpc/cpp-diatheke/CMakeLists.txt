@@ -1,4 +1,4 @@
-# Copyright (2020) Cobalt Speech and Language, Inc.
+# Copyright (2021) Cobalt Speech and Language, Inc.
 
 cmake_minimum_required(VERSION 3.14.0)
 project(diatheke_client)
@@ -7,6 +7,7 @@ include(CobaltGRPC.cmake)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_POSITION_INDEPENDENT_CODE True)
 
 # Generate the grpc files from our proto files.
 run_protoc(RESULT_FILES DIATHEKE_PROTOFILES

@@ -38,7 +38,32 @@ copy this repository into your project and add the line
 add_subdirectory(sdk-diatheke/grpc/cpp-diatheke)
 ```
 
-to your project's CMakeLists.txt.
+to your project's CMakeLists.txt. You may also include it
+using the [FetchContent module](https://cmake.org/cmake/help/latest/module/FetchContent.html),
+which has the added convenience of downloading a specific
+version of the SDK from Github automatically.
+
+```cmake
+# Fetch Diatheke SDK code and add to the project
+include(FetchContent)
+FetchContent_Declare(
+    sdk_diatheke
+    GIT_REPOSITORY https://github.com/cobaltspeech/sdk-diatheke.git
+    GIT_TAG v2.0.1
+)
+FetchContent_Populate(sdk_diatheke)
+
+# The SDK's CMake file is not at the top-level directory of the repo,
+# so we must tell CMake explicitly which subdirectory to add.
+add_subdirectory(${sdk_diatheke_SOURCE_DIR}/grpc/cpp-diatheke ${sdk_diatheke_BINARY_DIR})
+```
+
+### Windows Builds
+To build the C++ SDK on Windows, we strongly recommend using
+CMake. As this CMake project will also build the gRPC library,
+be sure that you have all the
+[gRPC prerequisites for Windows](https://github.com/grpc/grpc/blob/master/BUILDING.md#windows)
+installed as well.
 
 ## Build without CMake
 When building without CMake, you must manually build and install 
