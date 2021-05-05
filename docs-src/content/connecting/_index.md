@@ -46,22 +46,27 @@ func main() {
 {{< /tab >}}
 
 {{< tab "C++" "c++" >}}
-// File - main.cpp
-
-#include "diatheke_client.h"
-
+#include <diatheke_client.h>
 #include <iostream>
-#include <string>
 
-const char* serverAddr = "127.0.0.1:9002";
-
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
-	Diatheke::Client client(serverAddr);
+  std::string serverAddress = "127.0.0.1:9002";
 
-	return 0;
+  // Read or embed the digital certificate, and store
+  // in rootCert. Unlike other languages, in C++ there
+  // is nothing to do this automatically.
+  grpc::string rootCert;
+
+  // Set up SSL options for the secure connection.
+  grpc::SslCredentialsOptions sslOpts;
+  sslOpts.pem_root_certs = rootCert;
+
+  // Create the client with ssl options
+  Diatheke::Client client(serverAddress, sslOpts);
+
+  return 0;
 }
-
 {{< /tab >}}
 
 {{< tab "Python" "python">}}
@@ -133,7 +138,7 @@ client, err := diatheke.NewClient(serverAddr, diatheke.WithInsecure())
 {{< /tab >}}
 
 {{< tab "C++" "c++" >}}
-Diatheke::Client client(serverAddr, true);
+Diatheke::Client client(serverAddress);
 {{< /tab >}}
 
 {{< tab "Python" "python">}}
@@ -177,9 +182,19 @@ client, err := diatheke.NewClient(serverAddr, diatheke.WithClientCert(certPem, k
 {{< /tab >}}
 
 {{< tab "C++" "c++" >}}
+std::string serverAddress = "127.0.0.1:9002";
 
-// Currently unsupported in C++.
+// Read or embed the bytes of the client certificate and key
+grpc::string certPem, keyPem;
 
+// Set up the SSL options.
+// See https://grpc.github.io/grpc/cpp/structgrpc_1_1_ssl_credentials_options.html
+// for more details about the SSL options struct.
+grpc::SslCredentialsOptions sslOpts;
+sslOpts.pem_root_certs = certPem;
+sslOpts.pem_private_key = keyPem;
+
+Diatheke::Client client(serverAddress, sslOpts);
 {{< /tab >}}
 
 {{< tab "Python" "python">}}

@@ -1,5 +1,6 @@
 ---
 title: "Diatheke SDK"
+description: "Diatheke is Cobalt's dialog management engine. It uses a combination of speech technologies and artificial intelligence to allow users to interact with computers and mobile devices through audio and text based dialogs."
 weight: 1
 ---
 
