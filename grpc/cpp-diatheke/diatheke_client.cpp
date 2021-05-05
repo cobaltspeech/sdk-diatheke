@@ -28,7 +28,9 @@
 namespace Diatheke
 {
 
-Client::Client(const std::string &url, bool insecure) : mTimeout(30000)
+static unsigned int defaultTimeout = 30000;
+
+Client::Client(const std::string &url) : mTimeout(defaultTimeout)
 {
     /*
      * Quick runtime check to verify that the user has linked against
@@ -37,16 +39,25 @@ Client::Client(const std::string &url, bool insecure) : mTimeout(30000)
      */
     GOOGLE_PROTOBUF_VERIFY_VERSION;
 
-    // Setup credentials
-    std::shared_ptr<grpc::ChannelCredentials> creds;
-    if (insecure)
-    {
-        creds = grpc::InsecureChannelCredentials();
-    }
-    else
-    {
-        creds = grpc::SslCredentials(grpc::SslCredentialsOptions());
-    }
+    // Set up credentials
+    auto creds = grpc::InsecureChannelCredentials();
+
+    // Create the channel and stub
+    mStub = DiathekeGRPC::NewStub(grpc::CreateChannel(url, creds));
+}
+
+Client::Client(const std::string &url, const grpc::SslCredentialsOptions &opts) :
+    mTimeout(defaultTimeout)
+{
+    /*
+     * Quick runtime check to verify that the user has linked against
+     * a version of protobuf that is compatible with the version used
+     * to generate the c++ files.
+     */
+    GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+    // Set up secure credentials
+    auto creds = grpc::SslCredentials(opts);
 
     // Create the channel and stub
     mStub = DiathekeGRPC::NewStub(grpc::CreateChannel(url, creds));
