@@ -11,7 +11,7 @@ DEPSSWIFT := ${TOP}/deps/swift
 DEPSBIN := ${TOP}/deps/bin
 DEPSGO := ${TOP}/deps/go
 DEPSTMP := ${TOP}/deps/tmp
-SWIFT_GRPC_VERSION := 1.0.0-alpha.20
+SWIFT_GRPC_VERSION := 1.0.0
 
 $(shell mkdir -p $(DEPSBIN) $(DEPSGO) $(DEPSTMP) $(DEPSSWIFT))
 
