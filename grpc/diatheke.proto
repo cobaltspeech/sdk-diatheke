@@ -1,4 +1,4 @@
-// Copyright (2020) Cobalt Speech and Language Inc.
+// Copyright (2021) Cobalt Speech and Language Inc.
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -46,6 +46,13 @@ service Diatheke {
     // endpoint), or when a transcript becomes available on its
     // own, in which case the stream is closed by the server.
     // The ASR result may be used in the UpdateSession method.
+    //
+    // If the session has a wakeword enabled, and the client
+    // application is using Diatheke and Cubic to handle the
+    // wakeword processing, this method will not return a
+    // result until the wakeword condition has been satisfied.
+    // Utterances without the required wakeword will be
+    // discarded and no transcription will be returned.
     rpc StreamASR(stream ASRInput) returns (ASRResult) {}
 
     // Create a TTS stream to receive audio for the given reply.
@@ -53,6 +60,22 @@ service Diatheke {
     // may also close the stream early to cancel the speech
     // synthesis.
     rpc StreamTTS(ReplyAction) returns (stream TTSAudio) {}
+
+    // Create an ASR stream for transcription. Unlike StreamASR,
+    // Transcribe does not listen for a wakeword. This method
+    // returns a bi-directional stream, and its intended use is
+    // for situations where a user may say anything at all, whether
+    // it is short or long, and the application wants to save the
+    // transcript (e.g., take a note, send a message).
+    //
+    // The first message sent to the server must include the
+    // Cubic model ID, with remaining messages sending audio data.
+    // Messages received from the server will include the current
+    // best partial transcription until the full transcription is
+    // ready. The stream ends when either the client application
+    // closes it, a predefined duration of silence (non-speech)
+    // occurs, or the end-transcription intent is recognized.
+    rpc Transcribe(stream TranscribeInput) returns (stream TranscribeResult) {}
 }
 
 // Lists the version of Diatheke and the engines it uses.
@@ -131,6 +154,12 @@ message TokenData {
 message SessionStart {
     // Specifies the Diatheke model ID to use for the session.
     string model_id = 1;
+
+    // Specifies a custom wakeword to use for this session. The
+    // wakeword must be enabled in the Diatheke model for this
+    // to have any effect. It will override the default wakeword
+    // specified in the model.
+    optional string wakeword = 2;
 }
 
 // User supplied text to send to Diatheke for processing.
@@ -187,6 +216,9 @@ message ActionData {
 
         // The client app should provide the reply to the user.
         ReplyAction reply = 3;
+
+        // The client app should transcribe user input.
+        TranscribeAction transcribe = 4;
     }
 }
 
@@ -220,6 +252,13 @@ message ReplyAction {
 
     // TTS model to use with the TTSReply method
     string luna_model = 2;
+}
+
+// This action indicates that the client application should
+// transcribe the user's input.
+message TranscribeAction {
+    // The ASR model to use for transcription
+    string cubic_model_id = 1;
 }
 
 // Data to send to the ASR stream. The first message on the
@@ -261,6 +300,41 @@ message ASRResult {
 // is defined in the server config file.
 message TTSAudio {
     bytes audio = 1;
+}
+
+// Data to send to the Transcribe stream. The first message on
+// the stream must be the model ID, followed by audio data.
+message TranscribeInput {
+    oneof data {
+        // ASR model to use for transcription.
+        string cubic_model = 1;
+
+        // Audio data to transcribe.
+        bytes audio = 2;
+    }
+}
+
+// The result from the Transcribe stream. Usually, many partial
+// (or intermediate) transcriptions will be sent until the final
+// transcription is ready for every utterance processed.
+message TranscribeResult {
+    // The transcription.
+    string text = 1;
+
+    // Confidence estimate between 0 and 1. A higher number
+    // represents a higher likelihood of the transcription
+    // being correct.
+    double confidence = 2;
+
+    // True if this is a partial result, in which case the
+    // text of the transcription for the current utterance
+    // being processed is allowed to change in future results.
+    // When false, this represents the final transcription for
+    // an utterance, which will not change with further audio
+    // input. It is sent when the ASR has endpointed. After the
+    // final transcription is sent, any additional results sent
+    // on the Transcribe stream belong to the next utterance.
+    bool is_partial = 3;
 }
 
 message Empty {}
