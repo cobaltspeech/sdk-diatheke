@@ -17,6 +17,12 @@ if(USE_SYSTEM_GRPC)
     add_executable(protoc ALIAS protobuf::protoc)
     add_executable(grpc_cpp_plugin ALIAS grpc::grpc_cpp_plugin)
 else()
+    # Make sure we build gRPC as a static library, regardless of
+    # whether Diatheke is built as a shared library.
+    cmake_policy(SET CMP0077 NEW)
+    set(OLD_BUILD_SHARED ${BUILD_SHARED_LIBS})
+    set(BUILD_SHARED_LIBS FALSE)
+
     # Download gRPC from github and add it as part of the project
     include(FetchContent)
     FetchContent_Declare(
@@ -38,6 +44,9 @@ else()
 
     # Add gRPC to the project
     FetchContent_MakeAvailable(gRPC)
+
+    # Restore the BUILD_SHARED_LIBS flag
+    set(BUILD_SHARED_LIBS ${OLD_BUILD_SHARED})
 endif()
 
 # This allows cross-compiling to work - a native version of protoc is required.
