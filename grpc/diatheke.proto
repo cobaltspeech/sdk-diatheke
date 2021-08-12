@@ -159,7 +159,7 @@ message SessionStart {
     // wakeword must be enabled in the Diatheke model for this
     // to have any effect. It will override the default wakeword
     // specified in the model.
-    optional string wakeword = 2;
+    string wakeword = 2;
 }
 
 // User supplied text to send to Diatheke for processing.
@@ -257,8 +257,21 @@ message ReplyAction {
 // This action indicates that the client application should
 // transcribe the user's input.
 message TranscribeAction {
-    // The ASR model to use for transcription
-    string cubic_model_id = 1;
+    // The ID of the transcribe action, which is useful to
+    // differentiate separate transcription tasks within a
+    // single sesssion.
+    string id = 1;
+
+    // The ASR model to use for transcription.
+    string cubic_model_id = 2;
+
+    // The Diatheke model where this transcribe action is
+    // defined. If empty, the server will not be able to
+    // automatically close the transcribe stream based on
+    // conditions defined in the Diatheke model. In that
+    // case, the stream must be closed by the client
+    // application.
+    string diatheke_model_id = 3;
 }
 
 // Data to send to the ASR stream. The first message on the
@@ -303,11 +316,11 @@ message TTSAudio {
 }
 
 // Data to send to the Transcribe stream. The first message on
-// the stream must be the model ID, followed by audio data.
+// the stream must be a TranscribeAction, followed by audio data.
 message TranscribeInput {
     oneof data {
-        // ASR model to use for transcription.
-        string cubic_model = 1;
+        // Action defining the transcribe configuration.
+        TranscribeAction action = 1;
 
         // Audio data to transcribe.
         bytes audio = 2;

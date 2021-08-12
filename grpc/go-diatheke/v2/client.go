@@ -1,4 +1,4 @@
-// Copyright (2020) Cobalt Speech and Language Inc.
+// Copyright (2021) Cobalt Speech and Language Inc.
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -168,6 +168,18 @@ func (c *Client) CreateSession(
 	return c.PBClient.CreateSession(ctx, &req, c.CallOpts...)
 }
 
+// CreateSessionWithWakeWord creates a new Diatheke session with a
+// custom wakeword.
+func (c *Client) CreateSessionWithWakeWord(
+	ctx context.Context, model, wakeword string) (*diathekepb.SessionOutput, error) {
+	req := diathekepb.SessionStart{
+		ModelId:  model,
+		Wakeword: wakeword,
+	}
+
+	return c.PBClient.CreateSession(ctx, &req, c.CallOpts...)
+}
+
 // DeleteSession cleans up the given token. Behavior is undefined
 // if the given token is used again after calling this function.
 func (c *Client) DeleteSession(
@@ -284,4 +296,24 @@ func (c *Client) NewTTSStream(
 	return &TTSStream{
 		PBStream: pbStream,
 	}, err
+}
+
+// NewTranscribe stream creates a new stream for audio transcription
+// unrelated to a session's state.
+func (c *Client) NewTranscribeStream(
+	ctx context.Context,
+	action *diathekepb.TranscribeAction,
+) (*TranscribeStream, error) {
+	// Create the stream
+	pbStream, err := c.PBClient.Transcribe(ctx, c.CallOpts...)
+	if err != nil {
+		return nil, err
+	}
+
+	// Wrap it in our class and send the cubic model
+	stream := TranscribeStream{
+		PBStream: pbStream,
+	}
+
+	return &stream, stream.SendAction(action)
 }
