@@ -25,6 +25,7 @@
 
 #include "diatheke.grpc.pb.h"
 #include "diatheke_asr_stream.h"
+#include "diatheke_transcribe_stream.h"
 #include "diatheke_tts_stream.h"
 
 namespace Diatheke
@@ -72,6 +73,16 @@ public:
      */
     cobaltspeech::diatheke::SessionOutput
     createSession(const std::string &modelID);
+
+    /*
+     * Create a new Diatheke session using the specified
+     * model ID and custom wakeword. The wakeword will only
+     * have an effect if the model has wakeword detection
+     * enabled.
+     */
+    cobaltspeech::diatheke::SessionOutput
+    createSessionWithWakeWord(const std::string &modelID,
+                              const std::string &wakeword);
 
     /*
      * Clean up the given session token. Behavior is undefined
@@ -127,6 +138,13 @@ public:
      * based on the given ReplyAction.
      */
     TTSStream newTTSStream(const cobaltspeech::diatheke::ReplyAction &reply);
+
+    /*
+     * Create a new stream for transcriptions, usually in response to a
+     * TranscribeAction.
+     */
+    TranscribeStream
+    newTranscribeStream(const cobaltspeech::diatheke::TranscribeAction &action);
 
     /*
      * Set a timeout for server requests in milliseconds. A timeout value of

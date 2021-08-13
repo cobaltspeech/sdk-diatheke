@@ -1,5 +1,5 @@
 /*
- * Copyright (2020) Cobalt Speech and Language, Inc.
+ * Copyright (2021) Cobalt Speech and Language, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,13 +49,13 @@ public:
     bool sendAudio(const std::string &data);
 
     /*
-     * Send the given session token to Diatheke to update  the speech
+     * Send the given session token to Diatheke to update the speech
      * recognition context. The session token must first be sent on the
      * ASR stream before any audio will be recognized. If the stream was
      * created using Client::newSessionASRStream(), the first token was
      * already sent.
      *
-     * If this function returs false, the server has closed the stream
+     * If this function returns false, the server has closed the stream
      * and result() should be called to get the final ASR result.
      */
     bool sendToken(const cobaltspeech::diatheke::TokenData &token);
@@ -84,29 +84,6 @@ private:
     std::shared_ptr<cobaltspeech::diatheke::ASRResult> mResult;
     std::shared_ptr<GRPCWriter> mStream;
 };
-
-/*
- * AudioReader defines an interface for reading audio that may be
- * subclassed and used with the ReadASRAudio() method. It is provided
- * as a convenience.
- */
-class AudioReader
-{
-public:
-    AudioReader();
-    virtual ~AudioReader();
-
-    /*
-     * Read audio data and store it in the given buffer. Returns the number
-     * of bytes read, or zero if there is no more data to read.
-     */
-    virtual size_t readAudio(char *buffer, size_t buffSize) = 0;
-};
-
-// ReadASRAudio is a convenience function to send audio from the given
-// reader to the stream in buffSize chunks until a result is returned.
-cobaltspeech::diatheke::ASRResult
-ReadASRAudio(ASRStream &stream, AudioReader *reader, size_t buffSize);
 
 } // namespace Diatheke
 
