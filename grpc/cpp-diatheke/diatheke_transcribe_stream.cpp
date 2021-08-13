@@ -14,50 +14,59 @@
  * limitations under the License.
  */
 
-#include "diatheke_asr_stream.h"
+#include "diatheke_transcribe_stream.h"
 
 #include "diatheke_client_error.h"
 
 namespace Diatheke
 {
-ASRStream::ASRStream(
+TranscribeStream::TranscribeStream(
     const std::shared_ptr<grpc::ClientContext> &ctx,
-    const std::shared_ptr<cobaltspeech::diatheke::ASRResult> &result,
-    const std::shared_ptr<GRPCWriter> &stream)
-    : mContext(ctx), mResult(result), mStream(stream)
+    const std::shared_ptr<GRPCReaderWriter> &stream)
+    : mContext(ctx), mStream(stream)
 {
 }
 
-ASRStream::~ASRStream() {}
+TranscribeStream::~TranscribeStream() {}
 
-bool ASRStream::sendAudio(const std::string &data)
+bool TranscribeStream::sendAudio(const std::string &data)
 {
     // Set up the request and write to the input stream
-    cobaltspeech::diatheke::ASRInput request;
+    cobaltspeech::diatheke::TranscribeInput request;
     request.set_audio(data);
     return mStream->Write(request);
 }
 
-bool ASRStream::sendToken(const cobaltspeech::diatheke::TokenData &token)
+bool TranscribeStream::sendAction(const cobaltspeech::diatheke::TranscribeAction &action)
 {
     // Set up the request and write to the input stream
-    cobaltspeech::diatheke::ASRInput request;
-    *(request.mutable_token()) = token;
+    cobaltspeech::diatheke::TranscribeInput request;
+    *(request.mutable_action()) = action;
     return mStream->Write(request);
 }
 
-cobaltspeech::diatheke::ASRResult ASRStream::result()
+void TranscribeStream::sendFinished()
 {
-    mStream->WritesDone();
-    grpc::Status status = mStream->Finish();
-    if (!status.ok())
+    if (!mStream->WritesDone())
     {
-        throw Diatheke::ClientError(status);
+        throw ClientError("failed to finish sending");
     }
-
-    return *mResult;
 }
 
-ASRStream::GRPCWriter *ASRStream::getStream() { return mStream.get(); }
+bool TranscribeStream::receiveResult(cobaltspeech::diatheke::TranscribeResult *result)
+{
+    return mStream->Read(result);
+}
+
+void TranscribeStream::close()
+{
+    grpc::Status status = mStream->Finish();
+    if(!status.ok())
+    {
+        throw ClientError(status);
+    }
+}
+
+TranscribeStream::GRPCReaderWriter *TranscribeStream::getStream() { return mStream.get(); }
 
 } // namespace Diatheke

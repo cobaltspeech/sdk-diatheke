@@ -1,5 +1,5 @@
 /*
- * Copyright (2020) Cobalt Speech and Language, Inc.
+ * Copyright (2021) Cobalt Speech and Language, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,23 +55,5 @@ bool TTSStream::receiveAudio(std::string &buffer)
 }
 
 TTSStream::GRPCReader *TTSStream::getStream() { return mStream.get(); }
-
-AudioWriter::AudioWriter() {}
-AudioWriter::~AudioWriter() {}
-
-void WriteTTSAudio(TTSStream &stream, AudioWriter *writer)
-{
-    // Wait for the next audio chunk
-    std::string buffer;
-    while (stream.receiveAudio(buffer))
-    {
-        // Write the audio chunk
-        size_t bytesWritten = writer->writeAudio(buffer.data(), buffer.size());
-        if (bytesWritten != buffer.size())
-        {
-            throw ClientError("AudioWriter did not write all data");
-        }
-    }
-}
 
 } // namespace Diatheke

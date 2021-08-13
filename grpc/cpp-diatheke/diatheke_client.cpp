@@ -1,5 +1,5 @@
 /*
- * Copyright (2020) Cobalt Speech and Language, Inc.
+ * Copyright (2021) Cobalt Speech and Language, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -109,6 +109,28 @@ Client::createSession(const std::string &modelID)
     // Set up the server request
     cobaltspeech::diatheke::SessionStart request;
     request.set_model_id(modelID);
+
+    grpc::ClientContext ctx;
+    setContextDeadline(ctx);
+
+    // Send and get a response
+    cobaltspeech::diatheke::SessionOutput response;
+    grpc::Status status = mStub->CreateSession(&ctx, request, &response);
+    if (!status.ok())
+    {
+        throw ClientError(status);
+    }
+
+    return response;
+}
+
+cobaltspeech::diatheke::SessionOutput
+Client::createSessionWithWakeWord(const std::string &modelID, const std::string &wakeword)
+{
+    // Set up the server request
+    cobaltspeech::diatheke::SessionStart request;
+    request.set_model_id(modelID);
+    request.set_wakeword(wakeword);
 
     grpc::ClientContext ctx;
     setContextDeadline(ctx);
@@ -242,6 +264,33 @@ TTSStream Client::newTTSStream(const cobaltspeech::diatheke::ReplyAction &reply)
 
     // Store the pointers in our TTSStream object.
     return TTSStream(ctx, reader);
+}
+
+TranscribeStream Client::newTranscribeStream(const cobaltspeech::diatheke::TranscribeAction &action)
+{
+    /*
+     * Create the context. We need it to exist for the lifetime of the
+     * stream, so we create it as a managed pointer. We don't set a
+     * deadline on the context because we expect the stream to be long-
+     * lived.
+     */
+    std::shared_ptr<grpc::ClientContext> ctx(new grpc::ClientContext);
+
+    // Create the stream
+    std::shared_ptr<TranscribeStream::GRPCReaderWriter> gStream(
+        mStub->Transcribe(ctx.get()));
+    TranscribeStream stream(ctx, gStream);
+
+    /*
+     * Send the first message (the TranscribeAction) to Diatheke. We must
+     * do this before sending any audio on the stream.
+     */
+    if (!stream.sendAction(action))
+    {
+        throw ClientError("failed to send TranscribeAction to Diatheke");
+    }
+
+    return stream;
 }
 
 void Client::setRequestTimeout(unsigned int milliseconds)

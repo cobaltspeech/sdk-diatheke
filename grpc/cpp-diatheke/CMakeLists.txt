@@ -19,10 +19,14 @@ add_library(diatheke_client
     ${DIATHEKE_PROTOFILES}
     diatheke_asr_stream.cpp
     diatheke_asr_stream.h
+    diatheke_audio_helpers.cpp
+    diatheke_audio_helpers.h
     diatheke_client_error.h
     diatheke_client_error.cpp
     diatheke_client.cpp
     diatheke_client.h
+    diatheke_transcribe_stream.cpp
+    diatheke_transcribe_stream.h
     diatheke_tts_stream.cpp
     diatheke_tts_stream.h
 )

@@ -1,5 +1,5 @@
 /*
- * Copyright (2020) Cobalt Speech and Language, Inc.
+ * Copyright (2021) Cobalt Speech and Language, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,31 +57,6 @@ private:
     std::shared_ptr<grpc::ClientContext> mContext;
     std::shared_ptr<GRPCReader> mStream;
 };
-
-/*
- * AudioWriter defines an interface for writing audio data that may
- * be subclassed and used with the WriteTTSAudio() method. It is
- * provided as a convenience.
- */
-class AudioWriter
-{
-public:
-    AudioWriter();
-    virtual ~AudioWriter();
-
-    /*
-     * Write audio data from the given buffer. Returns the number
-     * of bytes written.
-     */
-    virtual size_t writeAudio(const char *buffer, size_t sizeInBytes) = 0;
-};
-
-/*
- * WriteTTSAudio is a convenience function to receive audio
- * from the given TTSStream and send it to the writer until
- * there is no more audio to receive.
- */
-void WriteTTSAudio(TTSStream &stream, AudioWriter *writer);
 
 } // namespace Diatheke
 
