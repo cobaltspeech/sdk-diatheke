@@ -268,8 +268,9 @@ message TranscribeAction {
     // The Diatheke model where this transcribe action is
     // defined. If empty, the server will not be able to
     // automatically close the transcribe stream based on
-    // conditions defined in the Diatheke model. In that
-    // case, the stream must be closed by the client
+    // conditions defined in the Diatheke model, such as
+    // a non-speech timeout or an "end-transcription" intent.
+    // When empty, the stream must be closed by the client
     // application.
     string diatheke_model_id = 3;
 }

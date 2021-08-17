@@ -1052,8 +1052,9 @@ type TranscribeAction struct {
 	// The Diatheke model where this transcribe action is
 	// defined. If empty, the server will not be able to
 	// automatically close the transcribe stream based on
-	// conditions defined in the Diatheke model. In that
-	// case, the stream must be closed by the client
+	// conditions defined in the Diatheke model, such as
+	// a non-speech timeout or an "end-transcription" intent.
+	// When empty, the stream must be closed by the client
 	// application.
 	DiathekeModelId string `protobuf:"bytes,3,opt,name=diatheke_model_id,json=diathekeModelId,proto3" json:"diatheke_model_id,omitempty"`
 }
