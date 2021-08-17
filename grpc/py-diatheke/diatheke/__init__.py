@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright(2019) Cobalt Speech and Language Inc.
+# Copyright(2021) Cobalt Speech and Language Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License")
 # you may not use this file except in compliance with the License.
@@ -24,4 +24,4 @@ sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__))))
 
 from .client import Client
 from .streams import read_ASR_audio, write_TTS_audio
-from .diatheke_pb2 import CommandResult
+from .diatheke_pb2 import TranscribeAction, ReplyAction, CommandResult

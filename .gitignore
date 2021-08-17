@@ -4,3 +4,5 @@ grpc/cpp-diatheke/grpc/
 grpc/py-diatheke/diatheke/__pycache__/
 examples/python/__pycache__
 *.pyc
+.eggs
+*.egg-info

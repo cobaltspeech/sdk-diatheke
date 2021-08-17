@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright(2020) Cobalt Speech and Language Inc.
+# Copyright(2021) Cobalt Speech and Language Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License")
 # you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from diatheke_pb2 import ASRInput
+from diatheke_pb2 import ASRInput, TranscribeInput
 from queue import Queue
 import threading
 import io
@@ -22,7 +22,7 @@ import io
 
 class ASRStream(object):
     """ASRStream represents a stream of audio data sent from the client
-    to Diatheke for the purpose of speech recognition."""
+    to Diatheke for speech recognition in the context of a session."""
 
     def __init__(self, client_stub):
         # The Python implementation of gRPC is a little different from other
@@ -132,9 +132,7 @@ class ASRStream(object):
 
 
 def read_ASR_audio(stream, reader, buffSize):
-    """Convenience function to send audio from the given reader
-    to the stream until a result is returned. Data is sent in
-    chunks defined by buffSize."""
+    """Deprecated. Use client.read_asr_audio() instead."""
     # Check if we have a text reader
     if isinstance(reader, io.TextIOBase):
         is_text = True
@@ -157,9 +155,7 @@ def read_ASR_audio(stream, reader, buffSize):
 
 
 def write_TTS_audio(stream, writer):
-    """Convenience function to receive audio from the given
-    TTS stream and send it to the writer until there is no
-    more audio to receive."""
+    """Deprecated. Use client.write_tts_audio() instead."""
     # Check if we have a text writer
     if isinstance(writer, io.TextIOBase):
         is_text = True
@@ -173,3 +169,112 @@ def write_TTS_audio(stream, writer):
             writer.write(str(data.audio))
         else:
             writer.write(data.audio)
+
+class TranscribeStream(object):
+    """TranscribeStream represents a bidirectional stream where audio is
+    sent to Diatheke and transcriptions are returned to the client. This
+    differs from an ASRStream in purpose - where ASRStream accepts audio
+    to continue a conversation with the system, TranscribeStream accepts
+    audio solely for the purpose of getting a transcription that the client
+    can use for any purpose (e.g., note taking, send a message, etc.)."""
+
+    def __init__(self, client_stub):
+        # The Python implementation of gRPC is a little different from
+        # other languages. Rather than having send and receive methods
+        # for the stream, the bidirectional stream takes an iterator or
+        # generator function, and returns an iterable. This is a little
+        # inconvenient for how we want our SDK to be structured, so we
+        # use our own stream class with some threading to make this work.
+
+        # Set up queues to transfer data
+        input = Queue(maxsize=1)
+        output = Queue(maxsize=1)
+        self._input_queue = input
+        self._output_queue = output
+
+        # Use a flag (and lock) to indicate when the stream is closed.
+        lock = threading.Lock()
+        doneFlag = False
+        def is_done():
+            nonlocal doneFlag
+            with lock:
+                if doneFlag:
+                    return True
+                return False
+        self._is_done = is_done
+
+        # Generator function to pass data from the input queue to the
+        # streaming method.
+        def wait_for_audio():
+            while not is_done():
+                # Wait for data from the queue, which will block until data
+                # is available.
+                request = input.get()
+                if request is None:
+                    # This is our sentinel to indicate that the generator
+                    # should finish, which will end the stream.
+                    return
+                yield request
+
+        # Function to run the gRPC method.
+        def run_stream():
+            nonlocal doneFlag
+            for result in client_stub.Transcribe(wait_for_audio()):
+                output.put(result)
+
+            # Set the done flag
+            with lock:
+                doneFlag = True
+
+            # Send None on the output to indicate the stream has finished.
+            output.put(None)
+
+        # Start the stream on its own thread.
+        self._stream_thread = threading.Thread(target=run_stream)
+        self._stream_thread.start()
+
+    def _send(self, request):
+        # Check if the stream has closed.
+        if self._is_done():
+            return False
+
+        # Send the request to the streaming thread.
+        self._input_queue.put(request)
+        return True
+
+    def send_action(self, action):
+        """Send the given TranscribeAction to Diatheke to update the speech
+        recognition context. The action must first be sent on the stream
+        before any audio will be recognized. If the stream was created using
+        client.new_transcribe_stream(), this action was already sent.
+        
+        If this function returns False, the server has closed the stream, and
+        no further attempts should be made to send an action or audio data to
+        the server."""
+        return self._send(TranscribeInput(action=action))
+
+    def send_audio(self, audio_bytes):
+        """Send the given audio data to Diatheke for transcription.
+        
+        If this function returns False, the server has closed the stream,
+        and no further attempts should be made to send an action or audio
+        data to the server.
+        
+        It is thread-safe to call this method while also calling
+        receive_result()."""
+        return self._send(TranscribeInput(audio=audio_bytes))
+    
+    def send_finished(self):
+        """Tell the server that no more data will be sent over this stream.
+        It is an error to call send_audio() or send_action() after calling
+        this."""
+        self._send(None)
+
+    def receive_result(self):
+        """Wait for the next available TranscribeResult from the server.
+        Returns None when there are no more results to receive.
+        
+        It is thread-safe to call this method while also calling
+        send_audio()."""
+        # Pull the next result from from the streaming thread.
+        return self._output_queue.get()

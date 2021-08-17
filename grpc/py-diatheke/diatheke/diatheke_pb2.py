@@ -17,8 +17,8 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='diatheke.proto',
   package='cobaltspeech.diatheke',
   syntax='proto3',
-  serialized_options=b'Z\014.;diathekepb',
-  serialized_pb=b'\n\x0e\x64iatheke.proto\x12\x15\x63obaltspeech.diatheke\"P\n\x0fVersionResponse\x12\x10\n\x08\x64iatheke\x18\x01 \x01(\t\x12\x0e\n\x06\x63hosun\x18\x02 \x01(\t\x12\r\n\x05\x63ubic\x18\x03 \x01(\t\x12\x0c\n\x04luna\x18\x04 \x01(\t\"F\n\x12ListModelsResponse\x12\x30\n\x06models\x18\x01 \x03(\x0b\x32 .cobaltspeech.diatheke.ModelInfo\"i\n\tModelInfo\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x10\n\x08language\x18\x03 \x01(\t\x12\x17\n\x0f\x61sr_sample_rate\x18\x04 \x01(\r\x12\x17\n\x0ftts_sample_rate\x18\x05 \x01(\r\"\x92\x02\n\x0cSessionInput\x12/\n\x05token\x18\x01 \x01(\x0b\x32 .cobaltspeech.diatheke.TokenData\x12\x30\n\x04text\x18\x02 \x01(\x0b\x32 .cobaltspeech.diatheke.TextInputH\x00\x12/\n\x03\x61sr\x18\x03 \x01(\x0b\x32 .cobaltspeech.diatheke.ASRResultH\x00\x12\x33\n\x03\x63md\x18\x04 \x01(\x0b\x32$.cobaltspeech.diatheke.CommandResultH\x00\x12\x30\n\x05story\x18\x05 \x01(\x0b\x32\x1f.cobaltspeech.diatheke.SetStoryH\x00\x42\x07\n\x05input\"7\n\tTokenData\x12\x0c\n\x04\x64\x61ta\x18\x01 \x01(\x0c\x12\n\n\x02id\x18\x02 \x01(\t\x12\x10\n\x08metadata\x18\x03 \x01(\t\" \n\x0cSessionStart\x12\x10\n\x08model_id\x18\x01 \x01(\t\"\x19\n\tTextInput\x12\x0c\n\x04text\x18\x01 \x01(\t\"\xb1\x01\n\rCommandResult\x12\n\n\x02id\x18\x01 \x01(\t\x12O\n\x0eout_parameters\x18\x02 \x03(\x0b\x32\x37.cobaltspeech.diatheke.CommandResult.OutParametersEntry\x12\r\n\x05\x65rror\x18\x03 \x01(\t\x1a\x34\n\x12OutParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\x94\x01\n\x08SetStory\x12\x10\n\x08story_id\x18\x01 \x01(\t\x12\x43\n\nparameters\x18\x02 \x03(\x0b\x32/.cobaltspeech.diatheke.SetStory.ParametersEntry\x1a\x31\n\x0fParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"x\n\rSessionOutput\x12/\n\x05token\x18\x01 \x01(\x0b\x32 .cobaltspeech.diatheke.TokenData\x12\x36\n\x0b\x61\x63tion_list\x18\x02 \x03(\x0b\x32!.cobaltspeech.diatheke.ActionData\"\xbf\x01\n\nActionData\x12\x39\n\x05input\x18\x01 \x01(\x0b\x32(.cobaltspeech.diatheke.WaitForUserActionH\x00\x12\x37\n\x07\x63ommand\x18\x02 \x01(\x0b\x32$.cobaltspeech.diatheke.CommandActionH\x00\x12\x33\n\x05reply\x18\x03 \x01(\x0b\x32\".cobaltspeech.diatheke.ReplyActionH\x00\x42\x08\n\x06\x61\x63tion\"B\n\x11WaitForUserAction\x12\x1a\n\x12requires_wake_word\x18\x01 \x01(\x08\x12\x11\n\timmediate\x18\x02 \x01(\x08\"\xa8\x01\n\rCommandAction\x12\n\n\x02id\x18\x01 \x01(\t\x12S\n\x10input_parameters\x18\x02 \x03(\x0b\x32\x39.cobaltspeech.diatheke.CommandAction.InputParametersEntry\x1a\x36\n\x14InputParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"/\n\x0bReplyAction\x12\x0c\n\x04text\x18\x01 \x01(\t\x12\x12\n\nluna_model\x18\x02 \x01(\t\"V\n\x08\x41SRInput\x12\x31\n\x05token\x18\x01 \x01(\x0b\x32 .cobaltspeech.diatheke.TokenDataH\x00\x12\x0f\n\x05\x61udio\x18\x02 \x01(\x0cH\x00\x42\x06\n\x04\x64\x61ta\"?\n\tASRResult\x12\x0c\n\x04text\x18\x01 \x01(\t\x12\x12\n\nconfidence\x18\x02 \x01(\x01\x12\x10\n\x08timedOut\x18\x03 \x01(\x08\"\x19\n\x08TTSAudio\x12\r\n\x05\x61udio\x18\x01 \x01(\x0c\"\x07\n\x05\x45mpty2\xef\x04\n\x08\x44iatheke\x12Q\n\x07Version\x12\x1c.cobaltspeech.diatheke.Empty\x1a&.cobaltspeech.diatheke.VersionResponse\"\x00\x12W\n\nListModels\x12\x1c.cobaltspeech.diatheke.Empty\x1a).cobaltspeech.diatheke.ListModelsResponse\"\x00\x12\\\n\rCreateSession\x12#.cobaltspeech.diatheke.SessionStart\x1a$.cobaltspeech.diatheke.SessionOutput\"\x00\x12Q\n\rDeleteSession\x12 .cobaltspeech.diatheke.TokenData\x1a\x1c.cobaltspeech.diatheke.Empty\"\x00\x12\\\n\rUpdateSession\x12#.cobaltspeech.diatheke.SessionInput\x1a$.cobaltspeech.diatheke.SessionOutput\"\x00\x12R\n\tStreamASR\x12\x1f.cobaltspeech.diatheke.ASRInput\x1a .cobaltspeech.diatheke.ASRResult\"\x00(\x01\x12T\n\tStreamTTS\x12\".cobaltspeech.diatheke.ReplyAction\x1a\x1f.cobaltspeech.diatheke.TTSAudio\"\x00\x30\x01\x42\x0eZ\x0c.;diathekepbb\x06proto3'
+  serialized_options=b'\n\031com.cobaltspeech.diathekeZ\014.;diathekepb',
+  serialized_pb=b'\n\x0e\x64iatheke.proto\x12\x15\x63obaltspeech.diatheke\"P\n\x0fVersionResponse\x12\x10\n\x08\x64iatheke\x18\x01 \x01(\t\x12\x0e\n\x06\x63hosun\x18\x02 \x01(\t\x12\r\n\x05\x63ubic\x18\x03 \x01(\t\x12\x0c\n\x04luna\x18\x04 \x01(\t\"F\n\x12ListModelsResponse\x12\x30\n\x06models\x18\x01 \x03(\x0b\x32 .cobaltspeech.diatheke.ModelInfo\"i\n\tModelInfo\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x10\n\x08language\x18\x03 \x01(\t\x12\x17\n\x0f\x61sr_sample_rate\x18\x04 \x01(\r\x12\x17\n\x0ftts_sample_rate\x18\x05 \x01(\r\"\x92\x02\n\x0cSessionInput\x12/\n\x05token\x18\x01 \x01(\x0b\x32 .cobaltspeech.diatheke.TokenData\x12\x30\n\x04text\x18\x02 \x01(\x0b\x32 .cobaltspeech.diatheke.TextInputH\x00\x12/\n\x03\x61sr\x18\x03 \x01(\x0b\x32 .cobaltspeech.diatheke.ASRResultH\x00\x12\x33\n\x03\x63md\x18\x04 \x01(\x0b\x32$.cobaltspeech.diatheke.CommandResultH\x00\x12\x30\n\x05story\x18\x05 \x01(\x0b\x32\x1f.cobaltspeech.diatheke.SetStoryH\x00\x42\x07\n\x05input\"7\n\tTokenData\x12\x0c\n\x04\x64\x61ta\x18\x01 \x01(\x0c\x12\n\n\x02id\x18\x02 \x01(\t\x12\x10\n\x08metadata\x18\x03 \x01(\t\"2\n\x0cSessionStart\x12\x10\n\x08model_id\x18\x01 \x01(\t\x12\x10\n\x08wakeword\x18\x02 \x01(\t\"\x19\n\tTextInput\x12\x0c\n\x04text\x18\x01 \x01(\t\"\xb1\x01\n\rCommandResult\x12\n\n\x02id\x18\x01 \x01(\t\x12O\n\x0eout_parameters\x18\x02 \x03(\x0b\x32\x37.cobaltspeech.diatheke.CommandResult.OutParametersEntry\x12\r\n\x05\x65rror\x18\x03 \x01(\t\x1a\x34\n\x12OutParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\x94\x01\n\x08SetStory\x12\x10\n\x08story_id\x18\x01 \x01(\t\x12\x43\n\nparameters\x18\x02 \x03(\x0b\x32/.cobaltspeech.diatheke.SetStory.ParametersEntry\x1a\x31\n\x0fParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"x\n\rSessionOutput\x12/\n\x05token\x18\x01 \x01(\x0b\x32 .cobaltspeech.diatheke.TokenData\x12\x36\n\x0b\x61\x63tion_list\x18\x02 \x03(\x0b\x32!.cobaltspeech.diatheke.ActionData\"\xfe\x01\n\nActionData\x12\x39\n\x05input\x18\x01 \x01(\x0b\x32(.cobaltspeech.diatheke.WaitForUserActionH\x00\x12\x37\n\x07\x63ommand\x18\x02 \x01(\x0b\x32$.cobaltspeech.diatheke.CommandActionH\x00\x12\x33\n\x05reply\x18\x03 \x01(\x0b\x32\".cobaltspeech.diatheke.ReplyActionH\x00\x12=\n\ntranscribe\x18\x04 \x01(\x0b\x32\'.cobaltspeech.diatheke.TranscribeActionH\x00\x42\x08\n\x06\x61\x63tion\"B\n\x11WaitForUserAction\x12\x1a\n\x12requires_wake_word\x18\x01 \x01(\x08\x12\x11\n\timmediate\x18\x02 \x01(\x08\"\xa8\x01\n\rCommandAction\x12\n\n\x02id\x18\x01 \x01(\t\x12S\n\x10input_parameters\x18\x02 \x03(\x0b\x32\x39.cobaltspeech.diatheke.CommandAction.InputParametersEntry\x1a\x36\n\x14InputParametersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"/\n\x0bReplyAction\x12\x0c\n\x04text\x18\x01 \x01(\t\x12\x12\n\nluna_model\x18\x02 \x01(\t\"Q\n\x10TranscribeAction\x12\n\n\x02id\x18\x01 \x01(\t\x12\x16\n\x0e\x63ubic_model_id\x18\x02 \x01(\t\x12\x19\n\x11\x64iatheke_model_id\x18\x03 \x01(\t\"V\n\x08\x41SRInput\x12\x31\n\x05token\x18\x01 \x01(\x0b\x32 .cobaltspeech.diatheke.TokenDataH\x00\x12\x0f\n\x05\x61udio\x18\x02 \x01(\x0cH\x00\x42\x06\n\x04\x64\x61ta\"?\n\tASRResult\x12\x0c\n\x04text\x18\x01 \x01(\t\x12\x12\n\nconfidence\x18\x02 \x01(\x01\x12\x10\n\x08timedOut\x18\x03 \x01(\x08\"\x19\n\x08TTSAudio\x12\r\n\x05\x61udio\x18\x01 \x01(\x0c\"e\n\x0fTranscribeInput\x12\x39\n\x06\x61\x63tion\x18\x01 \x01(\x0b\x32\'.cobaltspeech.diatheke.TranscribeActionH\x00\x12\x0f\n\x05\x61udio\x18\x02 \x01(\x0cH\x00\x42\x06\n\x04\x64\x61ta\"H\n\x10TranscribeResult\x12\x0c\n\x04text\x18\x01 \x01(\t\x12\x12\n\nconfidence\x18\x02 \x01(\x01\x12\x12\n\nis_partial\x18\x03 \x01(\x08\"\x07\n\x05\x45mpty2\xd4\x05\n\x08\x44iatheke\x12Q\n\x07Version\x12\x1c.cobaltspeech.diatheke.Empty\x1a&.cobaltspeech.diatheke.VersionResponse\"\x00\x12W\n\nListModels\x12\x1c.cobaltspeech.diatheke.Empty\x1a).cobaltspeech.diatheke.ListModelsResponse\"\x00\x12\\\n\rCreateSession\x12#.cobaltspeech.diatheke.SessionStart\x1a$.cobaltspeech.diatheke.SessionOutput\"\x00\x12Q\n\rDeleteSession\x12 .cobaltspeech.diatheke.TokenData\x1a\x1c.cobaltspeech.diatheke.Empty\"\x00\x12\\\n\rUpdateSession\x12#.cobaltspeech.diatheke.SessionInput\x1a$.cobaltspeech.diatheke.SessionOutput\"\x00\x12R\n\tStreamASR\x12\x1f.cobaltspeech.diatheke.ASRInput\x1a .cobaltspeech.diatheke.ASRResult\"\x00(\x01\x12T\n\tStreamTTS\x12\".cobaltspeech.diatheke.ReplyAction\x1a\x1f.cobaltspeech.diatheke.TTSAudio\"\x00\x30\x01\x12\x63\n\nTranscribe\x12&.cobaltspeech.diatheke.TranscribeInput\x1a\'.cobaltspeech.diatheke.TranscribeResult\"\x00(\x01\x30\x01\x42)\n\x19\x63om.cobaltspeech.diathekeZ\x0c.;diathekepbb\x06proto3'
 )
 
 
@@ -287,6 +287,13 @@ _SESSIONSTART = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='wakeword', full_name='cobaltspeech.diatheke.SessionStart.wakeword', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -300,7 +307,7 @@ _SESSIONSTART = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=636,
-  serialized_end=668,
+  serialized_end=686,
 )
 
 
@@ -330,8 +337,8 @@ _TEXTINPUT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=670,
-  serialized_end=695,
+  serialized_start=688,
+  serialized_end=713,
 )
 
 
@@ -368,8 +375,8 @@ _COMMANDRESULT_OUTPARAMETERSENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=823,
-  serialized_end=875,
+  serialized_start=841,
+  serialized_end=893,
 )
 
 _COMMANDRESULT = _descriptor.Descriptor(
@@ -412,8 +419,8 @@ _COMMANDRESULT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=698,
-  serialized_end=875,
+  serialized_start=716,
+  serialized_end=893,
 )
 
 
@@ -450,8 +457,8 @@ _SETSTORY_PARAMETERSENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=977,
-  serialized_end=1026,
+  serialized_start=995,
+  serialized_end=1044,
 )
 
 _SETSTORY = _descriptor.Descriptor(
@@ -487,8 +494,8 @@ _SETSTORY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=878,
-  serialized_end=1026,
+  serialized_start=896,
+  serialized_end=1044,
 )
 
 
@@ -525,8 +532,8 @@ _SESSIONOUTPUT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1028,
-  serialized_end=1148,
+  serialized_start=1046,
+  serialized_end=1166,
 )
 
 
@@ -558,6 +565,13 @@ _ACTIONDATA = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='transcribe', full_name='cobaltspeech.diatheke.ActionData.transcribe', index=3,
+      number=4, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -573,8 +587,8 @@ _ACTIONDATA = _descriptor.Descriptor(
       name='action', full_name='cobaltspeech.diatheke.ActionData.action',
       index=0, containing_type=None, fields=[]),
   ],
-  serialized_start=1151,
-  serialized_end=1342,
+  serialized_start=1169,
+  serialized_end=1423,
 )
 
 
@@ -611,8 +625,8 @@ _WAITFORUSERACTION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1344,
-  serialized_end=1410,
+  serialized_start=1425,
+  serialized_end=1491,
 )
 
 
@@ -649,8 +663,8 @@ _COMMANDACTION_INPUTPARAMETERSENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1527,
-  serialized_end=1581,
+  serialized_start=1608,
+  serialized_end=1662,
 )
 
 _COMMANDACTION = _descriptor.Descriptor(
@@ -686,8 +700,8 @@ _COMMANDACTION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1413,
-  serialized_end=1581,
+  serialized_start=1494,
+  serialized_end=1662,
 )
 
 
@@ -724,8 +738,53 @@ _REPLYACTION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1583,
-  serialized_end=1630,
+  serialized_start=1664,
+  serialized_end=1711,
+)
+
+
+_TRANSCRIBEACTION = _descriptor.Descriptor(
+  name='TranscribeAction',
+  full_name='cobaltspeech.diatheke.TranscribeAction',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='id', full_name='cobaltspeech.diatheke.TranscribeAction.id', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='cubic_model_id', full_name='cobaltspeech.diatheke.TranscribeAction.cubic_model_id', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='diatheke_model_id', full_name='cobaltspeech.diatheke.TranscribeAction.diatheke_model_id', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1713,
+  serialized_end=1794,
 )
 
 
@@ -765,8 +824,8 @@ _ASRINPUT = _descriptor.Descriptor(
       name='data', full_name='cobaltspeech.diatheke.ASRInput.data',
       index=0, containing_type=None, fields=[]),
   ],
-  serialized_start=1632,
-  serialized_end=1718,
+  serialized_start=1796,
+  serialized_end=1882,
 )
 
 
@@ -810,8 +869,8 @@ _ASRRESULT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1720,
-  serialized_end=1783,
+  serialized_start=1884,
+  serialized_end=1947,
 )
 
 
@@ -841,8 +900,94 @@ _TTSAUDIO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1785,
-  serialized_end=1810,
+  serialized_start=1949,
+  serialized_end=1974,
+)
+
+
+_TRANSCRIBEINPUT = _descriptor.Descriptor(
+  name='TranscribeInput',
+  full_name='cobaltspeech.diatheke.TranscribeInput',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='action', full_name='cobaltspeech.diatheke.TranscribeInput.action', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='audio', full_name='cobaltspeech.diatheke.TranscribeInput.audio', index=1,
+      number=2, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+    _descriptor.OneofDescriptor(
+      name='data', full_name='cobaltspeech.diatheke.TranscribeInput.data',
+      index=0, containing_type=None, fields=[]),
+  ],
+  serialized_start=1976,
+  serialized_end=2077,
+)
+
+
+_TRANSCRIBERESULT = _descriptor.Descriptor(
+  name='TranscribeResult',
+  full_name='cobaltspeech.diatheke.TranscribeResult',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='text', full_name='cobaltspeech.diatheke.TranscribeResult.text', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='confidence', full_name='cobaltspeech.diatheke.TranscribeResult.confidence', index=1,
+      number=2, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='is_partial', full_name='cobaltspeech.diatheke.TranscribeResult.is_partial', index=2,
+      number=3, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=2079,
+  serialized_end=2151,
 )
 
 
@@ -865,8 +1010,8 @@ _EMPTY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1812,
-  serialized_end=1819,
+  serialized_start=2153,
+  serialized_end=2160,
 )
 
 _LISTMODELSRESPONSE.fields_by_name['models'].message_type = _MODELINFO
@@ -896,6 +1041,7 @@ _SESSIONOUTPUT.fields_by_name['action_list'].message_type = _ACTIONDATA
 _ACTIONDATA.fields_by_name['input'].message_type = _WAITFORUSERACTION
 _ACTIONDATA.fields_by_name['command'].message_type = _COMMANDACTION
 _ACTIONDATA.fields_by_name['reply'].message_type = _REPLYACTION
+_ACTIONDATA.fields_by_name['transcribe'].message_type = _TRANSCRIBEACTION
 _ACTIONDATA.oneofs_by_name['action'].fields.append(
   _ACTIONDATA.fields_by_name['input'])
 _ACTIONDATA.fields_by_name['input'].containing_oneof = _ACTIONDATA.oneofs_by_name['action']
@@ -905,6 +1051,9 @@ _ACTIONDATA.fields_by_name['command'].containing_oneof = _ACTIONDATA.oneofs_by_n
 _ACTIONDATA.oneofs_by_name['action'].fields.append(
   _ACTIONDATA.fields_by_name['reply'])
 _ACTIONDATA.fields_by_name['reply'].containing_oneof = _ACTIONDATA.oneofs_by_name['action']
+_ACTIONDATA.oneofs_by_name['action'].fields.append(
+  _ACTIONDATA.fields_by_name['transcribe'])
+_ACTIONDATA.fields_by_name['transcribe'].containing_oneof = _ACTIONDATA.oneofs_by_name['action']
 _COMMANDACTION_INPUTPARAMETERSENTRY.containing_type = _COMMANDACTION
 _COMMANDACTION.fields_by_name['input_parameters'].message_type = _COMMANDACTION_INPUTPARAMETERSENTRY
 _ASRINPUT.fields_by_name['token'].message_type = _TOKENDATA
@@ -914,6 +1063,13 @@ _ASRINPUT.fields_by_name['token'].containing_oneof = _ASRINPUT.oneofs_by_name['d
 _ASRINPUT.oneofs_by_name['data'].fields.append(
   _ASRINPUT.fields_by_name['audio'])
 _ASRINPUT.fields_by_name['audio'].containing_oneof = _ASRINPUT.oneofs_by_name['data']
+_TRANSCRIBEINPUT.fields_by_name['action'].message_type = _TRANSCRIBEACTION
+_TRANSCRIBEINPUT.oneofs_by_name['data'].fields.append(
+  _TRANSCRIBEINPUT.fields_by_name['action'])
+_TRANSCRIBEINPUT.fields_by_name['action'].containing_oneof = _TRANSCRIBEINPUT.oneofs_by_name['data']
+_TRANSCRIBEINPUT.oneofs_by_name['data'].fields.append(
+  _TRANSCRIBEINPUT.fields_by_name['audio'])
+_TRANSCRIBEINPUT.fields_by_name['audio'].containing_oneof = _TRANSCRIBEINPUT.oneofs_by_name['data']
 DESCRIPTOR.message_types_by_name['VersionResponse'] = _VERSIONRESPONSE
 DESCRIPTOR.message_types_by_name['ListModelsResponse'] = _LISTMODELSRESPONSE
 DESCRIPTOR.message_types_by_name['ModelInfo'] = _MODELINFO
@@ -928,9 +1084,12 @@ DESCRIPTOR.message_types_by_name['ActionData'] = _ACTIONDATA
 DESCRIPTOR.message_types_by_name['WaitForUserAction'] = _WAITFORUSERACTION
 DESCRIPTOR.message_types_by_name['CommandAction'] = _COMMANDACTION
 DESCRIPTOR.message_types_by_name['ReplyAction'] = _REPLYACTION
+DESCRIPTOR.message_types_by_name['TranscribeAction'] = _TRANSCRIBEACTION
 DESCRIPTOR.message_types_by_name['ASRInput'] = _ASRINPUT
 DESCRIPTOR.message_types_by_name['ASRResult'] = _ASRRESULT
 DESCRIPTOR.message_types_by_name['TTSAudio'] = _TTSAUDIO
+DESCRIPTOR.message_types_by_name['TranscribeInput'] = _TRANSCRIBEINPUT
+DESCRIPTOR.message_types_by_name['TranscribeResult'] = _TRANSCRIBERESULT
 DESCRIPTOR.message_types_by_name['Empty'] = _EMPTY
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -1056,6 +1215,13 @@ ReplyAction = _reflection.GeneratedProtocolMessageType('ReplyAction', (_message.
   })
 _sym_db.RegisterMessage(ReplyAction)
 
+TranscribeAction = _reflection.GeneratedProtocolMessageType('TranscribeAction', (_message.Message,), {
+  'DESCRIPTOR' : _TRANSCRIBEACTION,
+  '__module__' : 'diatheke_pb2'
+  # @@protoc_insertion_point(class_scope:cobaltspeech.diatheke.TranscribeAction)
+  })
+_sym_db.RegisterMessage(TranscribeAction)
+
 ASRInput = _reflection.GeneratedProtocolMessageType('ASRInput', (_message.Message,), {
   'DESCRIPTOR' : _ASRINPUT,
   '__module__' : 'diatheke_pb2'
@@ -1077,6 +1243,20 @@ TTSAudio = _reflection.GeneratedProtocolMessageType('TTSAudio', (_message.Messag
   })
 _sym_db.RegisterMessage(TTSAudio)
 
+TranscribeInput = _reflection.GeneratedProtocolMessageType('TranscribeInput', (_message.Message,), {
+  'DESCRIPTOR' : _TRANSCRIBEINPUT,
+  '__module__' : 'diatheke_pb2'
+  # @@protoc_insertion_point(class_scope:cobaltspeech.diatheke.TranscribeInput)
+  })
+_sym_db.RegisterMessage(TranscribeInput)
+
+TranscribeResult = _reflection.GeneratedProtocolMessageType('TranscribeResult', (_message.Message,), {
+  'DESCRIPTOR' : _TRANSCRIBERESULT,
+  '__module__' : 'diatheke_pb2'
+  # @@protoc_insertion_point(class_scope:cobaltspeech.diatheke.TranscribeResult)
+  })
+_sym_db.RegisterMessage(TranscribeResult)
+
 Empty = _reflection.GeneratedProtocolMessageType('Empty', (_message.Message,), {
   'DESCRIPTOR' : _EMPTY,
   '__module__' : 'diatheke_pb2'
@@ -1096,8 +1276,8 @@ _DIATHEKE = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   serialized_options=None,
-  serialized_start=1822,
-  serialized_end=2445,
+  serialized_start=2163,
+  serialized_end=2887,
   methods=[
   _descriptor.MethodDescriptor(
     name='Version',
@@ -1160,6 +1340,15 @@ _DIATHEKE = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_REPLYACTION,
     output_type=_TTSAUDIO,
+    serialized_options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='Transcribe',
+    full_name='cobaltspeech.diatheke.Diatheke.Transcribe',
+    index=7,
+    containing_service=None,
+    input_type=_TRANSCRIBEINPUT,
+    output_type=_TRANSCRIBERESULT,
     serialized_options=None,
   ),
 ])
