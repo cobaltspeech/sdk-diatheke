@@ -179,13 +179,13 @@ type TranscribeResultHandler func(*diathekepb.TranscribeResult)
 func ReadTranscribeAudio(
 	stream *TranscribeStream,
 	reader io.Reader,
-	buffSize int,
+	bytesBuffSize int,
 	handler TranscribeResultHandler,
 ) error {
 	// Read audio on a separate go routine
 	sendErrCh := make(chan error)
 	go func() {
-		sendErrCh <- sendTranscribeAudio(stream, reader, buffSize)
+		sendErrCh <- sendTranscribeAudio(stream, reader, bytesBuffSize)
 	}()
 
 	// In the meantime, handle results here
@@ -226,9 +226,9 @@ func ReadTranscribeAudio(
 func sendTranscribeAudio(
 	stream *TranscribeStream,
 	reader io.Reader,
-	buffSize int,
+	bytesBuffSize int,
 ) error {
-	buffer := make([]byte, buffSize)
+	buffer := make([]byte, bytesBuffSize)
 	var err error
 	var bytesRead int
 	for {
