@@ -49,6 +49,11 @@ class DiathekeStub(object):
                 request_serializer=diatheke__pb2.ReplyAction.SerializeToString,
                 response_deserializer=diatheke__pb2.TTSAudio.FromString,
                 )
+        self.Transcribe = channel.stream_stream(
+                '/cobaltspeech.diatheke.Diatheke/Transcribe',
+                request_serializer=diatheke__pb2.TranscribeInput.SerializeToString,
+                response_deserializer=diatheke__pb2.TranscribeResult.FromString,
+                )
 
 
 class DiathekeServicer(object):
@@ -101,6 +106,13 @@ class DiathekeServicer(object):
         endpoint), or when a transcript becomes available on its
         own, in which case the stream is closed by the server.
         The ASR result may be used in the UpdateSession method.
+
+        If the session has a wakeword enabled, and the client
+        application is using Diatheke and Cubic to handle the
+        wakeword processing, this method will not return a
+        result until the wakeword condition has been satisfied.
+        Utterances without the required wakeword will be
+        discarded and no transcription will be returned.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -111,6 +123,26 @@ class DiathekeServicer(object):
         The stream will close when TTS is finished. The client
         may also close the stream early to cancel the speech
         synthesis.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def Transcribe(self, request_iterator, context):
+        """Create an ASR stream for transcription. Unlike StreamASR,
+        Transcribe does not listen for a wakeword. This method
+        returns a bi-directional stream, and its intended use is
+        for situations where a user may say anything at all, whether
+        it is short or long, and the application wants to save the
+        transcript (e.g., take a note, send a message).
+
+        The first message sent to the server must include the
+        Cubic model ID, with remaining messages sending audio data.
+        Messages received from the server will include the current
+        best partial transcription until the full transcription is
+        ready. The stream ends when either the client application
+        closes it, a predefined duration of silence (non-speech)
+        occurs, or the end-transcription intent is recognized.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -153,6 +185,11 @@ def add_DiathekeServicer_to_server(servicer, server):
                     servicer.StreamTTS,
                     request_deserializer=diatheke__pb2.ReplyAction.FromString,
                     response_serializer=diatheke__pb2.TTSAudio.SerializeToString,
+            ),
+            'Transcribe': grpc.stream_stream_rpc_method_handler(
+                    servicer.Transcribe,
+                    request_deserializer=diatheke__pb2.TranscribeInput.FromString,
+                    response_serializer=diatheke__pb2.TranscribeResult.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -274,5 +311,21 @@ class Diatheke(object):
         return grpc.experimental.unary_stream(request, target, '/cobaltspeech.diatheke.Diatheke/StreamTTS',
             diatheke__pb2.ReplyAction.SerializeToString,
             diatheke__pb2.TTSAudio.FromString,
+            options, channel_credentials,
+            call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def Transcribe(request_iterator,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.stream_stream(request_iterator, target, '/cobaltspeech.diatheke.Diatheke/Transcribe',
+            diatheke__pb2.TranscribeInput.SerializeToString,
+            diatheke__pb2.TranscribeResult.FromString,
             options, channel_credentials,
             call_credentials, compression, wait_for_ready, timeout, metadata)

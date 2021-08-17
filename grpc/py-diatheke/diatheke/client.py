@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright(2020) Cobalt Speech and Language Inc.
+# Copyright(2021) Cobalt Speech and Language Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License")
 # you may not use this file except in compliance with the License.
@@ -15,10 +15,11 @@
 # limitations under the License.
 
 import grpc
+import io
 
 from diatheke_pb2_grpc import DiathekeStub
-from diatheke_pb2 import Empty, SessionStart, TokenData, SessionInput, TextInput, SetStory
-from streams import ASRStream
+from diatheke_pb2 import Empty, SessionStart, TokenData, SessionInput, TextInput, SetStory, TranscribeInput, ASRInput
+from streams import ASRStream, TranscribeStream
 
 
 class Client(object):
@@ -85,6 +86,13 @@ class Client(object):
         the session token and actions."""
         return self._client.CreateSession(SessionStart(model_id=model))
 
+    def create_session_with_wakeword(self, model, wakeword):
+        """Creates a new session using the specified model ID and custom
+        wakeword. The wakeword will only have an effect if the model has
+        wakeword detection enabled."""
+        return self._client.CreateSession(SessionStart(model_id=model,
+                                                       wakeword=wakeword))
+
     def delete_session(self, token):
         """Cleans up the given token. Behavior is undefined if the given
         token is used again after calling this function."""
@@ -128,3 +136,79 @@ class Client(object):
         """Creates a new stream to receive TTS audio from Diatheke based
         on the given reply action."""
         return self._client.StreamTTS(reply)
+
+    def new_transcribe_stream(self, action):
+        """Creates a new stream for transcriptions usually in response to
+        a transcribe action in the session output. This stream differs from
+        an ASR stream in purpose - where a session's ASR stream accepts audio
+        to continue a conversation with the system, a transcribe stream
+        accepts audio for the sole purpose of getting a transcription that
+        the client can use for any purpose (e.g., note taking, send a message,
+        etc.)."""
+        stream = TranscribeStream(client_stub=self._client)
+        stream.send_action(action)
+        return stream
+
+    def read_asr_audio(self, token, reader, buff_size):
+        """Convenience function to create an ASR stream and send audio
+        from the given reader to the stream. This function blocks until
+        a result is returned. Data is sent in chunks defined by buff_size."""
+        # Check if we have a text or byte reader
+        is_text = isinstance(reader, io.TextIOBase)
+
+        # Set up a generator function to send the session token and audio
+        # data to Diatheke.
+        def send_data():
+            yield ASRInput(token=token)
+            while True:
+                data = reader.read(buff_size)
+                if (is_text and data == '') or (not is_text and data == b''):
+                    # Reached EOF
+                    return
+                
+                # Send the audio
+                yield ASRInput(audio=data)
+        
+        # Run the stream
+        return self._client.StreamASR(send_data())
+
+    def write_tts_audio(self, reply_action, writer):
+        """Convenience function to create a TTS stream and send the audio
+        to the given writer. This function blocks until there is no more
+        audio to receive."""
+        # Check if we have a text or byte writer
+        is_text = isinstance(writer, io.TextIOBase)
+
+        # Create the stream
+        stream = self.new_tts_stream(reply_action)
+        for data in stream:
+            if is_text:
+                # Convert the text to a string before writing
+                writer.write(str(data.audio))
+            else:
+                writer.write(data.audio)
+
+    def read_transcribe_audio(self, transcribe_action, reader, buff_size, callback):
+        """Convenience function to create a transcribe stream that reads
+        audio from the given reader in buff_size chunks. The provided
+        callback is called with transcribe results as they become
+        available. This function blocks until the streaming is complete."""
+        # Check if we have a text or byte reader
+        is_text = isinstance(reader, io.TextIOBase)
+
+        # Set up a generator function to send the transcribe action
+        # and audio data to Diatheke.
+        def send_data():
+            yield TranscribeInput(action=transcribe_action)
+            while True:
+                data = reader.read(buff_size)
+                if (is_text and data == '') or (not is_text and data == b''):
+                    # Reached the EOF
+                    return
+
+                # Send the audio
+                yield TranscribeInput(audio=data)
+
+        # Call the Transcribe method and send results to the callback
+        for result in self._client.Transcribe(send_data()):
+            callback(result)
