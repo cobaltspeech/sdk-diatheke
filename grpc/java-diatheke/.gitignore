@@ -97,3 +97,9 @@ lint/tmp/
 
 # Android Profiling
 *.hprof
+
+# Legacy Eclipse project files
+.classpath
+.project
+.cproject
+.settings/
