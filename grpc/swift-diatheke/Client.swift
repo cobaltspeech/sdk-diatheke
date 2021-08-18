@@ -2,7 +2,7 @@
 //  Client.swift
 //
 //  Created by Eduard Miniakhmetov on 23.04.2020.
-//  Copyright (2020) Cobalt Speech and Language Inc.
+//  Copyright (2021) Cobalt Speech and Language Inc.
 
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -92,23 +92,43 @@ public extension Cobaltspeech_Diatheke_DiathekeClient {
         }
     }
     
+    fileprivate func createSession(_ modelID: String,
+                                   _ wakeword: String?,
+                                   _ success: @escaping (Cobaltspeech_Diatheke_SessionOutput) -> (),
+                                   _ failure: @escaping DiathekeFailureCallback) {
+       var request = Cobaltspeech_Diatheke_SessionStart()
+       request.modelID = modelID
+       
+       if let wakeword = wakeword {
+           request.wakeword = wakeword
+       }
+
+       createSession(request).response.whenComplete { (result) in
+           switch result {
+           case .success(let sessionOutput):
+               success(sessionOutput)
+           case .failure(let error):
+               failure(error)
+           }
+       }
+   }
+    
     // CreateSession creates a new Diatheke session using the specified model.
     func createSession(modelID: String,
                        success: @escaping (Cobaltspeech_Diatheke_SessionOutput) -> (),
                        failure: @escaping DiathekeFailureCallback) {
-        var request = Cobaltspeech_Diatheke_SessionStart()
-        request.modelID = modelID
-
-        createSession(request).response.whenComplete { (result) in
-            switch result {
-            case .success(let sessionOutput):
-                success(sessionOutput)
-            case .failure(let error):
-                failure(error)
-            }
-        }
+        createSession(modelID, nil, success, failure)
     }
     
+    // CreateSession creates a new Diatheke session with a custom wakeword
+    // using the specified model.
+    func createSession(modelID: String,
+                       wakeword: String,
+                       success: @escaping (Cobaltspeech_Diatheke_SessionOutput) -> (),
+                       failure: @escaping DiathekeFailureCallback) {
+        createSession(modelID, wakeword, success, failure)
+    }
+
     // DeleteSession cleans up the given token. Behavior is undefined
     // if the given token is used again after calling this function.
     func deleteSession(tokenData: Cobaltspeech_Diatheke_TokenData,
@@ -263,6 +283,32 @@ public extension Cobaltspeech_Diatheke_DiathekeClient {
         }
         let ttsStream = TTSStream(stream: stream)
         return ttsStream
+    }
+    
+    // newTranscribe stream creates a new stream for audio transcription
+    // unrelated to a session's state.
+    func newTranscribeStream(action: Cobaltspeech_Diatheke_TranscribeAction,
+                             transcribeResultHandler: @escaping ((Cobaltspeech_Diatheke_TranscribeResult) -> ()),
+                             completion: @escaping (Error?) -> ()) -> TranscribeStream {
+        let stream = self.transcribe(handler: transcribeResultHandler)
+        
+        stream.status.whenComplete { result in
+            switch result {
+            case .success(let status):
+                if status.isOk {
+                    completion(nil)
+                } else {
+                    completion(status)
+                }
+            case .failure(let error):
+                completion(error)
+            }
+        }
+    
+        let transcribeStream = TranscribeStream(stream: stream)
+        transcribeStream.sendAction(action, completion: completion)
+        
+        return transcribeStream
     }
     
 }

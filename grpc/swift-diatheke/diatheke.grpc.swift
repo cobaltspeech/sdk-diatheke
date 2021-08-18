@@ -25,8 +25,13 @@ import NIO
 import SwiftProtobuf
 
 
-/// Usage: instantiate Cobaltspeech_Diatheke_DiathekeClient, then call methods of this protocol to make API calls.
+/// Service that implements the Cobalt Diatheke Dialog Management API.
+///
+/// Usage: instantiate `Cobaltspeech_Diatheke_DiathekeClient`, then call methods of this protocol to make API calls.
 public protocol Cobaltspeech_Diatheke_DiathekeClientProtocol: GRPCClient {
+  var serviceName: String { get }
+  var interceptors: Cobaltspeech_Diatheke_DiathekeClientInterceptorFactoryProtocol? { get }
+
   func version(
     _ request: Cobaltspeech_Diatheke_Empty,
     callOptions: CallOptions?
@@ -62,9 +67,16 @@ public protocol Cobaltspeech_Diatheke_DiathekeClientProtocol: GRPCClient {
     handler: @escaping (Cobaltspeech_Diatheke_TTSAudio) -> Void
   ) -> ServerStreamingCall<Cobaltspeech_Diatheke_ReplyAction, Cobaltspeech_Diatheke_TTSAudio>
 
+  func transcribe(
+    callOptions: CallOptions?,
+    handler: @escaping (Cobaltspeech_Diatheke_TranscribeResult) -> Void
+  ) -> BidirectionalStreamingCall<Cobaltspeech_Diatheke_TranscribeInput, Cobaltspeech_Diatheke_TranscribeResult>
 }
 
 extension Cobaltspeech_Diatheke_DiathekeClientProtocol {
+  public var serviceName: String {
+    return "cobaltspeech.diatheke.Diatheke"
+  }
 
   /// Returns version information from the server.
   ///
@@ -79,7 +91,8 @@ extension Cobaltspeech_Diatheke_DiathekeClientProtocol {
     return self.makeUnaryCall(
       path: "/cobaltspeech.diatheke.Diatheke/Version",
       request: request,
-      callOptions: callOptions ?? self.defaultCallOptions
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeVersionInterceptors() ?? []
     )
   }
 
@@ -97,7 +110,8 @@ extension Cobaltspeech_Diatheke_DiathekeClientProtocol {
     return self.makeUnaryCall(
       path: "/cobaltspeech.diatheke.Diatheke/ListModels",
       request: request,
-      callOptions: callOptions ?? self.defaultCallOptions
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeListModelsInterceptors() ?? []
     )
   }
 
@@ -115,7 +129,8 @@ extension Cobaltspeech_Diatheke_DiathekeClientProtocol {
     return self.makeUnaryCall(
       path: "/cobaltspeech.diatheke.Diatheke/CreateSession",
       request: request,
-      callOptions: callOptions ?? self.defaultCallOptions
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeCreateSessionInterceptors() ?? []
     )
   }
 
@@ -133,7 +148,8 @@ extension Cobaltspeech_Diatheke_DiathekeClientProtocol {
     return self.makeUnaryCall(
       path: "/cobaltspeech.diatheke.Diatheke/DeleteSession",
       request: request,
-      callOptions: callOptions ?? self.defaultCallOptions
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeDeleteSessionInterceptors() ?? []
     )
   }
 
@@ -152,7 +168,8 @@ extension Cobaltspeech_Diatheke_DiathekeClientProtocol {
     return self.makeUnaryCall(
       path: "/cobaltspeech.diatheke.Diatheke/UpdateSession",
       request: request,
-      callOptions: callOptions ?? self.defaultCallOptions
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeUpdateSessionInterceptors() ?? []
     )
   }
 
@@ -161,6 +178,13 @@ extension Cobaltspeech_Diatheke_DiathekeClientProtocol {
   /// endpoint), or when a transcript becomes available on its
   /// own, in which case the stream is closed by the server.
   /// The ASR result may be used in the UpdateSession method.
+  ///
+  /// If the session has a wakeword enabled, and the client
+  /// application is using Diatheke and Cubic to handle the
+  /// wakeword processing, this method will not return a
+  /// result until the wakeword condition has been satisfied.
+  /// Utterances without the required wakeword will be
+  /// discarded and no transcription will be returned.
   ///
   /// Callers should use the `send` method on the returned object to send messages
   /// to the server. The caller should send an `.end` after the final message has been sent.
@@ -173,7 +197,8 @@ extension Cobaltspeech_Diatheke_DiathekeClientProtocol {
   ) -> ClientStreamingCall<Cobaltspeech_Diatheke_ASRInput, Cobaltspeech_Diatheke_ASRResult> {
     return self.makeClientStreamingCall(
       path: "/cobaltspeech.diatheke.Diatheke/StreamASR",
-      callOptions: callOptions ?? self.defaultCallOptions
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeStreamASRInterceptors() ?? []
     )
   }
 
@@ -196,23 +221,92 @@ extension Cobaltspeech_Diatheke_DiathekeClientProtocol {
       path: "/cobaltspeech.diatheke.Diatheke/StreamTTS",
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeStreamTTSInterceptors() ?? [],
+      handler: handler
+    )
+  }
+
+  /// Create an ASR stream for transcription. Unlike StreamASR,
+  /// Transcribe does not listen for a wakeword. This method
+  /// returns a bi-directional stream, and its intended use is
+  /// for situations where a user may say anything at all, whether
+  /// it is short or long, and the application wants to save the
+  /// transcript (e.g., take a note, send a message).
+  ///
+  /// The first message sent to the server must include the
+  /// Cubic model ID, with remaining messages sending audio data.
+  /// Messages received from the server will include the current
+  /// best partial transcription until the full transcription is
+  /// ready. The stream ends when either the client application
+  /// closes it, a predefined duration of silence (non-speech)
+  /// occurs, or the end-transcription intent is recognized.
+  ///
+  /// Callers should use the `send` method on the returned object to send messages
+  /// to the server. The caller should send an `.end` after the final message has been sent.
+  ///
+  /// - Parameters:
+  ///   - callOptions: Call options.
+  ///   - handler: A closure called when each response is received from the server.
+  /// - Returns: A `ClientStreamingCall` with futures for the metadata and status.
+  public func transcribe(
+    callOptions: CallOptions? = nil,
+    handler: @escaping (Cobaltspeech_Diatheke_TranscribeResult) -> Void
+  ) -> BidirectionalStreamingCall<Cobaltspeech_Diatheke_TranscribeInput, Cobaltspeech_Diatheke_TranscribeResult> {
+    return self.makeBidirectionalStreamingCall(
+      path: "/cobaltspeech.diatheke.Diatheke/Transcribe",
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeTranscribeInterceptors() ?? [],
       handler: handler
     )
   }
 }
 
+public protocol Cobaltspeech_Diatheke_DiathekeClientInterceptorFactoryProtocol {
+
+  /// - Returns: Interceptors to use when invoking 'version'.
+  func makeVersionInterceptors() -> [ClientInterceptor<Cobaltspeech_Diatheke_Empty, Cobaltspeech_Diatheke_VersionResponse>]
+
+  /// - Returns: Interceptors to use when invoking 'listModels'.
+  func makeListModelsInterceptors() -> [ClientInterceptor<Cobaltspeech_Diatheke_Empty, Cobaltspeech_Diatheke_ListModelsResponse>]
+
+  /// - Returns: Interceptors to use when invoking 'createSession'.
+  func makeCreateSessionInterceptors() -> [ClientInterceptor<Cobaltspeech_Diatheke_SessionStart, Cobaltspeech_Diatheke_SessionOutput>]
+
+  /// - Returns: Interceptors to use when invoking 'deleteSession'.
+  func makeDeleteSessionInterceptors() -> [ClientInterceptor<Cobaltspeech_Diatheke_TokenData, Cobaltspeech_Diatheke_Empty>]
+
+  /// - Returns: Interceptors to use when invoking 'updateSession'.
+  func makeUpdateSessionInterceptors() -> [ClientInterceptor<Cobaltspeech_Diatheke_SessionInput, Cobaltspeech_Diatheke_SessionOutput>]
+
+  /// - Returns: Interceptors to use when invoking 'streamASR'.
+  func makeStreamASRInterceptors() -> [ClientInterceptor<Cobaltspeech_Diatheke_ASRInput, Cobaltspeech_Diatheke_ASRResult>]
+
+  /// - Returns: Interceptors to use when invoking 'streamTTS'.
+  func makeStreamTTSInterceptors() -> [ClientInterceptor<Cobaltspeech_Diatheke_ReplyAction, Cobaltspeech_Diatheke_TTSAudio>]
+
+  /// - Returns: Interceptors to use when invoking 'transcribe'.
+  func makeTranscribeInterceptors() -> [ClientInterceptor<Cobaltspeech_Diatheke_TranscribeInput, Cobaltspeech_Diatheke_TranscribeResult>]
+}
+
 public final class Cobaltspeech_Diatheke_DiathekeClient: Cobaltspeech_Diatheke_DiathekeClientProtocol {
   public let channel: GRPCChannel
   public var defaultCallOptions: CallOptions
+  public var interceptors: Cobaltspeech_Diatheke_DiathekeClientInterceptorFactoryProtocol?
 
   /// Creates a client for the cobaltspeech.diatheke.Diatheke service.
   ///
   /// - Parameters:
   ///   - channel: `GRPCChannel` to the service host.
   ///   - defaultCallOptions: Options to use for each service call if the user doesn't provide them.
-  public init(channel: GRPCChannel, defaultCallOptions: CallOptions = CallOptions()) {
+  ///   - interceptors: A factory providing interceptors for each RPC.
+  public init(
+    channel: GRPCChannel,
+    defaultCallOptions: CallOptions = CallOptions(),
+    interceptors: Cobaltspeech_Diatheke_DiathekeClientInterceptorFactoryProtocol? = nil
+  ) {
     self.channel = channel
     self.defaultCallOptions = defaultCallOptions
+    self.interceptors = interceptors
   }
 }
 
