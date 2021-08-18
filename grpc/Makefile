@@ -26,7 +26,10 @@ swift:
 		diatheke.proto
 
 java:
-	cd java-groovy-diatheke && gradle wrapper && ./gradlew :androidlib:compileJava
+	cd java-diatheke && gradle wrapper && ./gradlew :lib:compileJava
+
+java-lite:
+	cd java-diatheke && gradle wrapper && ./gradlew :liblite:compileJava
 
 ${GO_OUTDIR}/diatheke.pb.go: diatheke.proto
 	mkdir -p ${GO_OUTDIR}
