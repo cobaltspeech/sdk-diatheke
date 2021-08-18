@@ -2,10 +2,9 @@
 //  client containing synthesized speech.
 //
 //  TTSStream.swift
-//  DiathekeSDKExample
 //
 //  Created by Eduard Miniakhmetov on 30.04.2020.
-//  Copyright (2020) Cobalt Speech and Language Inc.
+//  Copyright (2021) Cobalt Speech and Language Inc.
 
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.

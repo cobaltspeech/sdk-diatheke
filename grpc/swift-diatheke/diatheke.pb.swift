@@ -7,7 +7,7 @@
 // For information on using the generated types, please see the documentation:
 //   https://github.com/apple/swift-protobuf/
 
-// Copyright (2020) Cobalt Speech and Language Inc.
+// Copyright (2021) Cobalt Speech and Language Inc.
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -164,11 +164,26 @@ public struct Cobaltspeech_Diatheke_SessionInput {
 
   #if !swift(>=4.1)
     public static func ==(lhs: Cobaltspeech_Diatheke_SessionInput.OneOf_Input, rhs: Cobaltspeech_Diatheke_SessionInput.OneOf_Input) -> Bool {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch (lhs, rhs) {
-      case (.text(let l), .text(let r)): return l == r
-      case (.asr(let l), .asr(let r)): return l == r
-      case (.cmd(let l), .cmd(let r)): return l == r
-      case (.story(let l), .story(let r)): return l == r
+      case (.text, .text): return {
+        guard case .text(let l) = lhs, case .text(let r) = rhs else { preconditionFailure() }
+        return l == r
+      }()
+      case (.asr, .asr): return {
+        guard case .asr(let l) = lhs, case .asr(let r) = rhs else { preconditionFailure() }
+        return l == r
+      }()
+      case (.cmd, .cmd): return {
+        guard case .cmd(let l) = lhs, case .cmd(let r) = rhs else { preconditionFailure() }
+        return l == r
+      }()
+      case (.story, .story): return {
+        guard case .story(let l) = lhs, case .story(let r) = rhs else { preconditionFailure() }
+        return l == r
+      }()
       default: return false
       }
     }
@@ -187,7 +202,7 @@ public struct Cobaltspeech_Diatheke_TokenData {
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
 
-  public var data: Data = SwiftProtobuf.Internal.emptyData
+  public var data: Data = Data()
 
   /// Session ID, useful for correlating logging between a
   /// client and the server.
@@ -210,6 +225,12 @@ public struct Cobaltspeech_Diatheke_SessionStart {
 
   /// Specifies the Diatheke model ID to use for the session.
   public var modelID: String = String()
+
+  /// Specifies a custom wakeword to use for this session. The
+  /// wakeword must be enabled in the Diatheke model for this
+  /// to have any effect. It will override the default wakeword
+  /// specified in the model.
+  public var wakeword: String = String()
 
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
@@ -335,6 +356,15 @@ public struct Cobaltspeech_Diatheke_ActionData {
     set {action = .reply(newValue)}
   }
 
+  /// The client app should transcribe user input.
+  public var transcribe: Cobaltspeech_Diatheke_TranscribeAction {
+    get {
+      if case .transcribe(let v)? = action {return v}
+      return Cobaltspeech_Diatheke_TranscribeAction()
+    }
+    set {action = .transcribe(newValue)}
+  }
+
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
   public enum OneOf_Action: Equatable {
@@ -344,13 +374,31 @@ public struct Cobaltspeech_Diatheke_ActionData {
     case command(Cobaltspeech_Diatheke_CommandAction)
     /// The client app should provide the reply to the user.
     case reply(Cobaltspeech_Diatheke_ReplyAction)
+    /// The client app should transcribe user input.
+    case transcribe(Cobaltspeech_Diatheke_TranscribeAction)
 
   #if !swift(>=4.1)
     public static func ==(lhs: Cobaltspeech_Diatheke_ActionData.OneOf_Action, rhs: Cobaltspeech_Diatheke_ActionData.OneOf_Action) -> Bool {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch (lhs, rhs) {
-      case (.input(let l), .input(let r)): return l == r
-      case (.command(let l), .command(let r)): return l == r
-      case (.reply(let l), .reply(let r)): return l == r
+      case (.input, .input): return {
+        guard case .input(let l) = lhs, case .input(let r) = rhs else { preconditionFailure() }
+        return l == r
+      }()
+      case (.command, .command): return {
+        guard case .command(let l) = lhs, case .command(let r) = rhs else { preconditionFailure() }
+        return l == r
+      }()
+      case (.reply, .reply): return {
+        guard case .reply(let l) = lhs, case .reply(let r) = rhs else { preconditionFailure() }
+        return l == r
+      }()
+      case (.transcribe, .transcribe): return {
+        guard case .transcribe(let l) = lhs, case .transcribe(let r) = rhs else { preconditionFailure() }
+        return l == r
+      }()
       default: return false
       }
     }
@@ -417,6 +465,35 @@ public struct Cobaltspeech_Diatheke_ReplyAction {
   public init() {}
 }
 
+/// This action indicates that the client application should
+/// transcribe the user's input.
+public struct Cobaltspeech_Diatheke_TranscribeAction {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  /// The ID of the transcribe action, which is useful to
+  /// differentiate separate transcription tasks within a
+  /// single sesssion.
+  public var id: String = String()
+
+  /// The ASR model to use for transcription.
+  public var cubicModelID: String = String()
+
+  /// The Diatheke model where this transcribe action is
+  /// defined. If empty, the server will not be able to
+  /// automatically close the transcribe stream based on
+  /// conditions defined in the Diatheke model, such as
+  /// a non-speech timeout or an "end-transcription" intent.
+  /// When empty, the stream must be closed by the client
+  /// application.
+  public var diathekeModelID: String = String()
+
+  public var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  public init() {}
+}
+
 /// Data to send to the ASR stream. The first message on the
 /// stream must be the session token followed by audio data.
 public struct Cobaltspeech_Diatheke_ASRInput {
@@ -441,7 +518,7 @@ public struct Cobaltspeech_Diatheke_ASRInput {
   public var audio: Data {
     get {
       if case .audio(let v)? = data {return v}
-      return SwiftProtobuf.Internal.emptyData
+      return Data()
     }
     set {data = .audio(newValue)}
   }
@@ -458,9 +535,18 @@ public struct Cobaltspeech_Diatheke_ASRInput {
 
   #if !swift(>=4.1)
     public static func ==(lhs: Cobaltspeech_Diatheke_ASRInput.OneOf_Data, rhs: Cobaltspeech_Diatheke_ASRInput.OneOf_Data) -> Bool {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch (lhs, rhs) {
-      case (.token(let l), .token(let r)): return l == r
-      case (.audio(let l), .audio(let r)): return l == r
+      case (.token, .token): return {
+        guard case .token(let l) = lhs, case .token(let r) = rhs else { preconditionFailure() }
+        return l == r
+      }()
+      case (.audio, .audio): return {
+        guard case .audio(let l) = lhs, case .audio(let r) = rhs else { preconditionFailure() }
+        return l == r
+      }()
       default: return false
       }
     }
@@ -506,7 +592,96 @@ public struct Cobaltspeech_Diatheke_TTSAudio {
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
 
-  public var audio: Data = SwiftProtobuf.Internal.emptyData
+  public var audio: Data = Data()
+
+  public var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  public init() {}
+}
+
+/// Data to send to the Transcribe stream. The first message on
+/// the stream must be a TranscribeAction, followed by audio data.
+public struct Cobaltspeech_Diatheke_TranscribeInput {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  public var data: Cobaltspeech_Diatheke_TranscribeInput.OneOf_Data? = nil
+
+  /// Action defining the transcribe configuration.
+  public var action: Cobaltspeech_Diatheke_TranscribeAction {
+    get {
+      if case .action(let v)? = data {return v}
+      return Cobaltspeech_Diatheke_TranscribeAction()
+    }
+    set {data = .action(newValue)}
+  }
+
+  /// Audio data to transcribe.
+  public var audio: Data {
+    get {
+      if case .audio(let v)? = data {return v}
+      return Data()
+    }
+    set {data = .audio(newValue)}
+  }
+
+  public var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  public enum OneOf_Data: Equatable {
+    /// Action defining the transcribe configuration.
+    case action(Cobaltspeech_Diatheke_TranscribeAction)
+    /// Audio data to transcribe.
+    case audio(Data)
+
+  #if !swift(>=4.1)
+    public static func ==(lhs: Cobaltspeech_Diatheke_TranscribeInput.OneOf_Data, rhs: Cobaltspeech_Diatheke_TranscribeInput.OneOf_Data) -> Bool {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch (lhs, rhs) {
+      case (.action, .action): return {
+        guard case .action(let l) = lhs, case .action(let r) = rhs else { preconditionFailure() }
+        return l == r
+      }()
+      case (.audio, .audio): return {
+        guard case .audio(let l) = lhs, case .audio(let r) = rhs else { preconditionFailure() }
+        return l == r
+      }()
+      default: return false
+      }
+    }
+  #endif
+  }
+
+  public init() {}
+}
+
+/// The result from the Transcribe stream. Usually, many partial
+/// (or intermediate) transcriptions will be sent until the final
+/// transcription is ready for every utterance processed.
+public struct Cobaltspeech_Diatheke_TranscribeResult {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  /// The transcription.
+  public var text: String = String()
+
+  /// Confidence estimate between 0 and 1. A higher number
+  /// represents a higher likelihood of the transcription
+  /// being correct.
+  public var confidence: Double = 0
+
+  /// True if this is a partial result, in which case the
+  /// text of the transcription for the current utterance
+  /// being processed is allowed to change in future results.
+  /// When false, this represents the final transcription for
+  /// an utterance, which will not change with further audio
+  /// input. It is sent when the ASR has endpointed. After the
+  /// final transcription is sent, any additional results sent
+  /// on the Transcribe stream belong to the next utterance.
+  public var isPartial: Bool = false
 
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
@@ -538,11 +713,14 @@ extension Cobaltspeech_Diatheke_VersionResponse: SwiftProtobuf.Message, SwiftPro
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
-      case 1: try decoder.decodeSingularStringField(value: &self.diatheke)
-      case 2: try decoder.decodeSingularStringField(value: &self.chosun)
-      case 3: try decoder.decodeSingularStringField(value: &self.cubic)
-      case 4: try decoder.decodeSingularStringField(value: &self.luna)
+      case 1: try { try decoder.decodeSingularStringField(value: &self.diatheke) }()
+      case 2: try { try decoder.decodeSingularStringField(value: &self.chosun) }()
+      case 3: try { try decoder.decodeSingularStringField(value: &self.cubic) }()
+      case 4: try { try decoder.decodeSingularStringField(value: &self.luna) }()
       default: break
       }
     }
@@ -582,8 +760,11 @@ extension Cobaltspeech_Diatheke_ListModelsResponse: SwiftProtobuf.Message, Swift
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
-      case 1: try decoder.decodeRepeatedMessageField(value: &self.models)
+      case 1: try { try decoder.decodeRepeatedMessageField(value: &self.models) }()
       default: break
       }
     }
@@ -615,12 +796,15 @@ extension Cobaltspeech_Diatheke_ModelInfo: SwiftProtobuf.Message, SwiftProtobuf.
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
-      case 1: try decoder.decodeSingularStringField(value: &self.id)
-      case 2: try decoder.decodeSingularStringField(value: &self.name)
-      case 3: try decoder.decodeSingularStringField(value: &self.language)
-      case 4: try decoder.decodeSingularUInt32Field(value: &self.asrSampleRate)
-      case 5: try decoder.decodeSingularUInt32Field(value: &self.ttsSampleRate)
+      case 1: try { try decoder.decodeSingularStringField(value: &self.id) }()
+      case 2: try { try decoder.decodeSingularStringField(value: &self.name) }()
+      case 3: try { try decoder.decodeSingularStringField(value: &self.language) }()
+      case 4: try { try decoder.decodeSingularUInt32Field(value: &self.asrSampleRate) }()
+      case 5: try { try decoder.decodeSingularUInt32Field(value: &self.ttsSampleRate) }()
       default: break
       }
     }
@@ -668,40 +852,63 @@ extension Cobaltspeech_Diatheke_SessionInput: SwiftProtobuf.Message, SwiftProtob
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
-      case 1: try decoder.decodeSingularMessageField(value: &self._token)
-      case 2:
+      case 1: try { try decoder.decodeSingularMessageField(value: &self._token) }()
+      case 2: try {
         var v: Cobaltspeech_Diatheke_TextInput?
+        var hadOneofValue = false
         if let current = self.input {
-          try decoder.handleConflictingOneOf()
+          hadOneofValue = true
           if case .text(let m) = current {v = m}
         }
         try decoder.decodeSingularMessageField(value: &v)
-        if let v = v {self.input = .text(v)}
-      case 3:
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.input = .text(v)
+        }
+      }()
+      case 3: try {
         var v: Cobaltspeech_Diatheke_ASRResult?
+        var hadOneofValue = false
         if let current = self.input {
-          try decoder.handleConflictingOneOf()
+          hadOneofValue = true
           if case .asr(let m) = current {v = m}
         }
         try decoder.decodeSingularMessageField(value: &v)
-        if let v = v {self.input = .asr(v)}
-      case 4:
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.input = .asr(v)
+        }
+      }()
+      case 4: try {
         var v: Cobaltspeech_Diatheke_CommandResult?
+        var hadOneofValue = false
         if let current = self.input {
-          try decoder.handleConflictingOneOf()
+          hadOneofValue = true
           if case .cmd(let m) = current {v = m}
         }
         try decoder.decodeSingularMessageField(value: &v)
-        if let v = v {self.input = .cmd(v)}
-      case 5:
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.input = .cmd(v)
+        }
+      }()
+      case 5: try {
         var v: Cobaltspeech_Diatheke_SetStory?
+        var hadOneofValue = false
         if let current = self.input {
-          try decoder.handleConflictingOneOf()
+          hadOneofValue = true
           if case .story(let m) = current {v = m}
         }
         try decoder.decodeSingularMessageField(value: &v)
-        if let v = v {self.input = .story(v)}
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.input = .story(v)
+        }
+      }()
       default: break
       }
     }
@@ -711,15 +918,26 @@ extension Cobaltspeech_Diatheke_SessionInput: SwiftProtobuf.Message, SwiftProtob
     if let v = self._token {
       try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
     }
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every case branch when no optimizations are
+    // enabled. https://github.com/apple/swift-protobuf/issues/1034
     switch self.input {
-    case .text(let v)?:
+    case .text?: try {
+      guard case .text(let v)? = self.input else { preconditionFailure() }
       try visitor.visitSingularMessageField(value: v, fieldNumber: 2)
-    case .asr(let v)?:
+    }()
+    case .asr?: try {
+      guard case .asr(let v)? = self.input else { preconditionFailure() }
       try visitor.visitSingularMessageField(value: v, fieldNumber: 3)
-    case .cmd(let v)?:
+    }()
+    case .cmd?: try {
+      guard case .cmd(let v)? = self.input else { preconditionFailure() }
       try visitor.visitSingularMessageField(value: v, fieldNumber: 4)
-    case .story(let v)?:
+    }()
+    case .story?: try {
+      guard case .story(let v)? = self.input else { preconditionFailure() }
       try visitor.visitSingularMessageField(value: v, fieldNumber: 5)
+    }()
     case nil: break
     }
     try unknownFields.traverse(visitor: &visitor)
@@ -743,10 +961,13 @@ extension Cobaltspeech_Diatheke_TokenData: SwiftProtobuf.Message, SwiftProtobuf.
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
-      case 1: try decoder.decodeSingularBytesField(value: &self.data)
-      case 2: try decoder.decodeSingularStringField(value: &self.id)
-      case 3: try decoder.decodeSingularStringField(value: &self.metadata)
+      case 1: try { try decoder.decodeSingularBytesField(value: &self.data) }()
+      case 2: try { try decoder.decodeSingularStringField(value: &self.id) }()
+      case 3: try { try decoder.decodeSingularStringField(value: &self.metadata) }()
       default: break
       }
     }
@@ -778,12 +999,17 @@ extension Cobaltspeech_Diatheke_SessionStart: SwiftProtobuf.Message, SwiftProtob
   public static let protoMessageName: String = _protobuf_package + ".SessionStart"
   public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     1: .standard(proto: "model_id"),
+    2: .same(proto: "wakeword"),
   ]
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
-      case 1: try decoder.decodeSingularStringField(value: &self.modelID)
+      case 1: try { try decoder.decodeSingularStringField(value: &self.modelID) }()
+      case 2: try { try decoder.decodeSingularStringField(value: &self.wakeword) }()
       default: break
       }
     }
@@ -793,11 +1019,15 @@ extension Cobaltspeech_Diatheke_SessionStart: SwiftProtobuf.Message, SwiftProtob
     if !self.modelID.isEmpty {
       try visitor.visitSingularStringField(value: self.modelID, fieldNumber: 1)
     }
+    if !self.wakeword.isEmpty {
+      try visitor.visitSingularStringField(value: self.wakeword, fieldNumber: 2)
+    }
     try unknownFields.traverse(visitor: &visitor)
   }
 
   public static func ==(lhs: Cobaltspeech_Diatheke_SessionStart, rhs: Cobaltspeech_Diatheke_SessionStart) -> Bool {
     if lhs.modelID != rhs.modelID {return false}
+    if lhs.wakeword != rhs.wakeword {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
@@ -811,8 +1041,11 @@ extension Cobaltspeech_Diatheke_TextInput: SwiftProtobuf.Message, SwiftProtobuf.
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
-      case 1: try decoder.decodeSingularStringField(value: &self.text)
+      case 1: try { try decoder.decodeSingularStringField(value: &self.text) }()
       default: break
       }
     }
@@ -842,10 +1075,13 @@ extension Cobaltspeech_Diatheke_CommandResult: SwiftProtobuf.Message, SwiftProto
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
-      case 1: try decoder.decodeSingularStringField(value: &self.id)
-      case 2: try decoder.decodeMapField(fieldType: SwiftProtobuf._ProtobufMap<SwiftProtobuf.ProtobufString,SwiftProtobuf.ProtobufString>.self, value: &self.outParameters)
-      case 3: try decoder.decodeSingularStringField(value: &self.error)
+      case 1: try { try decoder.decodeSingularStringField(value: &self.id) }()
+      case 2: try { try decoder.decodeMapField(fieldType: SwiftProtobuf._ProtobufMap<SwiftProtobuf.ProtobufString,SwiftProtobuf.ProtobufString>.self, value: &self.outParameters) }()
+      case 3: try { try decoder.decodeSingularStringField(value: &self.error) }()
       default: break
       }
     }
@@ -882,9 +1118,12 @@ extension Cobaltspeech_Diatheke_SetStory: SwiftProtobuf.Message, SwiftProtobuf._
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
-      case 1: try decoder.decodeSingularStringField(value: &self.storyID)
-      case 2: try decoder.decodeMapField(fieldType: SwiftProtobuf._ProtobufMap<SwiftProtobuf.ProtobufString,SwiftProtobuf.ProtobufString>.self, value: &self.parameters)
+      case 1: try { try decoder.decodeSingularStringField(value: &self.storyID) }()
+      case 2: try { try decoder.decodeMapField(fieldType: SwiftProtobuf._ProtobufMap<SwiftProtobuf.ProtobufString,SwiftProtobuf.ProtobufString>.self, value: &self.parameters) }()
       default: break
       }
     }
@@ -917,9 +1156,12 @@ extension Cobaltspeech_Diatheke_SessionOutput: SwiftProtobuf.Message, SwiftProto
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
-      case 1: try decoder.decodeSingularMessageField(value: &self._token)
-      case 2: try decoder.decodeRepeatedMessageField(value: &self.actionList)
+      case 1: try { try decoder.decodeSingularMessageField(value: &self._token) }()
+      case 2: try { try decoder.decodeRepeatedMessageField(value: &self.actionList) }()
       default: break
       }
     }
@@ -949,48 +1191,93 @@ extension Cobaltspeech_Diatheke_ActionData: SwiftProtobuf.Message, SwiftProtobuf
     1: .same(proto: "input"),
     2: .same(proto: "command"),
     3: .same(proto: "reply"),
+    4: .same(proto: "transcribe"),
   ]
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
-      case 1:
+      case 1: try {
         var v: Cobaltspeech_Diatheke_WaitForUserAction?
+        var hadOneofValue = false
         if let current = self.action {
-          try decoder.handleConflictingOneOf()
+          hadOneofValue = true
           if case .input(let m) = current {v = m}
         }
         try decoder.decodeSingularMessageField(value: &v)
-        if let v = v {self.action = .input(v)}
-      case 2:
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.action = .input(v)
+        }
+      }()
+      case 2: try {
         var v: Cobaltspeech_Diatheke_CommandAction?
+        var hadOneofValue = false
         if let current = self.action {
-          try decoder.handleConflictingOneOf()
+          hadOneofValue = true
           if case .command(let m) = current {v = m}
         }
         try decoder.decodeSingularMessageField(value: &v)
-        if let v = v {self.action = .command(v)}
-      case 3:
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.action = .command(v)
+        }
+      }()
+      case 3: try {
         var v: Cobaltspeech_Diatheke_ReplyAction?
+        var hadOneofValue = false
         if let current = self.action {
-          try decoder.handleConflictingOneOf()
+          hadOneofValue = true
           if case .reply(let m) = current {v = m}
         }
         try decoder.decodeSingularMessageField(value: &v)
-        if let v = v {self.action = .reply(v)}
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.action = .reply(v)
+        }
+      }()
+      case 4: try {
+        var v: Cobaltspeech_Diatheke_TranscribeAction?
+        var hadOneofValue = false
+        if let current = self.action {
+          hadOneofValue = true
+          if case .transcribe(let m) = current {v = m}
+        }
+        try decoder.decodeSingularMessageField(value: &v)
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.action = .transcribe(v)
+        }
+      }()
       default: break
       }
     }
   }
 
   public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every case branch when no optimizations are
+    // enabled. https://github.com/apple/swift-protobuf/issues/1034
     switch self.action {
-    case .input(let v)?:
+    case .input?: try {
+      guard case .input(let v)? = self.action else { preconditionFailure() }
       try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
-    case .command(let v)?:
+    }()
+    case .command?: try {
+      guard case .command(let v)? = self.action else { preconditionFailure() }
       try visitor.visitSingularMessageField(value: v, fieldNumber: 2)
-    case .reply(let v)?:
+    }()
+    case .reply?: try {
+      guard case .reply(let v)? = self.action else { preconditionFailure() }
       try visitor.visitSingularMessageField(value: v, fieldNumber: 3)
+    }()
+    case .transcribe?: try {
+      guard case .transcribe(let v)? = self.action else { preconditionFailure() }
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 4)
+    }()
     case nil: break
     }
     try unknownFields.traverse(visitor: &visitor)
@@ -1012,9 +1299,12 @@ extension Cobaltspeech_Diatheke_WaitForUserAction: SwiftProtobuf.Message, SwiftP
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
-      case 1: try decoder.decodeSingularBoolField(value: &self.requiresWakeWord)
-      case 2: try decoder.decodeSingularBoolField(value: &self.immediate)
+      case 1: try { try decoder.decodeSingularBoolField(value: &self.requiresWakeWord) }()
+      case 2: try { try decoder.decodeSingularBoolField(value: &self.immediate) }()
       default: break
       }
     }
@@ -1047,9 +1337,12 @@ extension Cobaltspeech_Diatheke_CommandAction: SwiftProtobuf.Message, SwiftProto
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
-      case 1: try decoder.decodeSingularStringField(value: &self.id)
-      case 2: try decoder.decodeMapField(fieldType: SwiftProtobuf._ProtobufMap<SwiftProtobuf.ProtobufString,SwiftProtobuf.ProtobufString>.self, value: &self.inputParameters)
+      case 1: try { try decoder.decodeSingularStringField(value: &self.id) }()
+      case 2: try { try decoder.decodeMapField(fieldType: SwiftProtobuf._ProtobufMap<SwiftProtobuf.ProtobufString,SwiftProtobuf.ProtobufString>.self, value: &self.inputParameters) }()
       default: break
       }
     }
@@ -1082,9 +1375,12 @@ extension Cobaltspeech_Diatheke_ReplyAction: SwiftProtobuf.Message, SwiftProtobu
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
-      case 1: try decoder.decodeSingularStringField(value: &self.text)
-      case 2: try decoder.decodeSingularStringField(value: &self.lunaModel)
+      case 1: try { try decoder.decodeSingularStringField(value: &self.text) }()
+      case 2: try { try decoder.decodeSingularStringField(value: &self.lunaModel) }()
       default: break
       }
     }
@@ -1108,6 +1404,50 @@ extension Cobaltspeech_Diatheke_ReplyAction: SwiftProtobuf.Message, SwiftProtobu
   }
 }
 
+extension Cobaltspeech_Diatheke_TranscribeAction: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  public static let protoMessageName: String = _protobuf_package + ".TranscribeAction"
+  public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .same(proto: "id"),
+    2: .standard(proto: "cubic_model_id"),
+    3: .standard(proto: "diatheke_model_id"),
+  ]
+
+  public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularStringField(value: &self.id) }()
+      case 2: try { try decoder.decodeSingularStringField(value: &self.cubicModelID) }()
+      case 3: try { try decoder.decodeSingularStringField(value: &self.diathekeModelID) }()
+      default: break
+      }
+    }
+  }
+
+  public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if !self.id.isEmpty {
+      try visitor.visitSingularStringField(value: self.id, fieldNumber: 1)
+    }
+    if !self.cubicModelID.isEmpty {
+      try visitor.visitSingularStringField(value: self.cubicModelID, fieldNumber: 2)
+    }
+    if !self.diathekeModelID.isEmpty {
+      try visitor.visitSingularStringField(value: self.diathekeModelID, fieldNumber: 3)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  public static func ==(lhs: Cobaltspeech_Diatheke_TranscribeAction, rhs: Cobaltspeech_Diatheke_TranscribeAction) -> Bool {
+    if lhs.id != rhs.id {return false}
+    if lhs.cubicModelID != rhs.cubicModelID {return false}
+    if lhs.diathekeModelID != rhs.diathekeModelID {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
 extension Cobaltspeech_Diatheke_ASRInput: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   public static let protoMessageName: String = _protobuf_package + ".ASRInput"
   public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
@@ -1117,31 +1457,49 @@ extension Cobaltspeech_Diatheke_ASRInput: SwiftProtobuf.Message, SwiftProtobuf._
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
-      case 1:
+      case 1: try {
         var v: Cobaltspeech_Diatheke_TokenData?
+        var hadOneofValue = false
         if let current = self.data {
-          try decoder.handleConflictingOneOf()
+          hadOneofValue = true
           if case .token(let m) = current {v = m}
         }
         try decoder.decodeSingularMessageField(value: &v)
-        if let v = v {self.data = .token(v)}
-      case 2:
-        if self.data != nil {try decoder.handleConflictingOneOf()}
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.data = .token(v)
+        }
+      }()
+      case 2: try {
         var v: Data?
         try decoder.decodeSingularBytesField(value: &v)
-        if let v = v {self.data = .audio(v)}
+        if let v = v {
+          if self.data != nil {try decoder.handleConflictingOneOf()}
+          self.data = .audio(v)
+        }
+      }()
       default: break
       }
     }
   }
 
   public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every case branch when no optimizations are
+    // enabled. https://github.com/apple/swift-protobuf/issues/1034
     switch self.data {
-    case .token(let v)?:
+    case .token?: try {
+      guard case .token(let v)? = self.data else { preconditionFailure() }
       try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
-    case .audio(let v)?:
+    }()
+    case .audio?: try {
+      guard case .audio(let v)? = self.data else { preconditionFailure() }
       try visitor.visitSingularBytesField(value: v, fieldNumber: 2)
+    }()
     case nil: break
     }
     try unknownFields.traverse(visitor: &visitor)
@@ -1164,10 +1522,13 @@ extension Cobaltspeech_Diatheke_ASRResult: SwiftProtobuf.Message, SwiftProtobuf.
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
-      case 1: try decoder.decodeSingularStringField(value: &self.text)
-      case 2: try decoder.decodeSingularDoubleField(value: &self.confidence)
-      case 3: try decoder.decodeSingularBoolField(value: &self.timedOut)
+      case 1: try { try decoder.decodeSingularStringField(value: &self.text) }()
+      case 2: try { try decoder.decodeSingularDoubleField(value: &self.confidence) }()
+      case 3: try { try decoder.decodeSingularBoolField(value: &self.timedOut) }()
       default: break
       }
     }
@@ -1203,8 +1564,11 @@ extension Cobaltspeech_Diatheke_TTSAudio: SwiftProtobuf.Message, SwiftProtobuf._
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
-      case 1: try decoder.decodeSingularBytesField(value: &self.audio)
+      case 1: try { try decoder.decodeSingularBytesField(value: &self.audio) }()
       default: break
       }
     }
@@ -1219,6 +1583,114 @@ extension Cobaltspeech_Diatheke_TTSAudio: SwiftProtobuf.Message, SwiftProtobuf._
 
   public static func ==(lhs: Cobaltspeech_Diatheke_TTSAudio, rhs: Cobaltspeech_Diatheke_TTSAudio) -> Bool {
     if lhs.audio != rhs.audio {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Cobaltspeech_Diatheke_TranscribeInput: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  public static let protoMessageName: String = _protobuf_package + ".TranscribeInput"
+  public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .same(proto: "action"),
+    2: .same(proto: "audio"),
+  ]
+
+  public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try {
+        var v: Cobaltspeech_Diatheke_TranscribeAction?
+        var hadOneofValue = false
+        if let current = self.data {
+          hadOneofValue = true
+          if case .action(let m) = current {v = m}
+        }
+        try decoder.decodeSingularMessageField(value: &v)
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.data = .action(v)
+        }
+      }()
+      case 2: try {
+        var v: Data?
+        try decoder.decodeSingularBytesField(value: &v)
+        if let v = v {
+          if self.data != nil {try decoder.handleConflictingOneOf()}
+          self.data = .audio(v)
+        }
+      }()
+      default: break
+      }
+    }
+  }
+
+  public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every case branch when no optimizations are
+    // enabled. https://github.com/apple/swift-protobuf/issues/1034
+    switch self.data {
+    case .action?: try {
+      guard case .action(let v)? = self.data else { preconditionFailure() }
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
+    }()
+    case .audio?: try {
+      guard case .audio(let v)? = self.data else { preconditionFailure() }
+      try visitor.visitSingularBytesField(value: v, fieldNumber: 2)
+    }()
+    case nil: break
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  public static func ==(lhs: Cobaltspeech_Diatheke_TranscribeInput, rhs: Cobaltspeech_Diatheke_TranscribeInput) -> Bool {
+    if lhs.data != rhs.data {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Cobaltspeech_Diatheke_TranscribeResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  public static let protoMessageName: String = _protobuf_package + ".TranscribeResult"
+  public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .same(proto: "text"),
+    2: .same(proto: "confidence"),
+    3: .standard(proto: "is_partial"),
+  ]
+
+  public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularStringField(value: &self.text) }()
+      case 2: try { try decoder.decodeSingularDoubleField(value: &self.confidence) }()
+      case 3: try { try decoder.decodeSingularBoolField(value: &self.isPartial) }()
+      default: break
+      }
+    }
+  }
+
+  public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if !self.text.isEmpty {
+      try visitor.visitSingularStringField(value: self.text, fieldNumber: 1)
+    }
+    if self.confidence != 0 {
+      try visitor.visitSingularDoubleField(value: self.confidence, fieldNumber: 2)
+    }
+    if self.isPartial != false {
+      try visitor.visitSingularBoolField(value: self.isPartial, fieldNumber: 3)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  public static func ==(lhs: Cobaltspeech_Diatheke_TranscribeResult, rhs: Cobaltspeech_Diatheke_TranscribeResult) -> Bool {
+    if lhs.text != rhs.text {return false}
+    if lhs.confidence != rhs.confidence {return false}
+    if lhs.isPartial != rhs.isPartial {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }

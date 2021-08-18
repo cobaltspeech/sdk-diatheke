@@ -1,4 +1,4 @@
-// swift-tools-version:5.1
+// swift-tools-version:5.3
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 //
 // Copyright (2019) Cobalt Speech and Language Inc.
@@ -29,12 +29,14 @@ let package = Package(
             targets: ["Diatheke"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/grpc/grpc-swift.git", .exact("1.0.0-alpha.20"))
+        .package(url: "https://github.com/grpc/grpc-swift.git", .exact("1.3.0"))
     ],
     targets: [
         .target(
             name: "Diatheke",
-            dependencies: ["GRPC"],
+            dependencies: [
+                .product(name: "GRPC", package: "grpc-swift"),
+            ],
             path: "grpc/swift-diatheke")
     ]
 )
