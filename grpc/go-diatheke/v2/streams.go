@@ -162,6 +162,13 @@ func (ts *TranscribeStream) SendAction(action *diathekepb.TranscribeAction) erro
 	})
 }
 
+// SendFinished informs the server that no more data will be
+// sent over this stream. It is an error to call SendAudio()
+// or SendAction() after calling this.
+func (ts *TranscribeStream) SendFinished() error {
+	return ts.PBStream.CloseSend()
+}
+
 // ReceiveResult waits for the next transcribe result from
 // Diatheke. When the returned error is io.EOF, the stream has
 // been closed and no more results will be sent from Diatheke.
@@ -246,7 +253,7 @@ func sendTranscribeAudio(
 	}
 
 	// Close the stream
-	closeErr := stream.PBStream.CloseSend()
+	closeErr := stream.SendFinished()
 
 	// This indicates that either the reader or the stream
 	// reached its end. In either case, it is not an error,
