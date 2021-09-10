@@ -31,7 +31,7 @@ Service that implements the Cobalt Diatheke Dialog Management API.
 | UpdateSession | [SessionInput](#SessionInput) | [SessionOutput](#SessionOutput) | Process input for a session and get an updated session with a list of actions to take next. This is the only method that modifies the Diatheke session state. |
 | StreamASR | [ASRInput](#ASRInput) | [ASRResult](#ASRResult) | Create an ASR stream. A result is returned when the stream is closed by the client (which forces the ASR to endpoint), or when a transcript becomes available on its own, in which case the stream is closed by the server. The ASR result may be used in the UpdateSession method. <br/><br/> If the session has a wakeword enabled, and the client application is using Diatheke and Cubic to handle the wakeword processing, this method will not return a result until the wakeword condition has been satisfied. Utterances without the required wakeword will be discarded and no transcription will be returned. |
 | StreamTTS | [ReplyAction](#ReplyAction) | [TTSAudio](#TTSAudio) | Create a TTS stream to receive audio for the given reply. The stream will close when TTS is finished. The client may also close the stream early to cancel the speech synthesis. |
-| Transcribe | [TranscribeInput](#TranscribeInput) | [TranscribeResult](#TranscribeResult) | Create an ASR stream for transcription. Unlike StreamASR, Transcribe does not listen for a wakeword. This method returns a bi-directional stream, and its intended use is for situations where a user may say anything at all, whether it is short or long, and the application wants to save the transcript (e.g., take a note, send a message). <br/><br/> The first message sent to the server must include the Cubic model ID, with remaining messages sending audio data. Messages received from the server will include the current best partial transcription until the full transcription is ready. The stream ends when either the client application closes it, a predefined duration of silence (non-speech) occurs, or the end-transcription intent is recognized. |
+| Transcribe | [TranscribeInput](#TranscribeInput) | [TranscribeResult](#TranscribeResult) | Create an ASR stream for transcription. Unlike StreamASR, Transcribe does not listen for a wakeword. This method returns a bi-directional stream, and its intended use is for situations where a user may say anything at all, whether it is short or long, and the application wants to save the transcript (e.g., take a note, send a message). <br/><br/> The first message sent to the server must be the TranscribeAction, with remaining messages sending audio data. Messages received from the server will include the current best partial transcription until the full transcription is ready. The stream ends when either the client application closes it, a predefined duration of silence (non-speech) occurs, or the end-transcription intent is recognized. |
 
  <!-- end services -->
 
@@ -82,7 +82,7 @@ Specifies an action that the client application should take.
 | input | [WaitForUserAction](#WaitForUserAction) |  | <p>The user must provide input to Diatheke.</p> |
 | command | [CommandAction](#CommandAction) |  | <p>The client app must execute the specified command.</p> |
 | reply | [ReplyAction](#ReplyAction) |  | <p>The client app should provide the reply to the user.</p> |
-| transcribe | [TranscribeAction](#TranscribeAction) |  | <p>The client app should transcribe user input.</p> |
+| transcribe | [TranscribeAction](#TranscribeAction) |  | <p>The client app should call the Transcribe method to capture the user's input.</p> |
 
 
 
@@ -356,14 +356,14 @@ current state.
 <a name="TranscribeAction"></a>
 ### Message: TranscribeAction
 This action indicates that the client application should
-transcribe the user's input.
+call the Transcribe method to capture the user's input.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | id | [string](#string) |  | <p>The ID of the transcribe action, which is useful to differentiate separate transcription tasks within a single sesssion.</p> |
-| cubic_model_id | [string](#string) |  | <p>The ASR model to use for transcription.</p> |
-| diatheke_model_id | [string](#string) |  | <p>The Diatheke model where this transcribe action is defined. If empty, the server will not be able to automatically close the transcribe stream based on conditions defined in the Diatheke model, such as a non-speech timeout or an "end-transcription" intent. When empty, the stream must be closed by the client application.</p> |
+| cubic_model_id | [string](#string) |  | <p>(Required) The ASR model to use for transcription.</p> |
+| diatheke_model_id | [string](#string) |  | <p>(Optional) A Diatheke model to use for end-of-stream conditions. If empty, the server will not be able to automatically close the transcribe stream based on conditions defined in the model, such as a non-speech timeout or an "end-transcription" intent. When empty, the stream must be closed by the client application.</p> |
 
 
 
@@ -390,7 +390,7 @@ the stream must be a TranscribeAction, followed by audio data.
 
 <a name="TranscribeResult"></a>
 ### Message: TranscribeResult
-The result from the Transcribe stream. Usually, many partial
+The result from the Transcribe stream. Usually, several partial
 (or intermediate) transcriptions will be sent until the final
 transcription is ready for every utterance processed.
 
@@ -398,8 +398,8 @@ transcription is ready for every utterance processed.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | text | [string](#string) |  | <p>The transcription.</p> |
-| confidence | [double](#double) |  | <p>Confidence estimate between 0 and 1. A higher number represents a higher likelihood of the transcription being correct.</p> |
-| is_partial | [bool](#bool) |  | <p>True if this is a partial result, in which case the text of the transcription for the current utterance being processed is allowed to change in future results. When false, this represents the final transcription for an utterance, which will not change with further audio input. It is sent when the ASR has endpointed. After the final transcription is sent, any additional results sent on the Transcribe stream belong to the next utterance.</p> |
+| confidence | [double](#double) |  | <p>Confidence estimate between 0 and 1. A higher number represents a higher likelihood that the transcription is correct.</p> |
+| is_partial | [bool](#bool) |  | <p>True if this is a partial result, in which case the next result will be for the same audio, either repeating or correcting the text in this result. When false, this represents the final transcription for an utterance, which will not change with further audio input. It is sent when the ASR has identified an endpoint. After the final transcription is sent, any additional results sent on the Transcribe stream belong to the next utterance.</p> |
 
 
 

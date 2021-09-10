@@ -227,7 +227,7 @@ self.asrStream.result(completion: { (error) in
 This method is used to get a general purpose transcription from Diatheke.
 Unlike the StreamASR method, the transcripts returned on this stream are
 not used to update the session. Their purpose is application specific,
-and the application can use the transcripts for anything. This stream
+such as taking a note, sending a text message, etc. This stream
 does not use [wake word](#wake-word) detection to begin the transcription,
 but it may have conditions defined in the Diatheke model to end the
 transcription, such as a non-speech timeout (i.e, speech not detected for
@@ -331,10 +331,10 @@ indicate that the result may change with further processing. Partial
 results are mainly useful for displaying progress to a user in a
 graphical user interface if one is being used. Non-partial results
 contain the final transcript that is of interest to the application.
-Note that multiple non-partial results may be accumlated by the
+Note that multiple non-partial results may be received by the
 application before the stream ends.
 
-Due to the bidirection nature of the Transcribe stream, results must
+Due to the bidirectional nature of the Transcribe stream, results must
 be processed concurrently with sending audio data. This may be done
 on any thread, and it is often done on the main thread, as many
 applications don't wish to continue processing until the transcription
@@ -356,18 +356,21 @@ for {
 		return
 	}
 
-	// The transcript
-	fmt.Printf("text: %v\n", result.Text)
-
-	// The confidence the ASR system has in the given transcript,
-	// given as a value between 0 and 1.0, with 1.0 being the most
-	// confident in the result. Note that partial results won't
-	// have an accurate confidence score.
-	fmt.Printf("confidence: %v\n", result.Confidence)
-
 	// Boolean indicating whether the result is partial (i.e., may
 	// change with further processing).
-	fmt.Printf("partial: %v\n\n", result.IsPartial)
+	if result.IsPartial {
+		// Print the partial transcript.
+		fmt.Printf("partial transcript: %v\n", result.Text)
+	} else {
+		// Print the finalized transcript.
+		fmt.Printf("transcript: %v\n", result.Text)
+		
+		// The confidence the ASR system has in the given transcript,
+		// given as a value between 0 and 1.0, with 1.0 being the most
+		// confident in the result. Note that partial results won't
+		// have an accurate confidence score.
+		fmt.Printf("confidence: %v\n", result.Confidence)
+	}
 }
 {{< /tab >}}
 
@@ -379,18 +382,20 @@ while True:
         # The stream has closed
         break
 
-    # The transcript
-    print("text:", result.text)
-
-    # The confidence the ASR system has in the given transcript,
-    # given as a value between 0 and 1.0, with 1.0 being the most
-    # confident in the result. Note that partial results won't
-    # have an accurate confidence score.
-    print("confidence:", result.confidence)
-
     # Boolean indicating whether the result is partial (i.e., may
     # change with further processing).
-    print("partial:", result.is_partial)
+    if result.is_partial:
+        # Print the partial transcript.
+        print("partial transcript:", result.text)
+    else:
+        # Print the finalized transcript.
+        print("transcript:", result.text)
+
+        # The confidence the ASR system has in the given transcript,
+        # given as a value between 0 and 1.0, with 1.0 being the most
+        # confident in the result. Note that partial results won't
+        # have an accurate confidence score.
+        print("confidence:", result.confidence)
 {{< /tab >}}
 
 {{< tab "C++" "c++" >}}
@@ -401,18 +406,21 @@ while (true) {
         break;
     }
 
-    // The transcript
-    std::cout << "text: " << result.text() << std::endl;
-
-    // The confidence the ASR system has in the given transcript,
-    // given as a value between 0 and 1.0, with 1.0 being the most
-    // confident in the result. Note that partial results won't
-    // have an accurate confidence score.
-    std::cout << "confidence: " << result.confidence() << std::endl;
-
     // Boolean indicating whether the result is partial (i.e., may
     // change with further processing).
-    std::cout << "partial: " << result.is_partial() << std::endl;
+    if (result.is_partial()) {
+        // Print the partial transcript.
+        std::cout << "partial transcript: " << result.text() << std::endl;
+    } else {
+        // Print the finalized transcript.
+        std::cout << "transcript: " << result.text() << std::endl;
+
+        // The confidence the ASR system has in the given transcript,
+        // given as a value between 0 and 1.0, with 1.0 being the most
+        // confident in the result. Note that partial results won't
+        // have an accurate confidence score.
+        std::cout << "confidence: " << result.confidence() << std::endl;
+    }
 }
 {{< /tab >}}
 
