@@ -71,11 +71,11 @@ public class TranscribeStream {
         return result
     }
     
-    // result waits for the next transcribe result from
+    // finish waits for the next transcribe result from
     // Diatheke. When the returned error is io.EOF, the stream has
     // been closed and no more results will be sent from Diatheke.
     @discardableResult
-    public func result(completion: ((Error?) -> ())?) -> EventLoopFuture<Void> {
+    public func finish(completion: ((Error?) -> ())?) -> EventLoopFuture<Void> {
         let result = stream.sendEnd()
         result.whenComplete { (result) in
             switch result {
