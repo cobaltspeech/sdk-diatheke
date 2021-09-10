@@ -124,6 +124,9 @@ func processActions(sessionOutput: Cobaltspeech_Diatheke_SessionOutput) {
 		case .command(let commandAction):
 			// The CommandAction will involve a session update
 			self.handleCommand(commandAction)
+		case .transcribe(let transcribeAction):
+			// Transcribe actions do not require a session update.
+			self.handleTranscribe(transcribeAction)
 		}
 	}
 }
@@ -806,6 +809,29 @@ void handleTranscribe(Diatheke::Client *client,
      * results from the TranscribeStream, which is created using the
      * given transcribe action.
      */
+}
+{{< /tab >}}
+
+{{< tab "Swift/iOS" "swift" >}}
+/// Uses ASR to record a transcription from the user.
+func handleTranscribe(_ transcribeAction: Cobaltspeech_Diatheke_TranscribeAction) {
+	print("TranscribeAction:")
+
+	// The ID helps the application identify the purpose of this
+	// transcription (e.g., taking a note).
+	print("  ID: \(transcribeAction.id)")
+
+	// The Cubic model ID specifies which ASR model to use for
+	// transcription (defined by the server).
+	print("  Cubic Model ID: \(transcribeAction.cubicModelID)")
+
+	// The Diatheke model ID specifies which Diatheke model to use
+	// to check for stream-end conditions (e.g., timeout).
+	print("  Diatheke Model ID: \(transcribeAction.diathekeModelID)")
+
+	// The application should add code here to record audio and process
+	// results from the TranscribeStream, which is created using the
+	// given transcribe action.
 }
 {{< /tab >}}
 

@@ -264,6 +264,33 @@ stream = client.new_transcribe_stream(action)
 Diatheke::TranscribeStream stream = client.newTranscribeStream(action);
 {{< /tab >}}
 
+{{< tab "Swift/iOS" "swift" >}}
+// Create the transcribe stream. This automatically sends the transcribe
+// action on the stream first.
+let stream = self.newTranscribeStream(action: action) { result in
+	// Boolean indicating whether the result is partial (i.e., may
+	// change with further processing).
+	if result.isPartial {
+		// Print the partial transcript.
+		print("Partial transcript: \(result.text)")
+	} else {
+		// Print the finalized transcript.
+		print("Transcript: \(result.text)")
+
+		// The confidence the ASR system has in the given transcript,
+		// given as a value between 0 and 1.0, with 1.0 being the most
+		// confident in the result. Note that partial results won't
+		// have an accurate confidence score.
+		print("Confidence: \(result.confidence)")
+	}
+} completion: { error in
+	if let error = error {
+		// Handle the error
+		print(error.localizedDescription)
+	}
+}
+{{< /tab >}}
+
 {{< /tabs >}}
 
 ### Sending Audio
@@ -320,6 +347,24 @@ while (haveAudioData) {
 // Be sure to close the stream to notify the server that no more
 // audio will be coming.
 stream.sendFinished();
+{{< /tab >}}
+
+{{< tab "Swift/iOS" "swift" >}}
+while let audioData = getDataFromSource(), !audioData.isEmpty {
+	stream.sendAudio(audioData) { error in
+		if let error = error {
+			print(error.localizedDescription)
+		}
+	}
+}
+
+// Be sure to close the stream to notify the server that no more
+// audio will be coming.
+stream.finish { error in
+	if let error = error {
+		print(error.localizedDescription)
+	}
+}
 {{< /tab >}}
 
 {{< /tabs >}}
@@ -422,6 +467,41 @@ while (true) {
         std::cout << "confidence: " << result.confidence() << std::endl;
     }
 }
+{{< /tab >}}
+
+{{< tab "Swift/iOS" "swift" >}}
+// Transcribe Results come to transcribeResultHandler block on creating TranscribeStream
+let transcribeStream = self.newTranscribeStream(action: action) { result in
+	// Boolean indicating whether the result is partial (i.e., may
+	// change with further processing).
+	if result.isPartial {
+		// Print the partial transcript.
+		print("Partial transcript: \(result.text)")
+	} else {
+		// Print the finalized transcript.
+		print("Transcript: \(result.text)")
+
+		// The confidence the ASR system has in the given transcript,
+		// given as a value between 0 and 1.0, with 1.0 being the most
+		// confident in the result. Note that partial results won't
+		// have an accurate confidence score.
+		print("Confidence: \(result.confidence)")
+	}
+} completion: { error in
+	if let error = error {
+		// Handle the error
+		print(error.localizedDescription)
+	}
+}
+
+// When there is no more audio data to send
+// (i.e. when the app needs to stop recording audio)
+// call TranscribeStream's finish() method to close the Transcribe stream
+transcribeStream.finish { error in
+	if let error = error {
+		print(error.localizedDescription)
+	}
+})
 {{< /tab >}}
 
 {{< /tabs >}}
