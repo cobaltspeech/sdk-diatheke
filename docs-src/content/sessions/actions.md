@@ -10,6 +10,7 @@ to do next, and may be one of the following types:
 * [WaitForUser](#wait-for-user-action)
 * [Reply](#reply-action)
 * [Command](#command-action)
+* [Transcribe](#transcribe-action)
 
 ## Processing the Action List
 There are currently two ways an application will receive an action list - when
@@ -40,6 +41,12 @@ func processActions(client *diatheke.Client, session *diathekepb.SessionOutput,
 		} else if cmd := action.GetCommand(); cmd != nil {
 			// The CommandAction will involve a session update.
 			return handleCommand(client, session, cmd)
+		} else if scribe := action.GetTranscribe(); scribe != nil {
+			// Transcribe actions do not require a session update.
+			err := handleTranscribe(client, scribe)
+			if err != nil {
+				return nil, err
+			}
 		} else if action.Action != nil {
 			return nil, fmt.Errorf("received unknown action type %T", action.Action)
 		}
@@ -63,8 +70,11 @@ def process_actions(client, session):
             # Replies do not require a session update.
             handle_reply(client, action.reply)
         elif action.HasField("command"):
-            # The CommandAction will involve a session update
+            # The CommandAction will involve a session update.
             return handle_command(client, session, action.command)
+        elif action.HasField("transcribe"):
+            # Transcribe actions do not require a session update.
+            handle_transcribe(client, action.transcribe)
         else:
             raise RuntimeError("unknown action={}".format(action))
 {{< /tab >}}
@@ -86,6 +96,9 @@ cobaltspeech::diatheke::SessionOutput processActions(
         } else if (action.has_command()) {
             // The CommandAction will involve a session update.
             return handleCommand(client, session, action.command());
+        } else if (action.has_transcribe()) {
+            // Transcribe actions do not require a session update.
+            handleTranscribe(client, action.transcribe());
         } else {
             throw std::runtime_error("received unknown action type");
         }
@@ -691,6 +704,108 @@ private void handleCommandRequest(CommandAction cmd) {
             .build();
     SessionOutput resp = mDiathekeBlockingService.updateSession(input);
     executeActions(resp.getActionListList());
+}
+{{< /tab >}}
+
+{{< /tabs >}}
+
+## Transcribe Action
+The TranscribeAction indicates the calling application should use ASR
+to get a transcription from the user. Unlike the [WaitForUser](#wait-for-user-action),
+this action does not have any effect on the Diatheke session, because
+the purpose of the requested transcript is application specific and
+is unrelated to the ongoing conversation with Diatheke. For example,
+an application may have a TranscribeAction that is used to record a
+note which is then saved in a database for later recall. In this case
+the transcription is not used to update the session, but is simply
+saved. After the user is done taking a note, session processing
+continues to handle replies, commands, etc.
+
+When an application receives a TranscribeAction, it should use the
+[Transcribe method](../../audio-input/#transcribe) for ASR processing, which has slightly different
+behaviors than the [StreamASR method](../../audio-input/#streamasr).
+
+{{< tabs >}}
+
+{{< tab "Go" "go" >}}
+// handleTranscribe uses ASR to record a transcription from the user.
+func handleTranscribe(client *diatheke.Client, scribe *diathekepb.TranscribeAction) error {
+	fmt.Printf("TranscribeAction:\n")
+
+	// The ID helps the application identify the purpose of this
+	// transcription (e.g., taking a note).
+	fmt.Printf("  ID: %v\n", scribe.Id)
+
+	// The Cubic model ID specifies which ASR model to use for
+	// transcription (defined by the server).
+	fmt.Printf("  Cubic Model ID: %v\n", scribe.CubicModelId)
+
+	// The Diatheke model ID specifies which Diatheke model to use
+	// to check for stream-end conditions (e.g., timeout).
+	fmt.Printf("  Diatheke Model ID: %v\n", scribe.DiathekeModelId)
+
+	// The application should add code here to record audio and process
+	// results using the TranscribeStream, which is created using the
+	// given transcribe action.
+
+	return nil
+}
+{{< /tab >}}
+
+{{< tab "Python" "python" >}}
+def handle_transcribe(client, scribe):
+    """Uses ASR to record a transcription from the user."""
+
+    print("TranscribeAction:")
+
+    # The ID helps the application identify the purpose of this
+    # transcription (e.g., taking a note).
+    print("  ID: " scribe.id)
+
+    # The Cubic model ID specifies which ASR model to use for
+    # transcription (defined by the server).
+    print("  Cubic Model ID: ", scribe.cubic_model_id)
+
+    # The Diatheke model ID specifies which Diatheke model to use
+    # to check for stream-end conditions (e.g., timeout).
+    print("  Diatheke Model ID: ", scribe.diatheke_model_id)
+
+    # The application should add code here to record audio and process
+    # results from the TranscribeStream, which is created using the
+    # given transcribe action.
+{{< /tab >}}
+
+{{< tab "C++" "c++" >}}
+/*
+ * Records user audio for the purpose of transcription.
+ */
+void handleTranscribe(Diatheke::Client *client,
+                      const DiathekePB::TranscribeAction &scribe) {
+    std::cout << "TranscribeAction" << std::endl;
+
+    /*
+     * The ID helps the application identify the purpose of this
+     * transcription (e.g., taking a note).
+     */
+    std::cout << "  ID: " << scribe.id() << std::endl;
+
+    /*
+     * The Cubic model ID specifies which ASR model to use for
+     * transcription (defined by the server).
+     */
+    std::cout << "  Cubic Model ID: ", scribe.cubic_model_id() << std::endl;
+
+    /*
+     * The Diatheke model ID specifies which Diatheke model to use
+     * to check for stream-end conditions (e.g., timeout).
+     */
+    std::cout << "  Diatheke Model ID: ", scribe.diatheke_model_id() << std::endl;
+
+    /*
+     * The application should add code here to record audio and process
+     * results from the TranscribeStream, which is created using the
+     * given transcribe action.
+     */
 }
 {{< /tab >}}
 
