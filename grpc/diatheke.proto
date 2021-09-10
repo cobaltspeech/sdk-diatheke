@@ -68,8 +68,8 @@ service Diatheke {
     // it is short or long, and the application wants to save the
     // transcript (e.g., take a note, send a message).
     // <br/><br/>
-    // The first message sent to the server must include the
-    // Cubic model ID, with remaining messages sending audio data.
+    // The first message sent to the server must be the TranscribeAction,
+    // with remaining messages sending audio data.
     // Messages received from the server will include the current
     // best partial transcription until the full transcription is
     // ready. The stream ends when either the client application
@@ -217,7 +217,8 @@ message ActionData {
         // The client app should provide the reply to the user.
         ReplyAction reply = 3;
 
-        // The client app should transcribe user input.
+        // The client app should call the Transcribe method to
+        // capture the user's input.
         TranscribeAction transcribe = 4;
     }
 }
@@ -255,20 +256,20 @@ message ReplyAction {
 }
 
 // This action indicates that the client application should
-// transcribe the user's input.
+// call the Transcribe method to capture the user's input.
 message TranscribeAction {
     // The ID of the transcribe action, which is useful to
     // differentiate separate transcription tasks within a
     // single sesssion.
     string id = 1;
 
-    // The ASR model to use for transcription.
+    // (Required) The ASR model to use for transcription.
     string cubic_model_id = 2;
 
-    // The Diatheke model where this transcribe action is
-    // defined. If empty, the server will not be able to
+    // (Optional) A Diatheke model to use for end-of-stream
+    // conditions. If empty, the server will not be able to
     // automatically close the transcribe stream based on
-    // conditions defined in the Diatheke model, such as
+    // conditions defined in the model, such as
     // a non-speech timeout or an "end-transcription" intent.
     // When empty, the stream must be closed by the client
     // application.
@@ -328,7 +329,7 @@ message TranscribeInput {
     }
 }
 
-// The result from the Transcribe stream. Usually, many partial
+// The result from the Transcribe stream. Usually, several partial
 // (or intermediate) transcriptions will be sent until the final
 // transcription is ready for every utterance processed.
 message TranscribeResult {
@@ -336,18 +337,18 @@ message TranscribeResult {
     string text = 1;
 
     // Confidence estimate between 0 and 1. A higher number
-    // represents a higher likelihood of the transcription
-    // being correct.
+    // represents a higher likelihood that the transcription
+    // is correct.
     double confidence = 2;
 
     // True if this is a partial result, in which case the
-    // text of the transcription for the current utterance
-    // being processed is allowed to change in future results.
-    // When false, this represents the final transcription for
-    // an utterance, which will not change with further audio
-    // input. It is sent when the ASR has endpointed. After the
-    // final transcription is sent, any additional results sent
-    // on the Transcribe stream belong to the next utterance.
+    // next result will be for the same audio, either repeating
+    // or correcting the text in this result. When false, this
+    // represents the final transcription for an utterance, which
+    // will not change with further audio input. It is sent when
+    // the ASR has identified an endpoint. After the final
+    // transcription is sent, any additional results sent on the
+    // Transcribe stream belong to the next utterance.
     bool is_partial = 3;
 }
 
