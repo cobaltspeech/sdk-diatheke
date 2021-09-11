@@ -356,7 +356,8 @@ public struct Cobaltspeech_Diatheke_ActionData {
     set {action = .reply(newValue)}
   }
 
-  /// The client app should transcribe user input.
+  /// The client app should call the Transcribe method to
+  /// capture the user's input.
   public var transcribe: Cobaltspeech_Diatheke_TranscribeAction {
     get {
       if case .transcribe(let v)? = action {return v}
@@ -374,7 +375,8 @@ public struct Cobaltspeech_Diatheke_ActionData {
     case command(Cobaltspeech_Diatheke_CommandAction)
     /// The client app should provide the reply to the user.
     case reply(Cobaltspeech_Diatheke_ReplyAction)
-    /// The client app should transcribe user input.
+    /// The client app should call the Transcribe method to
+    /// capture the user's input.
     case transcribe(Cobaltspeech_Diatheke_TranscribeAction)
 
   #if !swift(>=4.1)
@@ -466,7 +468,7 @@ public struct Cobaltspeech_Diatheke_ReplyAction {
 }
 
 /// This action indicates that the client application should
-/// transcribe the user's input.
+/// call the Transcribe method to capture the user's input.
 public struct Cobaltspeech_Diatheke_TranscribeAction {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
@@ -477,13 +479,13 @@ public struct Cobaltspeech_Diatheke_TranscribeAction {
   /// single sesssion.
   public var id: String = String()
 
-  /// The ASR model to use for transcription.
+  /// (Required) The ASR model to use for transcription.
   public var cubicModelID: String = String()
 
-  /// The Diatheke model where this transcribe action is
-  /// defined. If empty, the server will not be able to
+  /// (Optional) A Diatheke model to use for end-of-stream
+  /// conditions. If empty, the server will not be able to
   /// automatically close the transcribe stream based on
-  /// conditions defined in the Diatheke model, such as
+  /// conditions defined in the model, such as
   /// a non-speech timeout or an "end-transcription" intent.
   /// When empty, the stream must be closed by the client
   /// application.
@@ -657,7 +659,7 @@ public struct Cobaltspeech_Diatheke_TranscribeInput {
   public init() {}
 }
 
-/// The result from the Transcribe stream. Usually, many partial
+/// The result from the Transcribe stream. Usually, several partial
 /// (or intermediate) transcriptions will be sent until the final
 /// transcription is ready for every utterance processed.
 public struct Cobaltspeech_Diatheke_TranscribeResult {
@@ -669,18 +671,18 @@ public struct Cobaltspeech_Diatheke_TranscribeResult {
   public var text: String = String()
 
   /// Confidence estimate between 0 and 1. A higher number
-  /// represents a higher likelihood of the transcription
-  /// being correct.
+  /// represents a higher likelihood that the transcription
+  /// is correct.
   public var confidence: Double = 0
 
   /// True if this is a partial result, in which case the
-  /// text of the transcription for the current utterance
-  /// being processed is allowed to change in future results.
-  /// When false, this represents the final transcription for
-  /// an utterance, which will not change with further audio
-  /// input. It is sent when the ASR has endpointed. After the
-  /// final transcription is sent, any additional results sent
-  /// on the Transcribe stream belong to the next utterance.
+  /// next result will be for the same audio, either repeating
+  /// or correcting the text in this result. When false, this
+  /// represents the final transcription for an utterance, which
+  /// will not change with further audio input. It is sent when
+  /// the ASR has identified an endpoint. After the final
+  /// transcription is sent, any additional results sent on the
+  /// Transcribe stream belong to the next utterance.
   public var isPartial: Bool = false
 
   public var unknownFields = SwiftProtobuf.UnknownStorage()
