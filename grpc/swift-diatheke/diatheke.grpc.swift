@@ -178,7 +178,7 @@ extension Cobaltspeech_Diatheke_DiathekeClientProtocol {
   /// endpoint), or when a transcript becomes available on its
   /// own, in which case the stream is closed by the server.
   /// The ASR result may be used in the UpdateSession method.
-  ///
+  /// <br/><br/>
   /// If the session has a wakeword enabled, and the client
   /// application is using Diatheke and Cubic to handle the
   /// wakeword processing, this method will not return a
@@ -232,9 +232,9 @@ extension Cobaltspeech_Diatheke_DiathekeClientProtocol {
   /// for situations where a user may say anything at all, whether
   /// it is short or long, and the application wants to save the
   /// transcript (e.g., take a note, send a message).
-  ///
-  /// The first message sent to the server must include the
-  /// Cubic model ID, with remaining messages sending audio data.
+  /// <br/><br/>
+  /// The first message sent to the server must be the TranscribeAction,
+  /// with remaining messages sending audio data.
   /// Messages received from the server will include the current
   /// best partial transcription until the full transcription is
   /// ready. The stream ends when either the client application
