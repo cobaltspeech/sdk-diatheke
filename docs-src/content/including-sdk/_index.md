@@ -43,7 +43,7 @@ from GitHub to use in your Go project.
 ## Python
 The Python SDK requires Python v3.5.0 or greater. The SDK may be installed
 from GitHub using `pip` as shown below, where `<VERSION>` is the specific
-version of the SDK the application is targeting (e.g., `v1.3.0`, `v2.0.0`, etc.)
+version of the SDK the application is targeting (e.g., `v1.3.0`, `v2.1.0`, etc.)
 
 ```bash
 # Replace <VERSION> with the desired SDK version
@@ -55,9 +55,9 @@ To get `v1.3.0`
 pip install "git+https://github.com/cobaltspeech/sdk-diatheke@v1.3.0#egg=cobalt-diatheke&subdirectory=grpc/py-diatheke"
 ```
 
-To get `v2.0.0`
+To get `v2.1.0`
 ```bash
-pip install "git+https://github.com/cobaltspeech/sdk-diatheke@v2.0.0#egg=cobalt-diatheke&subdirectory=grpc/py-diatheke"
+pip install "git+https://github.com/cobaltspeech/sdk-diatheke@v2.1.0#egg=cobalt-diatheke&subdirectory=grpc/py-diatheke"
 ```
 
 To get the latest master (not recommended for production)
@@ -85,7 +85,7 @@ dependency is as easy as adding it to the `dependencies` value of your
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/cobaltspeech/sdk-diatheke.git", .upToNextMajor(from: "2.0"))
+    .package(url: "https://github.com/cobaltspeech/sdk-diatheke.git", .upToNextMajor(from: "2.1.0"))
 ]
 ```
 

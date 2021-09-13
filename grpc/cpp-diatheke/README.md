@@ -49,7 +49,7 @@ include(FetchContent)
 FetchContent_Declare(
     sdk_diatheke
     GIT_REPOSITORY https://github.com/cobaltspeech/sdk-diatheke.git
-    GIT_TAG v2.0.1
+    GIT_TAG v2.1.0
 )
 FetchContent_Populate(sdk_diatheke)
 

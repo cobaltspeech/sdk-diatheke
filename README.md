@@ -37,8 +37,9 @@ A few system dependencies are required:
 
 The top level Makefile can set up all other dependencies.
 
-Documentation is authored in the `docs-src` folder and generated static website
-is stored in the `docs` folder.
+Documentation is authored in the `docs-src` folder. Final documentation
+website is auto-generated and hosted by Cobalt, so there is no need to
+commit generated docs.
 
 To generate the code and documentation, run `make`.  This is currently only
 supported under linux.
@@ -54,16 +55,12 @@ cd docs-src
 ### Tagging New Versions
 
 This repository has several components, and they need more than just a "vX.Y.Z"
-tag on the git repo.  In particular, this repository has two go modules, one of
-which depends on the other, and in order to make sure correct versions are used,
-we need to follow a few careful steps to release new versions on this
-repository.
+tag on the git repo. We need to follow a few careful steps to release new versions:
 
-Step 1: Make sure all generated code and documentation is up to date.
+Step 1: Make sure all generated code is up to date.
 
 ```
 pushd grpc && make && popd
-pushd docs-src && hugo -d ../docs && popd
 git diff --quiet || echo "You have uncommitted changes.  Please get them merged in via a PR before updating versions."
 ```
 
@@ -85,8 +82,7 @@ git checkout master
 git checkout -b version-update-v$NEW_VERSION
 
 sed -i 's|DiathekeSDKVersion = "[0-9.]*"|DiathekeSDKVersion = "'$NEW_VERSION'"|g' grpc/swift-diatheke/Diatheke.swift
-sed -i 's|.upToNextMajor(from: "[0-9.]*")|.upToNextMajor(from: "'$NEW_VERSION'")|g' docs-src/content/using-diatheke-sdk/include.md
-pushd docs-src && hugo -d ../docs && popd
+sed -i 's|.upToNextMajor(from: "[0-9.]*")|.upToNextMajor(from: "'$NEW_VERSION'")|g' docs-src/content/including-sdk/_index.md
 
 git commit -m "Update version to v$NEW_VERSION"
 git push origin version-update-v$NEW_VERSION

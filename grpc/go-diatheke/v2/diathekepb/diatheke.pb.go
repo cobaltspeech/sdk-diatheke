@@ -844,7 +844,8 @@ type ActionData_Reply struct {
 }
 
 type ActionData_Transcribe struct {
-	// The client app should transcribe user input.
+	// The client app should call the Transcribe method to
+	// capture the user's input.
 	Transcribe *TranscribeAction `protobuf:"bytes,4,opt,name=transcribe,proto3,oneof"`
 }
 
@@ -1037,7 +1038,7 @@ func (x *ReplyAction) GetLunaModel() string {
 }
 
 // This action indicates that the client application should
-// transcribe the user's input.
+// call the Transcribe method to capture the user's input.
 type TranscribeAction struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -1047,12 +1048,12 @@ type TranscribeAction struct {
 	// differentiate separate transcription tasks within a
 	// single sesssion.
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	// The ASR model to use for transcription.
+	// (Required) The ASR model to use for transcription.
 	CubicModelId string `protobuf:"bytes,2,opt,name=cubic_model_id,json=cubicModelId,proto3" json:"cubic_model_id,omitempty"`
-	// The Diatheke model where this transcribe action is
-	// defined. If empty, the server will not be able to
+	// (Optional) A Diatheke model to use for end-of-stream
+	// conditions. If empty, the server will not be able to
 	// automatically close the transcribe stream based on
-	// conditions defined in the Diatheke model, such as
+	// conditions defined in the model, such as
 	// a non-speech timeout or an "end-transcription" intent.
 	// When empty, the stream must be closed by the client
 	// application.
@@ -1407,7 +1408,7 @@ func (*TranscribeInput_Action) isTranscribeInput_Data() {}
 
 func (*TranscribeInput_Audio) isTranscribeInput_Data() {}
 
-// The result from the Transcribe stream. Usually, many partial
+// The result from the Transcribe stream. Usually, several partial
 // (or intermediate) transcriptions will be sent until the final
 // transcription is ready for every utterance processed.
 type TranscribeResult struct {
@@ -1418,17 +1419,17 @@ type TranscribeResult struct {
 	// The transcription.
 	Text string `protobuf:"bytes,1,opt,name=text,proto3" json:"text,omitempty"`
 	// Confidence estimate between 0 and 1. A higher number
-	// represents a higher likelihood of the transcription
-	// being correct.
+	// represents a higher likelihood that the transcription
+	// is correct.
 	Confidence float64 `protobuf:"fixed64,2,opt,name=confidence,proto3" json:"confidence,omitempty"`
 	// True if this is a partial result, in which case the
-	// text of the transcription for the current utterance
-	// being processed is allowed to change in future results.
-	// When false, this represents the final transcription for
-	// an utterance, which will not change with further audio
-	// input. It is sent when the ASR has endpointed. After the
-	// final transcription is sent, any additional results sent
-	// on the Transcribe stream belong to the next utterance.
+	// next result will be for the same audio, either repeating
+	// or correcting the text in this result. When false, this
+	// represents the final transcription for an utterance, which
+	// will not change with further audio input. It is sent when
+	// the ASR has identified an endpoint. After the final
+	// transcription is sent, any additional results sent on the
+	// Transcribe stream belong to the next utterance.
 	IsPartial bool `protobuf:"varint,3,opt,name=is_partial,json=isPartial,proto3" json:"is_partial,omitempty"`
 }
 
@@ -2154,7 +2155,7 @@ type DiathekeClient interface {
 	// endpoint), or when a transcript becomes available on its
 	// own, in which case the stream is closed by the server.
 	// The ASR result may be used in the UpdateSession method.
-	//
+	// <br/><br/>
 	// If the session has a wakeword enabled, and the client
 	// application is using Diatheke and Cubic to handle the
 	// wakeword processing, this method will not return a
@@ -2173,9 +2174,9 @@ type DiathekeClient interface {
 	// for situations where a user may say anything at all, whether
 	// it is short or long, and the application wants to save the
 	// transcript (e.g., take a note, send a message).
-	//
-	// The first message sent to the server must include the
-	// Cubic model ID, with remaining messages sending audio data.
+	// <br/><br/>
+	// The first message sent to the server must be the TranscribeAction,
+	// with remaining messages sending audio data.
 	// Messages received from the server will include the current
 	// best partial transcription until the full transcription is
 	// ready. The stream ends when either the client application
@@ -2356,7 +2357,7 @@ type DiathekeServer interface {
 	// endpoint), or when a transcript becomes available on its
 	// own, in which case the stream is closed by the server.
 	// The ASR result may be used in the UpdateSession method.
-	//
+	// <br/><br/>
 	// If the session has a wakeword enabled, and the client
 	// application is using Diatheke and Cubic to handle the
 	// wakeword processing, this method will not return a
@@ -2375,9 +2376,9 @@ type DiathekeServer interface {
 	// for situations where a user may say anything at all, whether
 	// it is short or long, and the application wants to save the
 	// transcript (e.g., take a note, send a message).
-	//
-	// The first message sent to the server must include the
-	// Cubic model ID, with remaining messages sending audio data.
+	// <br/><br/>
+	// The first message sent to the server must be the TranscribeAction,
+	// with remaining messages sending audio data.
 	// Messages received from the server will include the current
 	// best partial transcription until the full transcription is
 	// ready. The stream ends when either the client application
