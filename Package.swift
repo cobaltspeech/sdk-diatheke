@@ -29,7 +29,7 @@ let package = Package(
             targets: ["Diatheke"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/grpc/grpc-swift.git", .exact("1.3.0"))
+        .package(url: "git@github.com:grpc/grpc-swift.git", .exact("1.3.0"))
     ],
     targets: [
         .target(
