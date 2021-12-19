@@ -32,34 +32,32 @@ public extension Cobaltspeech_Diatheke_DiathekeClient {
         let target = ConnectionTarget.hostAndPort(host, port)
         let eventLoopGroup = PlatformSupport.makeEventLoopGroup(loopCount: 1,
                                                                 networkPreference: .best)
-        
-        let tls = useTLS ? ClientConnection.Configuration.TLS() : nil
+        let tlsConfiguration = useTLS ? GRPCTLSConfiguration.makeClientConfigurationBackedByNIOSSL() : nil
             
-        let configuration = ClientConnection.Configuration(target: target,
-                                                           eventLoopGroup: eventLoopGroup,
-                                                           errorDelegate: nil,
-                                                           connectivityStateDelegate: nil,
-                                                           tls: tls,
-                                                           connectionBackoff: nil)
+        var configuration = ClientConnection.Configuration.default(target: target, eventLoopGroup: eventLoopGroup)
+        configuration.tlsConfiguration = tlsConfiguration
+        
         let connection = ClientConnection(configuration: configuration)
         self.init(channel: connection)
     }
     
-    convenience init(host: String,
-                     port: Int,
-                     tlsCertificateFileName: String,
-                     tlsCertificateFormat: NIOSSLSerializationFormats) {
-        let target = ConnectionTarget.hostAndPort(host, port)
-        let eventLoopGroup = PlatformSupport.makeEventLoopGroup(loopCount: 1,
-                                                                networkPreference: .best)
+    convenience init(host: String, port: Int, clientCertificatePath: String, privateKeyPath: String) {
+        let target = ConnectionTarget.host(host, port: port)
+        let eventLoopGroup = PlatformSupport.makeEventLoopGroup(loopCount: 1)
         
-        var configuration = ClientConnection.Configuration(target: target, eventLoopGroup: eventLoopGroup)
+        var configuration = ClientConnection.Configuration.default(target: target, eventLoopGroup: eventLoopGroup)
         
-        if let cert = try? NIOSSLCertificate(file: tlsCertificateFileName, format: tlsCertificateFormat) {
-            let source = NIOSSLCertificateSource.certificate(cert)
-            var tls = ClientConnection.Configuration.TLS()
-            tls.certificateChain.append(source)
-            configuration.tls = tls
+        do {
+            let certificateChain = try NIOSSLCertificate.fromPEMFile(clientCertificatePath).map({
+                NIOSSLCertificateSource.certificate($0)
+            })
+            let privateKey = NIOSSLPrivateKeySource.file(privateKeyPath)
+            
+            let tlsConfiguration = GRPCTLSConfiguration.makeServerConfigurationBackedByNIOSSL(certificateChain: certificateChain,
+                                                                                              privateKey: privateKey)
+            configuration.tlsConfiguration = tlsConfiguration
+        } catch {
+            print(error)
         }
         
         let connection = ClientConnection(configuration: configuration)
