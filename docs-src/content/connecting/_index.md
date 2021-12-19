@@ -206,18 +206,17 @@ client = diatheke.Client(server_address="localhost:9002",
 {{< /tab >}}
 
 {{< tab "Swift/iOS" "swift" >}}
-import Cubic
-import NIOSSL
+import Diatheke
 
 class DiathekeConnection {
     
     let serverAddress = "localhost"
     let serverPort = 9002
-
-    let client = Client(host: serverAddress, 
+        
+    let client = Client(host: serverAddress,
                         port: serverPort,
-                        tlsCertificateFileName: "root",
-                        tlsCertificateFormat: .pem)
+                        clientCertificatePath: "path/to/client_certificate.pem",
+                        privateKeyPath: "path/to/private_key.pem")
 
 }
 {{< /tab >}}

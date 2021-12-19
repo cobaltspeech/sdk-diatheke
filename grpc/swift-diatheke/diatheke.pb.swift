@@ -917,12 +917,13 @@ extension Cobaltspeech_Diatheke_SessionInput: SwiftProtobuf.Message, SwiftProtob
   }
 
   public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    if let v = self._token {
-      try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
-    }
     // The use of inline closures is to circumvent an issue where the compiler
-    // allocates stack space for every case branch when no optimizations are
-    // enabled. https://github.com/apple/swift-protobuf/issues/1034
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    try { if let v = self._token {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
+    } }()
     switch self.input {
     case .text?: try {
       guard case .text(let v)? = self.input else { preconditionFailure() }
@@ -1170,9 +1171,13 @@ extension Cobaltspeech_Diatheke_SessionOutput: SwiftProtobuf.Message, SwiftProto
   }
 
   public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    if let v = self._token {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    try { if let v = self._token {
       try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
-    }
+    } }()
     if !self.actionList.isEmpty {
       try visitor.visitRepeatedMessageField(value: self.actionList, fieldNumber: 2)
     }
@@ -1261,8 +1266,9 @@ extension Cobaltspeech_Diatheke_ActionData: SwiftProtobuf.Message, SwiftProtobuf
 
   public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
     // The use of inline closures is to circumvent an issue where the compiler
-    // allocates stack space for every case branch when no optimizations are
-    // enabled. https://github.com/apple/swift-protobuf/issues/1034
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
     switch self.action {
     case .input?: try {
       guard case .input(let v)? = self.action else { preconditionFailure() }
@@ -1491,8 +1497,9 @@ extension Cobaltspeech_Diatheke_ASRInput: SwiftProtobuf.Message, SwiftProtobuf._
 
   public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
     // The use of inline closures is to circumvent an issue where the compiler
-    // allocates stack space for every case branch when no optimizations are
-    // enabled. https://github.com/apple/swift-protobuf/issues/1034
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
     switch self.data {
     case .token?: try {
       guard case .token(let v)? = self.data else { preconditionFailure() }
@@ -1631,8 +1638,9 @@ extension Cobaltspeech_Diatheke_TranscribeInput: SwiftProtobuf.Message, SwiftPro
 
   public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
     // The use of inline closures is to circumvent an issue where the compiler
-    // allocates stack space for every case branch when no optimizations are
-    // enabled. https://github.com/apple/swift-protobuf/issues/1034
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
     switch self.data {
     case .action?: try {
       guard case .action(let v)? = self.data else { preconditionFailure() }
