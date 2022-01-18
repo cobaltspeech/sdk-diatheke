@@ -1,5 +1,5 @@
 /*
- * Copyright (2021) Cobalt Speech and Language, Inc.
+ * Copyright (2021-present) Cobalt Speech and Language, Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,8 @@
 namespace Diatheke
 {
 
+class ASRStreamPrivate;
+
 class ASRStream
 {
 public:
@@ -35,9 +37,7 @@ public:
      * Most callers should use Client::newSessionASRStream() instead
      * of creating a new stream directly.
      */
-    ASRStream(const std::shared_ptr<grpc::ClientContext> &ctx,
-              const std::shared_ptr<cobaltspeech::diatheke::ASRResult> &result,
-              const std::shared_ptr<GRPCWriter> &stream);
+    ASRStream(cobaltspeech::diatheke::Diatheke::Stub *stub);
     ~ASRStream();
 
     /*
@@ -80,9 +80,7 @@ public:
     GRPCWriter *getStream();
 
 private:
-    std::shared_ptr<grpc::ClientContext> mContext;
-    std::shared_ptr<cobaltspeech::diatheke::ASRResult> mResult;
-    std::shared_ptr<GRPCWriter> mStream;
+    std::shared_ptr<ASRStreamPrivate> dPtr; // Opaque pointer
 };
 
 } // namespace Diatheke
