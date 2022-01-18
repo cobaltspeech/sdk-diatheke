@@ -1,4 +1,4 @@
-# Copyright (2021) Cobalt Speech and Language, Inc.
+# Copyright (2021-present) Cobalt Speech and Language, Inc. All rights reserved.
 
 cmake_minimum_required(VERSION 3.14.0)
 project(diatheke_client)

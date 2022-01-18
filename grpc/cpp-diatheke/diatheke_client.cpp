@@ -1,5 +1,5 @@
 /*
- * Copyright (2021) Cobalt Speech and Language, Inc.
+ * Copyright (2021-present) Cobalt Speech and Language, Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -220,25 +220,8 @@ Client::setStory(const cobaltspeech::diatheke::TokenData &token,
 ASRStream
 Client::newSessionASRStream(const cobaltspeech::diatheke::TokenData &token)
 {
-    /*
-     * Create the context. We need it to exist for the lifetime of the
-     * stream, so we create it as a managed pointer. We don't set a
-     * deadline on the context because we expect the stream to be long-
-     * lived.
-     */
-    std::shared_ptr<grpc::ClientContext> ctx(new grpc::ClientContext);
-
-    // Create a managed pointer to store the final result.
-    std::shared_ptr<cobaltspeech::diatheke::ASRResult> result(
-        new cobaltspeech::diatheke::ASRResult);
-
-    // Create the gRPC stream
-    std::shared_ptr<ASRStream::GRPCWriter> writer(
-        mStub->StreamASR(ctx.get(), result.get()));
-
-    // Store the pointers in our ASRStream object, then send the session
-    // token.
-    ASRStream stream(ctx, result, writer);
+     // Create the ASR stream object.
+    ASRStream stream(mStub.get());
     if (!stream.sendToken(token))
     {
         throw ClientError(
