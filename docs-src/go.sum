@@ -1,2 +1,4 @@
 github.com/cobaltspeech/docdock v0.0.0-20201021030030-709475da43cc h1:a9Bi31soWITRH/wGzn6xmppbMFeVMLYfyJ5WhlpCKYU=
 github.com/cobaltspeech/docdock v0.0.0-20201021030030-709475da43cc/go.mod h1:di6kSv6tcePZf4ND0SkHCOKdDscMze4sGqKI/tYJRFk=
+github.com/vjeantet/hugo-theme-docdock v1.0.0 h1:uYwQbzjp2Y4Se7LEHZibp+Q2OPt3BKSssdLcynqWoNY=
+github.com/vjeantet/hugo-theme-docdock v1.0.0/go.mod h1:bprZyRE9VCeTcZogOqIrOQtQ9RyB6dQpXeR7sNXHuH8=

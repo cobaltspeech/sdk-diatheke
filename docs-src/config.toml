@@ -44,5 +44,5 @@ unsafe= true
 
 [module]
 [[module.imports]]
-    path = "github.com/cobaltspeech/docdock"
+    path = "../themes/hugo-theme-docdock"
     # Project theme
