@@ -11,9 +11,9 @@ setup(
     author_email='tech@cobaltspeech.com',
     url='https://github.com/cobaltspeech/sdk-diatheke',
     packages=["diatheke"],
-    version_config={
-        "version_format": "{tag}.dev{sha}"
+    setuptools_git_versioning={
+        "enabled": True,
     },
-    setup_requires=['better-setuptools-git-version'],
+    setup_requires=["setuptools-git-versioning<2"],
     install_requires=['protobuf', 'grpcio']
 )
