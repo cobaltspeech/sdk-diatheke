@@ -23,28 +23,28 @@ deps: deps-protoc deps-gendoc deps-gengo deps-gengateway deps-py deps-swift
 deps-protoc: ${DEPSBIN}/protoc
 ${DEPSBIN}/protoc:
 	cd ${DEPSBIN}/../ && wget \
-		"https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/protoc-3.7.1-linux-x86_64.zip" && \
-		unzip protoc-3.7.1-linux-x86_64.zip && rm -f protoc-3.7.1-linux-x86_64.zip
+		"https://github.com/protocolbuffers/protobuf/releases/download/v21.8/protoc-21.8-linux-x86_64.zip" && \
+		unzip protoc-21.8-linux-x86_64.zip && rm -f protoc-21.8-linux-x86_64.zip
 
 deps-gendoc: ${DEPSBIN}/protoc-gen-doc
 ${DEPSBIN}/protoc-gen-doc:
 	cd ${DEPSBIN} && wget \
-		"https://github.com/pseudomuto/protoc-gen-doc/releases/download/v1.3.0/protoc-gen-doc-1.3.0.linux-amd64.go1.11.2.tar.gz" -O - | tar xz --strip-components=1
+		"https://github.com/pseudomuto/protoc-gen-doc/releases/download/v1.5.1/protoc-gen-doc_1.5.1_linux_amd64.tar.gz" -O - | tar xz --strip-components=1
 
 deps-gengo: ${DEPSGO}/bin/protoc-gen-go
 ${DEPSGO}/bin/protoc-gen-go:
 	rm -rf $(DEPSTMP)/gengo
-	cd $(DEPSTMP) && mkdir gengo && cd gengo && go mod init tmp && GOPATH=${DEPSGO} go get github.com/golang/protobuf/protoc-gen-go@v1.3.1
+	cd $(DEPSTMP) && mkdir gengo && cd gengo && go mod init tmp && GOPATH=${DEPSGO} go get google.golang.org/protobuf/cmd/protoc-gen-go@latest
 
 deps-gengateway: ${DEPSGO}/bin/protoc-gen-grpc-gateway
 ${DEPSGO}/bin/protoc-gen-grpc-gateway:
 	rm -rf $(DEPSTMP)/gengw
-	cd $(DEPSTMP) && mkdir gengw && cd gengw && go mod init tmp && GOPATH=${DEPSGO} go get github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway@v1.9.0
+	cd $(DEPSTMP) && mkdir gengw && cd gengw && go mod init tmp && GOPATH=${DEPSGO} go get github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway@v1.16.0
 
 deps-py: ${DEPSVENV}/.done
 ${DEPSVENV}/.done:
 	virtualenv -p python3 ${DEPSVENV}
-	source ${DEPSVENV}/bin/activate && pip install grpcio-tools==1.33.1 googleapis-common-protos==1.52.0 && deactivate
+	source ${DEPSVENV}/bin/activate && pip install grpcio-tools==1.50.0 googleapis-common-protos==1.56.4 && deactivate
 	touch $@
 	
 deps-swift:
@@ -59,7 +59,7 @@ deps-swift:
  
 gen: deps
 	@ source ${DEPSVENV}/bin/activate && \
-		PROTOINC=${DEPSGO}/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.0/third_party/googleapis \
+		PROTOINC=${DEPSGO}/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.16.0/third_party/googleapis \
 		$(MAKE) -C grpc
 
 clean:
